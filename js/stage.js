@@ -50,8 +50,13 @@
     el.className = 'stage ' + (cls || '');
     el.setAttribute('role', 'status');
     el.setAttribute('aria-live', 'polite');
-    el.innerHTML = '<div class="stage-card">' + html + '</div>' +
+    el.innerHTML = (opts.backdrop ? '<img class="st-astra-anim" src="' + esc(opts.backdrop) + '" alt="" aria-hidden="true">' : '') +
+      '<div class="stage-card">' + html + '</div>' +
       (opts.passive ? '' : '<div class="stage-skip">tap to continue</div>');
+    // Mount the image immediately: artFor() intentionally returns null while
+    // probing, which used to leave the entire first invocation without a film.
+    const film = el.querySelector('.st-astra-anim');
+    if (film) film.addEventListener('error', function () { film.remove(); });
     document.body.appendChild(el);
     const hold = reduced() && !calm() ? Math.min(ms, 1100) : ms;
     current = { el: el, done: done, timer: setTimeout(function () { close(true); }, hold) };
@@ -184,14 +189,15 @@
   function astra(ev, viewer, done) {
     const def = (U.ASTRA_DEFS || {})[ev.astra] || { name: ev.astra, deva: '' };
     const ours = ev.owner === viewer;
-    const anim = A.artFor('astra:' + ev.astra + '-anim');
+    const systemReduced = root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const anim = !reduced() && !systemReduced && !document.documentElement.classList.contains('lite')
+      ? A.pathFor('astra:' + ev.astra + '-anim') : null;
     const html =
-      (anim ? '<img class="st-astra-anim" src="' + anim + '" alt="" aria-hidden="true">' : '') +
       '<div class="st-astra-mark">' + A.astraMark(ev.astra) + '</div>' +
       '<div class="st-astra-name"><span class="deva">' + esc(def.deva) + '</span><b>' + esc(def.name) + '</b></div>' +
       '<div class="st-astra-by">' + (ours ? 'invoked by your army' : 'invoked by the enemy') + '</div>' +
       '<div class="st-line">' + esc(ev.text) + '</div>';
-    show(html, 'stage-astra stage-astra-' + ev.astra + (ours ? ' ours' : ' theirs'), ev.astra === 'brahma' ? 2600 : calm() ? 2200 : 2000, done);
+    show(html, 'stage-astra stage-astra-' + ev.astra + (ours ? ' ours' : ' theirs'), ev.astra === 'brahma' ? 2600 : calm() ? 2200 : 2000, done, { backdrop: anim });
     const c = FX.centerOf(document.getElementById('board'));
     const colors = { vayavya: '#cfe8ff', sammohana: '#c4b5fd', agneya: '#ff8a3d', brahma: '#fff3c4' };
     if (FX && FX.burst) {

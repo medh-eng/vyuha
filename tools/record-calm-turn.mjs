@@ -76,7 +76,7 @@ try {
   await page.screenshot({ path: path.join(out, 'phone-after.png') });
   await new Promise((r) => setTimeout(r, Math.max(0, 20000 - (Date.now() - began))));
   await recorder.stop();
-  const encoded = spawnSync(process.env.FFMPEG_PATH || 'ffmpeg', ['-y', '-i', path.join(out, 'calm-turn.webm'), '-vf', 'tpad=stop_mode=clone:stop_duration=1', '-t', '20', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-an', '-movflags', '+faststart', path.join(out, 'calm-turn.mp4')]);
+  const encoded = spawnSync(process.env.FFMPEG_PATH || 'ffmpeg', ['-y', '-i', path.join(out, 'calm-turn.webm'), '-vf', 'tpad=stop_mode=clone:stop_duration=20', '-t', '20', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-an', '-movflags', '+faststart', path.join(out, 'calm-turn.mp4')]);
   assert.equal(encoded.status, 0, encoded.stderr.toString());
   fs.unlinkSync(path.join(out, 'calm-turn.webm'));
   const gif = spawnSync(process.env.FFMPEG_PATH || 'ffmpeg', ['-y', '-i', path.join(out, 'calm-turn.mp4'), '-vf', 'fps=5,scale=195:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96[p];[b][p]paletteuse', '-loop', '0', path.join(out, 'calm-turn.gif')]);

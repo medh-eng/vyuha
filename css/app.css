@@ -2163,8 +2163,9 @@ html.reduce-motion .stage *, html.reduce-motion .stage { animation: none !import
 .stage > *:not(.st-astra-anim) { position: relative; z-index: 1; }
 @keyframes astraIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 0.92; transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) {
-  .st-astra-anim { animation: none; }
+  .st-astra-anim { display: none; }
 }
+html.reduce-motion .st-astra-anim { display: none; }
 
 /* the gate breach: the painted doors fill the stage behind the words */
 .st-breach-art { opacity: 0.95; object-fit: cover; inset: -10%; width: 120%; height: 120%; }

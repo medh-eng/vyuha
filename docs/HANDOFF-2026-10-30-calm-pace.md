@@ -67,3 +67,35 @@ Service-worker cache: **`vyuha-v18`**. The standalone was rebuilt after the last
 The recording uses a prepared wheel position with a Yantrik in reach, followed by Shakuni's real response. It is automated browser evidence, not an uncoached human playtest, native-language review or test on a physical phone.
 
 Next: review the timing conflict, then the Commander tries Calm, Quick and skip on his own phone before deciding whether to merge. No merge was performed here.
+
+## Review and media QA — 1 November 2026
+
+First-use Astra films previously depended on a completed lazy image probe: the
+first invocation got null and omitted its film. The stage now mounts the film
+directly, behind the card and above the board, with a still-emblem fallback on
+load failure. Reduced motion (setting or OS preference) and effective battery
+saver avoid creating the animated image. CSS also hides it when reduced motion
+changes during a card. Ten new UI assertions cover the four first-use films,
+missing-media fallback and the two motion/cooling settings.
+
+`tools/media-qa.mjs` runs eleven legal prepared positions in real Chromium at
+390 × 844, with shipped audio and unscaled timings: capture, trap, gate breach,
+fort victory, volley, four astras, reduced motion and battery saver. All passed;
+each turn produced one played voice line, after its tracked effect completed.
+All four first-use films loaded above the board. Results and card screenshots:
+[`evidence/media-qa-2026-11-01/`](evidence/media-qa-2026-11-01/).
+The trap still uses its synthesised fallback in this branch; the supplied
+recording and five extra music tracks are being integrated separately.
+
+Fresh 20-second recording replaces the previous evidence. Its real clash takes
+**6.67 seconds from slide start to AI preview**, including a 2.59-second effect
+and a 2.08-second voice line. No phase was skipped. This confirms the documented
+timing conflict; the 4–5-second estimate is **not** claimed. Quick retains its
+original action/card/think delays. The recording encoder now pads to exactly
+20 seconds even if Chromium delivers fewer screencast frames.
+
+Rechecked: 119 rules, 40 self-play games (zero failures), Daily regressions,
+125 UI assertions, desktop/phone screenshot harness. Idle probe: home 0.3%,
+battle 1.0%, selected 0.4%, mid-game 0.4%; all below 3%. The standalone is rebuilt;
+cache `vyuha-v19`. Real-phone temperature, touch comfort and listening approval
+remain the Commander's review. Nothing is merged or deployed.

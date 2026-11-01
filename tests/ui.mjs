@@ -483,6 +483,28 @@ async function run() {
   Array.prototype.forEach.call(document.querySelectorAll('.curtain'), (n) => n.remove());
   ok(!!$('#hud-sky') && !$('#hud-sky').hidden, 'the HUD shows the hour');
 
+  // Film loading is independent of the optional art cache. First use must
+  // render too, and accessibility/cooling settings must avoid requesting it.
+  AC.ui.patchSettings({ pace: 'calm', reducedMotion: false, batterySaver: false });
+  document.querySelectorAll('.stage-out').forEach((n) => n.remove());
+  for (const astra of ['vayavya', 'sammohana', 'agneya', 'brahma']) {
+    AC.stage.astra({ astra, owner: 1, text: '' }, 1);
+    const film = $('.stage > .st-astra-anim');
+    ok(film && film.getAttribute('src') === 'assets/art/opt/astras/' + astra + '-anim.webp', astra + ' film mounts on first invocation above the stage card');
+    film.dispatchEvent(new w.Event('error'));
+    ok(!$('.st-astra-anim') && !!$('.st-astra-mark'), astra + ' keeps its emblem if the film cannot load');
+    AC.stage.close(false);
+  }
+  AC.ui.patchSettings({ reducedMotion: true });
+  AC.stage.astra({ astra: 'brahma', owner: 1, text: '' }, 1);
+  ok(!$('.st-astra-anim') && !!$('.stage-astra'), 'reduced motion keeps the card without loading an animated WebP');
+  AC.stage.close(false);
+  AC.ui.patchSettings({ reducedMotion: false, batterySaver: true });
+  AC.stage.astra({ astra: 'agneya', owner: 1, text: '' }, 1);
+  ok(!$('.st-astra-anim'), 'battery saver avoids loading the Astra film');
+  AC.stage.close(false);
+  AC.ui.patchSettings({ pace: 'quick', batterySaver: false });
+
   // ── Pehla Yuddh ──
   AC.modes.startTutorial();
   await sleep(30);
