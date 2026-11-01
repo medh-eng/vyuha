@@ -362,6 +362,53 @@ async function run() {
   ok(/Daily Chakravyuha #3/.test(text) && /Can you get out/.test(text), 'the share card reads well');
   AC.app.modals.slice().forEach((m) => m.close());
 
+  // ── dialogs answer what was tapped (Concede used to do nothing) ──
+  AC.game.start({ mode: 'ai', board: 'wheel', difficulty: 'veteran' });
+  await sleep(10);
+  AC.app.modals.slice().forEach((m) => m.close());
+  const lockBtn = $('#action-bar [data-deploy="lock"]'); if (lockBtn) click(lockBtn);
+  await sleep(10);
+  AC.app.modals.slice().forEach((m) => m.close());
+  AC.ui.openPause();
+  click($('[data-p="resign"]'));
+  click($('.modal [data-act="0"]'));
+  await sleep(10);
+  ok(AC.game.state.phase !== 'over', 'Cancel keeps the battle going');
+  AC.ui.openPause();
+  click($('[data-p="resign"]'));
+  click($('.modal [data-act="1"]'));
+  await sleep(10);
+  ok(AC.game.state.phase === 'over' && AC.game.state.winner === 2, 'Concede ends the battle as a loss');
+  AC.app.modals.slice().forEach((m) => m.close());
+  const renamed = AC.ui.promptText ? null : 'skip';
+  if (!renamed) {
+    const pr = AC.ui.promptText({ title: 'Name', value: 'Arjun' });
+    await sleep(10);
+    $('#prompt-input').value = 'Partha';
+    click($('.modal [data-act="1"]'));
+    ok((await pr) === 'Partha', 'a text prompt returns what was typed');
+  }
+
+  // ── profile hub and a calm home ──
+  AC.ui.show('home');
+  await sleep(10);
+  ok(!document.getElementById('quick-settings') && !document.getElementById('stat-grid'), 'home no longer carries settings, data or record blocks');
+  AC.ui.openProfile();
+  await sleep(10);
+  ok($$('.av-pick').length === 10, 'the profile hub offers ten avatars');
+  ok($$('.stand-row').length === 3 && /Record/.test($('.modal').textContent), 'the hub shows the record and the level of play');
+  click($('[data-pick="bhima"]'));
+  click($('[data-av="frame"][data-val="saffron"]'));
+  const prof = AC.storage.getProfile(AC.app.profile.id);
+  ok(prof.avatar && prof.avatar.pick === 'bhima' && prof.avatar.frame === 'saffron', 'the chosen avatar and frame are kept');
+  ok($('#home-sigil .av-frame-saffron'), 'the home top bar wears the new avatar');
+  AC.app.modals.slice().forEach((m) => m.close());
+  AC.ui.openSettings();
+  await sleep(10);
+  ok($('[data-data="export"]') && $('[data-data="import"]') && $('[data-data="reset"]'), 'backup and reset live in Settings');
+  ok(document.documentElement.classList.contains('lite') === AC.app.liteOn(), 'battery saver follows the setting');
+  AC.app.modals.slice().forEach((m) => m.close());
+
   // jsdom has no media stack and no canvas backend; those notices are not
   // game errors (audio is verified in the browser instead)
   const realErrors = errors.filter((e) => !/Not implemented: (window\.|HTMLCanvas|HTMLMediaElement)/.test(e));

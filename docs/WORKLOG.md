@@ -5,6 +5,22 @@ this file and not ticked in `docs/prompts/ART.md`, it did not happen.
 
 ---
 
+## 30 Oct 2026 (evening, Director) — a cool phone, a calm home, the profile hub
+
+- **Heat:** idle main-thread time 20–42% → under 1% on every screen. Every infinite CSS loop on
+  a resting screen removed or capped at 2–3 plays. Battery saver setting (auto on low-memory
+  phones). Music and the audio engine pause in the background. Probe: `tools/perf-idle.mjs`.
+- **Glitches:** cinematics fell behind the board (`.stage { position: relative }`) — fixed; the
+  no-moves ending reworded; the tall Sanjaya portrait clipped to its avatar circle.
+- **Robot player:** `tools/playtest-bot.mjs` — taps through real battles on two phone sizes.
+- **Home:** record, quick settings and data blocks gone; backups and reset in Settings.
+- **Profile hub:** name, record, level of play per opponent, ten avatars, frame/tint/badge,
+  own photo kept on the device.
+- **Daily catalogue II** from 1 Nov: 21 variants, `open` retired, past dates unchanged.
+- **Sanjaya:** review batch 1 applied (one fix corrected); voice script regenerated.
+- **Repo:** loose originals moved from the root and `incoming/` to `masters/`.
+- Details and the two Sanjaya rewrites awaiting approval: `docs/HANDOFF-2026-10-30-director.md`.
+
 ## 30 Oct 2026 — art, voice, and the loading fix
 
 ### Fixed
@@ -44,6 +60,40 @@ this file and not ticked in `docs/prompts/ART.md`, it did not happen.
 - `docs/prompts/ART.md` and `AUDIO.md` carry a STATUS section: delivered items ticked with
   paths, outstanding items with prompt, size and owner.
 - `incoming/text/sanjaya-review.csv` — first review batch of the Hindi voice lines.
+
+
+---
+
+## 30 Oct 2026 (later) — audio measured, trimmed, re-voiced; the board stops vanishing
+
+### Audio audit — measured every file, not trusted
+Nine effects were outside their target length. Measured, then cut with a 120 ms fade:
+
+| file | was | now | target |
+|---|---|---|---|
+| shakti_diya | 11.34 s | **0.70 s** | 0.4–0.7 |
+| gate_breach | 8.18 s | **1.40 s** | 1.0–1.4 |
+| astra_agneya | 5.59 s | **1.60 s** | 0.8–1.6 |
+| astra_brahma | 4.66 s | **2.00 s** | 1.0–2.0 |
+| shankh | 4.60 s | **2.00 s** | 1.2–2.0 |
+| dusk | 4.01 s | **2.00 s** | 1.0–2.0 |
+| astra_sammohana | 3.12 s | **1.60 s** | 0.8–1.6 |
+| divya_drishti | 1.97 s | **1.20 s** | 0.6–1.2 |
+| piece_place | 1.34 s | **0.60 s** | 0.2–0.6 |
+
+All 14 effects now sit inside their range. (ChatGPT's report said eight; I measured nine.)
+
+### Sanjaya re-voiced
+The first take was lethargic — 44 lines with a median of 3.63 s and 13 over four seconds.
+Re-recorded with speaker **rahul** at **pace 1.15** (was `ashutosh` at 0.9): median **3.00 s**,
+max 5.09 s, 88 lines, 0 failures. Swapping again is one command:
+`tools/voice-gen.py --lang both --speaker <name> --pace <n>`.
+
+### The board no longer disappears when you strike
+The stage that carries a clash, an astra or a breach was a near-opaque full-screen scrim
+(0.45–0.78 alpha) with a card up to 520 px — on a phone that hid the wheel entirely. Now the
+scrim is 0.10–0.42 with a 1.5 px blur, the card is 440 px, and every beat is capped at
+**1.5 s** instead of 2–2.6 s. You can still see the field behind the verdict.
 
 ---
 
