@@ -66,7 +66,7 @@ for (const [label, w, h] of [['phone', 390, 844], ['small-phone', 360, 640]]) {
   await page.reload();
   await page.waitForSelector('#screen-home:not([hidden])');
   await page.waitForSelector('#boot', { state: 'hidden' });
-  await page.evaluate(() => AC.ui.patchSettings({ pace: 'quick' }));
+  await page.evaluate(lang => AC.ui.patchSettings({ pace: 'quick', uiLang: lang }), process.env.UI_LANG || 'en');
   await sleep(600);
   await shot(page, label + '-0-home');
   const boards = ['wheel', 'padma', 'small', 'wheel'];

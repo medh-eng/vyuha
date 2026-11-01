@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 const root = new URL('../', import.meta.url);
-for (const file of ['units', 'geometry', 'engine', 'ai', 'modes']) {
+for (const file of ['units', 'languages', 'geometry', 'engine', 'ai', 'modes']) {
   vm.runInThisContext(fs.readFileSync(new URL('js/' + file + '.js', root), 'utf8'));
 }
 const { engine: E, ai, modes: M } = globalThis.AC;

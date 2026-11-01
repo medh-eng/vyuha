@@ -15,7 +15,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, '..');
 // modes.js needs a few engine globals at load time; a light stub is enough
 globalThis.AC = { ui: { esc: (s) => String(s) }, fx: {}, art: {} };
-['js/units.js', 'js/geometry.js', 'js/engine.js', 'js/modes.js'].forEach((f) => {
+['js/units.js', 'js/languages.js', 'js/geometry.js', 'js/engine.js', 'js/modes.js'].forEach((f) => {
   vm.runInThisContext(fs.readFileSync(path.join(root, f), 'utf8'), { filename: f });
 });
 const { units: U, modes: M } = globalThis.AC;
@@ -54,7 +54,7 @@ Object.assign(out, {
   'home.custom.sub': 'Board, opponent, scenario and rules',
   'home.continue': 'Continue',
   'home.saves': 'Saved games',
-  'home.codex': 'Codex',
+  'home.codex': 'Rules',
   'home.record': 'Your record',
   'battle.your_move': 'Your move',
   'battle.tap_hint': 'Tap a piece, then a glowing cell. Or invoke an astra.',
