@@ -5,6 +5,21 @@ this file and not ticked in `docs/prompts/ART.md`, it did not happen.
 
 ---
 
+## 1 Nov 2026 — ChatGPT review proposals (not merged)
+
+- PR #4: first-use Astra film and reduced-motion fixes; 125 UI assertions,
+  eleven real-file media scenarios, refreshed 20-second recording. Full Calm
+  clash sequence measures 6.67 s, above the brief's 4–5 s estimate; physical-phone
+  review remains required. No claim that these changes are live.
+- PR #3: sky/share fix refreshed against Director main, preserving later work.
+- `chatgpt/audio-pack-20261101`: six supplied audio files recovered and processed;
+  originals preserved. Night/Daily/lesson/Abhimanyu themes and short victory cue
+  wired, trap precached and its melee trigger corrected. Music Off/redraw,
+  recorded mute/zero volume and fanfare cleanup fixed. Detailed handoff:
+  `docs/HANDOFF-2026-11-01-audio.md`.
+- Walkthrough, four square portrait deliveries, landscape design, Daily retuning,
+  localisation integration and approved voice re-recording remain pending.
+
 ## 30 Oct 2026 (evening, Director) — a cool phone, a calm home, the profile hub
 
 - **Heat:** idle main-thread time 20–42% → under 1% on every screen. Every infinite CSS loop on

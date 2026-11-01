@@ -1099,7 +1099,7 @@
 
     events.push({
       kind: 'clash',
-      sfx: res.core ? 'core' : res.winner === 'att' ? 'clash-win' : res.winner === 'def' ? 'clash-lose' : 'clash-both',
+      sfx: res.core ? 'core' : res.mine && res.winner === 'def' ? 'mine' : res.winner === 'att' ? 'clash-win' : res.winner === 'def' ? 'clash-lose' : 'clash-both',
       at: to,
       from: from,
       unit: unit,
