@@ -7,6 +7,8 @@
 (function (root) {
   'use strict';
   const AC = (root.AC = root.AC || {});
+  const L = AC.i18n;
+  const tr = function (key, fallback) { return L.text(key, fallback); };
   const E = AC.engine;
   const AI = AC.ai;
   const U = AC.units;
@@ -135,9 +137,9 @@
 
   function showStory(done) {
     const st = g.state;
-    const sc = U.SCENARIOS[st.scenario] || U.SCENARIOS.duel;
+    const sc = L.scenario(st.scenario) || U.SCENARIOS.duel;
     const legend = LEGEND[st.scenario] || LEGEND.duel;
-    if (settings().stories === false || !U.SCENARIOS[st.scenario]) { if (done) done(); return; }
+    if (settings().stories === false || !L.scenario(st.scenario)) { if (done) done(); return; }
     const art = A.artFor('card:' + st.scenario);
     const m = AC.ui.modal({
       kicker: sc.label + (sc.deva ? ' · ' + sc.deva : ''),
@@ -192,7 +194,7 @@
     st = st || g.state;
     if (!st) return '';
     if (st.config.mode !== 'ai') return 'Commander 2';
-    const d = U.DIFFICULTIES[st.config.difficulty] || U.DIFFICULTIES.veteran;
+    const d = L.opponent(st.config.difficulty) || U.DIFFICULTIES.veteran;
     return d.label;
   }
   g.oppName = oppName;
@@ -321,7 +323,7 @@
   g.saveTo = function (slot) {
     if (!g.canSave()) return null;
     const st = g.state;
-    const label = (U.BOARDS[st.boardKey] || U.BOARDS.small).label + ' · ' +
+    const label = (L.board(st.boardKey) || U.BOARDS.small).label + ' · ' +
       (st.config.mode === 'pass' ? 'Pass & play' : 'vs ' + oppName(st)) +
       ' · round ' + st.turn;
     const entry = S.saveGame(slot, st, Object.assign({ label: label }, saveMeta(st)));
@@ -389,7 +391,7 @@
         skyEl.hidden = false;
         skyEl.className = 'sky-chip ' + hour + (mine ? ' mine' : '');
         skyEl.innerHTML = skyIcon(hour) + '<span>' + left + '</span>';
-        skyEl.title = (hour === 'day' ? 'Dinman — the hour of Surya' : 'Ratri — the hour of Chandra') +
+        skyEl.title = tr('sky.' + hour, hour === 'day' ? 'Dinman — the hour of Surya' : 'Ratri — the hour of Chandra') +
           '. The sky turns in ' + left + ' round' + (left === 1 ? '' : 's') + '.';
       } else {
         skyEl.hidden = true;
@@ -406,7 +408,7 @@
       const roundsLeft = st.turnLimit ? Math.max(0, st.turnLimit - st.turn + 1) : 0;
       if (g.thinking) {
         pill.classList.add('void');
-        pill.textContent = oppName(st) + ' is thinking';
+        pill.textContent = oppName(st) + ' ' + tr('battle.thinking', 'is thinking');
         sub.textContent = 'Weighing what it has seen of your army.';
       } else {
         const owner = st.owner;
@@ -414,10 +416,10 @@
         const narrow = (window.innerWidth || 900) < 560;
         if (st.turnLimit) {
           pill.textContent = narrow
-            ? 'Round ' + st.turn + '/' + st.turnLimit
-            : 'Round ' + st.turn + '/' + st.turnLimit + ' · ' + U.FACTIONS[owner].short;
+            ? tr('battle.round', 'Round') + ' ' + st.turn + '/' + st.turnLimit
+            : tr('battle.round', 'Round') + ' ' + st.turn + '/' + st.turnLimit + ' · ' + U.FACTIONS[owner].short;
         } else {
-          pill.textContent = 'Round ' + st.turn + (narrow ? '' : ' · ' + U.FACTIONS[owner].short);
+          pill.textContent = tr('battle.round', 'Round') + ' ' + st.turn + (narrow ? '' : ' · ' + U.FACTIONS[owner].short);
         }
         const bits = [];
         if (st.turnLimit) bits.push(roundsLeft + ' rounds left');
@@ -425,12 +427,12 @@
         else if (hour) bits.push('sky turns in ' + E.roundsUntilHourTurns(st));
         const who = isPass()
           ? U.FACTIONS[owner].name + ' to move'
-          : (owner === 1 ? 'Your move' : oppName(st) + ' is moving');
+          : (owner === 1 ? tr('battle.your_move', 'Your move') : oppName(st) + ' is moving');
         sub.textContent = who + (bits.length ? ' · ' + bits.join(' · ') : '');
       }
     } else {
       pill.classList.add('gold');
-      pill.textContent = st.winner === 0 ? 'The field is shared' : (st.winner === 1 ? 'Suryavansh victory' : 'Chandravansh victory');
+      pill.textContent = st.winner === 0 ? tr('result.shared', 'The field is shared') : (st.winner === 1 ? 'Suryavansh victory' : 'Chandravansh victory');
       sub.textContent = 'Match complete — all ranks revealed.';
     }
 
@@ -756,7 +758,7 @@
     const st = g.state;
     if (!E.rules(st).astras) return '';
     return '<span class="astra-row">' + E.ASTRA_ORDER.map(function (key) {
-      const def = U.ASTRA_DEFS[key];
+      const def = L.astra(key);
       const used = st.astrasUsed[owner] && st.astrasUsed[owner][key];
       const ready = E.astraReady(st, owner, key);
       const cls = used ? 'spent' : ready ? 'ready' : 'locked';
@@ -787,7 +789,7 @@
           presetBtn('citadel', 'Durg') + presetBtn('blitz', 'Aakraman') + presetBtn('lattice', 'Jaal') + presetBtn('shuffle', 'Shuffle') +
           (formations.length ? '<button class="mode-btn" data-formation="1">' + A.icon('folder') + 'Saved</button>' : '') +
           '<button class="mode-btn" data-deploy="save">' + A.icon('save') + 'Keep</button>' +
-          '<button class="btn btn-primary btn-sm" data-deploy="lock">' + (st.phase === 'deploy1' && isPass() ? 'Lock &amp; pass' : 'Lock formation') + '</button>' +
+          '<button class="btn btn-primary btn-sm" data-deploy="lock">' + (st.phase === 'deploy1' && isPass() ? 'Lock &amp; pass' : tr('battle.lock', 'Lock formation')) + '</button>' +
         '</div>';
       return;
     }
@@ -797,9 +799,9 @@
         '<div class="action-info"><span class="sel-text"><span class="sel-name">Match complete</span>' +
         '<span class="sel-desc">All ranks are revealed. Review the board, or fight again.</span></span></div>' +
         '<div class="action-buttons">' +
-          '<button class="mode-btn" data-over="codex">' + A.icon('book') + 'Codex</button>' +
+          '<button class="mode-btn" data-over="codex">' + A.icon('book') + esc(tr('home.codex', 'Rules')) + '</button>' +
           '<button class="mode-btn" data-over="home">' + A.icon('back') + 'Home</button>' +
-          (modeHook('noRematch') ? '' : '<button class="btn btn-primary btn-sm" data-over="rematch">' + A.icon('refresh') + 'Rematch</button>') +
+          (modeHook('noRematch') ? '' : '<button class="btn btn-primary btn-sm" data-over="rematch">' + A.icon('refresh') + esc(tr('result.rematch', 'Rematch')) + '</button>') +
         '</div>';
       return;
     }
@@ -810,7 +812,7 @@
     let buttons = '';
 
     if (isHumanTurn && g.mode === 'astra' && g.astra) {
-      const def = U.ASTRA_DEFS[g.astra];
+      const def = L.astra(g.astra);
       const hint = g.astra === 'vayavya'
         ? (g.astraFirst ? 'Now tap the second piece to trade places with.' : 'Tap the first of your pieces to move.')
         : (g.armed ? 'Tap the target again to invoke.' : 'Tap a glowing target within two cells of your army.');
@@ -823,30 +825,30 @@
     }
 
     if (selUnit) {
-      const def = U.UNIT_DEFS[selUnit.key];
+      const def = L.unit(selUnit.key);
       const trance = selUnit.stun > 0 ? ' Entranced for ' + selUnit.stun + ' more turn' + (selUnit.stun === 1 ? '' : 's') + '.' : '';
       info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key) + '</span>' +
         '<span class="sel-text"><span class="sel-name">' + esc(selUnit.name) + ' · rank ' + esc(selUnit.badge) + '</span>' +
-        '<span class="sel-desc">' + esc(g.armed ? 'Tap the target again to strike.' : def.desc + trance) + '</span></span>';
+        '<span class="sel-desc">' + esc(g.armed ? tr('battle.tap_again', 'Tap the target again to strike.') : def.desc + trance) + '</span></span>';
     } else {
       info = '<span class="sel-badge">' + A.icon('sword') + '</span>' +
-        '<span class="sel-text"><span class="sel-name">' + (isHumanTurn ? 'Your move' : 'Waiting') + '</span>' +
+        '<span class="sel-text"><span class="sel-name">' + (isHumanTurn ? tr('battle.your_move', 'Your move') : 'Waiting') + '</span>' +
         '<span class="sel-desc">' + (isHumanTurn
-          ? 'Tap a piece, then a glowing cell. Or invoke an astra.'
+          ? tr('battle.tap_hint', 'Tap a piece, then a glowing cell. Or invoke an astra.')
           : oppName(st) + ' is choosing a move.') + '</span></span>';
     }
 
     if (isHumanTurn) {
       if (selUnit) {
-        buttons += '<button class="mode-btn' + (g.mode === 'move' ? ' on' : '') + '" data-mode="move">' + A.icon('sword') + 'Move / Strike</button>';
-        const def = U.UNIT_DEFS[selUnit.key];
-        if (def.hasScan) buttons += '<button class="mode-btn special' + (g.mode === 'special' ? ' on' : '') + '" data-mode="special">' + A.icon('eye') + 'Drishti</button>';
-        if (def.hasRanged) buttons += '<button class="mode-btn special' + (g.mode === 'special' ? ' on' : '') + '" data-mode="special">' + A.icon('bolt') + 'Volley</button>';
+        buttons += '<button class="mode-btn' + (g.mode === 'move' ? ' on' : '') + '" data-mode="move">' + A.icon('sword') + esc(tr('battle.move_strike', 'Move / Strike')) + '</button>';
+        const def = L.unit(selUnit.key);
+        if (def.hasScan) buttons += '<button class="mode-btn special' + (g.mode === 'special' ? ' on' : '') + '" data-mode="special">' + A.icon('eye') + esc(tr('battle.look', 'Drishti')) + '</button>';
+        if (def.hasRanged) buttons += '<button class="mode-btn special' + (g.mode === 'special' ? ' on' : '') + '" data-mode="special">' + A.icon('bolt') + esc(tr('battle.volley', 'Volley')) + '</button>';
         buttons += '<button class="mode-btn" data-act="deselect" aria-label="Deselect">' + A.icon('close') + '</button>';
       } else {
         buttons += astraButtons(st.owner);
       }
-      buttons += '<button class="mode-btn" data-act="advisor">' + A.icon('brain') + 'Advisor</button>';
+      buttons += '<button class="mode-btn" data-act="advisor">' + A.icon('brain') + esc(tr('battle.advisor', 'Advisor')) + '</button>';
     }
     bar.innerHTML = '<div class="action-info">' + info + '</div><div class="action-buttons">' + buttons + '</div>';
   }
@@ -924,8 +926,8 @@
       '<div class="intel-chips">' +
       (unknowns.length
         ? unknowns.map(function (k) {
-          return '<span class="intel-chip unknown" title="' + esc(U.UNIT_DEFS[k].name) + '">' + A.emblem(k) +
-            esc(U.UNIT_DEFS[k].badge) + (pool[k] > 1 ? '×' + pool[k] : '') + '</span>';
+          return '<span class="intel-chip unknown" title="' + esc(L.unit(k).name) + '">' + A.emblem(k) +
+            esc(L.unit(k).badge) + (pool[k] > 1 ? '×' + pool[k] : '') + '</span>';
         }).join('')
         : '<span class="intel-note">Every enemy piece is accounted for.</span>') +
       '</div></div>';
@@ -933,13 +935,13 @@
     if (known.length) {
       html += '<div class="intel-section"><div class="intel-label">Identified on the field</div><div class="intel-chips">' +
         known.map(function (u) {
-          return '<span class="intel-chip" title="' + esc(U.UNIT_DEFS[u.key].name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
+          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
         }).join('') + '</div></div>';
     }
     if (exposed.length) {
       html += '<div class="intel-section"><div class="intel-label">Your exposed pieces</div><div class="intel-chips">' +
         exposed.map(function (u) {
-          return '<span class="intel-chip" title="' + esc(U.UNIT_DEFS[u.key].name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
+          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
         }).join('') + '</div><p class="intel-note">These ranks are known to the enemy.</p></div>';
     }
 
@@ -986,12 +988,12 @@
     if (selUnit && selUnit.owner === viewer && g.mode !== 'astra') {
       // Divya-drishti is reconnaissance, not a strike. A focused enemy may
       // be out of scan range, so never present combat odds while in this mode.
-      if (g.mode === 'special' && U.UNIT_DEFS[selUnit.key].hasScan) {
+      if (g.mode === 'special' && L.unit(selUnit.key).hasScan) {
         return '<div class="intel-section"><div class="intel-label">Divya-drishti · ' +
           (focus.revealed ? esc(focus.name) : 'unknown enemy') + '</div>' +
           '<div class="intel-note">Reveal without combat. Tap a marked enemy within two cells to scan; no piece is harmed.</div></div>';
       }
-      const isBarrage = g.mode === 'special' && U.UNIT_DEFS[selUnit.key].hasRanged;
+      const isBarrage = g.mode === 'special' && L.unit(selUnit.key).hasRanged;
       const o = E.strikeOdds(st, viewer, g.sel, focusId, isBarrage);
       if (!o) return '';
       const rows = [];
@@ -1021,7 +1023,7 @@
       return '<div class="intel-section"><div class="intel-label">Tapped piece — what it could be</div>' +
         '<div class="intel-odds">' + Object.keys(dist).sort(function (a, b) { return dist[b] - dist[a]; })
           .slice(0, 4).map(function (k) {
-            return '<div class="odds-row"><span>' + esc(U.UNIT_DEFS[k].short) + '</span>' +
+            return '<div class="odds-row"><span>' + esc(L.unit(k).short) + '</span>' +
               '<span class="odds-bar"><span style="width:' + Math.round(dist[k] * 100) + '%"></span></span>' +
               '<span class="odds-val">' + Math.round(dist[k] * 100) + '%</span></div>';
           }).join('') + '</div></div>';
@@ -1034,7 +1036,7 @@
     const ranked = Object.keys(dist).sort(function (a, b) { return dist[b] - dist[a]; }).slice(0, 3);
     if (!ranked.length) return '';
     return ranked.map(function (k) {
-      return U.UNIT_DEFS[k].short + ' ' + Math.round(dist[k] * 100) + '%';
+      return L.unit(k).short + ' ' + Math.round(dist[k] * 100) + '%';
     }).join(' · ');
   }
 
@@ -1170,7 +1172,7 @@
     const st = g.state;
     if (!st || st.phase !== 'battle' || g.thinking) return;
     if (!E.astraReady(st, st.owner, key)) {
-      const def = U.ASTRA_DEFS[key];
+      const def = L.astra(key);
       const used = st.astrasUsed[st.owner] && st.astrasUsed[st.owner][key];
       FX.toast(used ? def.name + ' has already been used this match.' : def.name + ' needs ' + def.cost + ' Shakti — you have ' + st.shakti[st.owner] + '.', 'warn');
       sfx('error');
@@ -1580,7 +1582,7 @@
       title: 'Load a formation',
       body: '<div class="save-list">' + list.map(function (f, i) {
         return '<div class="save-card"><div class="save-info"><div class="save-title">' + esc(f.name) + '</div>' +
-          '<div class="save-meta">' + (U.BOARDS[f.board] || U.BOARDS.small).label + ' · saved ' + AC.ui.timeAgo(f.createdAt) + '</div></div>' +
+          '<div class="save-meta">' + (L.board(f.board) || U.BOARDS.small).label + ' · saved ' + AC.ui.timeAgo(f.createdAt) + '</div></div>' +
           '<div class="save-actions"><button class="btn btn-primary btn-xs" data-use="' + i + '">Use</button>' +
           '<button class="btn btn-danger btn-xs" data-drop="' + i + '">' + A.icon('trash') + '</button></div></div>';
       }).join('') + '</div>',
@@ -1704,7 +1706,7 @@
   /* ── game over ────────────────────────────────────────────── */
 
   function shareLine(st, outcome) {
-    const b = U.BOARDS[st.boardKey] || U.BOARDS.wheel;
+    const b = L.board(st.boardKey) || U.BOARDS.wheel;
     if (outcome === 'win') return 'I broke ' + oppName(st) + '’s army on the ' + b.label + ' in ' + st.turn + ' rounds. Can you?';
     if (outcome === 'loss') return oppName(st) + ' took my fort on the ' + b.label + '. Avenge me.';
     return 'The field was shared on the ' + b.label + ' after ' + st.turn + ' rounds.';
@@ -1738,7 +1740,8 @@
     }
     S.deleteSave('auto');
 
-    const title = winner === 0 ? 'The field is shared' : (winner === 1 ? 'Suryavansh triumphs' : 'Chandravansh conquers');
+    const englishTitle = winner === 0 ? 'The field is shared' : (winner === 1 ? 'Suryavansh triumphs' : 'Chandravansh conquers');
+    const title = tr(winner === 0 ? 'result.shared' : isAiGame && outcome !== 'win' ? 'result.defeat' : 'result.victory', englishTitle);
     const deva = winner === 0 ? 'समान' : ((isAiGame ? outcome === 'win' : true) ? 'विजय' : 'पराजय');
     const cls = winner === 0 ? 'draw' : (isAiGame ? (outcome === 'win' ? 'win' : 'lose') : 'win');
     sfx(winner === 0 ? 'draw' : isAiGame ? (outcome === 'win' ? 'win' : 'lose') : 'win');
@@ -1757,9 +1760,9 @@
     if (extra && extra.actions) extra.actions.forEach(function (a) { actions.push(a); });
     else {
       if (isAiGame && outcome !== 'draw' && AC.share) {
-        actions.push({ label: 'Share', cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { AC.share.text(shareLine(st, outcome)); } });
+        actions.push({ label: tr('result.share', 'Share'), cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { AC.share.text(shareLine(st, outcome)); } });
       }
-      actions.push({ label: 'Rematch', cls: 'btn-primary', onClick: function () { g.start(st.config); } });
+      actions.push({ label: tr('result.rematch', 'Rematch'), cls: 'btn-primary', onClick: function () { g.start(st.config); } });
     }
 
     AC.ui.modal({

@@ -2179,9 +2179,9 @@ html.reduce-motion .stage *, html.reduce-motion .stage { animation: none !import
 .app::before { opacity: 0.5; }
 .boot.done, .boot[hidden] { display: none; }
 .boot.done * { animation: none !important; }
-.home-chakra .hc-spokes { animation: chakraSlow 9s cubic-bezier(.2, .7, .3, 1) 1 both; }
-.home-chakra .hc-inner { animation: chakraSlow 7s cubic-bezier(.2, .7, .3, 1) 1 reverse both; }
-.card-pulse { animation-iteration-count: 3; }
+.home-chakra .hc-spokes { animation: none; }
+.home-chakra .hc-inner { animation: none; }
+.card-pulse { animation: none; }
 .diya.lit { animation: diyaLit .5s ease-out 1; }
 @keyframes diyaLit { from { opacity: .4; transform: scale(.8); } to { opacity: 1; transform: none; } }
 .astra-btn.ready { animation: astraReady 2s ease-in-out 2; box-shadow: 0 0 10px rgba(255, 190, 90, 0.22); }
@@ -2256,3 +2256,14 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 .data-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 @media (max-width: 380px) { .av-pick .av { --av: 46px; } .hub-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .btn-danger-ghost { color: #fda4af; border-color: rgba(244, 63, 94, 0.35); }
+
+/* Static Devanagari typography: room for matras, no language observer/loop. */
+html[lang="hi"], html[lang="mr"] {
+  --font: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', system-ui, sans-serif;
+  --display: 'Rozha One', 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', serif;
+}
+html[lang="hi"] .btn, html[lang="mr"] .btn,
+html[lang="hi"] .mode-btn, html[lang="mr"] .mode-btn,
+html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
+  letter-spacing: normal; line-height: 1.45;
+}

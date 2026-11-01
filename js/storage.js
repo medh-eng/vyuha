@@ -29,6 +29,7 @@
     // Chapter III
     narrator: true,
     narratorLang: 'hinglish',
+    uiLang: 'en',
     voice: true,
     cinematics: true,
     batterySaver: null,   // null = decide from the phone (low memory / few cores → on)

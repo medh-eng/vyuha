@@ -7,6 +7,8 @@
 (function (root) {
   'use strict';
   const AC = (root.AC = root.AC || {});
+  const L = AC.i18n;
+  const tr = function (key, fallback) { return L.text(key, fallback); };
   const A = AC.art;
   const U = AC.units;
   const FX = AC.fx;
@@ -75,7 +77,7 @@
   function piece(u, side, opts) {
     opts = opts || {};
     const cls = u.owner === 1 ? 'solar' : 'void';
-    const def = U.UNIT_DEFS[u.key] || {};
+    const def = L.unit(u.key) || {};
     const rankShown = opts.value != null && opts.value !== u.rank && u.key !== 'F' && u.key !== 'B'
       ? esc(def.badge || u.badge) + '<i>→' + opts.value + '</i>'
       : esc(u.key === 'F' || u.key === 'B' ? (u.key === 'F' ? '⚑' : '✷') : u.badge);
@@ -90,8 +92,8 @@
   /* The verdict is told from the point of view of whoever is watching. */
   function verdict(kind) {
     const V = {
-      win: ['विजय', 'Victory'],
-      lose: ['पराजय', 'Repelled'],
+      win: ['विजय', tr('result.victory', 'Victory')],
+      lose: ['पराजय', tr('result.defeat', 'Repelled')],
       both: ['वीरगति', 'Both fall'],
       fort: ['दुर्ग विजय', 'The fort is taken'],
       fortLost: ['दुर्ग पतन', 'The fort has fallen'],
@@ -168,7 +170,7 @@
       (A.artFor('ui:breach') ? '<img class="st-astra-anim st-breach-art" src="' + A.artFor('ui:breach') + '" alt="" aria-hidden="true">' : '') +
       '<div class="st-gate" aria-hidden="true">' + A.icon('gate') + '<span class="st-crack"></span></div>' +
       verdict('breach') +
-      '<div class="st-line">' + (mine ? 'Our gate is broken. One more blow and the fort falls — defend it.' : 'Their gate is broken. One more blow takes the fort.') + '</div>';
+      '<div class="st-line">' + esc(tr('gate.broken', (mine ? 'Our gate is broken. One more blow and the fort falls — defend it.' : 'Their gate is broken. One more blow takes the fort.'))) + '</div>';
     show(html, 'stage-breach' + (mine ? ' stage-lose' : ' stage-win'), 1900, done);
   }
 
@@ -196,7 +198,7 @@
     const day = hour === 'day';
     const html =
       '<div class="st-sky-mark">' + A.icon(day ? 'sun' : 'moon') + '</div>' +
-      '<div class="st-astra-name"><span class="deva">' + (day ? 'दिनमान' : 'रात्रि') + '</span><b>' + (day ? 'Dawn — the hour of Surya' : 'Night — the hour of Chandra') + '</b></div>' +
+      '<div class="st-astra-name"><span class="deva">' + (day ? 'दिनमान' : 'रात्रि') + '</span><b>' + tr('sky.' + hour, day ? 'Dawn — the hour of Surya' : 'Night — the hour of Chandra') + '</b></div>' +
       '<div class="st-astra-by">' + (viewerHour ? 'Your army strikes at +1 until the sky turns again.' : 'The enemy strikes at +1 until the sky turns again.') + '</div>';
     show(html, 'stage-sky stage-' + (day ? 'day' : 'night'), 1700, null, { passive: true });
   }

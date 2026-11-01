@@ -5,6 +5,8 @@
 (function (root) {
   'use strict';
   const AC = (root.AC = root.AC || {});
+  const L = AC.i18n;
+  const tr = function (key, fallback) { return L.text(key, fallback); };
   const A = AC.art;
   const S = AC.storage;
   const AU = AC.audio;
@@ -197,6 +199,8 @@
 
   function applySettings() {
     const s = app.settings;
+    L.setLang(s.uiLang || 'en');
+    L.applyDOM(document);
     document.documentElement.classList.toggle('cb', !!s.colorblind);
     document.documentElement.classList.toggle('hc', !!s.highContrast);
     document.documentElement.classList.toggle('reduce-motion', !!s.reducedMotion);
@@ -213,6 +217,8 @@
     app.settings = S.patchSettings(patch);
     applySettings();
     renderQuickSettings();
+    if (patch.uiLang != null && app.screen === 'home') renderHome();
+    if (patch.uiLang != null && app.screen === 'setup') renderSetup();
     if (AC.game) AC.game.onSettingsChange();
     return app.settings;
   }
@@ -471,11 +477,11 @@
     document.getElementById('home-rank').textContent = rankLabel(stats) + ' · ' + stats.matches + ' battle' + (stats.matches === 1 ? '' : 's');
     document.getElementById('home-greeting').textContent = greeting() + ', ' + name;
 
-    document.getElementById('ci-quick').innerHTML = A.icon('sword') + ' Yuddh karo';
+    document.getElementById('ci-quick').innerHTML = A.icon('sword') + ' ' + esc(tr('home.quick', 'Yuddh karo'));
     const q = quickSetup();
-    const qb = U.BOARDS[q.board] || U.BOARDS.wheel;
-    const qd = U.DIFFICULTIES[q.difficulty] || U.DIFFICULTIES.veteran;
-    document.getElementById('quick-sub').textContent = 'Quick battle · ' + qb.label + ' vs ' + qd.label;
+    const qb = L.board(q.board) || U.BOARDS.wheel;
+    const qd = L.opponent(q.difficulty) || U.DIFFICULTIES.veteran;
+    document.getElementById('quick-sub').textContent = tr('home.quick.sub', 'Quick battle') + ' · ' + qb.label + ' vs ' + qd.label;
 
     document.getElementById('ci-daily').innerHTML = A.icon('calendar');
     document.getElementById('ci-tutorial').innerHTML = A.icon('help');
@@ -490,16 +496,16 @@
     // the daily card
     if (AC.modes && AC.modes.dailyStatus) {
       const d = AC.modes.dailyStatus();
-      document.getElementById('daily-title').innerHTML = 'Daily Chakravyuha <span class="daily-num">#' + d.info.n + '</span>';
+      document.getElementById('daily-title').innerHTML = esc(tr('home.daily', 'Daily Chakravyuha')) + ' <span class="daily-num">#' + d.info.n + '</span>';
       document.getElementById('daily-sub').textContent = d.today
         ? (d.today.win ? 'Broken in on round ' + d.today.rounds + ' — share it, or practise' : 'The wheel held today — practise, or try tomorrow')
-        : d.info.mod.name + ' · same wheel for everyone today';
+        : L.daily(d.info.mod).name + ' · ' + tr('home.daily.sub', 'Same wheel for everyone today');
       document.getElementById('daily-badge').innerHTML = d.streak ? A.icon('diya') + d.streak : (d.today ? A.icon('check') : 'NEW');
       document.getElementById('btn-daily').classList.toggle('done', !!d.today);
     }
     const tutDone = !!app.settings.tutorialDone;
     document.getElementById('btn-tutorial').classList.toggle('card-pulse', !tutDone);
-    document.getElementById('tutorial-sub').textContent = tutDone ? 'Replay the two-minute lesson' : 'Start here · learn the field in two minutes';
+    document.getElementById('tutorial-sub').textContent = tutDone ? 'Replay the two-minute lesson' : tr('home.lesson.sub', 'Learn the field in two minutes');
 
     const auto = S.listSaves().filter(function (s) { return s.slot === 'auto'; })[0];
     const saves = S.listSaves().filter(function (s) { return s.slot !== 'auto'; });
@@ -567,8 +573,8 @@
 
   function describeSave(save) {
     const m = save.meta || {};
-    const mode = m.mode === 'pass' ? 'Pass & play' : 'vs ' + (U.DIFFICULTIES[m.difficulty] || U.DIFFICULTIES.veteran).label;
-    const board = (U.BOARDS[m.board] || U.BOARDS.small).label;
+    const mode = m.mode === 'pass' ? 'Pass & play' : 'vs ' + (L.opponent(m.difficulty) || U.DIFFICULTIES.veteran).label;
+    const board = (L.board(m.board) || U.BOARDS.small).label;
     const what = m.scenario === 'daily' ? 'Daily · ' : m.scenario === 'abhimanyu' ? 'Abhimanyu · ' : '';
     return what + board + ' · ' + mode + ' · round ' + (m.turn || 1);
   }
@@ -670,12 +676,12 @@
         { v: 'pass', title: 'Pass & play', sub: 'Two players, one device, a curtain between turns', icon: 'users' }
       ]
     });
-    const scen = U.SCENARIOS[app.setupScenario()] || U.SCENARIOS.duel;
+    const scen = L.scenario(app.setupScenario()) || U.SCENARIOS.duel;
     groups.push({
       label: 'Scenario',
       key: 'scenario',
       options: Object.keys(U.SCENARIOS).map(function (k) {
-        const sc = U.SCENARIOS[k];
+        const sc = L.scenario(k);
         return { v: k, title: sc.label, deva: sc.deva, sub: sc.blurb, icon: k === 'duel' ? 'sword' : 'bolt' };
       })
     });
@@ -683,7 +689,7 @@
       label: 'Battlefield',
       key: 'board',
       options: (scen.boards || Object.keys(U.BOARDS)).map(function (k) {
-        const b = U.BOARDS[k];
+        const b = L.board(k);
         return { v: k, title: b.label, deva: b.deva, sub: b.blurb, icon: 'grid' };
       })
     });
@@ -692,13 +698,13 @@
         label: 'Opponent',
         key: 'difficulty',
         options: Object.keys(U.DIFFICULTIES).map(function (k) {
-          const d = U.DIFFICULTIES[k];
+          const d = L.opponent(k);
           return { v: k, title: d.label, deva: d.deva, sub: d.blurb, icon: 'star' };
         })
       });
     }
     groups.push({
-      label: 'Rules',
+      label: tr('home.codex', 'Rules'),
       key: 'ruleset',
       options: [
         { v: 'vyuha', title: 'VYUHA', deva: 'व्यूह', sub: 'Gates, hours, formations and astras', icon: 'sun' },
@@ -760,22 +766,22 @@
       if (key === 'timer') val = Number(val);
       app.setup[key] = val;
       if (key === 'scenario') {
-        const sc = U.SCENARIOS[val];
+        const sc = L.scenario(val);
         if (sc && sc.boards && sc.boards.indexOf(app.setup.board) === -1) app.setup.board = sc.boards[0];
       }
       sfx('select');
       renderSetup();
     };
 
-    const mode = app.setup.mode === 'pass' ? 'Pass & play' : 'vs ' + U.DIFFICULTIES[app.setup.difficulty].label;
-    const scenario = U.SCENARIOS[app.setup.scenario] || U.SCENARIOS.duel;
-    const board = U.BOARDS[app.setup.board];
+    const mode = app.setup.mode === 'pass' ? 'Pass & play' : 'vs ' + L.opponent(app.setup.difficulty).label;
+    const scenario = L.scenario(app.setup.scenario) || U.SCENARIOS.duel;
+    const board = L.board(app.setup.board);
     const tie = app.setup.tie === 'attacker' ? 'Attacker wins' : 'Both fall';
     const timer = app.setup.timer ? app.setup.timer + 's per turn' : 'No clock';
     document.getElementById('setup-summary').innerHTML =
       row('Scenario', scenario.label) + row('Opponent', mode) +
       row('Field', board.label + ' (' + (board.cells ? board.cells + ' cells' : board.cols + '×' + board.rows) + ')') +
-      row('Rules', app.setup.ruleset === 'classic' ? 'Classic' : 'VYUHA') +
+      row(tr('home.codex', 'Rules'), app.setup.ruleset === 'classic' ? 'Classic' : 'VYUHA') +
       row('Equal strength', tie) + row('Clock', timer) +
       row('Army', scenario.rosters
         ? scenario.rosters[1].length + ' raiders vs ' + scenario.rosters[2].length + ' defenders'
@@ -820,7 +826,7 @@
     let active = tab || 'units';
     const tabs = [
       { k: 'units', label: 'Pieces' },
-      { k: 'rules', label: 'Rules' },
+      { k: 'rules', label: tr('home.codex', 'Rules') },
       { k: 'astras', label: 'Astras' },
       { k: 'sky', label: 'Hours & formations' },
       { k: 'intel', label: 'Reading the field' }
@@ -835,7 +841,7 @@
     function bodyFor(k) {
       if (k === 'units') {
         return U.RANK_ORDER.map(function (key) {
-          const u = U.UNIT_DEFS[key];
+          const u = L.unit(key);
           return '<div class="unit-row">' +
             '<div class="unit-emblem">' + A.emblem(key) + '<span class="rank-tag">' + u.badge + '</span></div>' +
             '<div class="unit-body">' +
@@ -876,11 +882,11 @@
       }
       if (k === 'sky') {
         return block([
-          ['दिनमान · Dinman — the hour of Surya', 'By day, every Suryavansh strike lands at +1.'],
-          ['रात्रि · Ratri — the hour of Chandra', 'By night, every Chandravansh strike lands at +1. A duel opens in the last hour of night, which balances the first move.'],
+          ['दिनमान · Dinman — the hour of Surya', tr('hour.day.one', 'By day, every Suryavansh strike lands at +1.')],
+          ['रात्रि · Ratri — the hour of Chandra', tr('hour.night.one', 'By night, every Chandravansh strike lands at +1. A duel opens in the last hour of night, which balances the first move.')],
           ['When the sky turns', 'Every fifth round, at the same moment the rings turn. Both armies gain one Shakti. The HUD shows the hour and how many rounds remain.'],
-          ['मकर · Makara — the jaws', 'Strike an enemy that another of your fighting pieces already touches: +1 to your strike. Two jaws are enough; more do not add.'],
-          ['पद्म · Padma — the lotus', 'A piece touched by two or more of its own fighting pieces defends at +1. Strike where the petals are thin.'],
+          ['मकर · Makara — the jaws', tr('formation.makara.one', 'Strike an enemy that another of your fighting pieces already touches: +1 to your strike. Two jaws are enough; more do not add.')],
+          ['पद्म · Padma — the lotus', tr('formation.padma.one', 'A piece touched by two or more of its own fighting pieces defends at +1. Strike where the petals are thin.')],
           ['How far it goes', 'Hour and Makara stack; a Maharathi (9) in its hour, in a pincer, strikes as 11 — enough to topple a Senapati. No side ever gains more than +2.']
         ]);
       }
@@ -895,7 +901,7 @@
 
     const m = modal({
       kicker: 'Granth · ग्रंथ',
-      title: 'Rules',
+      title: tr('home.codex', 'Rules'),
       wide: true,
       body: '<div class="codex-tabs">' + tabs.map(function (t) {
         return '<button class="codex-tab' + (t.k === active ? ' on' : '') + '" data-codex="' + t.k + '">' + t.label + '</button>';
@@ -913,7 +919,7 @@
   }
 
   function E_ASTRAS() {
-    return ['vayavya', 'sammohana', 'agneya', 'brahma'].map(function (k) { return U.ASTRA_DEFS[k]; });
+    return ['vayavya', 'sammohana', 'agneya', 'brahma'].map(function (k) { return L.astra(k); });
   }
 
   /* ── settings ────────────────────────────────────────────────── */
@@ -925,6 +931,12 @@
           '<input type="range" min="0" max="100" value="' + Math.round(s.sfx * 100) + '" data-slider="sfx" /></div>' +
         '<div class="slider-row"><label>Ambient score <span id="lbl-music">' + Math.round(s.music * 100) + '%</span></label>' +
           '<input type="range" min="0" max="100" value="' + Math.round(s.music * 100) + '" data-slider="music" /></div>' +
+        '<div class="slider-row"><label>Interface language / भाषा</label>' +
+          '<div class="seg" data-seg="uiLang">' +
+            [['en', 'English'], ['hi', 'हिन्दी'], ['mr', 'मराठी']].map(function (o) {
+              return '<button class="seg-btn' + (L.getLang() === o[0] ? ' on' : '') + '" data-segval="' + o[0] + '">' + o[1] + '</button>';
+            }).join('') +
+          '</div></div>' +
         '<div class="slider-row"><label>Sanjaya speaks in</label>' +
           '<div class="seg" data-seg="narratorLang">' +
             [['hinglish', 'Hinglish'], ['hi', 'हिन्दी'], ['en', 'English']].map(function (o) {
@@ -992,7 +1004,7 @@
         patchSettings(p);
         $$('.seg-btn', seg).forEach(function (n) { n.classList.toggle('on', n === segBtn); });
         sfx('ui');
-        if (AC.sanjaya) AC.sanjaya.say('start_duel', { force: true });
+        if (AC.sanjaya && seg.getAttribute('data-seg') === 'narratorLang') AC.sanjaya.say('start_duel', { force: true });
         return;
       }
       const rowEl = e.target.closest('[data-toggle]');
@@ -1097,7 +1109,7 @@
       let best = -1;
       opp.forEach(function (k, i) { if (by[k] && by[k].w) best = i; });
       const standing = opp.map(function (k, i) {
-        const d = U.DIFFICULTIES[k] || { label: k };
+        const d = L.opponent(k) || { label: k };
         const r = by[k] || { w: 0, l: 0, d: 0 };
         return '<div class="stand-row' + (r.w ? ' beaten' : '') + '"><span>' + esc(d.label) + (i === best ? ' <span class="stand-mark">· your level</span>' : '') +
           '</span><span class="stand-wl">' + r.w + ' won · ' + r.l + ' lost</span></div>';
@@ -1110,7 +1122,7 @@
           '<div class="hub-title">' + t[1] + ' ' + t[2] + '</div>' +
           '<div class="hub-next">Next title: ' + esc(nextTitle(st)) + '</div></div>' +
         '</div>' +
-        '<div class="hub-h">Record</div>' +
+        '<div class="hub-h">' + esc(tr('home.record', 'Record')) + '</div>' +
         '<div class="hub-grid">' +
           statCell(st.wins || 0, 'Wins') + statCell(st.losses || 0, 'Losses') +
           statCell(winRate + '%', 'Win rate') + statCell(st.streak || 0, 'Streak') +

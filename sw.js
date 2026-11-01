@@ -2,12 +2,13 @@
  * Network-first for navigation so updates land immediately, cache-first for
  * the static shell so the game still boots with no connection.
  */
-const CACHE = 'vyuha-v17';
+const CACHE = 'vyuha-v23';
 const SHELL = [
   './',
   './index.html',
   './css/app.css',
   './js/units.js',
+  './js/languages.js',
   './js/geometry.js',
   './js/engine.js',
   './js/ai.js',

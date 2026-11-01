@@ -409,6 +409,32 @@ async function run() {
   ok(document.documentElement.classList.contains('lite') === AC.app.liteOn(), 'battery saver follows the setting');
   AC.app.modals.slice().forEach((m) => m.close());
 
+  // Interface language must persist without changing the narrator or battle.
+  const languageData = lang => JSON.parse(fs.readFileSync(path.join(root, 'incoming/i18n/strings.' + lang + '.json'), 'utf8'));
+  const oldSay = AC.sanjaya.say;
+  let languagePreviewCalls = 0;
+  AC.sanjaya.say = () => { languagePreviewCalls++; return null; };
+  AC.ui.patchSettings({ narratorLang: 'en', stories: false });
+  for (const lang of ['hi', 'mr']) {
+    AC.ui.show('home'); AC.ui.openSettings(); languagePreviewCalls = 0;
+    click($('[data-seg="uiLang"] [data-segval="' + lang + '"]'));
+    const dict = languageData(lang);
+    ok(AC.storage.getSettings().uiLang === lang && document.documentElement.lang === lang, lang + ' interface language persists and marks the document');
+    ok($('#ci-quick').textContent.trim() === dict['home.quick'] && $('.home-tag').textContent === dict['home.tagline'], lang + ' home controls use the reviewed strings');
+    ok(AC.app.settings.narratorLang === 'en' && languagePreviewCalls === 0, lang + ' UI switch leaves narration alone');
+    AC.app.modals.slice().forEach(m => m.close()); AC.ui.openCodex('units');
+    ok($('.unit-desc').textContent === dict['unit.10.desc'], lang + ' unit help is localised');
+    AC.app.modals.slice().forEach(m => m.close());
+    const state = AC.engine.newState({ mode: 'ai', board: 'wheel', timer: 0 });
+    AC.engine.beginBattle(state); AC.game.startPrepared(state, { save: false });
+    const savedState = JSON.stringify(state); AC.ui.patchSettings({ uiLang: lang });
+    ok(JSON.stringify(state) === savedState && $('#hud-turn').textContent.includes(dict['battle.round']), lang + ' battle redraw keeps the exact game state');
+    AC.modes.startTutorial();
+    ok($('#coach').textContent.includes(dict['lesson.move.title']) && $('#coach').textContent.includes(dict['lesson.move.text']), lang + ' lesson uses translated title and instructions');
+    AC.game.clearOverlays(); if (AC.modes.clear) AC.modes.clear();
+  }
+  AC.sanjaya.say = oldSay; AC.ui.patchSettings({ uiLang: 'en' }); AC.ui.show('home');
+
   // jsdom has no media stack and no canvas backend; those notices are not
   // game errors (audio is verified in the browser instead)
   const realErrors = errors.filter((e) => !/Not implemented: (window\.|HTMLCanvas|HTMLMediaElement)/.test(e));
