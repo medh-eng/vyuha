@@ -1,0 +1,127 @@
+{
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "pace": "calm",
+  "events": [
+    {
+      "ms": 4554,
+      "kind": "phase",
+      "step": null
+    },
+    {
+      "ms": 4554,
+      "kind": "phase",
+      "step": "previous-line"
+    },
+    {
+      "ms": 4558,
+      "kind": "phase",
+      "step": "slide"
+    },
+    {
+      "ms": 5151,
+      "kind": "effect-start",
+      "name": "clash-win",
+      "duration": 2.562448979591837
+    },
+    {
+      "ms": 5151,
+      "kind": "phase",
+      "step": "moment"
+    },
+    {
+      "ms": 7746,
+      "kind": "effect-end",
+      "name": "clash-win"
+    },
+    {
+      "ms": 7746,
+      "kind": "voice-start",
+      "key": "makara"
+    },
+    {
+      "ms": 7752,
+      "kind": "phase",
+      "step": "voice"
+    },
+    {
+      "ms": 9823,
+      "kind": "voice-end",
+      "key": "makara"
+    },
+    {
+      "ms": 9824,
+      "kind": "phase",
+      "step": "breath"
+    },
+    {
+      "ms": 10232,
+      "kind": "phase",
+      "step": "thinking"
+    },
+    {
+      "ms": 11230,
+      "kind": "phase",
+      "step": "previous-line"
+    },
+    {
+      "ms": 11231,
+      "kind": "phase",
+      "step": "preview"
+    },
+    {
+      "ms": 11776,
+      "kind": "effect-start",
+      "name": "laser",
+      "duration": 0.6719954648526077
+    },
+    {
+      "ms": 11776,
+      "kind": "phase",
+      "step": "moment"
+    },
+    {
+      "ms": 12479,
+      "kind": "effect-end",
+      "name": "laser"
+    },
+    {
+      "ms": 13964,
+      "kind": "voice-start",
+      "key": "volley_kill"
+    },
+    {
+      "ms": 13964,
+      "kind": "phase",
+      "step": "voice"
+    },
+    {
+      "ms": 17011,
+      "kind": "voice-end",
+      "key": "volley_kill"
+    },
+    {
+      "ms": 17017,
+      "kind": "phase",
+      "step": "your-turn"
+    },
+    {
+      "ms": 17418,
+      "kind": "phase",
+      "step": null
+    }
+  ],
+  "recording": {
+    "kind": "silent screen recording",
+    "realTime": true,
+    "durationMs": 20000,
+    "action": {
+      "type": "move",
+      "from": "r1s0",
+      "to": "h",
+      "dir": 3
+    }
+  }
+}

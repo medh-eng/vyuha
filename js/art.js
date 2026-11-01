@@ -354,6 +354,7 @@
     boardPreview: boardPreview,
     probeAll: probeAll,
     artFor: artFor,
+    pathFor: slotPath,
     tokenInner: tokenInner,
     crest: crest,
     banner: banner,
