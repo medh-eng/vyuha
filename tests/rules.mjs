@@ -117,15 +117,17 @@ console.log('Trap & engineer');
   const s = blank();
   put(s, '6,2', 1, '9');
   put(s, '5,2', 2, 'B');
-  act(s, '6,2', '5,2');
+  const hitTrap = act(s, '6,2', '5,2');
   ok(s.board['5,2'] && s.board['5,2'].key === 'B', 'the trap survives an attack');
   ok(!s.board['6,2'], 'the attacker is destroyed');
+  ok(hitTrap.events.some(ev => ev.kind === 'clash' && ev.sfx === 'mine'), 'a melee trap hit requests the recorded trap cue');
 
   const s2 = blank();
   put(s2, '6,2', 1, '3');
   put(s2, '5,2', 2, 'B');
-  act(s2, '6,2', '5,2');
+  const clearedTrap = act(s2, '6,2', '5,2');
   ok(s2.board['5,2'] && s2.board['5,2'].key === '3', 'the engineer defuses and captures it');
+  ok(clearedTrap.events.some(ev => ev.kind === 'clash' && ev.sfx === 'clash-win'), 'safe dismantling keeps the successful action cue');
 }
 
 console.log('Spy');

@@ -54,6 +54,7 @@
   "settingsRestoreCorrectTheme": true,
   "recordedMusicMuteAndZeroVolume": true,
   "victoryStopsOnHome": true,
+  "meleeTriggersRecordedTrap": true,
   "trapBufferSeconds": 1.1,
   "errors": [],
   "physicalPhone": false

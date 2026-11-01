@@ -19,7 +19,9 @@ Archer volley
 Trap & engineer
   ✓ the trap survives an attack
   ✓ the attacker is destroyed
+  ✓ a melee trap hit requests the recorded trap cue
   ✓ the engineer defuses and captures it
+  ✓ safe dismantling keeps the successful action cue
 Spy
   ✓ the spy kills the Senapati when attacking
   ✓ the Senapati beats the spy when attacked
@@ -145,16 +147,16 @@ Padmavyuha
 The opponent does not peek
   ✓ it aims at the deepest unmoved piece, not the hidden fort
 
-119 passed, 0 failed
+121 passed, 0 failed
 
 
 RESULT: selfplay
 
 Self-play summary
   games        : 40
-  p1 / p2 / draw: 21 / 19 / 0
-  plies min/med/max: 19 62 100
-  ms total     : 6945 ( 174 ms per match )
+  p1 / p2 / draw: 18 / 22 / 0
+  plies min/med/max: 15 59 100
+  ms total     : 7280 ( 182 ms per match )
   failures     : 0
 
 
@@ -188,7 +190,7 @@ RESULT: ui
   ✓ save listed in storage
   ✓ save reloads into the board
   ✓ reloaded board still renders its cells
-  ✓ played 10 UI-driven orders
+  ✓ played 11 UI-driven orders
   ✓ battle log recorded
   ✓ codex opens with tabs
   ✓ settings toggles render
@@ -313,6 +315,7 @@ RESULT: audio-qa
   "settingsRestoreCorrectTheme": true,
   "recordedMusicMuteAndZeroVolume": true,
   "victoryStopsOnHome": true,
+  "meleeTriggersRecordedTrap": true,
   "trapBufferSeconds": 1.1,
   "errors": [],
   "physicalPhone": false

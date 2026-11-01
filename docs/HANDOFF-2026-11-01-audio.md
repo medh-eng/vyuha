@@ -39,6 +39,10 @@ The old nine trimmed effects are unchanged; no duplicate trimming or re-voicing.
 - Starting a score or leaving for Home stops the previous fanfare. Visibility
   pause/resume also covers the fanfare.
 - Trap is precached; music caches on first use. Cache `vyuha-v21`.
+- Melee trap hits now emit `mine`, which selects the delivered recording.
+  They previously emitted generic `clash-lose`; merely adding the file did not
+  fix that trigger. A Yantrik safely dismantling a trap still emits `clash-win`.
+  Two engine regressions check that distinction without changing combat rules.
 
 ## Verification and limits
 

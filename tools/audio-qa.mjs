@@ -65,15 +65,26 @@ try {
   await page.evaluate(() => AC.ui.show('home'));
   await new Promise(r => setTimeout(r, 1000));
   assert.ok(await page.evaluate(() => [...mediaEls].filter(el => el.src.endsWith('/victory_big.mp3')).every(el => el.paused)), 'victory cue stops on Home');
-  // A decoded buffer (rather than a procedural fallback) must back the trap.
-  await page.evaluate(() => { AC.audio.stopMusic(); startedBuffers.length = 0; AC.audio.play('mine'); });
+  // Trigger the actual engine → game → recorded buffer path, not just a
+  // direct cue call that could pass while melee still requested generic clash.
+  await page.evaluate(() => {
+    AC.audio.stopMusic(); AC.ui.patchSettings({ musicOn: false, narrator: false });
+    AC.app.modals.slice().forEach(m => m.close());
+    const E = AC.engine, st = E.newState({ mode: 'ai', board: 'small', rules: { hours: false } });
+    st.board = {};
+    const put = (cell, owner, key) => { st.board[cell] = E.createArmy(owner).find(u => u.key === key); };
+    put('5,2', 1, '9'); put('5,1', 1, '2'); put('7,2', 1, 'F');
+    put('4,2', 2, 'B'); put('1,4', 2, '2'); put('0,4', 2, 'F');
+    E.beginBattle(st); AC.game.startPrepared(st, { save: false });
+    startedBuffers.length = 0; AC.game.perform({ type: 'attack', from: '5,2', to: '4,2' });
+  });
   await page.waitForFunction(() => startedBuffers.length > 0);
   const trap = await page.evaluate(() => startedBuffers);
   assert.equal(trap.length, 1, 'trap is a single recorded buffer');
   assert.ok(trap[0] > 1 && trap[0] < 1.3, 'recorded trap duration');
   assert.deepEqual(errors, []);
   const result = { viewport: '390x844', routes, musicOffSurvivesRedraw: true, settingsRestoreCorrectTheme: true,
-    recordedMusicMuteAndZeroVolume: true, victoryStopsOnHome: true, trapBufferSeconds: trap[0], errors, physicalPhone: false };
+    recordedMusicMuteAndZeroVolume: true, victoryStopsOnHome: true, meleeTriggersRecordedTrap: true, trapBufferSeconds: trap[0], errors, physicalPhone: false };
   if (process.argv[2]) fs.writeFileSync(process.argv[2], JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result, null, 2)); console.log('Audio routing/control QA passed.');
 } finally { if (browser) await browser.close(); server.close(); }
