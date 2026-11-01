@@ -1,0 +1,256 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="1150" viewBox="0 0 980 1150" role="img" aria-labelledby="title desc">
+<title id="title">VYUHA landscape battle design proposal</title>
+<desc id="desc">Two dimensioned schematic layouts, 844 by 390 and 640 by 360 CSS pixels. Status on the left, battlefield in the centre, actions and narration on the right. Design only, not a playable screenshot.</desc>
+<rect width="980" height="1150" fill="#0d1118"/>
+<style>text{font-family:Arial,sans-serif;fill:#efe7d8} .muted{fill:#b2b9c7} .gold{fill:#f2cf8b} .small{font-size:13px} .body{font-size:14px} .label{font-size:15px;font-weight:bold} .guide{stroke:#667184;stroke-dasharray:4 4;fill:none}</style>
+<text x="48" y="53" class="gold" font-size="29" font-weight="bold" text-anchor="start">VYUHA  /  LANDSCAPE</text>
+<text x="48" y="83" class="muted label" text-anchor="start">Design proposal · 1 November 2026 · controls beside the field</text>
+<text x="48" y="117" class="label" text-anchor="start">844 × 390 CSS px — representative 6.5-inch phone viewport</text>
+<rect x="48" y="137" width="844" height="390" rx="16" fill="#0f1420" stroke="#7d8391"/>
+<rect x="56" y="145" width="112" height="374" rx="8" fill="#141925" stroke="#394455"/>
+<rect x="708" y="145" width="176" height="374" rx="8" fill="#141925" stroke="#394455"/>
+<rect x="56" y="145" width="44" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="78.0" y="172" class="body" text-anchor="middle">Menu</text>
+<rect x="106" y="145" width="44" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<g aria-label="Settings"><title>Settings</title><circle cx="128" cy="167" r="7" fill="none" stroke="#efe7d8" stroke-width="2"/>
+<path d="M 137.00 167.00 L 140.00 167.00" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 134.36 173.36 L 136.49 175.49" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 128.00 176.00 L 128.00 179.00" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 121.64 173.36 L 119.51 175.49" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 119.00 167.00 L 116.00 167.00" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 121.64 160.64 L 119.51 158.51" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 128.00 158.00 L 128.00 155.00" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 134.36 160.64 L 136.49 158.51" stroke="#efe7d8" stroke-width="3"/>
+</g>
+<text x="112.0" y="211" class="small" text-anchor="middle">Round 12</text>
+<text x="112.0" y="228" class="small" text-anchor="middle">Night · 0:42</text>
+<rect x="56" y="243" width="112" height="44" rx="6" fill="#1c2030" stroke="#8b8ff0"/>
+<text x="64" y="261" class="body" text-anchor="start">Opponent</text>
+<text x="64" y="278" class="small" text-anchor="start">8 / 12</text>
+<rect x="56" y="293" width="112" height="44" rx="6" fill="#1c2030" stroke="#e0a94a"/>
+<text x="64" y="311" class="body" text-anchor="start">You</text>
+<text x="64" y="328" class="small" text-anchor="start">9 / 12</text>
+<rect x="56" y="343" width="112" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="112.0" y="370" class="body" text-anchor="middle">Intel</text>
+<rect x="56" y="393" width="112" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="112.0" y="420" class="body" text-anchor="middle">Rules / Log</text>
+<rect x="56" y="443" width="112" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="112.0" y="470" class="body" text-anchor="middle">Advisor</text>
+<rect x="251.0" y="145.0" width="374" height="374" rx="12" fill="#121924" stroke="#5d6470"/>
+<circle cx="438.0" cy="332.0" r="51.23800000000001" fill="none" stroke="#5f533d"/>
+<circle cx="438.0" cy="332.0" r="102.47600000000001" fill="none" stroke="#5f533d"/>
+<circle cx="438.0" cy="332.0" r="153.714" fill="none" stroke="#5f533d"/>
+<path d="M 438.0 332.0 L 591.71 332.00" stroke="#343b49"/>
+<path d="M 438.0 332.0 L 571.12 408.86" stroke="#343b49"/>
+<path d="M 438.0 332.0 L 514.86 465.12" stroke="#343b49"/>
+<path d="M 438.0 332.0 L 438.00 485.71" stroke="#343b49"/>
+<path d="M 438.0 332.0 L 361.14 465.12" stroke="#343b49"/>
+<path d="M 438.0 332.0 L 304.88 408.86" stroke="#343b49"/>
+<path d="M 438.0 332.0 L 284.29 332.00" stroke="#343b49"/>
+<path d="M 438.0 332.0 L 304.88 255.14" stroke="#343b49"/>
+<path d="M 438.0 332.0 L 361.14 198.88" stroke="#343b49"/>
+<path d="M 438.0 332.0 L 438.00 178.29" stroke="#343b49"/>
+<path d="M 438.0 332.0 L 514.86 198.88" stroke="#343b49"/>
+<path d="M 438.0 332.0 L 571.12 255.14" stroke="#343b49"/>
+<circle cx="487.49" cy="345.26" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="474.23" cy="368.23" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="451.26" cy="381.49" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="424.74" cy="381.49" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="401.77" cy="368.23" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="388.51" cy="345.26" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="388.51" cy="318.74" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="401.77" cy="295.77" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="424.74" cy="282.51" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="451.26" cy="282.51" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="474.23" cy="295.77" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="487.49" cy="318.74" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="536.98" cy="358.52" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="510.46" cy="404.46" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="464.52" cy="430.98" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="411.48" cy="430.98" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="365.54" cy="404.46" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="339.02" cy="358.52" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="339.02" cy="305.48" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="365.54" cy="259.54" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="411.48" cy="233.02" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="464.52" cy="233.02" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="510.46" cy="259.54" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="536.98" cy="305.48" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="586.48" cy="371.78" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="546.69" cy="440.69" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="477.78" cy="480.48" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="398.22" cy="480.48" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="329.31" cy="440.69" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="289.52" cy="371.78" r="10.10" fill="#493728" stroke="#e0a94a"/>
+<circle cx="289.52" cy="292.22" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="329.31" cy="223.31" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="398.22" cy="183.52" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="477.78" cy="183.52" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="546.69" cy="223.31" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="586.48" cy="292.22" r="10.10" fill="#292b42" stroke="#9397ef"/>
+<circle cx="438.0" cy="332.0" r="11.968" fill="#1c2431" stroke="#e0a94a"/>
+<rect x="338.0" y="292.0" width="200" height="80" rx="7" fill="#121924" stroke="#665c47"/>
+<text x="438.0" y="320.0" class="gold label" text-anchor="middle">BATTLEFIELD</text>
+<text x="438.0" y="341.0" class="body" text-anchor="middle">374 × 374 shell</text>
+<text x="438.0" y="360.0" class="muted small" text-anchor="middle">schematic formation</text>
+<text x="716" y="165" class="gold small" text-anchor="start">SHAKTI</text>
+<circle cx="874" cy="160" r="3" fill="#4a4c58"/>
+<circle cx="862" cy="160" r="3" fill="#4a4c58"/>
+<circle cx="850" cy="160" r="3" fill="#e0a94a"/>
+<circle cx="838" cy="160" r="3" fill="#e0a94a"/>
+<circle cx="826" cy="160" r="3" fill="#e0a94a"/>
+<rect x="708.0" y="181" width="85.0" height="44" rx="6" fill="#232638" stroke="#706449"/>
+<text x="750.5" y="200" class="body" text-anchor="middle">Wind</text>
+<text x="750.5" y="217" class="small muted" text-anchor="middle">cost 1</text>
+<rect x="799.0" y="181" width="85.0" height="44" rx="6" fill="#232638" stroke="#706449"/>
+<text x="841.5" y="200" class="body" text-anchor="middle">Trance</text>
+<text x="841.5" y="217" class="small muted" text-anchor="middle">cost 2</text>
+<rect x="708.0" y="231" width="85.0" height="44" rx="6" fill="#232638" stroke="#706449"/>
+<text x="750.5" y="250" class="body" text-anchor="middle">Fire</text>
+<text x="750.5" y="267" class="small muted" text-anchor="middle">cost 3</text>
+<rect x="799.0" y="231" width="85.0" height="44" rx="6" fill="#232638" stroke="#706449"/>
+<text x="841.5" y="250" class="body" text-anchor="middle">Light</text>
+<text x="841.5" y="267" class="small muted" text-anchor="middle">cost 5</text>
+<text x="716" y="296" class="small" text-anchor="start">Selected piece</text>
+<text x="716" y="313" class="small" text-anchor="start">Rank / target</text>
+<rect x="708" y="325" width="176" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="796.0" y="352" class="body" text-anchor="middle">Move / Strike</text>
+<rect x="708" y="375" width="176" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="796.0" y="402" class="body" text-anchor="middle">Special / Cancel</text>
+<rect x="708" y="425" width="176" height="94" rx="6" fill="#191f2b" stroke="#414e64"/>
+<text x="716" y="443" class="small" text-anchor="start">SANJAYA</text>
+<text x="716" y="461" class="small" text-anchor="start">Latest line here.</text>
+<text x="716" y="479" class="small" text-anchor="start">Tap for full text.</text>
+<text x="112.0" y="552" class="small muted" text-anchor="middle">112 status</text>
+<text x="438.0" y="552" class="small muted" text-anchor="middle">524 centre</text>
+<text x="796.0" y="552" class="small muted" text-anchor="middle">176 actions</text>
+<text x="48" y="585" class="body" text-anchor="start">8 px outer padding + 8 px gaps. Full-height centre; no cross-screen header or footer.</text>
+<text x="48" y="612" class="muted body" text-anchor="start">Dimensions shown before device safe insets. Board art sits inside its shell.</text>
+<text x="48" y="667" class="label" text-anchor="start">640 × 360 CSS px — compact layout</text>
+<rect x="48" y="687" width="640" height="360" rx="16" fill="#0f1420" stroke="#7d8391"/>
+<rect x="56" y="695" width="96" height="344" rx="8" fill="#141925" stroke="#394455"/>
+<rect x="544" y="695" width="136" height="344" rx="8" fill="#141925" stroke="#394455"/>
+<rect x="56" y="695" width="44" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="78.0" y="722" class="body" text-anchor="middle">Menu</text>
+<rect x="106" y="695" width="44" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<g aria-label="Settings"><title>Settings</title><circle cx="128" cy="717" r="7" fill="none" stroke="#efe7d8" stroke-width="2"/>
+<path d="M 137.00 717.00 L 140.00 717.00" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 134.36 723.36 L 136.49 725.49" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 128.00 726.00 L 128.00 729.00" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 121.64 723.36 L 119.51 725.49" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 119.00 717.00 L 116.00 717.00" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 121.64 710.64 L 119.51 708.51" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 128.00 708.00 L 128.00 705.00" stroke="#efe7d8" stroke-width="3"/>
+<path d="M 134.36 710.64 L 136.49 708.51" stroke="#efe7d8" stroke-width="3"/>
+</g>
+<text x="104.0" y="761" class="small" text-anchor="middle">Round 12</text>
+<text x="104.0" y="778" class="small" text-anchor="middle">Night · 0:42</text>
+<rect x="56" y="793" width="96" height="44" rx="6" fill="#1c2030" stroke="#8b8ff0"/>
+<text x="64" y="811" class="body" text-anchor="start">Opponent</text>
+<text x="64" y="828" class="small" text-anchor="start">8 / 12</text>
+<rect x="56" y="843" width="96" height="44" rx="6" fill="#1c2030" stroke="#e0a94a"/>
+<text x="64" y="861" class="body" text-anchor="start">You</text>
+<text x="64" y="878" class="small" text-anchor="start">9 / 12</text>
+<rect x="56" y="893" width="96" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="104.0" y="920" class="body" text-anchor="middle">Intel</text>
+<rect x="56" y="943" width="96" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="104.0" y="970" class="body" text-anchor="middle">Rules / Log</text>
+<rect x="56" y="993" width="96" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="104.0" y="1020" class="body" text-anchor="middle">Advisor</text>
+<rect x="176.0" y="695.0" width="344" height="344" rx="12" fill="#121924" stroke="#5d6470"/>
+<circle cx="348.0" cy="867.0" r="47.128" fill="none" stroke="#5f533d"/>
+<circle cx="348.0" cy="867.0" r="94.256" fill="none" stroke="#5f533d"/>
+<circle cx="348.0" cy="867.0" r="141.38400000000001" fill="none" stroke="#5f533d"/>
+<path d="M 348.0 867.0 L 489.38 867.00" stroke="#343b49"/>
+<path d="M 348.0 867.0 L 470.44 937.69" stroke="#343b49"/>
+<path d="M 348.0 867.0 L 418.69 989.44" stroke="#343b49"/>
+<path d="M 348.0 867.0 L 348.00 1008.38" stroke="#343b49"/>
+<path d="M 348.0 867.0 L 277.31 989.44" stroke="#343b49"/>
+<path d="M 348.0 867.0 L 225.56 937.69" stroke="#343b49"/>
+<path d="M 348.0 867.0 L 206.62 867.00" stroke="#343b49"/>
+<path d="M 348.0 867.0 L 225.56 796.31" stroke="#343b49"/>
+<path d="M 348.0 867.0 L 277.31 744.56" stroke="#343b49"/>
+<path d="M 348.0 867.0 L 348.00 725.62" stroke="#343b49"/>
+<path d="M 348.0 867.0 L 418.69 744.56" stroke="#343b49"/>
+<path d="M 348.0 867.0 L 470.44 796.31" stroke="#343b49"/>
+<circle cx="393.52" cy="879.20" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="381.32" cy="900.32" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="360.20" cy="912.52" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="335.80" cy="912.52" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="314.68" cy="900.32" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="302.48" cy="879.20" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="302.48" cy="854.80" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="314.68" cy="833.68" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="335.80" cy="821.48" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="360.20" cy="821.48" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="381.32" cy="833.68" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="393.52" cy="854.80" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="439.04" cy="891.40" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="414.65" cy="933.65" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="372.40" cy="958.04" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="323.60" cy="958.04" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="281.35" cy="933.65" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="256.96" cy="891.40" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="256.96" cy="842.60" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="281.35" cy="800.35" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="323.60" cy="775.96" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="372.40" cy="775.96" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="414.65" cy="800.35" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="439.04" cy="842.60" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="484.57" cy="903.59" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="447.97" cy="966.97" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="384.59" cy="1003.57" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="311.41" cy="1003.57" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="248.03" cy="966.97" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="211.43" cy="903.59" r="9.29" fill="#493728" stroke="#e0a94a"/>
+<circle cx="211.43" cy="830.41" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="248.03" cy="767.03" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="311.41" cy="730.43" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="384.59" cy="730.43" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="447.97" cy="767.03" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="484.57" cy="830.41" r="9.29" fill="#292b42" stroke="#9397ef"/>
+<circle cx="348.0" cy="867.0" r="11.008000000000001" fill="#1c2431" stroke="#e0a94a"/>
+<rect x="248.0" y="827.0" width="200" height="80" rx="7" fill="#121924" stroke="#665c47"/>
+<text x="348.0" y="855.0" class="gold label" text-anchor="middle">BATTLEFIELD</text>
+<text x="348.0" y="876.0" class="body" text-anchor="middle">344 × 344 shell</text>
+<text x="348.0" y="895.0" class="muted small" text-anchor="middle">schematic formation</text>
+<text x="552" y="715" class="gold small" text-anchor="start">SHAKTI</text>
+<circle cx="670" cy="710" r="3" fill="#4a4c58"/>
+<circle cx="658" cy="710" r="3" fill="#4a4c58"/>
+<circle cx="646" cy="710" r="3" fill="#e0a94a"/>
+<circle cx="634" cy="710" r="3" fill="#e0a94a"/>
+<circle cx="622" cy="710" r="3" fill="#e0a94a"/>
+<rect x="544.0" y="731" width="65.0" height="44" rx="6" fill="#232638" stroke="#706449"/>
+<text x="576.5" y="750" class="body" text-anchor="middle">Wind</text>
+<text x="576.5" y="767" class="small muted" text-anchor="middle">cost 1</text>
+<rect x="615.0" y="731" width="65.0" height="44" rx="6" fill="#232638" stroke="#706449"/>
+<text x="647.5" y="750" class="body" text-anchor="middle">Trance</text>
+<text x="647.5" y="767" class="small muted" text-anchor="middle">cost 2</text>
+<rect x="544.0" y="781" width="65.0" height="44" rx="6" fill="#232638" stroke="#706449"/>
+<text x="576.5" y="800" class="body" text-anchor="middle">Fire</text>
+<text x="576.5" y="817" class="small muted" text-anchor="middle">cost 3</text>
+<rect x="615.0" y="781" width="65.0" height="44" rx="6" fill="#232638" stroke="#706449"/>
+<text x="647.5" y="800" class="body" text-anchor="middle">Light</text>
+<text x="647.5" y="817" class="small muted" text-anchor="middle">cost 5</text>
+<text x="552" y="846" class="small" text-anchor="start">Selected piece</text>
+<text x="552" y="863" class="small" text-anchor="start">Rank / target</text>
+<rect x="544" y="875" width="136" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="612.0" y="902" class="body" text-anchor="middle">Move / Strike</text>
+<rect x="544" y="925" width="136" height="44" rx="6" fill="#242632" stroke="#695942"/>
+<text x="612.0" y="952" class="body" text-anchor="middle">Special / Cancel</text>
+<rect x="544" y="975" width="136" height="64" rx="6" fill="#191f2b" stroke="#414e64"/>
+<text x="552" y="993" class="small" text-anchor="start">SANJAYA</text>
+<text x="552" y="1011" class="small" text-anchor="start">Latest line here.</text>
+<text x="552" y="1029" class="small" text-anchor="start">Tap for full text.</text>
+<text x="720" y="740" class="small" text-anchor="start">COMPACT RAILS</text>
+<text x="720" y="764" class="small" text-anchor="start">96 px status</text>
+<text x="720" y="788" class="small" text-anchor="start">376 px centre</text>
+<text x="720" y="812" class="small" text-anchor="start">136 px actions</text>
+<text x="720" y="836" class="small" text-anchor="start">344 px board shell</text>
+<text x="720" y="895" class="small" text-anchor="start">If labels need room:</text>
+<text x="720" y="918" class="small" text-anchor="start">single-column Astras,</text>
+<text x="720" y="941" class="small" text-anchor="start">scroll the rails.</text>
+<text x="720" y="964" class="small" text-anchor="start">Keep 44 px controls.</text>
+<text x="48" y="1082" class="label" text-anchor="start">Rotate optionally. Portrait keeps the stacked layout. No timing or gameplay change.</text>
+<text x="48" y="1110" class="muted small" text-anchor="start">Static schematic • English labels illustrate placement • not a screenshot or device test</text>
+</svg>
