@@ -7,6 +7,8 @@
 (function (root) {
   'use strict';
   const AC = (root.AC = root.AC || {});
+  const L = AC.i18n;
+  const tr = function (key, fallback) { return L.text(key, fallback); };
   const E = AC.engine;
   const U = AC.units;
   const A = AC.art;
@@ -98,7 +100,7 @@
   /* ── shared helpers for prepared matches ─────────────────────── */
 
   function place(state, id, owner, key, extra) {
-    const def = U.UNIT_DEFS[key];
+    const def = L.unit(key);
     const u = {
       id: 'P' + owner + '_' + key + '_' + id.replace(/[^0-9a-z]/gi, ''), owner: owner, key: key,
       rank: def.rank, badge: def.badge, name: def.name, short: def.short,
@@ -180,8 +182,8 @@
         return '<i class="' + (i < m.step ? 'done' : i === m.step ? 'on' : '') + '"></i>';
       }).join('') + '</div>' +
       '<div class="coach-body"><span class="coach-deva deva">' + esc(step.deva) + '</span>' +
-      '<b>' + (done ? 'Lesson complete' : (m.step + 1) + ' / ' + LESSON.length + ' · ' + esc(step.title)) + '</b>' +
-      '<span>' + esc(done ? 'You know enough to fight. The rest you learn on the field.' : step.text) + '</span></div>';
+      '<b>' + (done ? 'Lesson complete' : (m.step + 1) + ' / ' + LESSON.length + ' · ' + esc(L.lesson(step, 'title'))) + '</b>' +
+      '<span>' + esc(done ? 'You know enough to fight. The rest you learn on the field.' : L.lesson(step, 'text')) + '</span></div>';
   }
 
   function coachHint() {
@@ -203,7 +205,7 @@
   /* ══ Daily Chakravyuha ══════════════════════════════════════════ */
 
   // Keep the existing five-day catalogue until the candidate pack is approved.
-  // Every modifier uses the same bounded knobs as incoming/text/daily-modifiers.json.
+  // Every modifier uses the bounded knobs checked by validateModifier().
   const MODIFIERS = [
     { key: 'nightfall', deva: 'रात्रि', name: 'Chandra rises first', one: 'The defence holds the first hour.', knobs: { startNight: true } },
     { key: 'shakti', deva: 'शक्ति', name: 'Shakti in hand', one: 'Your raiders begin with three lamps lit.', knobs: { startShakti: { raiders: 3, defenders: 0 } } },
@@ -215,7 +217,7 @@
   /* Catalogue II — from Daily #5 (1 Nov 2026, IST). The four original
    * variants that stayed in the 30–55% raider band, plus the seventeen drafts
    * that stayed in it on both boards across two independent seed banks
-   * (10,800 AI games, incoming/text/daily-balance*.json). "The gate is open"
+   * (10,800 AI games, docs/balance/bank1–2). "The gate is open"
    * is retired: raiders won 57–72% of the time. Earlier dates keep the first
    * catalogue, so their puzzles, results and streaks stay the same. */
   const CATALOGUE_II_FROM = Date.UTC(2026, 10, 1);
@@ -238,7 +240,24 @@
     {"key": "night-reserve", "deva": "संध्या", "name": "Night reserve", "one": "Night comes first; both armies begin with one Shakti.", "knobs": {"startNight": true, "startShakti": {"raiders": 1, "defenders": 1}, "turnLimit": 30}},
     {"key": "turning-petal", "deva": "पंखुड़ी", "name": "Turning petal", "one": "The rings turn every six rounds; each side begins with one Shakti.", "knobs": {"rotateEvery": 6, "startShakti": {"raiders": 1, "defenders": 1}, "turnLimit": 28}}
   ]);
-  function catalogueFor(day) { return day.utc >= CATALOGUE_II_FROM ? MODIFIERS_II : MODIFIERS; }
+  /* Catalogue III — from Daily #7 (3 Nov 2026, IST). Seven retuned drafts
+   * (ChatGPT batch 3.4) that held 30–55% raider wins on both boards in two
+   * fresh, disjoint seed banks (0x92d04b and 0xc4e7d3, 120 games per board
+   * each; docs/balance/). "Quiet gate" missed on the lotus in the second bank
+   * and stays held. Earlier dates keep their catalogue. */
+  const CATALOGUE_III_FROM = Date.UTC(2026, 10, 3);
+  const MODIFIERS_III = MODIFIERS_II.concat([
+    {"key": "harvest", "deva": "फसल", "name": "Harvest road", "one": "The gate is open, but a second Divyadrishti replaces your Maharathi; starting Shakti is one for raiders and four for defenders.", "knobs": {"gateOpen": true, "startShakti": {"raiders": 1, "defenders": 4}, "raiders": ["5", "7", "6", "5", "2", "2", "1", "3"]}},
+    {"key": "brass-reserve", "deva": "पीतल", "name": "Brass reserve", "one": "The defenders replace their Maharathi with a second archer.", "knobs": {"defenders": ["10", "6", "7", "6", "5", "3", "2", "1", "B", "F"]}},
+    {"key": "double-scout", "deva": "दृष्टि", "name": "Two clear sights", "one": "Two Divyadrishtis are joined by an Ashvarohi in place of one Rath; you have 28 rounds.", "knobs": {"raiders": ["9", "5", "6", "5", "7", "2", "1", "3"], "turnLimit": 28}},
+    {"key": "silver-watch", "deva": "रजत", "name": "Silver watch", "one": "Night opens the battle; your raiders begin with four Shakti.", "knobs": {"startNight": true, "startShakti": {"raiders": 4, "defenders": 0}}},
+    {"key": "shishir", "deva": "शिशिर", "name": "Shishir stillness", "one": "The rings turn every six rounds; your raiders begin with three Shakti.", "knobs": {"rotateEvery": 6, "startShakti": {"raiders": 3, "defenders": 0}}},
+    {"key": "vasant", "deva": "वसंत", "name": "Vasant advance", "one": "The raiders have 28 rounds to find a way through.", "knobs": {"turnLimit": 28}},
+    {"key": "archers-watch", "deva": "शर", "name": "Archer watch", "one": "A second Dhanurdhar replaces the defenders’ Ashvarohi; your raiders begin with three Shakti.", "knobs": {"defenders": ["10", "9", "6", "6", "5", "3", "2", "1", "B", "F"], "startShakti": {"raiders": 3, "defenders": 0}}}
+  ]);
+  function catalogueFor(day) {
+    return day.utc >= CATALOGUE_III_FROM ? MODIFIERS_III : day.utc >= CATALOGUE_II_FROM ? MODIFIERS_II : MODIFIERS;
+  }
 
   function validateModifier(mod) {
     if (!mod || !/^[a-z][a-z0-9-]*$/.test(mod.key || '') ||
@@ -348,16 +367,16 @@
     AC.game.startPrepared(st, {
       line: 'start_daily',
       bannerTitle: 'Daily Chakravyuha #' + info.n,
-      bannerSub: info.mod.name + (official ? '' : ' · practice'),
+      bannerSub: L.daily(info.mod).name + (official ? '' : ' · practice'),
       save: true
     });
     AC.ui.modal({
       kicker: 'Daily Chakravyuha #' + info.n + (official ? '' : ' · practice run'),
-      title: 'Abhimanyu got in. Can you get out?',
+      title: tr('home.tagline', 'Abhimanyu got in. Can you get out?'),
       art: A.artFor('card:daily') || A.artFor('card:abhimanyu'),
       body: '<p class="daily-lede">Everyone in India faces this same wheel today. Eight raiders, ten defenders, ' +
         st.turnLimit + ' rounds. ' + (info.mod.knobs.gateOpen ? 'The gate is open: take the fort.' : 'Break the gate, then take the fort.') + '</p>' +
-        '<div class="daily-mod"><span class="deva">' + esc(info.mod.deva) + '</span><b>' + esc(info.mod.name) + '</b><span>' + esc(info.mod.one) + '</span></div>' +
+        '<div class="daily-mod"><span class="deva">' + esc(info.mod.deva) + '</span><b>' + esc(L.daily(info.mod).name) + '</b><span>' + esc(L.daily(info.mod).one) + '</span></div>' +
         (official ? '' : '<p class="intel-note">You have already fought today’s official battle. This one is for practice — your shared result stays the first one.</p>'),
       actions: [{ label: 'Take the field', cls: 'btn-primary' }]
     });
@@ -396,7 +415,7 @@
       ? '🛞 Broke in on round ' + res.rounds + ' of ' + res.limit
       : '🛞 The wheel closed on me (' + res.rounds + ' rounds)';
     const line2 = '⚔️ ' + res.taken + ' taken · 🩸 ' + res.lost + ' lost' + (res.astras ? ' · 🔥 ' + res.astras + ' astra' + (res.astras === 1 ? '' : 's') : '');
-    return head + '\n' + line1 + '\n' + line2 + '\n' + res.grid + '\nAbhimanyu got in. Can you get out?';
+    return head + '\n' + line1 + '\n' + line2 + '\n' + res.grid + '\n' + tr('share.cta', 'Abhimanyu got in. Can you get out?');
   }
 
   function finishDaily(m) {
@@ -466,7 +485,7 @@
             m.step++;
             AC.audio.play('unlock');
             const next = LESSON[m.step];
-            if (next) FX.toast('Good. Next: ' + next.title + '.', 'success');
+            if (next) FX.toast('Good. Next: ' + L.lesson(next, 'title') + '.', 'success');
           }
         });
         renderCoach();
@@ -531,6 +550,7 @@
     LESSON: LESSON,
     MODIFIERS: MODIFIERS,
     MODIFIERS_II: MODIFIERS_II,
+    MODIFIERS_III: MODIFIERS_III,
     clear: function () { active = null; }
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

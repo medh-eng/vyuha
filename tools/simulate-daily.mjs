@@ -1,28 +1,28 @@
 /* Reproducible candidate screening, not a claim about human win rates.
  * node tools/simulate-daily.mjs [games per modifier per board=60]
  * Optional --seed=0x51f15e selects an independent seed bank.
- * Optional --write saves incoming/text/daily-balance.json.
- * Optional --output=incoming/text/daily-balance-<label>.json saves a separate
- * report, preserving the first seed bank for independent confirmation.
+ * Screens the built-in catalogue plus docs/balance/daily-candidates.json
+ * (drafts not yet live). --output=docs/balance/<label>.json saves a report;
+ * use a fresh, disjoint seed bank for each validation round.
+ * Promotion rule: 30–55% raider wins on both boards in two fresh banks.
  */
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 const root = new URL('../', import.meta.url);
-for (const file of ['units', 'geometry', 'engine', 'ai', 'modes']) {
+for (const file of ['units', 'languages', 'geometry', 'engine', 'ai', 'modes']) {
   vm.runInThisContext(fs.readFileSync(new URL('js/' + file + '.js', root), 'utf8'));
 }
 const { engine: E, ai, modes: M } = globalThis.AC;
 const games = Number(process.argv[2] || 60);
 assert.ok(Number.isInteger(games) && games > 0);
-const mods = M.MODIFIERS.concat(JSON.parse(fs.readFileSync(new URL('incoming/text/daily-modifiers.json', root))));
+const mods = M.MODIFIERS.concat(JSON.parse(fs.readFileSync(new URL('docs/balance/daily-candidates.json', root))));
 const seedArg = process.argv.find(a => a.startsWith('--seed='));
 const seedBase = seedArg ? Number(seedArg.slice(7)) : 0x51f15e;
 assert.ok(Number.isInteger(seedBase) && seedBase >= 0 && seedBase <= 0xffffffff);
 const outputArg = process.argv.find(a => a.startsWith('--output='));
-const output = outputArg ? outputArg.slice('--output='.length) : 'incoming/text/daily-balance.json';
-assert.match(output, /^incoming\/text\/daily-balance(?:-[a-z0-9-]+)?\.json$/,
-  'balance reports must stay inside incoming/text/ with a daily-balance filename');
+const output = outputArg ? outputArg.slice('--output='.length) : null;
+if (output) assert.match(output, /^docs\/balance\/[a-z0-9-]+\.json$/, 'balance reports live in docs/balance/');
 const results = [];
 const base = M.dailyInfo(new Date('2026-11-01T12:00:00+05:30'));
 for (const mod of mods) {
@@ -52,7 +52,7 @@ for (const mod of mods) {
     console.log(`${mod.key.padEnd(16)} ${boardKey.padEnd(5)} ${wins}/${games} (${row.winPercent}%) ${row.inTarget ? 'screen-in' : 'hold'}`);
   }
 }
-if (process.argv.includes('--write') || outputArg) {
+if (output) {
   fs.writeFileSync(new URL(output, root), JSON.stringify({
     seedBase,
     method: 'Dronacharya vs Dronacharya; paired seed bank seedBase + i * 0x9e3779b9; both geometries; 30–55% screening band. Small samples, not human balance validation. Candidates remain drafts.',

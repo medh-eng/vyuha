@@ -1,0 +1,27 @@
+{
+  "reason": "Text supersedes the old recordings; show text without stale audio.",
+  "ids": {
+    "hi": [
+      "start_abhimanyu_1",
+      "start_tutorial_1",
+      "lose_capture_1",
+      "trap_defused_1",
+      "volley_turned_1",
+      "scan_1",
+      "rotate_1",
+      "dawn_1",
+      "dawn_enemy_1",
+      "shield_break_1",
+      "shakti_full_1",
+      "astra_sammohana_enemy_1",
+      "entranced_pass_1",
+      "last_rounds_1",
+      "win_capture_2",
+      "astra_vayavya_enemy_1"
+    ],
+    "en": [
+      "win_capture_2",
+      "astra_vayavya_enemy_1"
+    ]
+  }
+}

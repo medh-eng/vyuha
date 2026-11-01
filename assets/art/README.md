@@ -19,4 +19,4 @@ app/icon-1024.png
 - **Board surfaces:** 2048×2048 JPG, dark and low contrast (they render at 42% under the cells).
 - **Scene art:** 1536×768 JPG (hero 1920×1080).
 
-Full prompts for each slot: `docs/art-brief.md`.
+Full prompts for each slot: `docs/prompts/ART.md`.

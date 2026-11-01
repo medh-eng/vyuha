@@ -1,0 +1,110 @@
+[
+  {
+    "file": "incoming/art/heroes/drona.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "bytes": 1167783,
+    "source_sha256": "95a5168bee73db5292a57175ba789e6323233352bde0690c7045e987900ce969",
+    "sha256": "563c97ce0835434d56d93ddc9bdd0e8cd8b3baac07e4fbdee11fa80aed614f80",
+    "background_samples": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "file": "incoming/art/heroes/bhishma.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "bytes": 1253068,
+    "source_sha256": "b545fd84cee68bc58c9ddb31a13a021c8ce5cd6045deb34810ee0fc9d0cf0aa5",
+    "sha256": "9f472dac18e3b71c7fd939ccc83091fcf8014902cbd241ea5c0f4f204a8aa11b",
+    "background_samples": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "file": "incoming/art/heroes/draupadi.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "bytes": 1047713,
+    "source_sha256": "6a5dfef4637ca7484f628b69146dfcdc96da4fda0144753df4875b8ce999a971",
+    "sha256": "55f8c43f473ce5c521539d361ac7b5af6e7396be3e35cfb2281c24303097a104",
+    "background_samples": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "file": "incoming/art/heroes/dhrishtadyumna.png",
+    "size": [
+      1024,
+      1024
+    ],
+    "bytes": 1225804,
+    "source_sha256": "7309404e4de7500bb8ac6876c3b32edcd4f9fd5056ebc2c20fb7bdd4c29aac2e",
+    "sha256": "308a8a65485b6088ceb4527aebc293c0c708ae574d76811f2c25333b0c1db800",
+    "background_samples": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ]
+  }
+]

@@ -5,6 +5,37 @@ this file and not ticked in `docs/prompts/ART.md`, it did not happen.
 
 ---
 
+## 1 Nov 2026 — ChatGPT review proposals (not merged)
+
+- PR #4: first-use Astra film and reduced-motion fixes; 125 UI assertions,
+  eleven real-file media scenarios, refreshed 20-second recording. Full Calm
+  clash sequence measures 6.67 s, above the brief's 4–5 s estimate; physical-phone
+  review remains required. No claim that these changes are live.
+- PR #3: sky/share fix refreshed against Director main, preserving later work.
+- `chatgpt/audio-pack-20261101`: six supplied audio files recovered and processed;
+  originals preserved. Night/Daily/lesson/Abhimanyu themes and short victory cue
+  wired, trap precached and its melee trigger corrected. Music Off/redraw,
+  recorded mute/zero volume and fanfare cleanup fixed. Detailed handoff:
+  `docs/HANDOFF-2026-11-01-audio.md`.
+- Walkthrough, four square portrait deliveries, landscape design, Daily retuning,
+  localisation integration and approved voice re-recording remain pending.
+## 31 Oct 2026 (Sarvam AI) — Hindi review batch 2, and the interface in Hindi and Marathi
+
+- **Hindi review, batch 2** — the remaining 30 of Sanjaya's 44 lines checked for naturalness,
+  grammar, matras, verb agreement and meaning. Seven fixes (टकरा के → टकराकर; दिव्य-दृष्टि →
+  दिव्यदृष्टि; छुपता → छिपता; "exposed" as खुल गया not दिख गया; ढाल टूट गई → चटक गई; the
+  entranced-pass line rewritten; मैदान बराबर → बराबरी का रहा), 22 unchanged, one held back
+  because the Commander has not yet ruled on it. Longest line 12 words.
+  → `incoming/text/sanjaya-review-2.csv`
+- **Interface strings, Hindi and Marathi** — all 149 keys, same keys and same order as
+  `strings.en.json`, numbers and `×2` / `+1` untouched, game terms in Devanagari spelled one way.
+  → `incoming/i18n/strings.hi.json`, `incoming/i18n/strings.mr.json`
+- **Not done:** the four re-recordings (no TTS available in this session) and the two flat lines
+  (still waiting on the Commander). **No audio was generated or replaced.**
+- **Not wired in.** The three files are drafts in `incoming/`; the Director applies them and the
+  language switch still has to be built. The Marathi has not been read by a native speaker.
+- Full detail, the glossary used and the open questions: `docs/HANDOFF-2026-10-31-sarvam.md`.
+
 ## 30 Oct 2026 (evening, Director) — a cool phone, a calm home, the profile hub
 
 - **Heat:** idle main-thread time 20–42% → under 1% on every screen. Every infinite CSS loop on
@@ -141,10 +172,10 @@ tuning.
 
 | # | Task | State |
 |---|---|---|
-| 1 | Sanjaya's 44 Hindi lines — full review | **batch 1 done** (14 highest-frequency lines in `incoming/text/sanjaya-review.csv`); 30 remain |
-| 2 | 115 interface strings → Hindi and Marathi | not started — blocks the language switch |
-| 3 | Sanjaya's lines → Marathi | waiting on 1 |
-| 4 | Bulbul voice re-record after review | one command: `tools/voice-gen.py --ids <id>` |
+| 1 | Sanjaya's 44 Hindi lines — full review | **done** — batch 1 (14 lines) and batch 2 (the other 30, in `incoming/text/sanjaya-review-2.csv`) |
+| 2 | 149 interface strings → Hindi and Marathi | **drafts delivered** in `incoming/i18n/`; needs the Director's language switch, and a native Marathi reader |
+| 3 | Sanjaya's lines → Marathi | waiting on the Commander's ruling on the two flat lines |
+| 4 | Bulbul voice re-record after review | one command: `tools/voice-gen.py --ids <id>` — no TTS available in my sessions |
 | 5 | Cultural read of the whole design | not started |
 
 ## Pending — not mine
@@ -152,3 +183,35 @@ tuning.
 - Hex deployment (full 12 pieces), facing wiring, hex AI tuning.
 - Hero cards, campaign map screen, Dvandva, Pratigya (Phase C — the art is staged and waiting).
 - Store screenshots and the 30 s trailer (record from the game).
+## 1 Nov 2026 (ChatGPT) — localisation integration proposal
+- Wired the unchanged 149-key Hindi/Marathi catalogues into a persisted UI
+  language selector, independent of narrator language; generated bundle works
+  offline and in the standalone. Applied reviewed Sanjaya text and suppressed
+  superseded recordings pending 16 Hindi and two English replacements.
+- Rules 119, UI 94, 40 self-play games, Daily and language suites passed. Both
+  languages passed touch/overflow/reload/offline checks at two phone sizes;
+  idle maximum 0.8%; Marathi robot completed eight battles with `no problems`.
+- Draft integration proposal only. Existing English fallback copy, native
+  Marathi review and replacement recordings remain. No Calm timing changes.
+- See `docs/HANDOFF-2026-11-01-localisation.md` and saved evidence.
+## 1 Nov 2026 (ChatGPT) — landscape design proposal
+- Batch 3.3 delivered at `incoming/text/landscape.md` with a dimensioned SVG
+  sketch. Three columns keep the board at full height, status/player strips
+  left and actions/narration right; rotation hint is optional and shown once.
+- Budgets checked at 844×390 and 640×360; SVG parsed and rendered for visual
+  review. No runtime files changed. Implementation, regression and physical
+  Android checks remain with the later code work.
+- Portrait delivery is PR #7, localisation integration PR #9. This separate
+  design proposal preserves Claude's ownership of Calm pacing in PR #8.
+- See `docs/HANDOFF-2026-11-01-landscape.md`.
+| 1 | Sanjaya's 44 Hindi lines — full review | **batch 1 done** (14 highest-frequency lines in `incoming/text/sanjaya-review.csv`); 30 remain |
+| 2 | 115 interface strings → Hindi and Marathi | not started — blocks the language switch |
+| 3 | Sanjaya's lines → Marathi | waiting on 1 |
+| 4 | Bulbul voice re-record after review | one command: `tools/voice-gen.py --ids <id>` |
+
+## 1 Nov 2026 (night) — Director: Chapter III complete
+
+- Integrated ChatGPT 3.4 (Daily retune, PR #11). Ran the second fresh bank (`0xc4e7d3`, 120 games/board): 7 of 8 retunes pass on both boards → **Catalogue III from 3 Nov** (28 variants); `quiet-gate` held (58.3 % lotus). Past Dailies unchanged.
+- Narrator: a stop now frees the floor immediately, so a line said right after it starts at once.
+- Repo clean-up: superseded handoffs/plans/evidence and integrated drafts removed (in git history); `docs/balance/`, `docs/i18n/` hold the live sources; single living `docs/HANDOFF.md`; harness outputs to `/tmp`.
+- PR #8 merged to `main` (all agent work through #11); stale branches deleted.

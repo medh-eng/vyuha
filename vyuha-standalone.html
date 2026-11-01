@@ -7,7 +7,10 @@
 <meta name="description" content="VYUHA — a hidden-rank war of formations from the Indian epics. Break the Chakravyuha, play the Daily puzzle, challenge your friends." />
 <meta property="og:title" content="VYUHA · व्यूह — Abhimanyu got in. Can you get out?" />
 <meta property="og:description" content="A hidden-rank strategy game of the epics: formations, the hours of Surya and Chandra, astras, and a Daily Chakravyuha for all of India." />
-<meta property="og:image" content="assets/art/opt/ui/hero.jpg" />
+<meta property="og:image" content="https://medh-eng.github.io/vyuha/assets/art/opt/ui/hero.jpg" />
+<meta property="og:image:width" content="1600" />
+<meta property="og:image:height" content="893" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <!-- VYUHA single-file build — no server or network required -->
@@ -2183,8 +2186,9 @@ html.reduce-motion .stage *, html.reduce-motion .stage { animation: none !import
 .stage > *:not(.st-astra-anim) { position: relative; z-index: 1; }
 @keyframes astraIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 0.92; transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) {
-  .st-astra-anim { animation: none; }
+  .st-astra-anim { display: none; }
 }
+html.reduce-motion .st-astra-anim { display: none; }
 
 /* the gate breach: the painted doors fill the stage behind the words */
 .st-breach-art { opacity: 0.95; object-fit: cover; inset: -10%; width: 120%; height: 120%; }
@@ -2199,9 +2203,9 @@ html.reduce-motion .stage *, html.reduce-motion .stage { animation: none !import
 .app::before { opacity: 0.5; }
 .boot.done, .boot[hidden] { display: none; }
 .boot.done * { animation: none !important; }
-.home-chakra .hc-spokes { animation: chakraSlow 9s cubic-bezier(.2, .7, .3, 1) 1 both; }
-.home-chakra .hc-inner { animation: chakraSlow 7s cubic-bezier(.2, .7, .3, 1) 1 reverse both; }
-.card-pulse { animation-iteration-count: 3; }
+.home-chakra .hc-spokes { animation: none; }
+.home-chakra .hc-inner { animation: none; }
+.card-pulse { animation: none; }
 .diya.lit { animation: diyaLit .5s ease-out 1; }
 @keyframes diyaLit { from { opacity: .4; transform: scale(.8); } to { opacity: 1; transform: none; } }
 .astra-btn.ready { animation: astraReady 2s ease-in-out 2; box-shadow: 0 0 10px rgba(255, 190, 90, 0.22); }
@@ -2276,6 +2280,132 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 .data-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 @media (max-width: 380px) { .av-pick .av { --av: 46px; } .hub-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .btn-danger-ghost { color: #fda4af; border-color: rgba(244, 63, 94, 0.35); }
+
+/* Calm's preview is held still; links draw once and remain until the card closes. */
+.calm-preview .tok-disc { stroke: #f2cf8b; stroke-width: 0.14; }
+.calm-links .vyuha-link { stroke-dasharray: 1; stroke-dashoffset: 0; animation: calmLinkDraw .9s ease-out both; }
+@keyframes calmLinkDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.reduce-motion .calm-links .vyuha-link { animation: none; }
+
+/* Static Devanagari typography: room for matras, no language observer/loop. */
+html[lang="hi"], html[lang="mr"] {
+  --font: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', system-ui, sans-serif;
+  --display: 'Rozha One', 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', serif;
+}
+html[lang="hi"] .btn, html[lang="mr"] .btn,
+html[lang="hi"] .mode-btn, html[lang="mr"] .mode-btn,
+html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
+  letter-spacing: normal; line-height: 1.45;
+}
+
+/* ── Phone landscape battle (Batch 3.3, incoming/text/landscape.md) ──────────
+ * Three columns: status rail · battlefield · action rail. Pure CSS, so turning
+ * the phone only reflows: selection, clock, voice and cards are untouched.
+ * Static surfaces only — no animation is added here. */
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 560px) {
+  #screen-game {
+    --rail-l: clamp(96px, calc(96px + (100vw - 640px) * 0.0784), 112px);
+    --rail-r: clamp(136px, calc(136px + (100vw - 640px) * 0.196), 176px);
+    display: grid;
+    grid-template-columns: var(--rail-l) minmax(0, 1fr) var(--rail-r);
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    --tip-h: 76px;
+    position: relative;
+    column-gap: 8px;
+    row-gap: 6px;
+    padding: max(6px, var(--safe-t, 0px)) max(8px, env(safe-area-inset-right)) max(6px, var(--safe-b)) max(8px, env(safe-area-inset-left));
+  }
+  #screen-game .game-body, #screen-game .board-column, #screen-game .hud-right { display: contents; }
+
+  /* left rail: controls in a 2-up grid, then the two armies */
+  #screen-game .game-hud {
+    grid-column: 1; grid-row: 1;
+    display: grid; grid-template-columns: repeat(2, 44px); justify-content: space-between;
+    gap: 4px; padding: 0; border: 0; background: none; backdrop-filter: none;
+  }
+  #screen-game .game-hud .icon-btn { width: 44px; height: 44px; border-radius: 12px; }
+  #btn-game-menu { order: 1; }
+  #btn-hud-settings { order: 2; }
+  #screen-game .hud-centre { order: 3; grid-column: 1 / -1; }
+  #hud-sky { order: 4; min-width: 44px; min-height: 44px; padding: 0 4px; justify-content: center; }
+  #hud-clock { order: 5; min-width: 44px; height: 44px; padding: 0 2px; display: grid; place-items: center; font-size: 12px; }
+  #hud-clock.hidden { display: none; }
+  #btn-hud-intel { order: 6; }
+  #btn-hud-log { order: 7; }
+  #screen-game .turn-pill {
+    white-space: normal; text-align: center; justify-content: center; width: 100%;
+    font-size: 9.5px; line-height: 1.25; letter-spacing: 0.06em; padding: 4px 6px; clip-path: none; border-radius: 8px;
+  }
+  #screen-game .hud-sub { display: none; }
+
+  #strip-top { grid-column: 1; grid-row: 2; }
+  #strip-bottom { grid-column: 1; grid-row: 3; }
+  #screen-game .player-strip {
+    display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 3px; min-height: 0; height: auto; padding: 6px 7px; border-radius: 10px;
+  }
+  #screen-game .player-strip .strip-name {
+    font-size: 9.5px; letter-spacing: 0.04em; white-space: normal;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  #screen-game .player-strip .capture-tray { display: none; }
+  #screen-game .player-strip .diyas { margin-left: 0; }
+  #screen-game .player-strip .diya, #screen-game .player-strip .diya .ico { width: 11px; height: 11px; }
+
+  /* centre: the whole height belongs to the field */
+  #screen-game .board-shell { grid-column: 2; grid-row: 1 / -1; padding: 0; border-radius: 18px; }
+  #screen-game .board-svg { inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); }
+
+  /* right rail: lesson coach, then the order panel, then Sanjaya */
+  #screen-game .coach { grid-column: 3; grid-row: 1; margin: 0; max-height: 46vh; overflow-y: auto; font-size: 11px; }
+  #screen-game .action-bar {
+    grid-column: 3; grid-row: 1 / -1; margin-bottom: calc(var(--tip-h) + 6px);
+    flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 6px;
+    min-height: 0; padding: 8px; border: 1px solid var(--line); border-radius: 12px;
+    overflow-y: auto; overscroll-behavior: contain;
+  }
+  #screen-game:has(#coach:not([hidden])) .action-bar { grid-row: 2 / -1; }
+  #screen-game .action-info { flex: none; align-items: flex-start; }
+  #screen-game .sel-badge { width: 32px; height: 32px; border-radius: 10px; }
+  #screen-game .sel-name { font-size: 11.5px; white-space: normal; }
+  #screen-game .sel-desc { display: -webkit-box; -webkit-line-clamp: 3; font-size: 10px; }
+  #screen-game .action-buttons { flex: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; justify-content: stretch; }
+  #screen-game .action-buttons > * { min-height: 44px; justify-content: center; white-space: normal; text-align: center; line-height: 1.2; }
+  #screen-game .action-buttons .mode-btn { padding: 4px 6px; font-size: 10.5px; }
+  #screen-game .action-buttons .btn { grid-column: 1 / -1; }
+  #screen-game .action-buttons .mode-btn[data-mode="move"],
+  #screen-game .action-buttons .mode-btn[data-act="advisor"] { grid-column: 1 / -1; }
+  #screen-game .action-buttons .mode-btn[data-act="deselect"]:nth-last-child(2) { grid-column: auto; }
+  #screen-game .action-bar .astra-row {
+    grid-column: 1 / -1; order: -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; overflow: visible;
+  }
+  #screen-game .action-bar .astra-btn { min-height: 44px; width: auto; }
+
+  /* Sanjaya: a fixed plate at the foot of the action rail, so the two rails
+   * never share row heights; a long line scrolls inside it. */
+  #screen-game .tip-bar {
+    position: absolute; right: max(8px, env(safe-area-inset-right)); bottom: max(6px, var(--safe-b)); width: var(--rail-r);
+    height: var(--tip-h); margin: 0; min-height: 0; overflow-y: auto; box-sizing: border-box;
+    font-size: 10.5px; line-height: 1.35; padding: 6px 8px; text-align: left; justify-content: flex-start; align-items: flex-start;
+  }
+
+  /* toasts sit over the action rail, never over the field's targets */
+  .toast-root { left: auto; right: max(8px, env(safe-area-inset-right)); top: auto; bottom: calc(88px + var(--safe-b)); transform: none; width: min(176px, 30vw); }
+  .toast { border-radius: 10px; font-size: 11px; padding: 7px 10px; }
+  .toast-root .toast:not(:last-child) { display: none; }   /* one at a time over the rail */
+  .rotate-hint { display: none; }
+  /* the rail is too short for banners; side colour and border carry the house */
+  #screen-game .player-strip .strip-banner, #screen-game .player-strip .crest { display: none; }
+}
+
+/* One-time portrait hint: turn sideways for controls beside the board. */
+.rotate-hint {
+  display: flex; align-items: center; gap: 8px; margin: 0 var(--pad) 4px; padding: 6px 6px 6px 12px;
+  border-radius: 10px; border: 1px solid rgba(224, 169, 74, 0.32); background: rgba(40, 30, 16, 0.92);
+  font-size: 11px; color: var(--txt-2); line-height: 1.35;
+}
+.rotate-hint[hidden] { display: none; }
+.rotate-hint span { flex: 1; }
+.rotate-hint button { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; color: var(--dim); }
 
 </style>
 </head>
@@ -2396,7 +2526,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
           <div class="home-hero-text">
             <div class="kicker" id="home-greeting">Pranam</div>
             <h2 class="home-title">VYUHA <span class="deva">व्यूह</span></h2>
-            <p class="home-tag">Abhimanyu got in. Can you get out?</p>
+            <p class="home-tag" data-i18n="home.tagline">Abhimanyu got in. Can you get out?</p>
             <button class="btn btn-primary btn-hero" id="btn-quick">
               <span class="btn-hero-main" id="ci-quick"></span>
               <span class="btn-hero-sub" id="quick-sub">Chakravyuha · vs Dronacharya</span>
@@ -2413,27 +2543,27 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
           </button>
           <button class="card-action" id="btn-tutorial">
             <span class="card-icon" id="ci-tutorial"></span>
-            <span class="card-title">Pehla Yuddh <span class="deva">पहला युद्ध</span></span>
+            <span class="card-title" data-i18n="home.lesson">Pehla Yuddh</span>
             <span class="card-sub" id="tutorial-sub">Learn the field in two minutes</span>
           </button>
           <button class="card-action" id="btn-new-match">
             <span class="card-icon" id="ci-new"></span>
-            <span class="card-title">Custom battle</span>
-            <span class="card-sub">Board, opponent, scenario and rules</span>
+            <span class="card-title" data-i18n="home.custom">Custom battle</span>
+            <span class="card-sub" data-i18n="home.custom.sub">Board, opponent, scenario and rules</span>
           </button>
           <button class="card-action" id="btn-resume">
             <span class="card-icon" id="ci-resume"></span>
-            <span class="card-title">Continue</span>
+            <span class="card-title" data-i18n="home.continue">Continue</span>
             <span class="card-sub" id="resume-sub">No game in progress</span>
           </button>
           <button class="card-action" id="btn-saves">
             <span class="card-icon" id="ci-saves"></span>
-            <span class="card-title">Saved games</span>
+            <span class="card-title" data-i18n="home.saves">Saved games</span>
             <span class="card-sub" id="saves-sub">0 of 3 slots used</span>
           </button>
           <button class="card-action" id="btn-rules">
             <span class="card-icon" id="ci-rules"></span>
-            <span class="card-title">Rules <span class="deva">ग्रंथ</span></span>
+            <span class="card-title" data-i18n="home.codex">Rules</span>
             <span class="card-sub">Pieces, astras, hours and formations</span>
           </button>
         </div>
@@ -2455,7 +2585,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   <section id="screen-setup" class="screen setup-screen" hidden>
     <header class="top-bar">
       <button class="icon-btn" id="btn-setup-back" aria-label="Back"></button>
-      <div class="top-name">Custom battle</div>
+      <div class="top-name" data-i18n="home.custom">Custom battle</div>
       <div class="top-actions"></div>
     </header>
     <div class="setup-wrap">
@@ -2522,6 +2652,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     </div>
 
     <div class="tip-bar" id="tip-bar"><span id="tip-text"></span></div>
+    <div class="rotate-hint" id="rotate-hint" role="note" hidden><span>Turn your phone sideways to place the controls beside the board. Portrait works too.</span><button type="button" id="btn-rotate-hint" aria-label="Dismiss hint"></button></div>
   <footer class="action-bar" id="action-bar"></footer>
     <div class="scrim" id="scrim"></div>
   </section>
@@ -2772,6 +2903,515 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     BOARDS: BOARDS,
     DIFFICULTIES: DIFFICULTIES,
     SCENARIOS: SCENARIOS
+  };
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<script>
+/* js/languages.js */
+/* Generated by tools/build-languages.mjs; edit source JSON, then rebuild. */
+(function (root) {
+  'use strict';
+  const AC = root.AC = root.AC || {};
+  const DATA = {
+  "en": {
+    "unit.1.role": "Spy",
+    "unit.1.one": "Kills the Senapati and the Maharathi — but only if it strikes first.",
+    "unit.1.desc": "Moves 1 cell. If it attacks first it slays the Senapati (10) or the Maharathi (9), whatever the hour. Against anything else it loses.",
+    "unit.1.tip": "Hold it for the endgame, then trade it for a commander.",
+    "unit.2.role": "Chariot ×2",
+    "unit.2.one": "Slides across open lanes and can strike in the same turn.",
+    "unit.2.desc": "Slides any number of open cells along a lane and may attack in the same turn. A run of 2 or more cells reveals it.",
+    "unit.2.tip": "Crossing the field reveals you — run late, not early.",
+    "unit.3.role": "Engineer ×2",
+    "unit.3.one": "The only piece that can clear a trap. Do not waste it.",
+    "unit.3.desc": "Moves 1 cell. The only piece that can dismantle a Shataghni trap and take its cell.",
+    "unit.3.tip": "Your trap-clearer is also your best cheap probe.",
+    "unit.5.role": "Seer",
+    "unit.5.one": "Reveals an enemy within two cells without a fight.",
+    "unit.5.desc": "Moves 1 cell, or looks: permanently reveals any enemy within 2 cells without fighting.",
+    "unit.5.tip": "Information is tempo. Look before you strike.",
+    "unit.6.role": "Archer",
+    "unit.6.one": "Shoots two cells away without moving. Your safe probe.",
+    "unit.6.desc": "Moves 1 cell, or looses a rain of arrows at exactly 2 cells, over anything in between. Cuts down rank 5 or less without moving.",
+    "unit.6.tip": "The only piece that kills without moving — and it cannot be hurt by the reply.",
+    "unit.7.role": "Cavalry",
+    "unit.7.one": "Fast flanker. Rushes two cells and strikes at the end.",
+    "unit.7.desc": "Moves up to 2 open cells along a lane and may strike at the end of the dash. A 2-cell dash reveals it.",
+    "unit.7.tip": "Reaches the second line of a formation in one tempo.",
+    "unit.9.role": "Great chariot-warrior",
+    "unit.9.one": "Second strongest — beats everything except the Senapati.",
+    "unit.9.desc": "Moves 1 cell. Only the Senapati outranks it, and an attacking Chara can fell it. In its own hour, with a pincer, it can topple the Senapati.",
+    "unit.9.tip": "A bodyguard for your fort: strong enough to absorb probes.",
+    "unit.10.role": "Commander of the army",
+    "unit.10.one": "Strongest piece on the field. Keep it hidden, then commit it.",
+    "unit.10.desc": "Moves 1 cell. Beats every piece in a straight fight — but a Chara that strikes first can kill it, and so can a pincer in the enemy’s hour.",
+    "unit.10.tip": "Keep it behind a screen until the enemy Chara is spent.",
+    "unit.B.role": "Hundred-killer trap",
+    "unit.B.one": "Immovable trap. Kills anything that hits it, except the engineer.",
+    "unit.B.desc": "Immovable. Destroys any piece that attacks it, and survives — unless that piece is a Yantrik. Fire (Agneyastra) also burns it.",
+    "unit.B.tip": "A trap only works once. Hide it where a probe must pass.",
+    "unit.F.role": "The fort",
+    "unit.F.one": "Your fort. Its gate breaks on the first blow; the second blow takes it.",
+    "unit.F.desc": "Immovable. The first successful blow breaks its gate and reveals it; the second takes it and ends the match. A volley counts as a blow.",
+    "unit.F.tip": "Never leave it where an archer has a clear two-cell lane.",
+    "astra.vayavya.one": "Swap any two of your own pieces.",
+    "astra.vayavya.desc": "A wind sweeps the field and two of your pieces change places — even the fort. Both stay hidden.",
+    "astra.sammohana.one": "Entrance an enemy piece for two turns.",
+    "astra.sammohana.desc": "Pick an enemy piece within two cells of any of yours. It cannot move or act on its owner’s next two turns. It still defends.",
+    "astra.agneya.one": "Burn a piece of rank 4 or less.",
+    "astra.agneya.desc": "Pick an enemy piece within two cells of any of yours. It is revealed; rank 4 or less (and any Shataghni) burns. A fort’s gate burns open.",
+    "astra.brahma.one": "Destroy any one enemy piece.",
+    "astra.brahma.desc": "Pick an enemy fighting piece within two cells of any of yours. Nothing withstands it, and everything around it is revealed. The fort and the trap are beyond it.",
+    "hour.day.one": "The hour of Surya — Suryavansh strikes at +1.",
+    "hour.night.one": "The hour of Chandra — Chandravansh strikes at +1.",
+    "formation.makara.one": "Jaws: strike a piece that another of yours already touches — +1.",
+    "formation.padma.one": "Petals: a piece touched by two of its friends defends at +1.",
+    "board.wheel.blurb": "the wheel · the rings turn every 5 rounds",
+    "board.padma.blurb": "the lotus · six exits, the rings turn",
+    "board.small.blurb": "6 × 8 · the classic square",
+    "board.large.blurb": "8 × 10 · the long war",
+    "opponent.recruit.blurb": "A young soldier. Brave, greedy, forgets your threats.",
+    "opponent.veteran.blurb": "The teacher. Reads your formation, punishes loose pieces.",
+    "opponent.archon.blurb": "The schemer. Sees your best reply — and waits for your mistake.",
+    "scenario.duel.blurb": "Two equal armies of twelve. Break the enemy fort.",
+    "scenario.abhimanyu.blurb": "Eight raiders must break into a closed wheel of ten before round 28.",
+    "lesson.move.title": "Move",
+    "lesson.move.text": "Tap your Rath (2) on the left, then tap a glowing cell up the open lane.",
+    "lesson.look.title": "Look before you strike",
+    "lesson.look.text": "Tap the Divyadrishti (5), press Drishti, then tap a hidden enemy. It is revealed without a fight.",
+    "lesson.volley.title": "Rain of arrows",
+    "lesson.volley.text": "Tap the Dhanurdhar (6), press Volley, then tap the enemy exactly two cells ahead.",
+    "lesson.strike.title": "Strike",
+    "lesson.strike.text": "Your Maharathi (9) beats almost anything. Tap it, tap the enemy beside it to see your odds, then tap again to strike.",
+    "lesson.trap.title": "The trap",
+    "lesson.trap.text": "Pieces that never move may be a trap or the fort. Only a Yantrik (3) clears a trap. Walk yours up the right and strike the still piece.",
+    "lesson.gate.title": "Take the fort",
+    "lesson.gate.text": "The last still piece is their fort. In a real battle its gate breaks on the first blow — here, one blow takes it.",
+    "daily.nightfall.name": "Chandra rises first",
+    "daily.nightfall.one": "The defence holds the first hour.",
+    "daily.shakti.name": "Shakti in hand",
+    "daily.shakti.one": "Your raiders begin with three lamps lit.",
+    "daily.twin.name": "Twin traps",
+    "daily.twin.one": "The defence has two Shataghni and one Rath fewer.",
+    "daily.restless.name": "The wheel is restless",
+    "daily.restless.one": "The rings turn every 4 rounds instead of 5.",
+    "daily.open.name": "The gate is open",
+    "daily.open.one": "The fort’s gate is already broken — but the defence holds three Shakti.",
+    "daily.sharad.name": "Sharad patience",
+    "daily.sharad.one": "You have 28 rounds, but the defenders begin with one Shakti.",
+    "daily.hemant.name": "Hemant watch",
+    "daily.hemant.one": "Night opens the battle, and you have 28 rounds.",
+    "daily.grishma.name": "Grishma haste",
+    "daily.grishma.one": "You have 22 rounds and three starting Shakti.",
+    "daily.varsha.name": "Varsha wheel",
+    "daily.varsha.one": "The rings turn every four rounds, with 26 rounds to finish.",
+    "daily.diya.name": "Lamps at dusk",
+    "daily.diya.one": "Both armies begin with two Shakti.",
+    "daily.patang.name": "Kite wind",
+    "daily.patang.one": "The rings turn every three rounds; you begin with three Shakti.",
+    "daily.rang.name": "Colours of spring",
+    "daily.rang.one": "Both armies begin with three Shakti.",
+    "daily.monsoon-night.name": "Monsoon night",
+    "daily.monsoon-night.one": "Night comes first and the rings turn every four rounds.",
+    "daily.long-watch.name": "Long watch",
+    "daily.long-watch.one": "You have 30 rounds against defenders with two starting Shakti.",
+    "daily.last-lamp.name": "Last lamp",
+    "daily.last-lamp.one": "The raiders begin with one Shakti and have 28 rounds.",
+    "daily.swift-dawn.name": "Swift dawn",
+    "daily.swift-dawn.one": "The rings turn every three rounds, with 28 rounds to finish.",
+    "daily.chariot-road.name": "Chariot road",
+    "daily.chariot-road.one": "The raiders exchange their Divyadrishti for a third Rath.",
+    "daily.engineers-path.name": "Engineers’ path",
+    "daily.engineers-path.one": "A second Yantrik replaces one of your two Rath.",
+    "daily.cavalry-road.name": "Cavalry road",
+    "daily.cavalry-road.one": "A second Ashvarohi replaces one of your two Rath.",
+    "daily.two-shadows.name": "Two shadows",
+    "daily.two-shadows.one": "A second Chara replaces one of your two Rath.",
+    "daily.night-reserve.name": "Night reserve",
+    "daily.night-reserve.one": "Night comes first; both armies begin with one Shakti.",
+    "daily.turning-petal.name": "Turning petal",
+    "daily.turning-petal.one": "The rings turn every six rounds; each side begins with one Shakti.",
+    "home.tagline": "Abhimanyu got in. Can you get out?",
+    "home.quick": "Yuddh karo",
+    "home.quick.sub": "Quick battle",
+    "home.daily": "Daily Chakravyuha",
+    "home.daily.sub": "Same wheel for everyone today",
+    "home.lesson": "Pehla Yuddh",
+    "home.lesson.sub": "Learn the field in two minutes",
+    "home.custom": "Custom battle",
+    "home.custom.sub": "Board, opponent, scenario and rules",
+    "home.continue": "Continue",
+    "home.saves": "Saved games",
+    "home.codex": "Rules",
+    "home.record": "Your record",
+    "battle.your_move": "Your move",
+    "battle.tap_hint": "Tap a piece, then a glowing cell. Or invoke an astra.",
+    "battle.tap_again": "Tap the target again to strike.",
+    "battle.thinking": "is thinking",
+    "battle.round": "Round",
+    "battle.lock": "Lock formation",
+    "battle.advisor": "Advisor",
+    "battle.move_strike": "Move / Strike",
+    "battle.volley": "Volley",
+    "battle.look": "Drishti",
+    "result.victory": "Victory",
+    "result.defeat": "Defeat",
+    "result.shared": "The field is shared",
+    "result.share": "Share result",
+    "result.rematch": "Rematch",
+    "share.cta": "Abhimanyu got in. Can you get out?",
+    "gate.broken": "The gate is broken. One more blow takes the fort.",
+    "sky.day": "Dawn — the hour of Surya",
+    "sky.night": "Night — the hour of Chandra"
+  },
+  "hi": {
+    "unit.1.role": "चर",
+    "unit.1.one": "सेनापति और महारथी को मारता है — पर सिर्फ़ तब, जब वार वही पहले करे।",
+    "unit.1.desc": "एक खाना चलता है। अगर यह पहले वार करे तो पहर कुछ भी हो, सेनापति (10) या महारथी (9) को गिरा देता है। बाक़ी किसी से यह हार जाता है।",
+    "unit.1.tip": "इसे अंत तक बचाकर रखिए, फिर किसी सेनापति के बदले लगाइए।",
+    "unit.2.role": "रथ ×2",
+    "unit.2.one": "खुली पंक्तियों में सरकता है और उसी चाल में वार भी कर सकता है।",
+    "unit.2.desc": "किसी खुली पंक्ति में जितने खाने चाहे सरकता है और उसी चाल में वार कर सकता है। दो या ज़्यादा खानों की चाल इसे खोल देती है।",
+    "unit.2.tip": "मैदान पार करना आपको खोल देता है — देर से चलिए, जल्दी नहीं।",
+    "unit.3.role": "यंत्रिक ×2",
+    "unit.3.one": "जाल साफ़ करने वाला अकेला मोहरा। इसे बरबाद मत कीजिए।",
+    "unit.3.desc": "एक खाना चलता है। यही अकेला मोहरा है जो शतघ्नी का जाल तोड़ सकता है और उसका खाना ले सकता है।",
+    "unit.3.tip": "जाल साफ़ करने वाला आपका सबसे सस्ता जासूस भी है।",
+    "unit.5.role": "द्रष्टा",
+    "unit.5.one": "बिना लड़े दो खानों के भीतर का दुश्मन दिखा देता है।",
+    "unit.5.desc": "एक खाना चलता है, या दृष्टि डालता है: दो खानों के भीतर का कोई भी दुश्मन, बिना लड़े, हमेशा के लिए खुल जाता है।",
+    "unit.5.tip": "जानकारी ही बढ़त है। वार से पहले देखिए।",
+    "unit.6.role": "धनुर्धर",
+    "unit.6.one": "बिना हिले दो खाने दूर बाण चलाता है। आपका सुरक्षित जासूस।",
+    "unit.6.desc": "एक खाना चलता है, या ठीक दो खाने दूर बाणों की बौछार करता है — बीच में जो हो, उसके ऊपर से। बिना हिले पाँच या उससे कम रैंक का मोहरा गिरा देता है।",
+    "unit.6.tip": "बिना हिले मारने वाला अकेला मोहरा — और जवाबी वार इस तक नहीं पहुँचता।",
+    "unit.7.role": "अश्वरोही",
+    "unit.7.one": "तेज़ बग़लिया। दो खाने लपकता है और अंत में वार करता है।",
+    "unit.7.desc": "एक पंक्ति में दो खुले खाने तक लपकता है और दौड़ के अंत में वार कर सकता है। दो खानों की दौड़ इसे खोल देती है।",
+    "unit.7.tip": "एक ही चाल में व्यूह की दूसरी पंक्ति तक पहुँचता है।",
+    "unit.9.role": "महारथी",
+    "unit.9.one": "दूसरा सबसे ताक़तवर — सेनापति को छोड़ हर किसी से जीतता है।",
+    "unit.9.desc": "एक खाना चलता है। सिर्फ़ सेनापति इससे ऊँचा है, और पहले वार करने वाला चर इसे गिरा सकता है। अपने पहर में, मकर के साथ, यह सेनापति को भी गिरा सकता है।",
+    "unit.9.tip": "दुर्ग का पहरेदार: इतना मज़बूत कि जासूसी के वार झेल जाए।",
+    "unit.10.role": "सेनापति",
+    "unit.10.one": "मैदान का सबसे ताक़तवर मोहरा। छिपाकर रखिए, फिर लगाइए।",
+    "unit.10.desc": "एक खाना चलता है। सीधी लड़ाई में हर मोहरे से जीतता है — पर पहले वार करने वाला चर इसे मार सकता है, और दुश्मन के पहर में मकर भी।",
+    "unit.10.tip": "दुश्मन का चर ख़त्म होने तक इसे परदे के पीछे रखिए।",
+    "unit.B.role": "शतघ्नी जाल",
+    "unit.B.one": "अचल जाल। जो टकराए उसे मारता है — यंत्रिक को छोड़कर।",
+    "unit.B.desc": "अचल। जो भी इस पर वार करे उसे नष्ट कर देता है और ख़ुद बचा रहता है — सिवाय यंत्रिक के। आग्नेयास्त्र की आग भी इसे जला देती है।",
+    "unit.B.tip": "जाल एक ही बार काम आता है। वहाँ छिपाइए जहाँ से जासूस को गुज़रना ही हो।",
+    "unit.F.role": "दुर्ग",
+    "unit.F.one": "आपका दुर्ग। पहला वार द्वार तोड़ता है; दूसरा दुर्ग ले लेता है।",
+    "unit.F.desc": "अचल। पहला सफल वार द्वार तोड़ देता है और इसे खोल देता है; दूसरा इसे ले लेता है और युद्ध ख़त्म कर देता है। बाणों की बौछार भी एक वार गिनी जाती है।",
+    "unit.F.tip": "इसे कभी वहाँ मत छोड़िए जहाँ धनुर्धर को दो खानों की साफ़ पंक्ति मिल जाए।",
+    "astra.vayavya.one": "अपने किन्हीं दो मोहरों की जगह बदलिए।",
+    "astra.vayavya.desc": "हवा का झोंका मैदान पर चलता है और आपके दो मोहरे जगह बदल लेते हैं — दुर्ग भी। दोनों छिपे रहते हैं।",
+    "astra.sammohana.one": "दुश्मन के मोहरे को दो चाल तक सम्मोहित कीजिए।",
+    "astra.sammohana.desc": "अपने किसी मोहरे से दो खानों के भीतर का दुश्मन मोहरा चुनिए। वह अगली दो चाल तक न चल सकेगा, न कुछ कर सकेगा। पर रक्षा वह फिर भी करेगा।",
+    "astra.agneya.one": "रैंक 4 या कम का मोहरा जला दीजिए।",
+    "astra.agneya.desc": "अपने किसी मोहरे से दो खानों के भीतर का दुश्मन मोहरा चुनिए। वह खुल जाता है; रैंक 4 या कम (और हर शतघ्नी) जल जाता है। दुर्ग का द्वार जलकर खुल जाता है।",
+    "astra.brahma.one": "दुश्मन का कोई एक मोहरा नष्ट कीजिए।",
+    "astra.brahma.desc": "अपने किसी मोहरे से दो खानों के भीतर का कोई लड़ने वाला दुश्मन मोहरा चुनिए। इसके आगे कोई नहीं टिकता, और उसके आस-पास का सब कुछ खुल जाता है। दुर्ग और जाल इसकी पहुँच से बाहर हैं।",
+    "hour.day.one": "सूर्य का पहर — सूर्यवंश का वार +1।",
+    "hour.night.one": "चंद्र का पहर — चंद्रवंश का वार +1।",
+    "formation.makara.one": "जबड़े: जिस मोहरे को आपका दूसरा मोहरा पहले से छू रहा हो, उस पर वार — +1।",
+    "formation.padma.one": "पंखुड़ियाँ: जिस मोहरे को उसके दो साथी छू रहे हों, वह +1 से रक्षा करता है।",
+    "board.wheel.blurb": "चक्र · घेरे हर 5 दाँव पर घूमते हैं",
+    "board.padma.blurb": "कमल · छह रास्ते, घेरे घूमते हैं",
+    "board.small.blurb": "6 × 8 · पुराना चौकोर मैदान",
+    "board.large.blurb": "8 × 10 · लंबा युद्ध",
+    "opponent.recruit.blurb": "नया सैनिक। बहादुर, लालची, आपकी धमकियाँ भूल जाता है।",
+    "opponent.veteran.blurb": "गुरु। आपका व्यूह पढ़ता है, ढीले मोहरों को सज़ा देता है।",
+    "opponent.archon.blurb": "चालबाज़। आपका सबसे अच्छा जवाब देखता है — और आपकी ग़लती का इंतज़ार करता है।",
+    "scenario.duel.blurb": "बारह-बारह की दो बराबर सेनाएँ। दुश्मन का दुर्ग तोड़िए।",
+    "scenario.abhimanyu.blurb": "आठ घुसपैठिए दस के बंद चक्र में, 28वें दाँव से पहले घुस जाएँ।",
+    "lesson.move.title": "चलिए",
+    "lesson.move.text": "बाईं ओर अपने रथ (2) पर टैप कीजिए, फिर खुली पंक्ति में ऊपर जलते खाने पर टैप कीजिए।",
+    "lesson.look.title": "वार से पहले देखिए",
+    "lesson.look.text": "दिव्यदृष्टि (5) पर टैप कीजिए, दृष्टि दबाइए, फिर छिपे दुश्मन पर टैप कीजिए। वह बिना लड़े खुल जाएगा।",
+    "lesson.volley.title": "बाणों की बौछार",
+    "lesson.volley.text": "धनुर्धर (6) पर टैप कीजिए, बौछार दबाइए, फिर ठीक दो खाने आगे के दुश्मन पर टैप कीजिए।",
+    "lesson.strike.title": "वार",
+    "lesson.strike.text": "आपका महारथी (9) लगभग हर किसी से जीतता है। उस पर टैप कीजिए, बग़ल के दुश्मन पर टैप करके अपने आसार देखिए, फिर वार के लिए दोबारा टैप कीजिए।",
+    "lesson.trap.title": "जाल",
+    "lesson.trap.text": "जो मोहरे कभी नहीं चलते, वे जाल या दुर्ग हो सकते हैं। जाल सिर्फ़ यंत्रिक (3) साफ़ करता है। अपने यंत्रिक को दाईं ओर ले जाइए और अचल मोहरे पर वार कीजिए।",
+    "lesson.gate.title": "दुर्ग लीजिए",
+    "lesson.gate.text": "आख़िरी अचल मोहरा उनका दुर्ग है। असली युद्ध में पहला वार द्वार तोड़ता है — यहाँ एक ही वार दुर्ग ले लेता है।",
+    "daily.nightfall.name": "पहले चंद्र उगता है",
+    "daily.nightfall.one": "रक्षा पहला पहर थामे रहती है।",
+    "daily.shakti.name": "हाथ में शक्ति",
+    "daily.shakti.one": "आपके घुसपैठिए तीन दिये जलाकर शुरू करते हैं।",
+    "daily.twin.name": "दो जाल",
+    "daily.twin.one": "रक्षा के पास दो शतघ्नी हैं और एक रथ कम।",
+    "daily.restless.name": "चक्र बेचैन है",
+    "daily.restless.one": "घेरे हर 5 की जगह हर 4 दाँव पर घूमते हैं।",
+    "daily.open.name": "द्वार खुला है",
+    "daily.open.one": "दुर्ग का द्वार पहले ही टूटा है — पर रक्षा के पास तीन शक्ति हैं।",
+    "daily.sharad.name": "शरद का धैर्य",
+    "daily.sharad.one": "आपके पास 28 दाँव हैं, पर रक्षक एक शक्ति से शुरू करते हैं।",
+    "daily.hemant.name": "हेमंत पहरा",
+    "daily.hemant.one": "रात युद्ध खोलती है, और आपके पास 28 दाँव हैं।",
+    "daily.grishma.name": "ग्रीष्म की जल्दी",
+    "daily.grishma.one": "आपके पास 22 दाँव और तीन शुरुआती शक्ति हैं।",
+    "daily.varsha.name": "वर्षा का चक्र",
+    "daily.varsha.one": "घेरे हर चार दाँव पर घूमते हैं, और पूरा करने के लिए 26 दाँव हैं।",
+    "daily.diya.name": "शाम के दिये",
+    "daily.diya.one": "दोनों सेनाएँ दो शक्ति से शुरू करती हैं।",
+    "daily.patang.name": "पतंग की हवा",
+    "daily.patang.one": "घेरे हर तीन दाँव पर घूमते हैं; आप तीन शक्ति से शुरू करते हैं।",
+    "daily.rang.name": "बसंत के रंग",
+    "daily.rang.one": "दोनों सेनाएँ तीन शक्ति से शुरू करती हैं।",
+    "daily.monsoon-night.name": "सावन की रात",
+    "daily.monsoon-night.one": "पहले रात आती है और घेरे हर चार दाँव पर घूमते हैं।",
+    "daily.long-watch.name": "लंबा पहरा",
+    "daily.long-watch.one": "आपके पास 30 दाँव हैं, रक्षकों के पास दो शुरुआती शक्ति।",
+    "daily.last-lamp.name": "आख़िरी दीया",
+    "daily.last-lamp.one": "घुसपैठिए एक शक्ति से शुरू करते हैं और उनके पास 28 दाँव हैं।",
+    "daily.swift-dawn.name": "तेज़ भोर",
+    "daily.swift-dawn.one": "घेरे हर तीन दाँव पर घूमते हैं, और पूरा करने के लिए 28 दाँव हैं।",
+    "daily.chariot-road.name": "रथ का मार्ग",
+    "daily.chariot-road.one": "घुसपैठिए अपनी दिव्यदृष्टि के बदले तीसरा रथ लेते हैं।",
+    "daily.engineers-path.name": "यंत्रिक का मार्ग",
+    "daily.engineers-path.one": "आपके दो रथों में से एक की जगह दूसरा यंत्रिक आता है।",
+    "daily.cavalry-road.name": "अश्व का मार्ग",
+    "daily.cavalry-road.one": "आपके दो रथों में से एक की जगह दूसरा अश्वरोही आता है।",
+    "daily.two-shadows.name": "दो परछाइयाँ",
+    "daily.two-shadows.one": "आपके दो रथों में से एक की जगह दूसरा चर आता है।",
+    "daily.night-reserve.name": "रात का भंडार",
+    "daily.night-reserve.one": "पहले रात आती है; दोनों सेनाएँ एक शक्ति से शुरू करती हैं।",
+    "daily.turning-petal.name": "घूमती पंखुड़ी",
+    "daily.turning-petal.one": "घेरे हर छह दाँव पर घूमते हैं; हर पक्ष एक शक्ति से शुरू करता है।",
+    "home.tagline": "अभिमन्यु अंदर पहुँच गया। आप निकल पाएँगे?",
+    "home.quick": "युद्ध करो",
+    "home.quick.sub": "झटपट युद्ध",
+    "home.daily": "आज का चक्रव्यूह",
+    "home.daily.sub": "आज सबके लिए वही चक्र",
+    "home.lesson": "पहला युद्ध",
+    "home.lesson.sub": "दो मिनट में मैदान समझिए",
+    "home.custom": "अपना युद्ध",
+    "home.custom.sub": "मैदान, प्रतिद्वंद्वी, परिदृश्य और नियम",
+    "home.continue": "जारी रखिए",
+    "home.saves": "सहेजे युद्ध",
+    "home.codex": "नियम",
+    "home.record": "आपका रिकॉर्ड",
+    "battle.your_move": "आपकी चाल",
+    "battle.tap_hint": "किसी मोहरे पर टैप कीजिए, फिर जलते खाने पर। या कोई अस्त्र बुलाइए।",
+    "battle.tap_again": "वार के लिए लक्ष्य पर दोबारा टैप कीजिए।",
+    "battle.thinking": "सोच रहा है",
+    "battle.round": "दाँव",
+    "battle.lock": "व्यूह जमाइए",
+    "battle.advisor": "सलाहकार",
+    "battle.move_strike": "चाल / वार",
+    "battle.volley": "बौछार",
+    "battle.look": "दृष्टि",
+    "result.victory": "विजय",
+    "result.defeat": "पराजय",
+    "result.shared": "मैदान बराबरी का",
+    "result.share": "नतीजा साझा कीजिए",
+    "result.rematch": "फिर लड़िए",
+    "share.cta": "अभिमन्यु अंदर पहुँच गया। आप निकल पाएँगे?",
+    "gate.broken": "द्वार टूट गया। एक वार और, दुर्ग आपका।",
+    "sky.day": "भोर — सूर्य का पहर",
+    "sky.night": "रात — चंद्र का पहर"
+  },
+  "mr": {
+    "unit.1.role": "चर",
+    "unit.1.one": "सेनापती आणि महारथीला मारतो — पण फक्त तोच आधी वार केला तर.",
+    "unit.1.desc": "एक घर चालतो. आधी वार केला तर प्रहर कोणताही असो, सेनापती (10) किंवा महारथी (9) पाडतो. बाकी कोणाशीही हरतो.",
+    "unit.1.tip": "शेवटपर्यंत सांभाळून ठेवा, मग सेनापतीच्या बदली लावा.",
+    "unit.2.role": "रथ ×2",
+    "unit.2.one": "मोकळ्या रांगांतून सरकतो आणि त्याच चालीत वारही करू शकतो.",
+    "unit.2.desc": "मोकळ्या रांगेत कितीही घरे सरकतो आणि त्याच चालीत वार करू शकतो. दोन किंवा जास्त घरांची चाल त्याला उघड करते.",
+    "unit.2.tip": "मैदान ओलांडल्याने तुम्ही उघड होता — उशिरा चला, लवकर नको.",
+    "unit.3.role": "यंत्रिक ×2",
+    "unit.3.one": "सापळा साफ करणारा एकमेव मोहरा. त्याला वाया घालवू नका.",
+    "unit.3.desc": "एक घर चालतो. शतघ्नीचा सापळा तोडून त्याचे घर घेऊ शकणारा हाच एकमेव मोहरा.",
+    "unit.3.tip": "सापळा साफ करणारा हाच तुमचा सर्वात स्वस्त हेरही आहे.",
+    "unit.5.role": "द्रष्टा",
+    "unit.5.one": "न लढता दोन घरांच्या आतला शत्रू दाखवतो.",
+    "unit.5.desc": "एक घर चालतो, किंवा दृष्टी टाकतो: दोन घरांच्या आतला कोणताही शत्रू, न लढता, कायमचा उघड होतो.",
+    "unit.5.tip": "माहिती म्हणजे वरचढी. वार करण्याआधी पाहा.",
+    "unit.6.role": "धनुर्धर",
+    "unit.6.one": "न हलता दोन घरे दूर बाण सोडतो. तुमचा सुरक्षित हेर.",
+    "unit.6.desc": "एक घर चालतो, किंवा अगदी दोन घरे दूर बाणांचा वर्षाव करतो — मधे जे असेल त्यावरून. न हलता पाच किंवा कमी दर्जाचा मोहरा पाडतो.",
+    "unit.6.tip": "न हलता मारणारा एकमेव मोहरा — आणि प्रत्युत्तर त्याच्यापर्यंत पोहोचत नाही.",
+    "unit.7.role": "अश्वरोही",
+    "unit.7.one": "वेगवान बगल. दोन घरे झेपावतो आणि शेवटी वार करतो.",
+    "unit.7.desc": "रांगेत दोन मोकळी घरे झेपावतो आणि धावेच्या शेवटी वार करू शकतो. दोन घरांची धाव त्याला उघड करते.",
+    "unit.7.tip": "एका चालीत व्यूहाच्या दुसऱ्या रांगेपर्यंत पोहोचतो.",
+    "unit.9.role": "महारथी",
+    "unit.9.one": "दुसरा सर्वात बलवान — सेनापतीशिवाय सर्वांना जिंकतो.",
+    "unit.9.desc": "एक घर चालतो. फक्त सेनापती त्याच्यापेक्षा वरचा, आणि आधी वार करणारा चर त्याला पाडू शकतो. स्वतःच्या प्रहरी, मकरासोबत, तो सेनापतीलाही पाडू शकतो.",
+    "unit.9.tip": "दुर्गाचा रक्षक: हेरांचे वार झेलण्याइतका बलवान.",
+    "unit.10.role": "सेनापती",
+    "unit.10.one": "मैदानातला सर्वात बलवान मोहरा. लपवून ठेवा, मग लावा.",
+    "unit.10.desc": "एक घर चालतो. सरळ लढाईत प्रत्येक मोहऱ्याला जिंकतो — पण आधी वार करणारा चर त्याला मारू शकतो, आणि शत्रूच्या प्रहरी मकरही.",
+    "unit.10.tip": "शत्रूचा चर संपेपर्यंत त्याला पडद्यामागे ठेवा.",
+    "unit.B.role": "शतघ्नी सापळा",
+    "unit.B.one": "स्थिर सापळा. जो आदळेल त्याला मारतो — यंत्रिकशिवाय.",
+    "unit.B.desc": "स्थिर. जोही त्यावर वार करेल त्याला नष्ट करतो आणि स्वतः वाचतो — यंत्रिकशिवाय. आग्नेयास्त्राची आगही त्याला जाळते.",
+    "unit.B.tip": "सापळा एकदाच कामी येतो. हेराला जिथून जावेच लागेल तिथे लपवा.",
+    "unit.F.role": "दुर्ग",
+    "unit.F.one": "तुमचा दुर्ग. पहिला वार दरवाजा तोडतो; दुसरा दुर्ग घेतो.",
+    "unit.F.desc": "स्थिर. पहिला यशस्वी वार दरवाजा तोडतो आणि त्याला उघड करतो; दुसरा तो घेतो आणि सामना संपवतो. बाणांचा वर्षावही एक वार मानला जातो.",
+    "unit.F.tip": "धनुर्धराला दोन घरांची मोकळी रांग मिळेल अशा ठिकाणी तो कधीही ठेवू नका.",
+    "astra.vayavya.one": "तुमच्या कोणत्याही दोन मोहऱ्यांची जागा बदला.",
+    "astra.vayavya.desc": "वाऱ्याची झुळूक मैदानावरून जाते आणि तुमचे दोन मोहरे जागा बदलतात — दुर्गही. दोन्ही लपलेले राहतात.",
+    "astra.sammohana.one": "शत्रूच्या मोहऱ्याला दोन चाल सम्मोहित करा.",
+    "astra.sammohana.desc": "तुमच्या कोणत्याही मोहऱ्यापासून दोन घरांच्या आतला शत्रू मोहरा निवडा. पुढील दोन चाली तो चालूही शकणार नाही, काहीही करू शकणार नाही. पण बचाव तो तरीही करेल.",
+    "astra.agneya.one": "दर्जा 4 किंवा कमी मोहरा जाळा.",
+    "astra.agneya.desc": "तुमच्या कोणत्याही मोहऱ्यापासून दोन घरांच्या आतला शत्रू मोहरा निवडा. तो उघड होतो; दर्जा 4 किंवा कमी (आणि प्रत्येक शतघ्नी) जळतो. दुर्गाचा दरवाजा जळून उघडतो.",
+    "astra.brahma.one": "शत्रूचा कोणताही एक मोहरा नष्ट करा.",
+    "astra.brahma.desc": "तुमच्या कोणत्याही मोहऱ्यापासून दोन घरांच्या आतला लढणारा शत्रू मोहरा निवडा. त्याच्यापुढे काहीही टिकत नाही, आणि त्याच्या आसपासचे सर्व उघड होते. दुर्ग आणि सापळा त्याच्या पोहोचेबाहेर आहेत.",
+    "hour.day.one": "सूर्याचा प्रहर — सूर्यवंशाचा वार +1.",
+    "hour.night.one": "चंद्राचा प्रहर — चंद्रवंशाचा वार +1.",
+    "formation.makara.one": "जबडे: तुमचा दुसरा मोहरा ज्याला आधीच टेकत आहे त्यावर वार — +1.",
+    "formation.padma.one": "पाकळ्या: ज्याला त्याचे दोन सोबती टेकतात तो +1 ने बचाव करतो.",
+    "board.wheel.blurb": "चक्र · कडे दर 5 डावांनी फिरतात",
+    "board.padma.blurb": "कमळ · सहा मार्ग, कडे फिरतात",
+    "board.small.blurb": "6 × 8 · जुने चौकोन मैदान",
+    "board.large.blurb": "8 × 10 · लांब युद्ध",
+    "opponent.recruit.blurb": "नवा सैनिक. शूर, लोभी, तुमच्या धमक्या विसरतो.",
+    "opponent.veteran.blurb": "गुरू. तुमचा व्यूह वाचतो, सुटके मोहऱ्यांना शिक्षा करतो.",
+    "opponent.archon.blurb": "डावखोर. तुमचे सर्वोत्तम उत्तर पाहतो — आणि तुमच्या चुकीची वाट पाहतो.",
+    "scenario.duel.blurb": "बारा-बारा मोहऱ्यांच्या दोन समान सेना. शत्रूचा दुर्ग तोडा.",
+    "scenario.abhimanyu.blurb": "आठ घुसखोरांनी दहाच्या बंद चक्रात 28व्या डावापूर्वी घुसावे.",
+    "lesson.move.title": "चला",
+    "lesson.move.text": "डावीकडच्या तुमच्या रथ (2) वर टॅप करा, मग मोकळ्या रांगेत वरच्या उजळत्या घरावर टॅप करा.",
+    "lesson.look.title": "वार करण्याआधी पाहा",
+    "lesson.look.text": "दिव्यदृष्टी (5) वर टॅप करा, दृष्टी दाबा, मग लपलेल्या शत्रूवर टॅप करा. तो न लढता उघड होईल.",
+    "lesson.volley.title": "बाणांचा वर्षाव",
+    "lesson.volley.text": "धनुर्धर (6) वर टॅप करा, वर्षाव दाबा, मग अगदी दोन घरे पुढच्या शत्रूवर टॅप करा.",
+    "lesson.strike.title": "वार",
+    "lesson.strike.text": "तुमचा महारथी (9) जवळपास सर्वांना जिंकतो. त्यावर टॅप करा, बाजूच्या शत्रूवर टॅप करून तुमची शक्यता पाहा, मग वारासाठी पुन्हा टॅप करा.",
+    "lesson.trap.title": "सापळा",
+    "lesson.trap.text": "कधीही न हलणारे मोहरे सापळा किंवा दुर्ग असू शकतात. सापळा फक्त यंत्रिक (3) साफ करतो. तुमच्या यंत्रिकाला उजवीकडे न्या आणि स्थिर मोहऱ्यावर वार करा.",
+    "lesson.gate.title": "दुर्ग घ्या",
+    "lesson.gate.text": "शेवटचा स्थिर मोहरा त्यांचा दुर्ग आहे. खऱ्या युद्धात पहिला वार दरवाजा तोडतो — इथे एकाच वाराने दुर्ग जिंकला जातो.",
+    "daily.nightfall.name": "आधी चंद्र उगवतो",
+    "daily.nightfall.one": "बचाव पहिला प्रहर टिकवतो.",
+    "daily.shakti.name": "हातात शक्ती",
+    "daily.shakti.one": "तुमचे घुसखोर तीन दिवे लावून सुरू करतात.",
+    "daily.twin.name": "दोन सापळे",
+    "daily.twin.one": "बचावाकडे दोन शतघ्नी आहेत आणि एक रथ कमी.",
+    "daily.restless.name": "चक्र बेचैन आहे",
+    "daily.restless.one": "कडे दर 5 ऐवजी दर 4 डावांनी फिरतात.",
+    "daily.open.name": "दरवाजा उघडा आहे",
+    "daily.open.one": "दुर्गाचा दरवाजा आधीच तुटलेला आहे — पण बचावाकडे तीन शक्ती आहेत.",
+    "daily.sharad.name": "शरदाचा संयम",
+    "daily.sharad.one": "तुमच्याकडे 28 डाव आहेत, पण रक्षक एका शक्तीने सुरू करतात.",
+    "daily.hemant.name": "हेमंत पहारा",
+    "daily.hemant.one": "रात युद्ध उघडते, आणि तुमच्याकडे 28 डाव आहेत.",
+    "daily.grishma.name": "ग्रीष्माची घाई",
+    "daily.grishma.one": "तुमच्याकडे 22 डाव आणि तीन सुरुवातीच्या शक्ती आहेत.",
+    "daily.varsha.name": "वर्षेचे चक्र",
+    "daily.varsha.one": "कडे दर चार डावांनी फिरतात, आणि पूर्ण करायला 26 डाव आहेत.",
+    "daily.diya.name": "संध्याकाळचे दिवे",
+    "daily.diya.one": "दोन्ही सेना दोन शक्तींनी सुरू करतात.",
+    "daily.patang.name": "पतंगाचा वारा",
+    "daily.patang.one": "कडे दर तीन डावांनी फिरतात; तुम्ही तीन शक्तींनी सुरू करता.",
+    "daily.rang.name": "वसंताचे रंग",
+    "daily.rang.one": "दोन्ही सेना तीन शक्तींनी सुरू करतात.",
+    "daily.monsoon-night.name": "पावसाळी रात्र",
+    "daily.monsoon-night.one": "आधी रात्र येते आणि कडे दर चार डावांनी फिरतात.",
+    "daily.long-watch.name": "लांब पहारा",
+    "daily.long-watch.one": "तुमच्याकडे 30 डाव आहेत, रक्षकांकडे दोन सुरुवातीच्या शक्ती.",
+    "daily.last-lamp.name": "शेवटचा दिवा",
+    "daily.last-lamp.one": "घुसखोर एका शक्तीने सुरू करतात आणि त्यांच्याकडे 28 डाव आहेत.",
+    "daily.swift-dawn.name": "वेगवान पहाट",
+    "daily.swift-dawn.one": "कडे दर तीन डावांनी फिरतात, आणि पूर्ण करायला 28 डाव आहेत.",
+    "daily.chariot-road.name": "रथाचा मार्ग",
+    "daily.chariot-road.one": "घुसखोर आपल्या दिव्यदृष्टीच्या बदली तिसरा रथ घेतात.",
+    "daily.engineers-path.name": "यंत्रिकाचा मार्ग",
+    "daily.engineers-path.one": "तुमच्या दोन रथांपैकी एकाच्या जागी दुसरा यंत्रिक येतो.",
+    "daily.cavalry-road.name": "अश्वाचा मार्ग",
+    "daily.cavalry-road.one": "तुमच्या दोन रथांपैकी एकाच्या जागी दुसरा अश्वरोही येतो.",
+    "daily.two-shadows.name": "दोन सावल्या",
+    "daily.two-shadows.one": "तुमच्या दोन रथांपैकी एकाच्या जागी दुसरा चर येतो.",
+    "daily.night-reserve.name": "रात्रीचा साठा",
+    "daily.night-reserve.one": "आधी रात्र येते; दोन्ही सेना एका शक्तीने सुरू करतात.",
+    "daily.turning-petal.name": "फिरणारी पाकळी",
+    "daily.turning-petal.one": "कडे दर सहा डावांनी फिरतात; प्रत्येक बाजू एका शक्तीने सुरू करते.",
+    "home.tagline": "अभिमन्यू आत पोहोचला. तुम्ही बाहेर पडाल?",
+    "home.quick": "युद्ध करा",
+    "home.quick.sub": "झटपट युद्ध",
+    "home.daily": "आजचे चक्रव्यूह",
+    "home.daily.sub": "आज सगळ्यांसाठी तेच चक्र",
+    "home.lesson": "पहिले युद्ध",
+    "home.lesson.sub": "दोन मिनिटांत मैदान समजून घ्या",
+    "home.custom": "स्वतःचे युद्ध",
+    "home.custom.sub": "मैदान, प्रतिस्पर्धी, परिस्थिती आणि नियम",
+    "home.continue": "पुढे चला",
+    "home.saves": "साठवलेली युद्धे",
+    "home.codex": "नियम",
+    "home.record": "तुमची नोंद",
+    "battle.your_move": "तुमची चाल",
+    "battle.tap_hint": "मोहऱ्यावर टॅप करा, मग उजळत्या घरावर. किंवा एखादे अस्त्र बोलवा.",
+    "battle.tap_again": "वारासाठी लक्ष्यावर पुन्हा टॅप करा.",
+    "battle.thinking": "विचार करत आहे",
+    "battle.round": "डाव",
+    "battle.lock": "व्यूह बसवा",
+    "battle.advisor": "सल्लागार",
+    "battle.move_strike": "चाल / वार",
+    "battle.volley": "वर्षाव",
+    "battle.look": "दृष्टी",
+    "result.victory": "विजय",
+    "result.defeat": "पराभव",
+    "result.shared": "मैदान बरोबरीचे",
+    "result.share": "निकाल शेअर करा",
+    "result.rematch": "पुन्हा लढा",
+    "share.cta": "अभिमन्यू आत पोहोचला. तुम्ही बाहेर पडाल?",
+    "gate.broken": "दरवाजा तुटला. अजून एक वार, दुर्ग तुमचा.",
+    "sky.day": "पहाट — सूर्याचा प्रहर",
+    "sky.night": "रात्र — चंद्राचा प्रहर"
+  }
+};
+
+  let language = 'en';
+  const cache = {};
+  function setLang(value) {
+    language = Object.prototype.hasOwnProperty.call(DATA, value) ? value : 'en';
+    return language;
+  }
+  function text(key, fallback) {
+    if (language === 'en' && fallback != null) return String(fallback);
+    const value = DATA[language][key] != null ? DATA[language][key] : DATA.en[key];
+    return typeof value === 'string' ? value : fallback != null ? String(fallback) : '';
+  }
+  function definition(group, key, prefix, fields) {
+    const original = AC.units[group][key];
+    if (!original) return original;
+    const id = language + ':' + group + ':' + key;
+    if (!cache[id]) {
+      const copy = Object.assign({}, original);
+      fields.forEach(function (field) { copy[field] = text(prefix + '.' + key + '.' + field, original[field]); });
+      cache[id] = copy;
+    }
+    return cache[id];
+  }
+  function applyDOM(scope) {
+    if (!root.document) return;
+    root.document.documentElement.lang = language;
+    const host = scope || root.document;
+    host.querySelectorAll('[data-i18n]').forEach(function (el) {
+      el.textContent = text(el.getAttribute('data-i18n')) || el.textContent;
+    });
+    host.querySelectorAll('[data-i18n-label]').forEach(function (el) {
+      el.setAttribute('aria-label', text(el.getAttribute('data-i18n-label')) || el.getAttribute('aria-label'));
+    });
+  }
+  AC.i18n = {
+    text: text, setLang: setLang, getLang: function () { return language; }, applyDOM: applyDOM,
+    languages: ['en', 'hi', 'mr'], keys: Object.keys(DATA.en),
+    unit: function (key) { return definition('UNIT_DEFS', key, 'unit', ['role', 'one', 'desc', 'tip']); },
+    astra: function (key) { return definition('ASTRA_DEFS', key, 'astra', ['one', 'desc']); },
+    board: function (key) { return definition('BOARDS', key, 'board', ['blurb']); },
+    opponent: function (key) { return definition('DIFFICULTIES', key, 'opponent', ['blurb']); },
+    scenario: function (key) { return definition('SCENARIOS', key, 'scenario', ['blurb']); },
+    daily: function (mod) { return Object.assign({}, mod, { name: text('daily.' + mod.key + '.name', mod.name), one: text('daily.' + mod.key + '.one', mod.one) }); },
+    lesson: function (step, field) { return text('lesson.' + step.key + '.' + field, step[field]); }
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
@@ -4273,7 +4913,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 
     events.push({
       kind: 'clash',
-      sfx: res.core ? 'core' : res.winner === 'att' ? 'clash-win' : res.winner === 'def' ? 'clash-lose' : 'clash-both',
+      sfx: res.core ? 'core' : res.mine && res.winner === 'def' ? 'mine' : res.winner === 'att' ? 'clash-win' : res.winner === 'def' ? 'clash-lose' : 'clash-both',
       at: to,
       from: from,
       unit: unit,
@@ -5112,6 +5752,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   let musicBus = null;
   let noiseBuf = null;
   let ready = false;
+  let cueSources = null;
 
   const settings = {
     sfx: 0.7,
@@ -5180,7 +5821,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     sfxBus.gain.setTargetAtTime(settings.sfx, now(), 0.05);
     if (!musicPlaying) musicBus.gain.setTargetAtTime(0, now(), 0.05);
     else musicBus.gain.setTargetAtTime(settings.music * 0.5, now(), 0.08);
-    if (musicState.el) musicState.el.volume = Math.max(0.02, settings.music * 0.55);
+    Object.keys(musicEls).forEach(function (key) { musicEls[key].muted = settings.muted || settings.musicOn === false; });
+    if (musicState.el) musicState.el.volume = Math.max(0, settings.music * 0.55);
   }
 
   function setSettings(s) {
@@ -5222,6 +5864,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     }
     node.connect(g);
     g.connect(dest);
+    if (cueSources && opts.bus !== 'music') cueSources.push(osc);
     osc.start(t0);
     osc.stop(t0 + (opts.dur || 0.25) + 0.05);
   }
@@ -5245,6 +5888,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     src.connect(f);
     f.connect(g);
     g.connect(opts.bus === 'music' ? musicBus : sfxBus);
+    if (cueSources && opts.bus !== 'music') cueSources.push(src);
     src.start(t0);
     src.stop(t0 + (opts.dur || 0.2) + 0.05);
   }
@@ -5445,6 +6089,91 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     try { fn(); } catch (e) { /* audio must never break the game */ }
   }
 
+  // A tracked one-shot for Calm: actual ended events for recorded and synth
+  // audio, metadata for duration, and a bounded fallback for unknown media.
+  function duration(name) {
+    const key = SFX_SAMPLE[name];
+    const n = buffers[key] ? buffers[key].duration : sfxEls[key] && sfxEls[key].duration;
+    return Number.isFinite(n) && n > 0 ? n : null;
+  }
+
+  // Where each recording's audible body ends (the point it falls 20 dB below its
+  // peak), measured from the shipped files. Calm lets Sanjaya enter here and
+  // softens the remaining tail instead of waiting through near-silence.
+  // Re-measure with tools/sfx-envelope.py whenever an effect file is replaced.
+  const SPEAK_AT = {
+    clash: 1.0, trap: 0.85, volley: 0.45, breach: 1.35, shankh: 1.0, dawn: 0.8, dusk: 1.0,
+    chakra: 0.5, scan: 1.15, place: 0.45, shakti: 0.7,
+    vayavya: 0.95, sammohana: 1.25, agneya: 1.4, brahma: 1.9
+  };
+
+  function cue(name) {
+    let resolve, timer, sources = [], ended = false, speakTimer = null, speakResolve;
+    const speakable = new Promise(function (r) { speakResolve = r; });
+    const result = { duration: duration(name), finished: new Promise(function (r) { resolve = r; }), stop: stop,
+      speakable: speakable, soften: soften };
+    // Lower whatever is left of the effect by about 10 dB under the voice.
+    function soften() {
+      sources.forEach(function (src) {
+        try {
+          if (src._gain && ctx) src._gain.gain.setTargetAtTime(0.3, ctx.currentTime, 0.08);
+          else if (src.volume != null) src.volume = src.volume * 0.3;
+        } catch (e) { /* ignore */ }
+      });
+    }
+    const key0 = SFX_SAMPLE[name];
+    if (SPEAK_AT[key0] != null) speakTimer = setTimeout(speakResolve, SPEAK_AT[key0] * 1000);
+    result.finished.then(function () { clearTimeout(speakTimer); speakResolve(); });
+    function stop() {
+      if (ended) return;
+      ended = true;
+      clearTimeout(timer);
+      sources.forEach(function (src) {
+        src.onended = src.onerror = src.onloadedmetadata = null;
+        try { if (src.pause) src.pause(); else src.stop(); } catch (e) { /* already ended */ }
+      });
+      resolve();
+    }
+    if (!ready || settings.muted || settings.sfx === 0) { stop(); return result; }
+    const key = SFX_SAMPLE[name];
+    try {
+      if (buffers[key] && ctx) {
+        const src = ctx.createBufferSource();
+        src.buffer = buffers[key];
+        src._gain = ctx.createGain();
+        src.connect(src._gain);
+        src._gain.connect(sfxBus);
+        sources.push(src);
+        src.onended = stop;
+        timer = setTimeout(stop, src.buffer.duration * 1000 + 250);
+        src.start();
+      } else if (sfxEls[key] && !missing[key] && !sfxEls[key].error) {
+        const el = sfxEls[key].cloneNode();
+        sources.push(el);
+        el.volume = settings.sfx;
+        el.onended = el.onerror = stop;
+        function watchdog() {
+          if (ended) return;
+          clearTimeout(timer);
+          const d = Number.isFinite(el.duration) && el.duration > 0 ? el.duration * 1000 + 250 : 600;
+          timer = setTimeout(stop, d);
+        }
+        el.onloadedmetadata = watchdog;
+        watchdog();
+        const p = el.play();
+        if (p && p.catch) p.catch(stop);
+      } else if (SFX[name]) {
+        cueSources = sources;
+        try { SFX[name](); } finally { cueSources = null; }
+        let left = sources.length;
+        sources.forEach(function (src) { src.onended = function () { if (--left === 0) stop(); }; });
+        // Synth envelopes are all bounded below 3 s; stop even on a suspended context.
+        timer = setTimeout(stop, left ? 3500 : 600);
+      } else timer = setTimeout(stop, 600);
+    } catch (e) { cueSources = null; stop(); }
+    return result;
+  }
+
   /* ---------- haptics ---------- */
 
   function buzz(pattern) {
@@ -5462,6 +6191,11 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       menu: 'assets/audio/music/menu.mp3',
       tabla: 'assets/audio/music/tabla.mp3',
       battle: 'assets/audio/music/battle.mp3',
+      battle_night: 'assets/audio/music/battle_night.mp3',
+      daily: 'assets/audio/music/daily_theme.mp3',
+      lesson: 'assets/audio/music/lesson.mp3',
+      abhimanyu: 'assets/audio/music/abhimanyu.mp3',
+      victory_big: 'assets/audio/music/victory_big.mp3',
       victory: 'assets/audio/music/victory.mp3',
       defeat: 'assets/audio/music/defeat.mp3'
     },
@@ -5500,6 +6234,11 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   const sfxEls = {};
   const musicEls = {};
   let musicState = { mode: null, el: null };
+  let stingEl = null;
+  function stopSting() {
+    if (stingEl) { try { stingEl.pause(); } catch (e) { /* already stopped */ } }
+    stingEl = null;
+  }
   let sfxLoading = false;
 
   function loadSfx() {
@@ -5567,6 +6306,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     el.loop = true;
     el.preload = 'auto';
     el.volume = 0;
+    el.muted = settings.muted || settings.musicOn === false;
     musicEls[mode] = el;
     return el;
   }
@@ -5696,6 +6436,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     init();
     if (settings.muted || settings.musicOn === false) return;
     if (musicState.mode === mode) return;
+    stopSting();
     const el = getMusicEl(mode);
     if (!el) { startSynthMusic(mode); return; }
 
@@ -5709,23 +6450,25 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     if (attempt && attempt.catch) {
       attempt.catch(function () { musicState = { mode: null, el: null }; startSynthMusic(mode); });
     }
-    fade(el, Math.max(0.02, settings.music * 0.55), 900);
+    fade(el, Math.max(0, settings.music * 0.55), 900);
     if (old && old !== el) fade(old, 0, 500).then(function () { try { old.pause(); } catch (e) { /* ignore */ } });
   }
 
   /* A one-off cue (victory / defeat) that ducks the score while it plays. */
   function sting(kind) {
+    stopSting();
     if (settings.muted || settings.musicOn === false) return;
     init();
     const el = getMusicEl(kind);
     if (!el) return;
+    stingEl = el;
     const current = musicState.el;
     musicState = { mode: null, el: null };
     if (current) fade(current, 0, 350).then(function () { try { current.pause(); } catch (e) { /* ignore */ } });
     const once = musicEls[kind];
     if (once) once.loop = false;
     try { el.currentTime = 0; } catch (e) { /* ignore */ }
-    el.volume = Math.max(0.05, settings.music * 0.7);
+    el.volume = Math.max(0, settings.music * 0.7);
     let attempt = null;
     try { attempt = el.play(); } catch (e) { attempt = null; }
     if (attempt && attempt.catch) attempt.catch(function () { /* stay silent */ });
@@ -5736,7 +6479,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   function duck(ms) {
     const el = musicState.el;
     if (!el) return;
-    const base = Math.max(0.02, settings.music * 0.55);
+    const base = Math.max(0, settings.music * 0.55);
     fade(el, base * 0.35, 200);
     if (duckTimer) clearTimeout(duckTimer);
     duckTimer = setTimeout(function () {
@@ -5758,6 +6501,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   }
 
   function stopMusic() {
+    stopSting();
     stopSynthMusic();
     const el = musicState.el;
     musicState = { mode: null, el: null };
@@ -5767,20 +6511,22 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   /* When the phone locks or the player switches app, everything goes quiet:
    * the score pauses, the audio engine sleeps, and both come back on return.
    * A game left playing music in the background is a warm phone in a pocket. */
-  let sleptEl = null;
+  let sleptEls = [];
   function onVisibility() {
     const hidden = root.document && root.document.visibilityState === 'hidden';
     if (hidden) {
-      const el = musicState.el;
-      if (el && !el.paused) { sleptEl = el; try { el.pause(); } catch (e) { /* ignore */ } }
+      sleptEls = [musicState.el, stingEl].filter(function (el) { return el && !el.paused; });
+      sleptEls.forEach(function (el) { try { el.pause(); } catch (e) { /* ignore */ } });
       if (ctx && ctx.state === 'running' && ctx.suspend) ctx.suspend().catch(function () {});
     } else {
       if (ctx && ctx.state === 'suspended' && ctx.resume) ctx.resume().catch(function () {});
-      if (sleptEl && sleptEl === musicState.el && !settings.muted && settings.musicOn !== false) {
-        const p = sleptEl.play && sleptEl.play();
-        if (p && p.catch) p.catch(function () {});
-      }
-      sleptEl = null;
+      sleptEls.forEach(function (el) {
+        if ((el === musicState.el || el === stingEl) && !settings.muted && settings.musicOn !== false) {
+          const p = el.play && el.play();
+          if (p && p.catch) p.catch(function () {});
+        }
+      });
+      sleptEls = [];
     }
   }
   if (root.document && root.document.addEventListener) {
@@ -5793,6 +6539,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     init: init,
     unlock: unlock,
     play: play,
+    cue: cue,
+    duration: duration,
     buzz: buzz,
     startMusic: startMusic,
     sting: sting,
@@ -5851,11 +6599,14 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     // Chapter III
     narrator: true,
     narratorLang: 'hinglish',
+    uiLang: 'en',
     voice: true,
     cinematics: true,
+    pace: 'calm',
     batterySaver: null,   // null = decide from the phone (low memory / few cores → on)
     stories: true,
-    tutorialDone: false
+    tutorialDone: false,
+    landscapeHintDismissed: false
   };
 
   function nowIso() {
@@ -6416,7 +7167,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     astra: function (n) { return 'assets/art/opt/astras/' + n + '.webp'; },
     portrait: function (n) { return 'assets/art/opt/portraits/' + n + '.webp'; },
     hero: function (n) { return 'assets/art/opt/heroes/' + n + '.webp'; },
-    sky: function (n) { return 'assets/art/opt/sky/' + n + '.jpg'; }
+    sky: function (n) { return 'assets/art/opt/ui/' + n + '.jpg'; }
   };
 
   function slotPath(slot) {
@@ -6660,6 +7411,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     boardPreview: boardPreview,
     probeAll: probeAll,
     artFor: artFor,
+    pathFor: slotPath,
     tokenInner: tokenInner,
     crest: crest,
     banner: banner,
@@ -6882,7 +7634,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     ],
     win_capture: [
       ['win_capture_1', 'A clean blow, Maharaj. Their piece falls.', 'Kya vaar tha, Maharaj! Unka mohra gir gaya.', 'क्या वार था, महाराज! उनका मोहरा गिर गया।'],
-      ['win_capture_2', 'Our line pushes forward.', 'Hamari pankti aage badh rahi hai.', 'हमारी पंक्ति आगे बढ़ रही है।']
+      ["win_capture_2", "One of theirs is down. The way is opening, Maharaj.", "Unka ek yoddha gira. Raasta khul raha hai, Maharaj.", "उनका एक योद्धा गिरा। रास्ता खुल रहा है, महाराज।"]
     ],
     lose_capture: [
       ['lose_capture_1', 'We lost one, Maharaj. They were stronger than they looked.', 'Humne ek mohra kho diya, Maharaj. Woh dikhne se zyada taaqatwar the.', 'हमने एक मोहरा खो दिया, महाराज। वो दिखने से ज़्यादा ताक़तवर थे।'],
@@ -6904,10 +7656,10 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       ['volley_kill_1', 'A rain of arrows. The archer never moved.', 'Teeron ki barsaat. Dhanurdhar apni jagah se hila bhi nahi.', 'तीरों की बरसात। धनुर्धर अपनी जगह से हिला भी नहीं।']
     ],
     volley_turned: [
-      ['volley_turned_1', 'The arrows broke on heavy armour.', 'Teer bhaari kavach se takra ke toot gaye.', 'तीर भारी कवच से टकरा के टूट गए।']
+      ["volley_turned_1", "The arrows broke on heavy armour.", "Teer bhaari kavach se takra ke toot gaye.", "तीर भारी कवच से टकराकर टूट गए।"]
     ],
     scan: [
-      ['scan_1', 'Divya-drishti. Nothing stays hidden from the seer.', 'Divya-drishti. Drashta se kuch nahi chhupta.', 'दिव्य-दृष्टि। द्रष्टा से कुछ नहीं छुपता।']
+      ["scan_1", "Divya-drishti. Nothing stays hidden from the seer.", "Divya-drishti. Drashta se kuch nahi chhupta.", "दिव्यदृष्टि। द्रष्टा से कुछ नहीं छिपता।"]
     ],
     breach_enemy: [
       ['breach_enemy_1', 'Their gate is broken! One more blow, Maharaj!', 'Unka dwaar toot gaya! Bas ek vaar aur, Maharaj!', 'उनका द्वार टूट गया! बस एक वार और, महाराज!']
@@ -6922,16 +7674,16 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       ['fort_lost_1', 'Our fort has fallen, Maharaj.', 'Hamara durg gir gaya, Maharaj.', 'हमारा दुर्ग गिर गया, महाराज।']
     ],
     rotate: [
-      ['rotate_1', 'The chakra turns! Everything on the inner rings is exposed.', 'Chakra ghoom gaya! Andar ke gheron par sab kuch dikh gaya.', 'चक्र घूम गया! अंदर के घेरों पर सब कुछ दिख गया।']
+      ["rotate_1", "The chakra turns! Everything on the inner rings is exposed.", "Chakra ghoom gaya! Andar ke gheron par sab kuch dikh gaya.", "चक्र घूम गया! भीतरी घेरों का सब कुछ खुल गया।"]
     ],
     rotate_padma: [
       ['rotate_padma_1', 'The lotus turns, Maharaj. Its petals give away their secrets.', 'Kamal ghoom gaya, Maharaj. Pankhudiyon ke raaz khul gaye.', 'कमल घूम गया, महाराज। पंखुड़ियों के राज़ खुल गए।']
     ],
     dawn: [
-      ['dawn_1', 'Dawn. The hour of Surya — our blows land harder.', 'Subah ho gayi. Surya ka pehar — hamare vaar bhaari padenge.', 'सुबह हो गई। सूर्य का पहर — हमारे वार भारी पड़ेंगे।']
+      ["dawn_1", "Dawn. The hour of Surya — our blows land harder.", "Subah ho gayi. Surya ka pehar — hamare vaar bhaari padenge.", "सुबह हो गई। सूर्य का पहर है — हमारे वार भारी पड़ेंगे।"]
     ],
     dawn_enemy: [
-      ['dawn_enemy_1', 'Dawn, and the sun is theirs. Hold the line.', 'Subah ho gayi, aur suraj unka hai. Pankti sambhaliye.', 'सुबह हो गई, और सूरज उनका है। पंक्ति संभालिए।']
+      ["dawn_enemy_1", "Dawn, and the sun is theirs. Hold the line.", "Subah ho gayi, aur suraj unka hai. Pankti sambhaliye.", "सुबह हो गई, और सूरज उनका है। मोर्चा संभालिए।"]
     ],
     dusk: [
       ['dusk_1', 'Night falls. The hour of Chandra is ours.', 'Raat ho gayi. Chandra ka pehar hamara hai.', 'रात हो गई। चंद्र का पहर हमारा है।']
@@ -6946,22 +7698,22 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       ['padma_1', 'Padma — the petals closed around it.', 'Padma — pankhudiyon ne use gher liya.', 'पद्म — पंखुड़ियों ने उसे घेर लिया।']
     ],
     shield_break: [
-      ['shield_break_1', 'It won, but its shield is cracked.', 'Jeet gaya, par dhaal toot gayi.', 'जीत गया, पर ढाल टूट गई।']
+      ["shield_break_1", "It won, but its shield is cracked.", "Jeet gaya, par dhaal toot gayi.", "वह जीत गया, पर उसकी ढाल टूट गई।"]
     ],
     shakti_full: [
-      ['shakti_full_1', 'Five lamps burn, Maharaj. The Brahmastra can be called.', 'Paanchon diye jal rahe hain, Maharaj. Brahmastra bulaya ja sakta hai.', 'पाँचों दिये जल रहे हैं, महाराज। ब्रह्मास्त्र बुलाया जा सकता है।']
+      ["shakti_full_1", "Five lamps burn, Maharaj. The Brahmastra can be called.", "Paanchon diye jal rahe hain, Maharaj. Brahmastra bulaya ja sakta hai.", "पाँचों दीये जल रहे हैं, महाराज। ब्रह्मास्त्र बुलाया जा सकता है।"]
     ],
     astra_vayavya: [
       ['astra_vayavya_1', 'Vayavyastra! A wind moves our pieces.', 'Vayavyastra! Hawa ne hamare mohre badal diye.', 'वायव्यास्त्र! हवा ने हमारे मोहरे बदल दिए।']
     ],
     astra_vayavya_enemy: [
-      ['astra_vayavya_enemy_1', 'A wind on their side of the field. Two of their pieces have changed places.', 'Unki taraf hawa chali. Unke do mohre jagah badal chuke hain.', 'उनकी तरफ़ हवा चली। उनके दो मोहरे जगह बदल चुके हैं।']
+      ["astra_vayavya_enemy_1", "They called the wind. Two of their pieces traded places — what you knew of them may be wrong now.", "Unhone Vayavyastra chalaya — do mohre jagah badal gaye. Jo pehchana tha, dobara parakhiye.", "उन्होंने वायव्यास्त्र चलाया — दो मोहरे जगह बदल गए। जो पहचाना था, दोबारा परखिए।"]
     ],
     astra_sammohana: [
       ['astra_sammohana_1', 'Sammohanastra! Their warrior stands entranced.', 'Sammohanastra! Unka yoddha sammohit khada hai.', 'सम्मोहनास्त्र! उनका योद्धा सम्मोहित खड़ा है।']
     ],
     astra_sammohana_enemy: [
-      ['astra_sammohana_enemy_1', 'One of ours is entranced, Maharaj. Two turns of stillness.', 'Hamara ek yoddha sammohit hai, Maharaj. Do chaal tak ruk gaya.', 'हमारा एक योद्धा सम्मोहित है, महाराज। दो चाल तक रुक गया।']
+      ["astra_sammohana_enemy_1", "One of ours is entranced, Maharaj. Two turns of stillness.", "Hamara ek yoddha sammohit hai, Maharaj. Do chaal tak ruk gaya.", "हमारा एक योद्धा सम्मोहित है, महाराज। दो बारी वह हिल नहीं पाएगा।"]
     ],
     astra_agneya: [
       ['astra_agneya_1', 'Agneyastra! Fire sweeps their line.', 'Agneyastra! Aag unki pankti par baras rahi hai.', 'आग्नेयास्त्र! आग उनकी पंक्ति पर बरस रही है।']
@@ -6976,10 +7728,10 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       ['astra_brahma_enemy_1', 'They have loosed the Brahmastra, Maharaj!', 'Unhone Brahmastra chhod diya, Maharaj!', 'उन्होंने ब्रह्मास्त्र छोड़ दिया, महाराज!']
     ],
     entranced_pass: [
-      ['entranced_pass_1', 'Every warrior who could move stands entranced. The turn passes.', 'Har chalne wala yoddha sammohit hai. Baari nikal gayi.', 'हर चलने वाला योद्धा सम्मोहित है। बारी निकल गई।']
+      ["entranced_pass_1", "Every warrior who could move stands entranced. The turn passes.", "Har chalne wala yoddha sammohit hai. Baari nikal gayi.", "हर चलने वाला योद्धा सम्मोहित है। यह बारी बीत गई।"]
     ],
     last_rounds: [
-      ['last_rounds_1', 'Only a few rounds left, Maharaj. The wheel is closing.', 'Bas kuch hi chaal baaki hain, Maharaj. Chakra band ho raha hai.', 'बस कुछ ही चाल बाकी हैं, महाराज। चक्र बंद हो रहा है।']
+      ["last_rounds_1", "Only a few rounds left, Maharaj. The wheel is closing.", "Bas kuch hi chaal baaki hain, Maharaj. Chakra band ho raha hai.", "बस कुछ ही चालें बाकी हैं, महाराज। चक्र बंद हो रहा है।"]
     ],
     sunset_near: [
       ['sunset_near_1', 'The sun is low. At sunset, the stronger army holds the field.', 'Suraj dhal raha hai. Shaam ko jo senaa takatwar hogi, maidan uska.', 'सूरज ढल रहा है। शाम को जो सेना ताक़तवर होगी, मैदान उसका।']
@@ -6996,6 +7748,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   };
 
   const LANGS = ['hinglish', 'en', 'hi'];
+  // Reviewed text supersedes these recordings. Clear IDs only after re-recording.
+  const VOICE_PENDING = {"hi": ["start_abhimanyu_1", "start_tutorial_1", "lose_capture_1", "trap_defused_1", "volley_turned_1", "scan_1", "rotate_1", "dawn_1", "dawn_enemy_1", "shield_break_1", "shakti_full_1", "astra_sammohana_enemy_1", "entranced_pass_1", "last_rounds_1", "win_capture_2", "astra_vayavya_enemy_1"], "en": ["win_capture_2", "astra_vayavya_enemy_1"]};
   let lang = 'hinglish';
   let voiceOn = true;
   const voiceMissing = {};
@@ -7003,7 +7757,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   let lastAt = 0;
 
   function setLang(l) { if (LANGS.indexOf(l) !== -1) lang = l; }
-  function setVoice(v) { voiceOn = !!v; }
+  function setVoice(v) { voiceOn = !!v; if (!voiceOn) stopAll(); }
 
   function pick(key) {
     const list = LINES[key];
@@ -7016,42 +7770,114 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     return L === 'en' ? line[1] : L === 'hi' ? line[3] : line[2];
   }
 
-  /* Recorded voice is optional: the first miss for a line remembers itself so
-   * a game without voice files never asks twice. */
-  function playVoice(line) {
-    if (!voiceOn || typeof Audio === 'undefined') return;
+  // One active line and a small priority queue. Nothing cuts a playing line off
+  // except an explicit skip, voice-off, or leaving the match.
+  let onLine = null;
+  let pending = [];
+  let active = null;
+  let idleWaiters = [];
+
+  function priority(key) {
+    if (/^fort_/.test(key)) return 7;
+    if (/^breach_/.test(key)) return 6;
+    if (/^astra_/.test(key)) return 5;
+    if (/capture|assassinate|both_fell|volley|makara|padma|shield_break/.test(key)) return 4;
+    if (/^trap_/.test(key)) return 3;
+    if (/dawn|dusk|rotate/.test(key)) return 2;
+    return 1;
+  }
+
+  function playVoice(line, opts) {
+    let finish;
+    let timer;
+    let el;
+    const result = { finished: new Promise(function (resolve) { finish = resolve; }), stop: stop };
+    let done = false;
+    function stop() {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      if (el) { el.onended = el.onerror = el.onloadedmetadata = null; el.pause(); }
+      if (playing === el) playing = null;
+      finish();
+    }
+    const settings = AC.audio && AC.audio.getSettings ? AC.audio.getSettings() : {};
     // one Hindi recording serves both the Hinglish and the Hindi text
     const vlang = lang === 'en' ? 'en' : 'hi';
     const url = 'assets/audio/voice/' + vlang + '/' + line[0] + '.mp3';
-    if (voiceMissing[url]) return;
-    const settings = AC.audio && AC.audio.getSettings ? AC.audio.getSettings() : {};
-    if (settings.muted) return;
+    // Text-only lines still have a short reading gap, skippable like a voice.
+    timer = setTimeout(stop, 1000);
+    // A recording superseded by reviewed text stays silent until it is re-voiced.
+    if (VOICE_PENDING[vlang].indexOf(line[0]) !== -1) return result;
+    if (!voiceOn || opts.voice === false || typeof Audio === 'undefined' || settings.muted || voiceMissing[url]) return result;
     try {
-      if (playing) { playing.pause(); playing = null; }
-      const el = new Audio(url);
+      el = new Audio(url);
       el.volume = Math.min(1, Math.max(0.1, (settings.sfx != null ? settings.sfx : 0.7) * 1.2));
-      el.onerror = function () { voiceMissing[url] = true; };
-      const p = el.play();
-      if (p && p.catch) p.catch(function () { voiceMissing[url] = true; });
+      el.onended = stop;
+      el.onerror = function () { voiceMissing[url] = true; stop(); };
+      // Bound a stalled line, never a long one: 20 of 88 recordings run past
+      // 3.5 s, so the watchdog follows the file's own length once known.
+      clearTimeout(timer);
+      timer = setTimeout(stop, 6000);
+      el.onloadedmetadata = function () {
+        if (done || !(el.duration > 0) || !Number.isFinite(el.duration)) return;
+        clearTimeout(timer);
+        timer = setTimeout(stop, el.duration * 1000 + 600);
+        if (AC.audio && AC.audio.duck) AC.audio.duck(el.duration * 1000 + 200);
+      };
       playing = el;
-      if (AC.audio && AC.audio.duck) AC.audio.duck(2200);
-    } catch (e) { voiceMissing[url] = true; }
+      const p = el.play();
+      if (p && p.catch) p.catch(function () { voiceMissing[url] = true; stop(); });
+      if (AC.audio && AC.audio.duck) AC.audio.duck(4000);
+    } catch (e) { voiceMissing[url] = true; stop(); }
+    return result;
   }
 
-  let onLine = null;
+  function pump() {
+    if (active) return;
+    if (!pending.length) {
+      idleWaiters.splice(0).forEach(function (resolve) { resolve(); });
+      return;
+    }
+    const item = pending.shift();
+    active = item;
+    lastAt = Date.now();
+    if (onLine) onLine(textOf(item.line), item.line, item.key);
+    item.cue = playVoice(item.line, item.opts);
+    item.cue.finished.then(function () {
+      if (active === item) active = null;
+      item.resolve(item.line);
+      pump();
+    });
+  }
 
-  /* Say something. `opts.force` skips the spacing that keeps Sanjaya from
-   * talking over himself on busy turns. Returns the line (or null). */
   function say(key, opts) {
     opts = opts || {};
-    const now = Date.now();
-    if (!opts.force && now - lastAt < 900) return null;
     const line = pick(key);
-    if (!line) return null;
-    lastAt = now;
-    if (onLine) onLine(textOf(line), line, key);
-    if (opts.voice !== false) playVoice(line);
-    return line;
+    if (!line || (!opts.force && Date.now() - lastAt < 900)) return Promise.resolve(null);
+    return new Promise(function (resolve) {
+      const rank = opts.priority || priority(key);
+      pending = pending.filter(function (item) {
+        if (item.rank < rank) { item.resolve(null); return false; }
+        return true;
+      });
+      if (pending.length >= 3) { resolve(null); return; }
+      pending.push({ key: key, line: line, opts: opts, rank: rank, resolve: resolve });
+      pump();
+    });
+  }
+
+  function stopAll() {
+    pending.splice(0).forEach(function (item) { item.resolve(null); });
+    // Free the floor now, so a line said right after a stop starts at once.
+    const item = active;
+    active = null;
+    if (item && item.cue) item.cue.stop();
+  }
+
+  function idle() {
+    if (!active && !pending.length) return Promise.resolve();
+    return new Promise(function (resolve) { idleWaiters.push(resolve); });
   }
 
   function allLines() {
@@ -7064,8 +7890,13 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 
   AC.sanjaya = {
     LINES: LINES,
+    voicePending: VOICE_PENDING,
     LANGS: LANGS,
     say: say,
+    priority: priority,
+    idle: idle,
+    stop: stopAll,
+    skip: function () { if (active && active.cue) active.cue.stop(); },
     setLang: setLang,
     setVoice: setVoice,
     textOf: textOf,
@@ -7085,6 +7916,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 (function (root) {
   'use strict';
   const AC = (root.AC = root.AC || {});
+  const L = AC.i18n;
+  const tr = function (key, fallback) { return L.text(key, fallback); };
   const A = AC.art;
   const S = AC.storage;
   const AU = AC.audio;
@@ -7125,6 +7958,11 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 
   /* ── screens ─────────────────────────────────────────────────── */
   const SCREENS = ['auth', 'home', 'setup', 'game'];
+
+  function resumeScore() {
+    const mode = app.screen === 'game' && AC.game ? AC.game.musicMode() : app.screen === 'setup' ? 'tabla' : 'menu';
+    if (mode && app.settings.musicOn !== false) AU.startMusic(mode);
+  }
 
   function show(name) {
     if (name !== 'game' && AC.game && AC.game.clearOverlays) AC.game.clearOverlays();
@@ -7277,11 +8115,13 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 
   function applySettings() {
     const s = app.settings;
+    L.setLang(s.uiLang || 'en');
+    L.applyDOM(document);
     document.documentElement.classList.toggle('cb', !!s.colorblind);
     document.documentElement.classList.toggle('hc', !!s.highContrast);
     document.documentElement.classList.toggle('reduce-motion', !!s.reducedMotion);
     document.documentElement.classList.toggle('lite', liteOn(s));
-    AU.setSettings({ sfx: s.sfx, music: s.music, muted: s.muted, haptics: s.haptics });
+    AU.setSettings({ sfx: s.sfx, music: s.music, musicOn: s.musicOn, muted: s.muted, haptics: s.haptics });
     FX.setReducedMotion(s.reducedMotion);
     if (AC.sanjaya) {
       AC.sanjaya.setLang(s.narratorLang || 'hinglish');
@@ -7293,6 +8133,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     app.settings = S.patchSettings(patch);
     applySettings();
     renderQuickSettings();
+    if (patch.uiLang != null && app.screen === 'home') renderHome();
+    if (patch.uiLang != null && app.screen === 'setup') renderSetup();
     if (AC.game) AC.game.onSettingsChange();
     return app.settings;
   }
@@ -7551,11 +8393,11 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     document.getElementById('home-rank').textContent = rankLabel(stats) + ' · ' + stats.matches + ' battle' + (stats.matches === 1 ? '' : 's');
     document.getElementById('home-greeting').textContent = greeting() + ', ' + name;
 
-    document.getElementById('ci-quick').innerHTML = A.icon('sword') + ' Yuddh karo';
+    document.getElementById('ci-quick').innerHTML = A.icon('sword') + ' ' + esc(tr('home.quick', 'Yuddh karo'));
     const q = quickSetup();
-    const qb = U.BOARDS[q.board] || U.BOARDS.wheel;
-    const qd = U.DIFFICULTIES[q.difficulty] || U.DIFFICULTIES.veteran;
-    document.getElementById('quick-sub').textContent = 'Quick battle · ' + qb.label + ' vs ' + qd.label;
+    const qb = L.board(q.board) || U.BOARDS.wheel;
+    const qd = L.opponent(q.difficulty) || U.DIFFICULTIES.veteran;
+    document.getElementById('quick-sub').textContent = tr('home.quick.sub', 'Quick battle') + ' · ' + qb.label + ' vs ' + qd.label;
 
     document.getElementById('ci-daily').innerHTML = A.icon('calendar');
     document.getElementById('ci-tutorial').innerHTML = A.icon('help');
@@ -7570,16 +8412,16 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     // the daily card
     if (AC.modes && AC.modes.dailyStatus) {
       const d = AC.modes.dailyStatus();
-      document.getElementById('daily-title').innerHTML = 'Daily Chakravyuha <span class="daily-num">#' + d.info.n + '</span>';
+      document.getElementById('daily-title').innerHTML = esc(tr('home.daily', 'Daily Chakravyuha')) + ' <span class="daily-num">#' + d.info.n + '</span>';
       document.getElementById('daily-sub').textContent = d.today
         ? (d.today.win ? 'Broken in on round ' + d.today.rounds + ' — share it, or practise' : 'The wheel held today — practise, or try tomorrow')
-        : d.info.mod.name + ' · same wheel for everyone today';
+        : L.daily(d.info.mod).name + ' · ' + tr('home.daily.sub', 'Same wheel for everyone today');
       document.getElementById('daily-badge').innerHTML = d.streak ? A.icon('diya') + d.streak : (d.today ? A.icon('check') : 'NEW');
       document.getElementById('btn-daily').classList.toggle('done', !!d.today);
     }
     const tutDone = !!app.settings.tutorialDone;
     document.getElementById('btn-tutorial').classList.toggle('card-pulse', !tutDone);
-    document.getElementById('tutorial-sub').textContent = tutDone ? 'Replay the two-minute lesson' : 'Start here · learn the field in two minutes';
+    document.getElementById('tutorial-sub').textContent = tutDone ? 'Replay the two-minute lesson' : tr('home.lesson.sub', 'Learn the field in two minutes');
 
     const auto = S.listSaves().filter(function (s) { return s.slot === 'auto'; })[0];
     const saves = S.listSaves().filter(function (s) { return s.slot !== 'auto'; });
@@ -7647,8 +8489,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 
   function describeSave(save) {
     const m = save.meta || {};
-    const mode = m.mode === 'pass' ? 'Pass & play' : 'vs ' + (U.DIFFICULTIES[m.difficulty] || U.DIFFICULTIES.veteran).label;
-    const board = (U.BOARDS[m.board] || U.BOARDS.small).label;
+    const mode = m.mode === 'pass' ? 'Pass & play' : 'vs ' + (L.opponent(m.difficulty) || U.DIFFICULTIES.veteran).label;
+    const board = (L.board(m.board) || U.BOARDS.small).label;
     const what = m.scenario === 'daily' ? 'Daily · ' : m.scenario === 'abhimanyu' ? 'Abhimanyu · ' : '';
     return what + board + ' · ' + mode + ' · round ' + (m.turn || 1);
   }
@@ -7750,12 +8592,12 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
         { v: 'pass', title: 'Pass & play', sub: 'Two players, one device, a curtain between turns', icon: 'users' }
       ]
     });
-    const scen = U.SCENARIOS[app.setupScenario()] || U.SCENARIOS.duel;
+    const scen = L.scenario(app.setupScenario()) || U.SCENARIOS.duel;
     groups.push({
       label: 'Scenario',
       key: 'scenario',
       options: Object.keys(U.SCENARIOS).map(function (k) {
-        const sc = U.SCENARIOS[k];
+        const sc = L.scenario(k);
         return { v: k, title: sc.label, deva: sc.deva, sub: sc.blurb, icon: k === 'duel' ? 'sword' : 'bolt' };
       })
     });
@@ -7763,7 +8605,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       label: 'Battlefield',
       key: 'board',
       options: (scen.boards || Object.keys(U.BOARDS)).map(function (k) {
-        const b = U.BOARDS[k];
+        const b = L.board(k);
         return { v: k, title: b.label, deva: b.deva, sub: b.blurb, icon: 'grid' };
       })
     });
@@ -7772,13 +8614,13 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
         label: 'Opponent',
         key: 'difficulty',
         options: Object.keys(U.DIFFICULTIES).map(function (k) {
-          const d = U.DIFFICULTIES[k];
+          const d = L.opponent(k);
           return { v: k, title: d.label, deva: d.deva, sub: d.blurb, icon: 'star' };
         })
       });
     }
     groups.push({
-      label: 'Rules',
+      label: tr('home.codex', 'Rules'),
       key: 'ruleset',
       options: [
         { v: 'vyuha', title: 'VYUHA', deva: 'व्यूह', sub: 'Gates, hours, formations and astras', icon: 'sun' },
@@ -7840,22 +8682,22 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       if (key === 'timer') val = Number(val);
       app.setup[key] = val;
       if (key === 'scenario') {
-        const sc = U.SCENARIOS[val];
+        const sc = L.scenario(val);
         if (sc && sc.boards && sc.boards.indexOf(app.setup.board) === -1) app.setup.board = sc.boards[0];
       }
       sfx('select');
       renderSetup();
     };
 
-    const mode = app.setup.mode === 'pass' ? 'Pass & play' : 'vs ' + U.DIFFICULTIES[app.setup.difficulty].label;
-    const scenario = U.SCENARIOS[app.setup.scenario] || U.SCENARIOS.duel;
-    const board = U.BOARDS[app.setup.board];
+    const mode = app.setup.mode === 'pass' ? 'Pass & play' : 'vs ' + L.opponent(app.setup.difficulty).label;
+    const scenario = L.scenario(app.setup.scenario) || U.SCENARIOS.duel;
+    const board = L.board(app.setup.board);
     const tie = app.setup.tie === 'attacker' ? 'Attacker wins' : 'Both fall';
     const timer = app.setup.timer ? app.setup.timer + 's per turn' : 'No clock';
     document.getElementById('setup-summary').innerHTML =
       row('Scenario', scenario.label) + row('Opponent', mode) +
       row('Field', board.label + ' (' + (board.cells ? board.cells + ' cells' : board.cols + '×' + board.rows) + ')') +
-      row('Rules', app.setup.ruleset === 'classic' ? 'Classic' : 'VYUHA') +
+      row(tr('home.codex', 'Rules'), app.setup.ruleset === 'classic' ? 'Classic' : 'VYUHA') +
       row('Equal strength', tie) + row('Clock', timer) +
       row('Army', scenario.rosters
         ? scenario.rosters[1].length + ' raiders vs ' + scenario.rosters[2].length + ' defenders'
@@ -7900,7 +8742,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     let active = tab || 'units';
     const tabs = [
       { k: 'units', label: 'Pieces' },
-      { k: 'rules', label: 'Rules' },
+      { k: 'rules', label: tr('home.codex', 'Rules') },
       { k: 'astras', label: 'Astras' },
       { k: 'sky', label: 'Hours & formations' },
       { k: 'intel', label: 'Reading the field' }
@@ -7915,7 +8757,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     function bodyFor(k) {
       if (k === 'units') {
         return U.RANK_ORDER.map(function (key) {
-          const u = U.UNIT_DEFS[key];
+          const u = L.unit(key);
           return '<div class="unit-row">' +
             '<div class="unit-emblem">' + A.emblem(key) + '<span class="rank-tag">' + u.badge + '</span></div>' +
             '<div class="unit-body">' +
@@ -7956,11 +8798,11 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       }
       if (k === 'sky') {
         return block([
-          ['दिनमान · Dinman — the hour of Surya', 'By day, every Suryavansh strike lands at +1.'],
-          ['रात्रि · Ratri — the hour of Chandra', 'By night, every Chandravansh strike lands at +1. A duel opens in the last hour of night, which balances the first move.'],
+          ['दिनमान · Dinman — the hour of Surya', tr('hour.day.one', 'By day, every Suryavansh strike lands at +1.')],
+          ['रात्रि · Ratri — the hour of Chandra', tr('hour.night.one', 'By night, every Chandravansh strike lands at +1. A duel opens in the last hour of night, which balances the first move.')],
           ['When the sky turns', 'Every fifth round, at the same moment the rings turn. Both armies gain one Shakti. The HUD shows the hour and how many rounds remain.'],
-          ['मकर · Makara — the jaws', 'Strike an enemy that another of your fighting pieces already touches: +1 to your strike. Two jaws are enough; more do not add.'],
-          ['पद्म · Padma — the lotus', 'A piece touched by two or more of its own fighting pieces defends at +1. Strike where the petals are thin.'],
+          ['मकर · Makara — the jaws', tr('formation.makara.one', 'Strike an enemy that another of your fighting pieces already touches: +1 to your strike. Two jaws are enough; more do not add.')],
+          ['पद्म · Padma — the lotus', tr('formation.padma.one', 'A piece touched by two or more of its own fighting pieces defends at +1. Strike where the petals are thin.')],
           ['How far it goes', 'Hour and Makara stack; a Maharathi (9) in its hour, in a pincer, strikes as 11 — enough to topple a Senapati. No side ever gains more than +2.']
         ]);
       }
@@ -7975,7 +8817,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 
     const m = modal({
       kicker: 'Granth · ग्रंथ',
-      title: 'Rules',
+      title: tr('home.codex', 'Rules'),
       wide: true,
       body: '<div class="codex-tabs">' + tabs.map(function (t) {
         return '<button class="codex-tab' + (t.k === active ? ' on' : '') + '" data-codex="' + t.k + '">' + t.label + '</button>';
@@ -7993,7 +8835,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   }
 
   function E_ASTRAS() {
-    return ['vayavya', 'sammohana', 'agneya', 'brahma'].map(function (k) { return U.ASTRA_DEFS[k]; });
+    return ['vayavya', 'sammohana', 'agneya', 'brahma'].map(function (k) { return L.astra(k); });
   }
 
   /* ── settings ────────────────────────────────────────────────── */
@@ -8001,10 +8843,22 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     const s = app.settings;
     const body =
       '<div class="settings-grid">' +
+        '<div class="slider-row"><label>Battle pace</label>' +
+          '<div class="seg" data-seg="pace">' +
+            [['calm', 'Calm (default)'], ['quick', 'Quick']].map(function (o) {
+              return '<button class="seg-btn' + ((s.pace || 'calm') === o[0] ? ' on' : '') + '" data-segval="' + o[0] + '">' + o[1] + '</button>';
+            }).join('') +
+          '</div></div>' +
         '<div class="slider-row"><label>Sound effects <span id="lbl-sfx">' + Math.round(s.sfx * 100) + '%</span></label>' +
           '<input type="range" min="0" max="100" value="' + Math.round(s.sfx * 100) + '" data-slider="sfx" /></div>' +
         '<div class="slider-row"><label>Ambient score <span id="lbl-music">' + Math.round(s.music * 100) + '%</span></label>' +
           '<input type="range" min="0" max="100" value="' + Math.round(s.music * 100) + '" data-slider="music" /></div>' +
+        '<div class="slider-row"><label>Interface language / भाषा</label>' +
+          '<div class="seg" data-seg="uiLang">' +
+            [['en', 'English'], ['hi', 'हिन्दी'], ['mr', 'मराठी']].map(function (o) {
+              return '<button class="seg-btn' + (L.getLang() === o[0] ? ' on' : '') + '" data-segval="' + o[0] + '">' + o[1] + '</button>';
+            }).join('') +
+          '</div></div>' +
         '<div class="slider-row"><label>Sanjaya speaks in</label>' +
           '<div class="seg" data-seg="narratorLang">' +
             [['hinglish', 'Hinglish'], ['hi', 'हिन्दी'], ['en', 'English']].map(function (o) {
@@ -8072,7 +8926,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
         patchSettings(p);
         $$('.seg-btn', seg).forEach(function (n) { n.classList.toggle('on', n === segBtn); });
         sfx('ui');
-        if (AC.sanjaya) AC.sanjaya.say('start_duel', { force: true });
+        if (AC.sanjaya && seg.getAttribute('data-seg') === 'narratorLang') AC.sanjaya.say('start_duel', { force: true });
         return;
       }
       const rowEl = e.target.closest('[data-toggle]');
@@ -8082,7 +8936,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       if (key === 'muted') patch.muted = !app.settings.muted;
       else if (key === 'musicOn') {
         patch.musicOn = !(app.settings.musicOn !== false);
-        if (patch.musicOn) AU.startMusic('menu'); else AU.stopMusic();
+        if (!patch.musicOn) AU.stopMusic();
       } else if (key === 'haptics') patch.haptics = !app.settings.haptics;
       else if (key === 'confirmActions') patch.confirmActions = !(app.settings.confirmActions !== false);
       else if (key === 'narrator') patch.narrator = app.settings.narrator === false;
@@ -8095,6 +8949,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       else if (key === 'colorblind') patch.colorblind = !app.settings.colorblind;
       else if (key === 'highContrast') patch.highContrast = !app.settings.highContrast;
       patchSettings(patch);
+      if (key === 'musicOn' && patch.musicOn) resumeScore();
       rowEl.querySelector('.switch').classList.toggle('on');
       const on = rowEl.querySelector('.switch').classList.contains('on');
       rowEl.setAttribute('aria-checked', on ? 'true' : 'false');
@@ -8152,11 +9007,22 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     });
   }
 
+  let hubPaint = null, hubTimer = null;
+  function artLanded(slot) {
+    if (!hubPaint || !/^(hero|portrait):/.test(slot)) return;
+    clearTimeout(hubTimer);
+    hubTimer = setTimeout(function () { if (hubPaint) hubPaint(); }, 60);
+  }
+
   function openProfile() {
     let p = app.profile;
     if (!p) { show('auth'); return; }
-    const m = modal({ kicker: 'Yoddha', title: 'Your profile', body: '<div id="hub"></div>', actions: [{ label: 'Done', cls: 'btn-primary' }] });
+    const m = modal({ kicker: 'Yoddha', title: 'Your profile', body: '<div id="hub"></div>', actions: [{ label: 'Done', cls: 'btn-primary' }],
+      onClose: function () { hubPaint = null; } });
     const host = m.el.querySelector('#hub');
+    // Portraits load lazily the first time the hub asks for them; repaint the
+    // picker as each one lands instead of showing sigils until a reopen.
+    hubPaint = function () { if (host.isConnected) paint(); };
 
     function save(patch) {
       const av = Object.assign({}, p.avatar || {}, patch);
@@ -8177,7 +9043,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       let best = -1;
       opp.forEach(function (k, i) { if (by[k] && by[k].w) best = i; });
       const standing = opp.map(function (k, i) {
-        const d = U.DIFFICULTIES[k] || { label: k };
+        const d = L.opponent(k) || { label: k };
         const r = by[k] || { w: 0, l: 0, d: 0 };
         return '<div class="stand-row' + (r.w ? ' beaten' : '') + '"><span>' + esc(d.label) + (i === best ? ' <span class="stand-mark">· your level</span>' : '') +
           '</span><span class="stand-wl">' + r.w + ' won · ' + r.l + ' lost</span></div>';
@@ -8190,7 +9056,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
           '<div class="hub-title">' + t[1] + ' ' + t[2] + '</div>' +
           '<div class="hub-next">Next title: ' + esc(nextTitle(st)) + '</div></div>' +
         '</div>' +
-        '<div class="hub-h">Record</div>' +
+        '<div class="hub-h">' + esc(tr('home.record', 'Record')) + '</div>' +
         '<div class="hub-grid">' +
           statCell(st.wins || 0, 'Wins') + statCell(st.losses || 0, 'Losses') +
           statCell(winRate + '%', 'Win rate') + statCell(st.streak || 0, 'Streak') +
@@ -8452,7 +9318,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     // first interaction unlocks Web Audio (browser policy)
     const unlockOnce = function () {
       AU.unlock();
-      if (app.settings.musicOn !== false) AU.startMusic(app.screen === 'game' ? 'battle' : 'menu');
+      resumeScore();
       document.removeEventListener('pointerdown', unlockOnce);
       document.removeEventListener('keydown', unlockOnce);
     };
@@ -8517,6 +9383,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     patchSettings: patchSettings,
     boot: boot,
     openProfile: openProfile,
+    artLanded: artLanded,
     esc: esc,
     timeAgo: timeAgo,
     describeSave: describeSave,
@@ -8537,6 +9404,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 (function (root) {
   'use strict';
   const AC = (root.AC = root.AC || {});
+  const L = AC.i18n;
+  const tr = function (key, fallback) { return L.text(key, fallback); };
   const A = AC.art;
   const U = AC.units;
   const FX = AC.fx;
@@ -8551,6 +9420,10 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     return !!(AC.app && AC.app.settings && AC.app.settings.reducedMotion);
   }
 
+  function calm() {
+    return AC.game && AC.game.calmActive || AC.app && AC.app.settings && AC.app.settings.pace !== 'quick';
+  }
+
   let current = null;
 
   function close(fire) {
@@ -8558,28 +9431,43 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     const c = current;
     current = null;
     clearTimeout(c.timer);
-    c.el.classList.add('stage-out');
-    setTimeout(function () { if (c.el.parentNode) c.el.remove(); }, 220);
+    if (calm()) c.el.remove();
+    else {
+      c.el.classList.add('stage-out');
+      setTimeout(function () { if (c.el.parentNode) c.el.remove(); }, 220);
+    }
     if (fire !== false && c.done) c.done();
+  }
+
+  /* Calm: keep the current card up until the game closes it (after the voice). */
+  function extend() {
+    if (current) { clearTimeout(current.timer); current.timer = null; }
   }
 
   /* Mount a beat. `ms` is how long it holds before it leaves on its own. */
   function show(html, cls, ms, done, opts) {
     if (current) close(true);
     opts = opts || {};
-    // beats were running 2-2.6 s and held the board hostage; 1.5 s reads as a
-    // flourish instead of a takeover
-    if (ms) ms = Math.min(ms, 1500);
+    // Quick retains its 1.5 s flourish; Calm gives each moment its full hold.
+    if (ms && !calm()) ms = Math.min(ms, 1500);
     const el = document.createElement('div');
     el.className = 'stage ' + (cls || '');
     el.setAttribute('role', 'status');
     el.setAttribute('aria-live', 'polite');
-    el.innerHTML = '<div class="stage-card">' + html + '</div>' +
+    el.innerHTML = (opts.backdrop ? '<img class="st-astra-anim" src="' + esc(opts.backdrop) + '" alt="" aria-hidden="true">' : '') +
+      '<div class="stage-card">' + html + '</div>' +
       (opts.passive ? '' : '<div class="stage-skip">tap to continue</div>');
+    // Mount the image immediately: artFor() intentionally returns null while
+    // probing, which used to leave the entire first invocation without a film.
+    const film = el.querySelector('.st-astra-anim');
+    if (film) film.addEventListener('error', function () { film.remove(); });
     document.body.appendChild(el);
-    const hold = reduced() ? Math.min(ms, 1100) : ms;
+    const hold = reduced() && !calm() ? Math.min(ms, 1100) : ms;
     current = { el: el, done: done, timer: setTimeout(function () { close(true); }, hold) };
-    if (!opts.passive) el.addEventListener('click', function () { close(true); });
+    if (!opts.passive) el.addEventListener('click', function () {
+      if (calm() && AC.game && AC.game.skipPace && AC.game.skipPace()) return;
+      close(true);
+    });
     else el.style.pointerEvents = 'none';
     void el.offsetWidth;
     el.classList.add('stage-in');
@@ -8605,7 +9493,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   function piece(u, side, opts) {
     opts = opts || {};
     const cls = u.owner === 1 ? 'solar' : 'void';
-    const def = U.UNIT_DEFS[u.key] || {};
+    const def = L.unit(u.key) || {};
     const rankShown = opts.value != null && opts.value !== u.rank && u.key !== 'F' && u.key !== 'B'
       ? esc(def.badge || u.badge) + '<i>→' + opts.value + '</i>'
       : esc(u.key === 'F' || u.key === 'B' ? (u.key === 'F' ? '⚑' : '✷') : u.badge);
@@ -8620,8 +9508,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   /* The verdict is told from the point of view of whoever is watching. */
   function verdict(kind) {
     const V = {
-      win: ['विजय', 'Victory'],
-      lose: ['पराजय', 'Repelled'],
+      win: ['विजय', tr('result.victory', 'Victory')],
+      lose: ['पराजय', tr('result.defeat', 'Repelled')],
       both: ['वीरगति', 'Both fall'],
       fort: ['दुर्ग विजय', 'The fort is taken'],
       fortLost: ['दुर्ग पतन', 'The fort has fallen'],
@@ -8659,7 +9547,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       '</div>' +
       verdict(kind) +
       '<div class="st-line">' + esc(ev.text) + '</div>';
-    show(html, 'stage-clash stage-' + kind, ev.core ? 2600 : 1900, done);
+    show(html, 'stage-clash stage-' + kind, ev.core ? 2600 : calm() ? 2200 : 1900, done);
     if (navigator && navigator.vibrate && AC.app && AC.app.settings && AC.app.settings.haptics !== false) {
       try { navigator.vibrate(kind === 'win' || kind === 'fort' ? [14, 40, 14] : 26); } catch (e) { /* ignore */ }
     }
@@ -8676,7 +9564,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       '</div>' +
       verdict(kind) +
       '<div class="st-line">' + esc(ev.text) + '</div>';
-    show(html, 'stage-volley', 1600, done);
+    show(html, 'stage-volley', calm() ? 2200 : 1600, done);
   }
 
   function scan(ev, viewer, done) {
@@ -8698,21 +9586,22 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       (A.artFor('ui:breach') ? '<img class="st-astra-anim st-breach-art" src="' + A.artFor('ui:breach') + '" alt="" aria-hidden="true">' : '') +
       '<div class="st-gate" aria-hidden="true">' + A.icon('gate') + '<span class="st-crack"></span></div>' +
       verdict('breach') +
-      '<div class="st-line">' + (mine ? 'Our gate is broken. One more blow and the fort falls — defend it.' : 'Their gate is broken. One more blow takes the fort.') + '</div>';
-    show(html, 'stage-breach' + (mine ? ' stage-lose' : ' stage-win'), 1900, done);
+      '<div class="st-line">' + esc(tr('gate.broken', (mine ? 'Our gate is broken. One more blow and the fort falls — defend it.' : 'Their gate is broken. One more blow takes the fort.'))) + '</div>';
+    show(html, 'stage-breach' + (mine ? ' stage-lose' : ' stage-win'), calm() ? 2600 : 1900, done);
   }
 
   function astra(ev, viewer, done) {
     const def = (U.ASTRA_DEFS || {})[ev.astra] || { name: ev.astra, deva: '' };
     const ours = ev.owner === viewer;
-    const anim = A.artFor('astra:' + ev.astra + '-anim');
+    const systemReduced = root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const anim = !reduced() && !systemReduced && !document.documentElement.classList.contains('lite')
+      ? A.pathFor('astra:' + ev.astra + '-anim') : null;
     const html =
-      (anim ? '<img class="st-astra-anim" src="' + anim + '" alt="" aria-hidden="true">' : '') +
       '<div class="st-astra-mark">' + A.astraMark(ev.astra) + '</div>' +
       '<div class="st-astra-name"><span class="deva">' + esc(def.deva) + '</span><b>' + esc(def.name) + '</b></div>' +
       '<div class="st-astra-by">' + (ours ? 'invoked by your army' : 'invoked by the enemy') + '</div>' +
       '<div class="st-line">' + esc(ev.text) + '</div>';
-    show(html, 'stage-astra stage-astra-' + ev.astra + (ours ? ' ours' : ' theirs'), ev.astra === 'brahma' ? 2600 : 2000, done);
+    show(html, 'stage-astra stage-astra-' + ev.astra + (ours ? ' ours' : ' theirs'), ev.astra === 'brahma' ? 2600 : calm() ? 2200 : 2000, done, { backdrop: anim });
     const c = FX.centerOf(document.getElementById('board'));
     const colors = { vayavya: '#cfe8ff', sammohana: '#c4b5fd', agneya: '#ff8a3d', brahma: '#fff3c4' };
     if (FX && FX.burst) {
@@ -8722,13 +9611,13 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   }
 
   /* The sky turning is a passive beat: it never blocks the game. */
-  function sky(hour, viewerHour) {
+  function sky(hour, viewerHour, done) {
     const day = hour === 'day';
     const html =
       '<div class="st-sky-mark">' + A.icon(day ? 'sun' : 'moon') + '</div>' +
-      '<div class="st-astra-name"><span class="deva">' + (day ? 'दिनमान' : 'रात्रि') + '</span><b>' + (day ? 'Dawn — the hour of Surya' : 'Night — the hour of Chandra') + '</b></div>' +
+      '<div class="st-astra-name"><span class="deva">' + (day ? 'दिनमान' : 'रात्रि') + '</span><b>' + tr('sky.' + hour, day ? 'Dawn — the hour of Surya' : 'Night — the hour of Chandra') + '</b></div>' +
       '<div class="st-astra-by">' + (viewerHour ? 'Your army strikes at +1 until the sky turns again.' : 'The enemy strikes at +1 until the sky turns again.') + '</div>';
-    show(html, 'stage-sky stage-' + (day ? 'day' : 'night'), 1700, null, { passive: true });
+    show(html, 'stage-sky stage-' + (day ? 'day' : 'night'), 1700, done, { passive: !done });
   }
 
   AC.stage = {
@@ -8739,6 +9628,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     astra: astra,
     sky: sky,
     close: close,
+    extend: extend,
     busy: function () { return !!current; }
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
@@ -8755,6 +9645,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 (function (root) {
   'use strict';
   const AC = (root.AC = root.AC || {});
+  const L = AC.i18n;
+  const tr = function (key, fallback) { return L.text(key, fallback); };
   const E = AC.engine;
   const AI = AC.ai;
   const U = AC.units;
@@ -8883,9 +9775,9 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 
   function showStory(done) {
     const st = g.state;
-    const sc = U.SCENARIOS[st.scenario] || U.SCENARIOS.duel;
+    const sc = L.scenario(st.scenario) || U.SCENARIOS.duel;
     const legend = LEGEND[st.scenario] || LEGEND.duel;
-    if (settings().stories === false || !U.SCENARIOS[st.scenario]) { if (done) done(); return; }
+    if (settings().stories === false || !L.scenario(st.scenario)) { if (done) done(); return; }
     const art = A.artFor('card:' + st.scenario);
     const m = AC.ui.modal({
       kicker: sc.label + (sc.deva ? ' · ' + sc.deva : ''),
@@ -8940,7 +9832,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     st = st || g.state;
     if (!st) return '';
     if (st.config.mode !== 'ai') return 'Commander 2';
-    const d = U.DIFFICULTIES[st.config.difficulty] || U.DIFFICULTIES.veteran;
+    const d = L.opponent(st.config.difficulty) || U.DIFFICULTIES.veteran;
     return d.label;
   }
   g.oppName = oppName;
@@ -8948,6 +9840,9 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   /* ══ lifecycle ═════════════════════════════════════════════════ */
 
   function clearOverlays() {
+    clearTimers();
+    g.busy = false;
+    g.thinking = false;
     Array.prototype.forEach.call(document.querySelectorAll('.curtain'), function (n) { n.remove(); });
     const scrim = document.getElementById('scrim');
     if (scrim) scrim.classList.remove('on');
@@ -8974,6 +9869,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     resetSelection();
     g.slot = null;
     g.over = false;
+    g.calmResultNarrated = false;
     g.busy = false;
     g.thinking = false;
     g.hinted = false;
@@ -9069,7 +9965,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   g.saveTo = function (slot) {
     if (!g.canSave()) return null;
     const st = g.state;
-    const label = (U.BOARDS[st.boardKey] || U.BOARDS.small).label + ' · ' +
+    const label = (L.board(st.boardKey) || U.BOARDS.small).label + ' · ' +
       (st.config.mode === 'pass' ? 'Pass & play' : 'vs ' + oppName(st)) +
       ' · round ' + st.turn;
     const entry = S.saveGame(slot, st, Object.assign({ label: label }, saveMeta(st)));
@@ -9084,6 +9980,10 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   g.autosave = autosave;
 
   function clearTimers() {
+    cancelPace();
+    sayQueue = [];
+    if (sayTimer) { clearTimeout(sayTimer); sayTimer = null; }
+    if (SJ && SJ.stop) SJ.stop();
     if (g.timerId) { clearInterval(g.timerId); g.timerId = null; }
     if (g.aiTimer) { clearTimeout(g.aiTimer); g.aiTimer = null; }
   }
@@ -9093,14 +9993,27 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   let rendering = false;
   let renderAgain = false;
 
+  // Special modes keep their theme across sky changes. Settings and audio
+  // unlock use the same route, so they cannot replace the score with menu music.
+  g.musicMode = function () {
+    const st = g.state;
+    if (!st) return null;
+    if (st.phase === 'deploy1' || st.phase === 'deploy2') return 'tabla';
+    if (st.phase !== 'battle') return null;
+    if (st.scenario === 'daily') return 'daily';
+    if (st.scenario === 'shiksha') return 'lesson';
+    if (st.scenario === 'abhimanyu') return 'abhimanyu';
+    return E.hourOf(st) === 'night' ? 'battle_night' : 'battle';
+  };
+
   function render() {
     if (!g.state) return;
     if (rendering) { renderAgain = true; return; }   // never rebuild the board mid-build
     rendering = true;
     try {
     // deployment gets the tabla score, battle gets the war drums
-    if (g.state.phase === 'deploy1' || g.state.phase === 'deploy2') AU.startMusic('tabla');
-    else if (g.state.phase === 'battle') AU.startMusic('battle');
+    const score = g.musicMode();
+    if (score) AU.startMusic(score);
     renderHud();
     renderStrips();
     renderBoard();
@@ -9108,11 +10021,41 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     renderIntel();
     renderLog();
     startClockIfNeeded();
+    rotateHint();
     modeHook('afterRender');
     } finally {
       rendering = false;
       if (renderAgain) { renderAgain = false; setTimeout(render, 0); }
     }
+  }
+
+  /* Once, on a first ordinary portrait battle while the player is free to act:
+   * suggest landscape. Dismissing it, or turning the phone, retires it. */
+  function landscapeNow() {
+    return typeof matchMedia === 'function' && matchMedia('(orientation: landscape) and (max-height: 520px) and (min-width: 560px)').matches;
+  }
+  function retireRotateHint() {
+    const el = $('#rotate-hint');
+    if (el) el.hidden = true;
+    if (!settings().landscapeHintDismissed && AC.ui && AC.ui.patchSettings) AC.ui.patchSettings({ landscapeHintDismissed: true });
+  }
+  function rotateHint() {
+    const el = $('#rotate-hint');
+    if (!el) return;
+    const st = g.state;
+    if (!el.dataset.wired) {
+      el.dataset.wired = '1';
+      const btn = $('#btn-rotate-hint');
+      if (btn) { btn.innerHTML = A.icon('close'); btn.addEventListener('click', function () { sfx('ui'); retireRotateHint(); }); }
+      if (typeof matchMedia === 'function') {
+        const mq = matchMedia('(orientation: landscape) and (max-height: 520px) and (min-width: 560px)');
+        const onTurn = function () { if (mq.matches && !el.hidden) retireRotateHint(); };
+        if (mq.addEventListener) mq.addEventListener('change', onTurn); else if (mq.addListener) mq.addListener(onTurn);
+      }
+    }
+    const touch = typeof matchMedia === 'function' && matchMedia('(pointer: coarse) and (orientation: portrait) and (max-width: 560px)').matches;
+    const idle = st.phase === 'battle' && !g.busy && !g.thinking && st.viewer !== 0 && (!st.scenario || st.scenario === 'duel') && !$('#coach:not([hidden])');
+    el.hidden = !(touch && idle && !settings().landscapeHintDismissed && !landscapeNow());
   }
 
   function skyIcon(hour) { return A.icon(hour === 'day' ? 'sun' : 'moon'); }
@@ -9137,7 +10080,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
         skyEl.hidden = false;
         skyEl.className = 'sky-chip ' + hour + (mine ? ' mine' : '');
         skyEl.innerHTML = skyIcon(hour) + '<span>' + left + '</span>';
-        skyEl.title = (hour === 'day' ? 'Dinman — the hour of Surya' : 'Ratri — the hour of Chandra') +
+        skyEl.title = tr('sky.' + hour, hour === 'day' ? 'Dinman — the hour of Surya' : 'Ratri — the hour of Chandra') +
           '. The sky turns in ' + left + ' round' + (left === 1 ? '' : 's') + '.';
       } else {
         skyEl.hidden = true;
@@ -9154,18 +10097,22 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       const roundsLeft = st.turnLimit ? Math.max(0, st.turnLimit - st.turn + 1) : 0;
       if (g.thinking) {
         pill.classList.add('void');
-        pill.textContent = oppName(st) + ' is thinking';
+        pill.textContent = oppName(st) + ' ' + tr('battle.thinking', 'is thinking');
         sub.textContent = 'Weighing what it has seen of your army.';
+      } else if (g.calmActive && g.busy) {
+        pill.classList.add('gold');
+        pill.textContent = 'The move unfolds';
+        sub.textContent = 'Watch the field · tap the board to continue';
       } else {
         const owner = st.owner;
         pill.classList.add(owner === 1 ? 'solar' : 'void');
         const narrow = (window.innerWidth || 900) < 560;
         if (st.turnLimit) {
           pill.textContent = narrow
-            ? 'Round ' + st.turn + '/' + st.turnLimit
-            : 'Round ' + st.turn + '/' + st.turnLimit + ' · ' + U.FACTIONS[owner].short;
+            ? tr('battle.round', 'Round') + ' ' + st.turn + '/' + st.turnLimit
+            : tr('battle.round', 'Round') + ' ' + st.turn + '/' + st.turnLimit + ' · ' + U.FACTIONS[owner].short;
         } else {
-          pill.textContent = 'Round ' + st.turn + (narrow ? '' : ' · ' + U.FACTIONS[owner].short);
+          pill.textContent = tr('battle.round', 'Round') + ' ' + st.turn + (narrow ? '' : ' · ' + U.FACTIONS[owner].short);
         }
         const bits = [];
         if (st.turnLimit) bits.push(roundsLeft + ' rounds left');
@@ -9173,12 +10120,12 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
         else if (hour) bits.push('sky turns in ' + E.roundsUntilHourTurns(st));
         const who = isPass()
           ? U.FACTIONS[owner].name + ' to move'
-          : (owner === 1 ? 'Your move' : oppName(st) + ' is moving');
+          : (owner === 1 ? tr('battle.your_move', 'Your move') : oppName(st) + ' is moving');
         sub.textContent = who + (bits.length ? ' · ' + bits.join(' · ') : '');
       }
     } else {
       pill.classList.add('gold');
-      pill.textContent = st.winner === 0 ? 'The field is shared' : (st.winner === 1 ? 'Suryavansh victory' : 'Chandravansh victory');
+      pill.textContent = st.winner === 0 ? tr('result.shared', 'The field is shared') : (st.winner === 1 ? 'Suryavansh victory' : 'Chandravansh victory');
       sub.textContent = 'Match complete — all ranks revealed.';
     }
 
@@ -9466,17 +10413,20 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 
     // formation links from the last clash: the jaws, the petals
     if (g.links && Date.now() < g.links.until) {
+      out += '<g class="' + (g.calmActive ? 'calm-links' : '') + '">';
       const to = b.byId[g.links.to];
       if (to) {
+        const pathLength = g.calmActive ? ' pathLength="1"' : '';
         (g.links.jaws || []).forEach(function (j) {
           const c = b.byId[j];
-          if (c) out += '<line class="vyuha-link jaws" x1="' + c.x + '" y1="' + c.y + '" x2="' + to.x + '" y2="' + to.y + '"/>';
+          if (c) out += '<line class="vyuha-link jaws"' + pathLength + ' x1="' + c.x + '" y1="' + c.y + '" x2="' + to.x + '" y2="' + to.y + '"/>';
         });
         (g.links.petals || []).forEach(function (j) {
           const c = b.byId[j];
-          if (c) out += '<line class="vyuha-link petals" x1="' + c.x + '" y1="' + c.y + '" x2="' + to.x + '" y2="' + to.y + '"/>';
+          if (c) out += '<line class="vyuha-link petals"' + pathLength + ' x1="' + c.x + '" y1="' + c.y + '" x2="' + to.x + '" y2="' + to.y + '"/>';
         });
       }
+      out += '</g>';
     }
     out += tags;
 
@@ -9504,7 +10454,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     const st = g.state;
     if (!E.rules(st).astras) return '';
     return '<span class="astra-row">' + E.ASTRA_ORDER.map(function (key) {
-      const def = U.ASTRA_DEFS[key];
+      const def = L.astra(key);
       const used = st.astrasUsed[owner] && st.astrasUsed[owner][key];
       const ready = E.astraReady(st, owner, key);
       const cls = used ? 'spent' : ready ? 'ready' : 'locked';
@@ -9535,7 +10485,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
           presetBtn('citadel', 'Durg') + presetBtn('blitz', 'Aakraman') + presetBtn('lattice', 'Jaal') + presetBtn('shuffle', 'Shuffle') +
           (formations.length ? '<button class="mode-btn" data-formation="1">' + A.icon('folder') + 'Saved</button>' : '') +
           '<button class="mode-btn" data-deploy="save">' + A.icon('save') + 'Keep</button>' +
-          '<button class="btn btn-primary btn-sm" data-deploy="lock">' + (st.phase === 'deploy1' && isPass() ? 'Lock &amp; pass' : 'Lock formation') + '</button>' +
+          '<button class="btn btn-primary btn-sm" data-deploy="lock">' + (st.phase === 'deploy1' && isPass() ? 'Lock &amp; pass' : tr('battle.lock', 'Lock formation')) + '</button>' +
         '</div>';
       return;
     }
@@ -9545,20 +10495,20 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
         '<div class="action-info"><span class="sel-text"><span class="sel-name">Match complete</span>' +
         '<span class="sel-desc">All ranks are revealed. Review the board, or fight again.</span></span></div>' +
         '<div class="action-buttons">' +
-          '<button class="mode-btn" data-over="codex">' + A.icon('book') + 'Codex</button>' +
+          '<button class="mode-btn" data-over="codex">' + A.icon('book') + esc(tr('home.codex', 'Rules')) + '</button>' +
           '<button class="mode-btn" data-over="home">' + A.icon('back') + 'Home</button>' +
-          (modeHook('noRematch') ? '' : '<button class="btn btn-primary btn-sm" data-over="rematch">' + A.icon('refresh') + 'Rematch</button>') +
+          (modeHook('noRematch') ? '' : '<button class="btn btn-primary btn-sm" data-over="rematch">' + A.icon('refresh') + esc(tr('result.rematch', 'Rematch')) + '</button>') +
         '</div>';
       return;
     }
 
     const selUnit = g.sel ? st.board[g.sel] : null;
-    const isHumanTurn = !g.thinking && (isPass() || st.owner === 1);
+    const isHumanTurn = !g.thinking && !(g.calmActive && g.busy) && (isPass() || st.owner === 1);
     let info;
     let buttons = '';
 
     if (isHumanTurn && g.mode === 'astra' && g.astra) {
-      const def = U.ASTRA_DEFS[g.astra];
+      const def = L.astra(g.astra);
       const hint = g.astra === 'vayavya'
         ? (g.astraFirst ? 'Now tap the second piece to trade places with.' : 'Tap the first of your pieces to move.')
         : (g.armed ? 'Tap the target again to invoke.' : 'Tap a glowing target within two cells of your army.');
@@ -9571,30 +10521,30 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     }
 
     if (selUnit) {
-      const def = U.UNIT_DEFS[selUnit.key];
+      const def = L.unit(selUnit.key);
       const trance = selUnit.stun > 0 ? ' Entranced for ' + selUnit.stun + ' more turn' + (selUnit.stun === 1 ? '' : 's') + '.' : '';
       info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key) + '</span>' +
         '<span class="sel-text"><span class="sel-name">' + esc(selUnit.name) + ' · rank ' + esc(selUnit.badge) + '</span>' +
-        '<span class="sel-desc">' + esc(g.armed ? 'Tap the target again to strike.' : def.desc + trance) + '</span></span>';
+        '<span class="sel-desc">' + esc(g.armed ? tr('battle.tap_again', 'Tap the target again to strike.') : def.desc + trance) + '</span></span>';
     } else {
       info = '<span class="sel-badge">' + A.icon('sword') + '</span>' +
-        '<span class="sel-text"><span class="sel-name">' + (isHumanTurn ? 'Your move' : 'Waiting') + '</span>' +
+        '<span class="sel-text"><span class="sel-name">' + (isHumanTurn ? tr('battle.your_move', 'Your move') : g.calmActive && g.busy && !g.thinking ? 'Watching the move' : 'Waiting') + '</span>' +
         '<span class="sel-desc">' + (isHumanTurn
-          ? 'Tap a piece, then a glowing cell. Or invoke an astra.'
-          : oppName(st) + ' is choosing a move.') + '</span></span>';
+          ? tr('battle.tap_hint', 'Tap a piece, then a glowing cell. Or invoke an astra.')
+          : g.calmActive && g.busy && !g.thinking ? 'Tap the board to continue.' : oppName(st) + ' is choosing a move.') + '</span></span>';
     }
 
     if (isHumanTurn) {
       if (selUnit) {
-        buttons += '<button class="mode-btn' + (g.mode === 'move' ? ' on' : '') + '" data-mode="move">' + A.icon('sword') + 'Move / Strike</button>';
-        const def = U.UNIT_DEFS[selUnit.key];
-        if (def.hasScan) buttons += '<button class="mode-btn special' + (g.mode === 'special' ? ' on' : '') + '" data-mode="special">' + A.icon('eye') + 'Drishti</button>';
-        if (def.hasRanged) buttons += '<button class="mode-btn special' + (g.mode === 'special' ? ' on' : '') + '" data-mode="special">' + A.icon('bolt') + 'Volley</button>';
+        buttons += '<button class="mode-btn' + (g.mode === 'move' ? ' on' : '') + '" data-mode="move">' + A.icon('sword') + esc(tr('battle.move_strike', 'Move / Strike')) + '</button>';
+        const def = L.unit(selUnit.key);
+        if (def.hasScan) buttons += '<button class="mode-btn special' + (g.mode === 'special' ? ' on' : '') + '" data-mode="special">' + A.icon('eye') + esc(tr('battle.look', 'Drishti')) + '</button>';
+        if (def.hasRanged) buttons += '<button class="mode-btn special' + (g.mode === 'special' ? ' on' : '') + '" data-mode="special">' + A.icon('bolt') + esc(tr('battle.volley', 'Volley')) + '</button>';
         buttons += '<button class="mode-btn" data-act="deselect" aria-label="Deselect">' + A.icon('close') + '</button>';
       } else {
         buttons += astraButtons(st.owner);
       }
-      buttons += '<button class="mode-btn" data-act="advisor">' + A.icon('brain') + 'Advisor</button>';
+      buttons += '<button class="mode-btn" data-act="advisor">' + A.icon('brain') + esc(tr('battle.advisor', 'Advisor')) + '</button>';
     }
     bar.innerHTML = '<div class="action-info">' + info + '</div><div class="action-buttons">' + buttons + '</div>';
   }
@@ -9672,8 +10622,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       '<div class="intel-chips">' +
       (unknowns.length
         ? unknowns.map(function (k) {
-          return '<span class="intel-chip unknown" title="' + esc(U.UNIT_DEFS[k].name) + '">' + A.emblem(k) +
-            esc(U.UNIT_DEFS[k].badge) + (pool[k] > 1 ? '×' + pool[k] : '') + '</span>';
+          return '<span class="intel-chip unknown" title="' + esc(L.unit(k).name) + '">' + A.emblem(k) +
+            esc(L.unit(k).badge) + (pool[k] > 1 ? '×' + pool[k] : '') + '</span>';
         }).join('')
         : '<span class="intel-note">Every enemy piece is accounted for.</span>') +
       '</div></div>';
@@ -9681,13 +10631,13 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     if (known.length) {
       html += '<div class="intel-section"><div class="intel-label">Identified on the field</div><div class="intel-chips">' +
         known.map(function (u) {
-          return '<span class="intel-chip" title="' + esc(U.UNIT_DEFS[u.key].name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
+          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
         }).join('') + '</div></div>';
     }
     if (exposed.length) {
       html += '<div class="intel-section"><div class="intel-label">Your exposed pieces</div><div class="intel-chips">' +
         exposed.map(function (u) {
-          return '<span class="intel-chip" title="' + esc(U.UNIT_DEFS[u.key].name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
+          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
         }).join('') + '</div><p class="intel-note">These ranks are known to the enemy.</p></div>';
     }
 
@@ -9734,12 +10684,12 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     if (selUnit && selUnit.owner === viewer && g.mode !== 'astra') {
       // Divya-drishti is reconnaissance, not a strike. A focused enemy may
       // be out of scan range, so never present combat odds while in this mode.
-      if (g.mode === 'special' && U.UNIT_DEFS[selUnit.key].hasScan) {
+      if (g.mode === 'special' && L.unit(selUnit.key).hasScan) {
         return '<div class="intel-section"><div class="intel-label">Divya-drishti · ' +
           (focus.revealed ? esc(focus.name) : 'unknown enemy') + '</div>' +
           '<div class="intel-note">Reveal without combat. Tap a marked enemy within two cells to scan; no piece is harmed.</div></div>';
       }
-      const isBarrage = g.mode === 'special' && U.UNIT_DEFS[selUnit.key].hasRanged;
+      const isBarrage = g.mode === 'special' && L.unit(selUnit.key).hasRanged;
       const o = E.strikeOdds(st, viewer, g.sel, focusId, isBarrage);
       if (!o) return '';
       const rows = [];
@@ -9769,7 +10719,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       return '<div class="intel-section"><div class="intel-label">Tapped piece — what it could be</div>' +
         '<div class="intel-odds">' + Object.keys(dist).sort(function (a, b) { return dist[b] - dist[a]; })
           .slice(0, 4).map(function (k) {
-            return '<div class="odds-row"><span>' + esc(U.UNIT_DEFS[k].short) + '</span>' +
+            return '<div class="odds-row"><span>' + esc(L.unit(k).short) + '</span>' +
               '<span class="odds-bar"><span style="width:' + Math.round(dist[k] * 100) + '%"></span></span>' +
               '<span class="odds-val">' + Math.round(dist[k] * 100) + '%</span></div>';
           }).join('') + '</div></div>';
@@ -9782,7 +10732,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     const ranked = Object.keys(dist).sort(function (a, b) { return dist[b] - dist[a]; }).slice(0, 3);
     if (!ranked.length) return '';
     return ranked.map(function (k) {
-      return U.UNIT_DEFS[k].short + ' ' + Math.round(dist[k] * 100) + '%';
+      return L.unit(k).short + ' ' + Math.round(dist[k] * 100) + '%';
     }).join(' · ');
   }
 
@@ -9916,9 +10866,9 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 
   function enterAstra(key) {
     const st = g.state;
-    if (!st || st.phase !== 'battle' || g.thinking) return;
+    if (!st || st.phase !== 'battle' || g.thinking || g.busy) return;
     if (!E.astraReady(st, st.owner, key)) {
-      const def = U.ASTRA_DEFS[key];
+      const def = L.astra(key);
       const used = st.astrasUsed[st.owner] && st.astrasUsed[st.owner][key];
       FX.toast(used ? def.name + ' has already been used this match.' : def.name + ' needs ' + def.cost + ' Shakti — you have ' + st.shakti[st.owner] + '.', 'warn');
       sfx('error');
@@ -10025,8 +10975,12 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       keys.push('shakti_full');
     }
     if (st.phase === 'battle') {
-      if (st.turnLimit && st.turnLimit - st.turn === 4) speakOnce('last_rounds');
-      else if (!st.turnLimit && capOf(st) - st.turn === 3) speakOnce('sunset_near');
+      const warning = st.turnLimit && st.turnLimit - st.turn === 4 ? 'last_rounds'
+        : !st.turnLimit && capOf(st) - st.turn === 3 ? 'sunset_near' : null;
+      if (warning && !g.said[warning]) {
+        if (g.calmActive) { g.said[warning] = true; keys.push(warning); }
+        else speakOnce(warning);
+      }
     }
     return keys;
   }
@@ -10051,7 +11005,214 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     });
   }
 
+  // A cancellable, skippable sequence. Each wait uses a timer or an audio
+  // ended event; there is no frame loop while the player watches or thinks.
+  // Calm budget (see docs/PACING.md): slide → impact → Sanjaya enters where the
+  // effect's body ends (its tail is softened, never two loud sounds) → breath.
+  // The opponent "thinks" while Sanjaya speaks, so a clash reaches the AI
+  // preview in about 3.6 s with a 2 s line and about 4.6 s with a 3 s line.
+  const PACE = { slide: 300, read: 1100, breath: 250, preview: 400, thinkMin: 700, thinkJitter: 400, alone: 1000 };
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  let paceRun = null;
+  function alive(run) { return paceRun === run && !run.cancelled && g.state === run.state; }
+  function cancelPace() {
+    const run = paceRun;
+    paceRun = null;
+    if (run) { run.cancelled = true; if (run.skip) run.skip(); }
+    g.calmActive = false;
+    g.paceStep = null;
+    g.links = null;
+  }
+  g.skipPace = function () {
+    if (!paceRun || !paceRun.skip) return false;
+    if (SJ) SJ.skip();
+    if (g.paceStep === 'moment') paceRun.skippedMoment = true;
+    paceRun.skip();
+    return true;
+  };
+  function waitPace(run, step, ms, promise, cleanup) {
+    if (!alive(run)) return Promise.resolve();
+    g.paceStep = step;
+    return new Promise(function (resolve) {
+      let done = false;
+      const finish = function () {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        if (run.skip === finish) run.skip = null;
+        if (cleanup) cleanup();
+        resolve();
+      };
+      const timer = ms == null ? null : setTimeout(finish, ms);
+      run.skip = finish;
+      if (promise) Promise.resolve(promise).then(finish, finish);
+    });
+  }
+  function newPaceRun() {
+    cancelPace();
+    sayQueue = [];
+    if (sayTimer) { clearTimeout(sayTimer); sayTimer = null; }
+    const run = { state: g.state, cancelled: false, skip: null };
+    paceRun = run;
+    g.calmActive = true;
+    return run;
+  }
+  async function seeMove(run, action, ai) {
+    const st = run.state;
+    const id = action.from || action.to;
+    let token = document.querySelector('#board .cell[data-id="' + id + '"] .token');
+    if (ai && token) {
+      token.classList.add('calm-preview');
+      await waitPace(run, 'preview', PACE.preview, null, function () { token.classList.remove('calm-preview'); });
+      if (!alive(run)) return;
+    }
+    if (action.type !== 'move' && action.type !== 'attack') return;
+    const b = board(), from = b.byId[action.from], to = b.byId[action.to];
+    token = document.querySelector('#board .cell[data-id="' + action.from + '"] .token');
+    let animation;
+    if (!settings().reducedMotion && token && from && to && token.animate) {
+      animation = token.animate([
+        { transform: 'translate(' + from.x + 'px,' + from.y + 'px)' },
+        { transform: 'translate(' + to.x + 'px,' + to.y + 'px)' }
+      ], { duration: PACE.slide, easing: 'ease-out', fill: 'forwards' });
+    }
+    await waitPace(run, 'slide', PACE.slide, null, function () { if (animation) animation.cancel(); });
+  }
+  async function calmBeat(run, ev, me, voiced) {
+    if (!alive(run)) return;
+    const st = run.state;
+    function clearLinks() {
+      if (g.links) { g.links = null; if (g.state === st) renderBoard(); }
+    }
+    let cue = null;
+    let cardDone = Promise.resolve();
+    if (ev.kind === 'clash' && ((ev.jaws || []).length || (ev.petals || []).length)) {
+      g.links = { jaws: (ev.attParts || []).some(function (p) { return p.key === 'makara'; }) ? ev.jaws : [], petals: ev.petals || [], to: ev.at, until: Infinity };
+      renderBoard();
+    }
+    if (ST && settings().cinematics !== false) {
+      cardDone = new Promise(function (resolve) {
+        const closed = function () { clearLinks(); resolve(); };
+        const fn = { clash: 'clash', barrage: 'volley', scan: 'scan', breach: 'breach', astra: 'astra', core: 'clash' }[ev.kind];
+        if (fn) ST[fn](ev.kind === 'core' ? Object.assign({ outcome: 'att', core: true }, ev) : ev, me, closed);
+        else if (ev.kind === 'sky') ST.sky(ev.hour, E.hourOwner(st) === viewerOf(st), closed);
+        else resolve();
+      });
+    }
+    cue = ev.sfx && AU.cue ? AU.cue(ev.sfx) : null;
+    if (voiced) {
+      // The last beat before a line: hold the card for a minimum read, let the
+      // effect's body play out, then hand the floor to Sanjaya with the card up.
+      const body = cue ? (cue.speakable || cue.finished) : Promise.resolve();
+      let skipped = false;
+      await waitPace(run, 'moment', null, Promise.all([sleep(PACE.read), body]), function () {
+        if (run.skippedMoment) { skipped = true; }
+      });
+      if (!alive(run) || skipped) { if (cue) cue.stop(); if (ST) ST.close(false); clearLinks(); return null; }
+      if (ST && ST.extend) ST.extend();
+      return { cue: cue, clearLinks: clearLinks };
+    }
+    await waitPace(run, 'moment', null, Promise.all([cardDone, cue ? cue.finished : Promise.resolve()]), function () {
+      if (cue) cue.stop();
+      if (ST) ST.close(false);
+      clearLinks();
+    });
+    return null;
+  }
+  async function performCalm(action, existingRun) {
+    const run = existingRun || newPaceRun(), st = run.state;
+    if (!alive(run)) return;
+    g.busy = true;
+    stopClock();
+    // An introduction still speaking finishes before any battle effect starts.
+    if (SJ) await waitPace(run, 'previous-line', null, SJ.idle(), function () { SJ.stop(); });
+    if (!alive(run)) return;
+    const actor = st.owner, me = isAi() ? 1 : actor;
+    // Validate without changing the live board before the slide has finished.
+    const check = E.applyAction(E.clone(st), action);
+    if (!check.ok) {
+      cancelPace(); g.busy = false;
+      FX.toast(check.error || 'That action is not legal.', 'error'); sfx('error'); render(); return;
+    }
+    resetSelection();
+    await seeMove(run, action, isAi() && actor === 2);
+    if (!alive(run)) return;
+    const res = E.applyAction(st, action);
+    render();
+    updateTension();
+    const events = res.events;
+    // A fort/breach can also emit a generic clash. One card tells that moment;
+    // ancillary Shakti is shown silently so chimes never pile onto a voice.
+    const major = events.some(function (ev) { return ev.kind === 'breach' || ev.kind === 'core'; });
+    const hasAstra = events.some(function (ev) { return ev.kind === 'astra'; });
+    const beats = events.filter(function (ev) {
+      if (ev.kind === 'move') return !events.some(function (x) { return x.kind === 'clash'; });
+      if (ev.kind === 'clash' && (major || hasAstra)) return false;
+      return ['clash', 'barrage', 'scan', 'breach', 'astra', 'core', 'sky', 'rotate'].indexOf(ev.kind) !== -1;
+    });
+    const keys = narrate(events, me, st).sort(function (a, b) { return SJ.priority(b) - SJ.priority(a); });
+    if (st.phase === 'over' && !keys.length) keys.push(st.winner === 0 ? 'draw' : st.winner === me ? 'victory' : 'defeat');
+    const voiced = !!(keys.length && SJ && settings().narrator !== false);
+    let tail = null;
+    for (let i = 0; i < beats.length; i++) {
+      const ev = beats[i];
+      if (ev.kind === 'rotate' && !settings().reducedMotion) spinRings();
+      run.skippedMoment = false;
+      tail = await calmBeat(run, ev, me, voiced && i === beats.length - 1);
+      if (!alive(run)) return;
+    }
+    g.lastShakti = { 1: st.shakti[1], 2: st.shakti[2] };
+    const aiNext = isAi() && st.owner === 2 && st.phase !== 'over';
+    if (voiced) {
+      // The opponent decides while Sanjaya speaks; the wait is only what is left.
+      if (aiNext) run.thought = sleep(PACE.thinkMin + Math.random() * PACE.thinkJitter);
+      if (tail && tail.cue && tail.cue.soften) tail.cue.soften();
+      const closeTail = function () {
+        if (tail && tail.cue) tail.cue.stop();
+        if (tail) { if (ST) ST.close(false); tail.clearLinks(); }
+      };
+      await waitPace(run, 'voice', null, SJ.say(keys[0], { force: true }), function () { SJ.stop(); closeTail(); });
+      closeTail();
+      if (!alive(run)) return;
+    }
+    if (st.phase === 'over') g.calmResultNarrated = true;
+    modeHook('onEvents', { events: events, actor: actor, action: action });
+    if (!alive(run)) return;
+    autosave();
+    if (st.phase === 'over') { cancelPace(); g.busy = false; handleGameOver(); return; }
+    if (isAi() && st.owner === 2) {
+      await waitPace(run, 'breath', PACE.breath);
+      if (!alive(run)) return;
+      await calmAi(run);
+    } else {
+      // Show the handover before accepting a second order (or starting its clock).
+      banner('Your turn', U.FACTIONS[st.owner].deva + ' · round ' + st.turn, st.owner === 1 ? 'solar' : 'void');
+      await waitPace(run, 'your-turn', 400);
+      if (!alive(run)) return;
+      cancelPace(); g.busy = false; g.thinking = false;
+      render();
+      if (isPass()) showCurtain(st.owner, 'battle');
+      startClockIfNeeded();
+    }
+  }
+  async function calmAi(run) {
+    const st = run.state;
+    g.thinking = true; g.busy = true; render();
+    const thought = run.thought;
+    run.thought = null;
+    if (thought) await waitPace(run, 'thinking', null, thought);
+    else await waitPace(run, 'thinking', PACE.alone + Math.random() * PACE.thinkJitter);
+    if (!alive(run)) return;
+    const act = AI.chooseAction(st, 2, st.config.difficulty || 'veteran', modeHook('aiRng'));
+    g.thinking = false;
+    if (!act) { cancelPace(); g.busy = false; E.endGame(st, 1, 'Chandravansh has no legal action left.', []); handleGameOver(); return; }
+    await performCalm(act, run);
+  }
+  function startCalmAi() { calmAi(newPaceRun()); }
+
   function performAction(action) {
+    if (!g.state || g.busy) return;
+    if (settings().pace !== 'quick') { performCalm(action); return; }
     const st = g.state;
     const mover = action.from ? st.board[action.from] : null;
     const actor = st.owner;
@@ -10157,6 +11318,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     if (g.aiTimer) clearTimeout(g.aiTimer);
     g.thinking = true;
     render();
+    if (settings().pace !== 'quick') { startCalmAi(); return; }
     const diff = g.state.config.difficulty || 'veteran';
     const delay = (U.DIFFICULTIES[diff] || U.DIFFICULTIES.veteran).think + Math.random() * 260;
     g.aiTimer = setTimeout(function () {
@@ -10183,7 +11345,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   function startClockIfNeeded() {
     const st = g.state;
     if (!st) return;
-    if (!st.config.timer || st.phase !== 'battle' || g.thinking) { stopClock(); return; }
+    if (!st.config.timer || st.phase !== 'battle' || g.thinking || (g.calmActive && g.busy)) { stopClock(); return; }
     const humanTurn = isPass() || st.owner === 1;
     if (!humanTurn) { stopClock(); return; }
     if (g.timerId) return;
@@ -10328,7 +11490,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       title: 'Load a formation',
       body: '<div class="save-list">' + list.map(function (f, i) {
         return '<div class="save-card"><div class="save-info"><div class="save-title">' + esc(f.name) + '</div>' +
-          '<div class="save-meta">' + (U.BOARDS[f.board] || U.BOARDS.small).label + ' · saved ' + AC.ui.timeAgo(f.createdAt) + '</div></div>' +
+          '<div class="save-meta">' + (L.board(f.board) || U.BOARDS.small).label + ' · saved ' + AC.ui.timeAgo(f.createdAt) + '</div></div>' +
           '<div class="save-actions"><button class="btn btn-primary btn-xs" data-use="' + i + '">Use</button>' +
           '<button class="btn btn-danger btn-xs" data-drop="' + i + '">' + A.icon('trash') + '</button></div></div>';
       }).join('') + '</div>',
@@ -10376,7 +11538,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   function openAdvisor() {
     const st = g.state;
     if (!st || st.phase !== 'battle') { FX.toast('The advisor only speaks during battle.', 'warn'); return; }
-    if (g.thinking) return;
+    if (g.thinking || g.busy) return;
     if (!(isPass() || st.owner === 1)) return;
     const advice = AI.advise(st, st.owner, 3);
     if (!advice.length) { FX.toast('No legal moves available.', 'warn'); return; }
@@ -10452,7 +11614,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   /* ── game over ────────────────────────────────────────────── */
 
   function shareLine(st, outcome) {
-    const b = U.BOARDS[st.boardKey] || U.BOARDS.wheel;
+    const b = L.board(st.boardKey) || U.BOARDS.wheel;
     if (outcome === 'win') return 'I broke ' + oppName(st) + '’s army on the ' + b.label + ' in ' + st.turn + ' rounds. Can you?';
     if (outcome === 'loss') return oppName(st) + ' took my fort on the ' + b.label + '. Avenge me.';
     return 'The field was shared on the ' + b.label + ' after ' + st.turn + ' rounds.';
@@ -10486,15 +11648,16 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     }
     S.deleteSave('auto');
 
-    const title = winner === 0 ? 'The field is shared' : (winner === 1 ? 'Suryavansh triumphs' : 'Chandravansh conquers');
+    const englishTitle = winner === 0 ? 'The field is shared' : (winner === 1 ? 'Suryavansh triumphs' : 'Chandravansh conquers');
+    const title = tr(winner === 0 ? 'result.shared' : isAiGame && outcome !== 'win' ? 'result.defeat' : 'result.victory', englishTitle);
     const deva = winner === 0 ? 'समान' : ((isAiGame ? outcome === 'win' : true) ? 'विजय' : 'पराजय');
     const cls = winner === 0 ? 'draw' : (isAiGame ? (outcome === 'win' ? 'win' : 'lose') : 'win');
     sfx(winner === 0 ? 'draw' : isAiGame ? (outcome === 'win' ? 'win' : 'lose') : 'win');
     if (winner === 0) AU.sting('defeat');
-    else if (!isAiGame || outcome === 'win') { AU.sting('victory'); sfx('shankh'); }
+    else if (!isAiGame || outcome === 'win') { AU.sting('victory_big'); sfx('shankh'); }
     else AU.sting('defeat');
     if (winner !== 0) FX.shake(9);
-    speak([winner === 0 ? 'draw' : (isAiGame ? (outcome === 'win' ? 'victory' : 'defeat') : 'victory')]);
+    if (!g.calmResultNarrated) speak([winner === 0 ? 'draw' : (isAiGame ? (outcome === 'win' ? 'victory' : 'defeat') : 'victory')]);
 
     const extra = modeHook('resultExtras', { outcome: outcome }) || null;
     const astrasUsed = (st.astraLog || []).filter(function (a) { return a.owner === 1; }).length;
@@ -10505,9 +11668,9 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     if (extra && extra.actions) extra.actions.forEach(function (a) { actions.push(a); });
     else {
       if (isAiGame && outcome !== 'draw' && AC.share) {
-        actions.push({ label: 'Share', cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { AC.share.text(shareLine(st, outcome)); } });
+        actions.push({ label: tr('result.share', 'Share'), cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { AC.share.text(shareLine(st, outcome)); } });
       }
-      actions.push({ label: 'Rematch', cls: 'btn-primary', onClick: function () { g.start(st.config); } });
+      actions.push({ label: tr('result.rematch', 'Rematch'), cls: 'btn-primary', onClick: function () { g.start(st.config); } });
     }
 
     AC.ui.modal({
@@ -10537,7 +11700,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     if (!g.state || g.state.phase === 'over') return;
     // against the AI the player is always the one leaving, even mid-AI-turn
     const loser = isAi() ? 1 : g.state.owner;
-    if (g.aiTimer) { clearTimeout(g.aiTimer); g.aiTimer = null; }
+    clearTimers();
+    g.busy = false;
     g.thinking = false;
     if (AC.stage && AC.stage.close) AC.stage.close();
     E.endGame(g.state, loser === 1 ? 2 : 1, U.FACTIONS[loser].name + ' left the field.', []);
@@ -10549,6 +11713,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   function wire() {
     const svg = document.getElementById('board');
     svg.addEventListener('click', function (e) {
+      if (g.skipPace()) return;
       const cell = e.target.closest('[data-id]');
       if (!cell) return;
       onCell(cell.getAttribute('data-id'));
@@ -10604,6 +11769,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 
     const bar = document.getElementById('action-bar');
     bar.addEventListener('click', function (e) {
+      if (g.busy) return;
       const preset = e.target.closest('[data-preset]');
       if (preset) { deployPreset(preset.getAttribute('data-preset')); return; }
       const deploy = e.target.closest('[data-deploy]');
@@ -10688,6 +11854,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 (function (root) {
   'use strict';
   const AC = (root.AC = root.AC || {});
+  const L = AC.i18n;
+  const tr = function (key, fallback) { return L.text(key, fallback); };
   const E = AC.engine;
   const U = AC.units;
   const A = AC.art;
@@ -10779,7 +11947,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   /* ── shared helpers for prepared matches ─────────────────────── */
 
   function place(state, id, owner, key, extra) {
-    const def = U.UNIT_DEFS[key];
+    const def = L.unit(key);
     const u = {
       id: 'P' + owner + '_' + key + '_' + id.replace(/[^0-9a-z]/gi, ''), owner: owner, key: key,
       rank: def.rank, badge: def.badge, name: def.name, short: def.short,
@@ -10861,8 +12029,8 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
         return '<i class="' + (i < m.step ? 'done' : i === m.step ? 'on' : '') + '"></i>';
       }).join('') + '</div>' +
       '<div class="coach-body"><span class="coach-deva deva">' + esc(step.deva) + '</span>' +
-      '<b>' + (done ? 'Lesson complete' : (m.step + 1) + ' / ' + LESSON.length + ' · ' + esc(step.title)) + '</b>' +
-      '<span>' + esc(done ? 'You know enough to fight. The rest you learn on the field.' : step.text) + '</span></div>';
+      '<b>' + (done ? 'Lesson complete' : (m.step + 1) + ' / ' + LESSON.length + ' · ' + esc(L.lesson(step, 'title'))) + '</b>' +
+      '<span>' + esc(done ? 'You know enough to fight. The rest you learn on the field.' : L.lesson(step, 'text')) + '</span></div>';
   }
 
   function coachHint() {
@@ -10884,7 +12052,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   /* ══ Daily Chakravyuha ══════════════════════════════════════════ */
 
   // Keep the existing five-day catalogue until the candidate pack is approved.
-  // Every modifier uses the same bounded knobs as incoming/text/daily-modifiers.json.
+  // Every modifier uses the bounded knobs checked by validateModifier().
   const MODIFIERS = [
     { key: 'nightfall', deva: 'रात्रि', name: 'Chandra rises first', one: 'The defence holds the first hour.', knobs: { startNight: true } },
     { key: 'shakti', deva: 'शक्ति', name: 'Shakti in hand', one: 'Your raiders begin with three lamps lit.', knobs: { startShakti: { raiders: 3, defenders: 0 } } },
@@ -10896,7 +12064,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
   /* Catalogue II — from Daily #5 (1 Nov 2026, IST). The four original
    * variants that stayed in the 30–55% raider band, plus the seventeen drafts
    * that stayed in it on both boards across two independent seed banks
-   * (10,800 AI games, incoming/text/daily-balance*.json). "The gate is open"
+   * (10,800 AI games, docs/balance/bank1–2). "The gate is open"
    * is retired: raiders won 57–72% of the time. Earlier dates keep the first
    * catalogue, so their puzzles, results and streaks stay the same. */
   const CATALOGUE_II_FROM = Date.UTC(2026, 10, 1);
@@ -10919,7 +12087,24 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     {"key": "night-reserve", "deva": "संध्या", "name": "Night reserve", "one": "Night comes first; both armies begin with one Shakti.", "knobs": {"startNight": true, "startShakti": {"raiders": 1, "defenders": 1}, "turnLimit": 30}},
     {"key": "turning-petal", "deva": "पंखुड़ी", "name": "Turning petal", "one": "The rings turn every six rounds; each side begins with one Shakti.", "knobs": {"rotateEvery": 6, "startShakti": {"raiders": 1, "defenders": 1}, "turnLimit": 28}}
   ]);
-  function catalogueFor(day) { return day.utc >= CATALOGUE_II_FROM ? MODIFIERS_II : MODIFIERS; }
+  /* Catalogue III — from Daily #7 (3 Nov 2026, IST). Seven retuned drafts
+   * (ChatGPT batch 3.4) that held 30–55% raider wins on both boards in two
+   * fresh, disjoint seed banks (0x92d04b and 0xc4e7d3, 120 games per board
+   * each; docs/balance/). "Quiet gate" missed on the lotus in the second bank
+   * and stays held. Earlier dates keep their catalogue. */
+  const CATALOGUE_III_FROM = Date.UTC(2026, 10, 3);
+  const MODIFIERS_III = MODIFIERS_II.concat([
+    {"key": "harvest", "deva": "फसल", "name": "Harvest road", "one": "The gate is open, but a second Divyadrishti replaces your Maharathi; starting Shakti is one for raiders and four for defenders.", "knobs": {"gateOpen": true, "startShakti": {"raiders": 1, "defenders": 4}, "raiders": ["5", "7", "6", "5", "2", "2", "1", "3"]}},
+    {"key": "brass-reserve", "deva": "पीतल", "name": "Brass reserve", "one": "The defenders replace their Maharathi with a second archer.", "knobs": {"defenders": ["10", "6", "7", "6", "5", "3", "2", "1", "B", "F"]}},
+    {"key": "double-scout", "deva": "दृष्टि", "name": "Two clear sights", "one": "Two Divyadrishtis are joined by an Ashvarohi in place of one Rath; you have 28 rounds.", "knobs": {"raiders": ["9", "5", "6", "5", "7", "2", "1", "3"], "turnLimit": 28}},
+    {"key": "silver-watch", "deva": "रजत", "name": "Silver watch", "one": "Night opens the battle; your raiders begin with four Shakti.", "knobs": {"startNight": true, "startShakti": {"raiders": 4, "defenders": 0}}},
+    {"key": "shishir", "deva": "शिशिर", "name": "Shishir stillness", "one": "The rings turn every six rounds; your raiders begin with three Shakti.", "knobs": {"rotateEvery": 6, "startShakti": {"raiders": 3, "defenders": 0}}},
+    {"key": "vasant", "deva": "वसंत", "name": "Vasant advance", "one": "The raiders have 28 rounds to find a way through.", "knobs": {"turnLimit": 28}},
+    {"key": "archers-watch", "deva": "शर", "name": "Archer watch", "one": "A second Dhanurdhar replaces the defenders’ Ashvarohi; your raiders begin with three Shakti.", "knobs": {"defenders": ["10", "9", "6", "6", "5", "3", "2", "1", "B", "F"], "startShakti": {"raiders": 3, "defenders": 0}}}
+  ]);
+  function catalogueFor(day) {
+    return day.utc >= CATALOGUE_III_FROM ? MODIFIERS_III : day.utc >= CATALOGUE_II_FROM ? MODIFIERS_II : MODIFIERS;
+  }
 
   function validateModifier(mod) {
     if (!mod || !/^[a-z][a-z0-9-]*$/.test(mod.key || '') ||
@@ -11029,16 +12214,16 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     AC.game.startPrepared(st, {
       line: 'start_daily',
       bannerTitle: 'Daily Chakravyuha #' + info.n,
-      bannerSub: info.mod.name + (official ? '' : ' · practice'),
+      bannerSub: L.daily(info.mod).name + (official ? '' : ' · practice'),
       save: true
     });
     AC.ui.modal({
       kicker: 'Daily Chakravyuha #' + info.n + (official ? '' : ' · practice run'),
-      title: 'Abhimanyu got in. Can you get out?',
+      title: tr('home.tagline', 'Abhimanyu got in. Can you get out?'),
       art: A.artFor('card:daily') || A.artFor('card:abhimanyu'),
       body: '<p class="daily-lede">Everyone in India faces this same wheel today. Eight raiders, ten defenders, ' +
         st.turnLimit + ' rounds. ' + (info.mod.knobs.gateOpen ? 'The gate is open: take the fort.' : 'Break the gate, then take the fort.') + '</p>' +
-        '<div class="daily-mod"><span class="deva">' + esc(info.mod.deva) + '</span><b>' + esc(info.mod.name) + '</b><span>' + esc(info.mod.one) + '</span></div>' +
+        '<div class="daily-mod"><span class="deva">' + esc(info.mod.deva) + '</span><b>' + esc(L.daily(info.mod).name) + '</b><span>' + esc(L.daily(info.mod).one) + '</span></div>' +
         (official ? '' : '<p class="intel-note">You have already fought today’s official battle. This one is for practice — your shared result stays the first one.</p>'),
       actions: [{ label: 'Take the field', cls: 'btn-primary' }]
     });
@@ -11077,7 +12262,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       ? '🛞 Broke in on round ' + res.rounds + ' of ' + res.limit
       : '🛞 The wheel closed on me (' + res.rounds + ' rounds)';
     const line2 = '⚔️ ' + res.taken + ' taken · 🩸 ' + res.lost + ' lost' + (res.astras ? ' · 🔥 ' + res.astras + ' astra' + (res.astras === 1 ? '' : 's') : '');
-    return head + '\n' + line1 + '\n' + line2 + '\n' + res.grid + '\nAbhimanyu got in. Can you get out?';
+    return head + '\n' + line1 + '\n' + line2 + '\n' + res.grid + '\n' + tr('share.cta', 'Abhimanyu got in. Can you get out?');
   }
 
   function finishDaily(m) {
@@ -11147,7 +12332,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
             m.step++;
             AC.audio.play('unlock');
             const next = LESSON[m.step];
-            if (next) FX.toast('Good. Next: ' + next.title + '.', 'success');
+            if (next) FX.toast('Good. Next: ' + L.lesson(next, 'title') + '.', 'success');
           }
         });
         renderCoach();
@@ -11212,6 +12397,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
     LESSON: LESSON,
     MODIFIERS: MODIFIERS,
     MODIFIERS_II: MODIFIERS_II,
+    MODIFIERS_III: MODIFIERS_III,
     clear: function () { active = null; }
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);
@@ -11264,6 +12450,7 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
       };
 
       AC.art.onArtLoaded(function (slot) {
+        if (AC.ui.artLanded) AC.ui.artLanded(slot);
         const screen = AC.app.screen;
         const relevant =
           screen === 'game' ? needsBoard(slot) || slot.indexOf('banner:') === 0

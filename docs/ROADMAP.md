@@ -3,81 +3,57 @@
 The live status board. Ticked = on `main` and playable. Owner tags: **[C]** Commander (Pon),
 **[D]** Director (Claude), **[G]** ChatGPT, **[S]** Sarvam AI.
 
-Last updated: **30 Oct 2026 (evening)** — Director: the cool-phone pass, the profile hub, Daily catalogue II.
+Last updated: **1 Nov 2026 (night)** — Chapter III complete and live: Calm pace, phone landscape,
+Hindi/Marathi interface, ten avatars, Daily Catalogue III. History of each step: `docs/WORKLOG.md`.
 
 ---
 
-## Phase A — Fix the foundations ✅
+## Chapter III — complete ✅ (1 Nov 2026)
 
-- [x] **[D]** Shuffle never puts the fort on the front line (was 1 in 3; caused ~15% of square games to end within 6 rounds)
-- [x] **[D]** The opponent picks a different formation each battle (it always used the same one)
-- [x] **[D]** Fort gate: two blows to take a fort — no more first-move wins
-- [x] **[D]** First-move balance: duels open in Chandra's hour (see `DIRECTOR.md` §9)
-- [x] **[D]** Abhimanyu tuned: 28 rounds, raiders by day with 2 Shakti (raiders win 33–40%)
-- [x] **[D]** Padmavyuha: deployment, true clockwise ring order, rotation, a player-at-the-bottom layout
-- [x] **[D]** The AI no longer reads the hidden enemy fort
-- [x] **[D]** Draws replaced by a ceasefire decided by strength
-- [x] **[D]** Every sci-fi string retired (Aetherfront, Astral AI, Nexus Core, Sapper, Mine…); "stratego" removed from the package keywords
-- [x] **[D]** The player's half of the Chakravyuha is at the bottom of the screen
-- [x] **[C]** Rename the GitHub repo from `Astral-command` to `vyuha` (Settings → General → Repository name; GitHub redirects the old links, but the Pages URL changes — update `PUBLIC_URL` in `js/modes.js` the same day)
+- [x] **[D]** Foundations: gate (two blows), first-move balance, fort never on the front line, honest AI, ceasefire instead of draws, no sci-fi strings
+- [x] **[D]** Cool phone: no idle animation loops (every screen < 3 % busy, portrait and landscape); battery saver; audio pauses in the background
+- [x] **[D]** The hook: no login wall, **Yuddh karo**, Pehla Yuddh lesson, Daily Chakravyuha with streaks and WhatsApp share
+- [x] **[D]** Hours, Makara/Padma formations, Shakti and four astras with films, clash cinematics, odds on the board
+- [x] **[D][G]** **Calm pace** (default) and Quick: one moment at a time, Sanjaya over the effect's tail, AI thinks while he speaks — clash → AI 6.7 s → 3.8 s (`docs/PACING.md`)
+- [x] **[D][G]** **Phone landscape**: status rail · field · action rail; rotation keeps the turn (`docs/LANDSCAPE.md`)
+- [x] **[G][S]** **Interface in English, हिन्दी, मराठी** (Settings); Sanjaya in Hinglish / हिन्दी / English with 88 recorded lines
+- [x] **[C][G]** Art: ten hero/Sanjaya avatars, Padma board, day/night skies, astra stills and films, Daily card, share preview
+- [x] **[C][S]** Sound: core pack, trap, day/night/Daily/lesson/Abhimanyu/victory music
+- [x] **[D]** Profile hub: record, level per opponent, avatar, frame/tint/badge, own photo (on device)
+- [x] **[D][G]** Daily Catalogue II (1 Nov, 21 variants) and **III (3 Nov, 28 variants)** — each passed two fresh seed banks (`docs/balance/`)
 
-## Phase A+ — Smooth and cool on a phone ✅ (30 Oct)
+## Waiting on people (not code)
 
-- [x] **[D]** No looping animation while the player thinks: idle main-thread time ~40% → ~0% on every screen (`tools/perf-idle.mjs`)
-- [x] **[D]** Battery saver (Settings) — on by default for phones with ≤4 GB or ≤4 cores: no frosted glass, no astra films
-- [x] **[D]** Music and audio engine pause when the phone locks or the app goes to the background
-- [x] **[D]** Fixed: astra and clash cinematics fell *behind* the board (a CSS override from the art batch)
-- [x] **[D]** Robot playtest on two phone sizes (`tools/playtest-bot.mjs`): 8 battles, lesson, Daily, settings — no errors, no stuck turns
-- [x] **[D]** Home screen calm: record, quick settings and data moved off it; backups live in Settings
-- [x] **[D]** Profile hub: name, record, level of play per opponent, ten avatars, frame/tint/badge, own photo (kept on the device)
-- [ ] **[C]** Play 20 minutes on your own phone and say whether it still warms up
+- [ ] **[C]** Phone test: three Calm battles, one Quick, portrait and landscape; warmth after 10–20 min
+- [ ] **[C]** Five real people play Pehla Yuddh and one Daily on their own phones (`incoming/text/playtest.md`); notes below
+- [ ] **[S]** Record 18 lines whose text changed in review + 4 shorter routine lines (`docs/agents/SARVAM.md` Batch 4)
+- [ ] **[S]** A native speaker reads the Marathi interface
+- [ ] **[C][G]** Art still open: full-screen effects, gate-breach art, store art (`docs/prompts/ART.md`)
+- [ ] **[C]** Respect review by at least three players from different backgrounds (`DIRECTOR.md` §6)
 
-## Phase B — The hook ✅ (art and audio still to come)
+## Chapter IV — depth and heroes (next)
 
-- [x] **[D]** No login wall; new home with one big **Yuddh karo** button
-- [x] **[D]** Pehla Yuddh — the two-minute guided first battle
-- [x] **[D]** Daily Chakravyuha — seeded by date (IST), one modifier a day, streaks, `#daily` deep link
-- [x] **[D]** WhatsApp share card with a per-round emoji grid; share after any win
-- [x] **[D]** Clash cinematics (Devanagari verdicts, bonus chips), odds on the board, tap-twice strikes
-- [x] **[D]** Surya/Chandra hours with sky chip, field tint, dawn/dusk beats
-- [x] **[D]** Makara and Padma formations with glowing links after a clash
-- [x] **[D]** Shakti diyas and four astras with targeting, cinematics and sounds
-- [x] **[D]** Sanjaya narrates (Hinglish / हिन्दी / English), plays recorded voice when it exists
-- [x] **[D]** Opponents Sainik / Dronacharya / Shakuni; titles Shishya → Atimaharathi
-- [ ] **[C][G]** Art pack III — Sanjaya portrait, Padma board, day/night skies and Daily card delivered; four astra emblems, full-screen effects, gate breach art and store art remain (`docs/prompts/ART.md` status section)
-- [x] **[C][S]** Sound pack III — core conch, gate, dawn/dusk, four astra stingers, Divya-drishti and Shakti cues delivered (`docs/prompts/AUDIO.md`); optional last-five-round tension loop remains
-- [x] **[C][S]** Sanjaya's recorded voice — 44 Hindi and 44 English lines delivered; native-speaker quality review still pending (`incoming/voice/VOICE.md`)
-- [ ] **[S]** Hindi and Marathi translation of the interface strings (`docs/agents/SARVAM.md`, task 2)
-- [ ] **[C]** Five real people play Pehla Yuddh and one Daily on their own phones; notes go below
+- [ ] **[D]** Hero cards — one trait per army on a Maharathi or Senapati (drafts: `incoming/text/heroes-vows.json`)
+- [ ] **[D]** Pratigya — secret vows that earn stars and titles
+- [ ] **[D]** Campaign map: the seven vyuhas, one lesson each (drafts: `incoming/text/campaign.md`)
+- [ ] **[D]** Facing, introduced in the Krauncha chapter
+- [ ] **[D]** Marathi narrator (text drafted: `incoming/text/sanjaya-marathi.csv`)
+- [ ] **[D][G]** Retune `quiet-gate` and screen it in two fresh banks
 
-## Phase C — Depth and heroes
+## Chapter V — social
 
-- [ ] **[D]** Hero cards: a Maharathi or Senapati may take a hero's trait — Arjuna (archer range 3), Karna (Kavach: survives the first defeat), Bhima (wins ties), Ghatotkacha (+1 at night), Abhimanyu (enters any formation, never retreats). Drafted before battle.
-- [ ] **[D]** Pratigya — secret vows (e.g. *Bhishma's vow: win without your Senapati ever striking*) that earn stars and titles
-- [ ] **[D]** Dvandva — equal strength becomes a 3-second bluff duel (Astra / Shastra / Kavach) instead of a setting
-- [ ] **[D]** Campaign map: the seven vyuhas (Chakra, Padma, Krauncha, Makara, Suchi, Shyena, Sarvatobhadra), one lesson each
-- [ ] **[D]** Facing (already built for the lotus) introduced in the Krauncha chapter
-- [x] **[D][G]** Daily catalogue II live from 1 Nov 2026: 21 variants that held 30–55% raider wins on both boards in two independent seed banks; `open` retired; earlier dates unchanged. Retune of the 8 held drafts → ChatGPT batch 3.4
-- [ ] **[D][G]** (history) 30 hand-checked Daily modifiers and layouts (ChatGPT drafts, Director simulates). The merged batch has 25 new drafts; independent 7,200-match screening finds 17 passing both seed banks on both boards, with further human/seed validation and versioned promotion pending. Existing `open` is above the target raider win band. See `incoming/text/README.md` and `HANDOFF-2026-10-30.md`.
-- [x] **[C][G]** Hero portraits ×5 delivered (also profile avatars)
-- [ ] **[G]** Four more avatar portraits — Drona, Bhishma, Draupadi, Dhrishtadyumna (`ART.md`, *Four more portraits*)
+- [ ] **[D]** Challenge-a-friend link (seeded battle from WhatsApp)
+- [ ] **[D]** Replay clip — the best moment as a 10-second vertical video
+- [ ] **[D]** Vyuha codes — share a formation as a short code
+- [ ] **[D]** Seasons and leaderboards / online play (need a server — decide at launch)
 
-## Phase D — Social
+## Launch
 
-- [ ] **[D]** Challenge-a-friend link: a seeded battle anyone can open from WhatsApp and compare results
-- [ ] **[D]** Replay clip: the best moment of a battle as a 10-second vertical video for Reels and Shorts (the engine already records every move)
-- [ ] **[D]** Vyuha codes: share a formation as a short code others can try to break
-- [ ] **[D]** Seasons named after the parvas; city leaderboards (needs a small server — decide in Phase E)
-- [ ] **[D]** Online play (needs a server that keeps ranks hidden from both clients)
-
-## Phase E — Launch
-
-- [ ] **[D]** Android build with Capacitor (same path as Indistock); ship only the optimised art (≈2 MB), not the 129 MB of masters
-- [ ] **[C]** Play Store listing: icon, feature graphic, 6 screenshots, 30-second trailer (`docs/prompts/ART.md` §8, `docs/prompts/AUDIO.md` §4)
-- [ ] **[C]** Legal check: name and trademark search for "VYUHA", game rules review by an IP lawyer before going commercial (the rules were designed for distance from Stratego — gates, hours, formations, astras, turning fields — but that is not legal advice)
-- [ ] **[C]** Launch timing: a festival week — Makar Sankranti (a sun festival — a Suryavansh event) is the next natural moment
-- [ ] **[C]** Respect review: at least three players from different backgrounds (charter §6)
-- [ ] **[D]** Monetisation, if any: cosmetic folk-art editions (Pattachitra, Madhubani, Gond, Warli, Kalamkari); never power, never real money
+- [ ] **[D]** Android build with Capacitor; ship only `assets/` (≈25 MB), never `masters/`
+- [ ] **[C]** Play Store listing (`incoming/text/store-listing.md`), icon, feature graphic, screenshots, trailer
+- [ ] **[C]** Name/trademark search for "VYUHA"; IP review of the rules before going commercial (not legal advice)
+- [ ] **[C]** Launch week — Makar Sankranti is the natural moment
+- [ ] **[D]** Monetisation, if any: cosmetic folk-art editions only; never power, never real money
 
 ---
 
@@ -97,10 +73,3 @@ written up here first.
 ## Playtest notes
 
 *(Add a dated line per session: who played, device, what confused them, what they loved.)*
-
-
-## ChatGPT takeover and review — 29–30 October 2026
-
-PR #1 was merged: Sunday lotus Daily fix, seeded Daily AI including save/resume, bounded modifier support, screenshot harness, draft writing and root `AGENTS.md` are now on `main`. `incoming/text/` drafts are not promoted to live gameplay simply by being present. Later commits supplied Sanjaya, sky, Padma and Daily artwork plus recorded sound/voice. See historical [`HANDOFF-2026-10-29.md`](HANDOFF-2026-10-29.md).
-
-The 30 October agent review proposes a Divya-drishti Intel-label fix with regression tests, adds independent Daily balance evidence, and documents a live-game walkthrough, gamer recommendations and SWOT. It awaits Director/Commander PR review. See [`HANDOFF-2026-10-30.md`](HANDOFF-2026-10-30.md). Native-language review and uncoached real-device playtests remain open.

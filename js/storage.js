@@ -29,11 +29,14 @@
     // Chapter III
     narrator: true,
     narratorLang: 'hinglish',
+    uiLang: 'en',
     voice: true,
     cinematics: true,
+    pace: 'calm',
     batterySaver: null,   // null = decide from the phone (low memory / few cores → on)
     stories: true,
-    tutorialDone: false
+    tutorialDone: false,
+    landscapeHintDismissed: false
   };
 
   function nowIso() {

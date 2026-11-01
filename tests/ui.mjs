@@ -77,9 +77,173 @@ const click = (el) => {
 const clickCell = (id) => click(document.querySelector('.cell[data-id="' + id + '"]'));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// Deterministic fake timers cover the real game/stage/narrator sequence. Audio
+// completions are controlled independently of the card, as they are in a browser.
+async function calmPaceChecks() {
+  AC.game.clearOverlays();
+  if (AC.modes.clear) AC.modes.clear();
+  const original = { set: w.setTimeout, clear: w.clearTimeout, now: w.Date.now, random: w.Math.random,
+    Audio: w.Audio, cue: AC.audio.cue, choose: AC.ai.chooseAction };
+  let now = 0, serial = 0, jobs = new Map(), voices = [], cues = [], choices = [], voiceMs = 1000, cueMs = 600;
+  const flush = async () => { for (let i = 0; i < 30; i++) await Promise.resolve(); };
+  w.setTimeout = (fn, ms = 0) => { const id = ++serial; jobs.set(id, { at: now + ms, fn }); return id; };
+  w.clearTimeout = (id) => jobs.delete(id);
+  w.Date.now = () => now;
+  w.Math.random = () => 0;
+  async function tick(ms) {
+    await flush();
+    const end = now + ms;
+    for (;;) {
+      const next = [...jobs.entries()].filter(([, v]) => v.at <= end).sort((a, b) => a[1].at - b[1].at)[0];
+      if (!next) break;
+      jobs.delete(next[0]); now = next[1].at; next[1].fn(); await flush();
+    }
+    now = end; await flush();
+  }
+  w.Audio = class {
+    constructor(url) { this.url = url; this.started = null; this.stopped = null; }
+    play() { this.started = now; voices.push(this); this.timer = w.setTimeout(() => { if (this.onended) this.onended(); }, voiceMs); return Promise.resolve(); }
+    pause() { w.clearTimeout(this.timer); this.stopped = now; }
+  };
+  AC.audio.cue = (name) => {
+    let resolve;
+    let speak;
+    const item = { name, started: now, stopped: null, softened: null, duration: cueMs / 1000, finished: new Promise((r) => { resolve = r; }),
+      speakable: new Promise((r) => { speak = r; }), soften() { this.softened = now; },
+      stop() { if (this.stopped != null) return; this.stopped = now; w.clearTimeout(this.timer); resolve(); speak(); } };
+    item.timer = w.setTimeout(() => item.stop(), cueMs);
+    w.setTimeout(speak, Math.min(cueMs, 1000)); // body of the effect ends by 1 s
+    cues.push(item); return item;
+  };
+  AC.ai.chooseAction = (st, owner) => {
+    choices.push(now);
+    return AC.engine.allLegalActions(st, owner).find((a) => a.type === 'move' && !st.board[a.to]);
+  };
+  function battle(clash = false, reduced = false) {
+    AC.app.modals.slice().forEach((m) => m.close());
+    AC.ui.patchSettings({ pace: 'calm', narrator: true, voice: true, stories: false, cinematics: true, reducedMotion: reduced });
+    const st = AC.engine.newState({ mode: 'ai', board: 'small', difficulty: 'archon', timer: 30, rules: { gates: true, hours: true, vyuha: true, astras: true } });
+    AC.engine.beginBattle(st);
+    st.owner = 1; st.viewer = 1;
+    AC.game.startPrepared(st, { save: false });
+    const action = AC.engine.allLegalActions(st, 1).find((a) => a.type === 'move' && !st.board[a.to]);
+    if (clash) st.board[action.to] = AC.engine.createArmy(2).find((u) => u.key === '3');
+    AC.game.render(); voices = []; cues = []; choices = [];
+    return { st, action };
+  }
+  try {
+    let { st, action } = battle(true);
+    const start = now;
+    AC.game.perform(action); await tick(299);
+    ok(st.stats.actions === 0 && AC.game.busy, 'Calm shows the 300 ms slide before resolving the move');
+    await tick(1);
+    ok(!!$('.stage-clash') && voices.length === 0, 'Calm opens the card and effect before Sanjaya');
+    ok(AC.game.timerId == null && AC.game.timeLeft === 30, 'the player clock waits throughout the Calm presentation');
+    await tick(1099);
+    ok(choices.length === 0 && voices.length === 0, 'the card gets a full 1.1 s read before the voice');
+    await tick(1);
+    ok(voices.length === 1 && !!$('.stage-clash'), 'Sanjaya enters with the card still up');
+    ok(cues[0].softened === now && cues.every((c) => c.stopped == null || c.stopped <= now), 'the effect body has ended and its tail is softened under the voice');
+    await tick(999);
+    ok(choices.length === 0 && AC.game.busy, 'AI cannot move while the player line is sounding');
+    await tick(1);
+    ok(AC.game.paceStep === 'breath' && !$('.stage'), 'the card closes and a breath follows the voice ended event');
+    await tick(250);
+    ok(choices[0] - start === 2650 && !!$('.calm-preview'), 'clash → AI preview takes 2.65 s with a one-second line (thinking ran during the voice)');
+    await tick(399);
+    ok(st.stats.actions === 1, 'AI glows for 400 ms before sliding');
+    await tick(301);
+    ok(st.stats.actions === 2, 'AI resolves only after its own preview and slide');
+    ok(!/Your move/.test($('#action-bar').textContent) && /unfolds/.test($('#hud-turn').textContent), 'Calm keeps the turn handover hidden while the AI moment is playing');
+    await tick(600 + 400);
+    ok(!AC.game.busy && !AC.game.thinking && st.owner === 1, 'your-turn banner finishes before input is live');
+    ok(AC.game.timerId != null && AC.game.timeLeft === 30, 'the full player clock starts when input unlocks');
+
+    cueMs = 100;
+    ({ st, action } = battle(false, true));
+    const plainAt = now;
+    AC.game.perform(action); await tick(299);
+    ok(st.stats.actions === 0, 'reduced motion keeps the Calm gap without a slide');
+    await tick(1351);
+    ok(choices[0] - plainAt === 1650, 'plain move → AI preview takes 1.65 s');
+
+    cueMs = 3000;
+    ({ st, action } = battle(true));
+    AC.game.perform(action); await tick(1399);
+    ok(voices.length === 0 && choices.length === 0, 'a long effect still gets the full read before the voice');
+    await tick(1);
+    ok(voices.length === 1 && cues[0].stopped == null && cues[0].softened === now, 'a long effect tail is softened under the voice, not waited through');
+
+    ({ st, action } = battle(true));
+    AC.game.perform(action); await tick(400);
+    const actions = st.stats.actions;
+    click($('#board'));
+    await tick(0);
+    ok(!$('.stage') && cues[0].stopped === now && AC.game.paceStep === 'voice', 'board tap skips the current moment and stops its effect');
+    click($('#board')); await tick(0);
+    ok(voices[0].stopped === now && AC.game.paceStep === 'breath' && st.stats.actions === actions, 'next tap stops the voice without issuing another order');
+    click($('#board')); await tick(0);
+    ok(AC.game.paceStep === 'thinking', 'the breath can be skipped too');
+
+    // Cancel a pending match; its asynchronous continuation must never mutate a replacement.
+    AC.game.start({ mode: 'ai', board: 'wheel', difficulty: 'veteran' });
+    const replacement = AC.game.state;
+    await tick(10000);
+    ok(AC.game.state === replacement && replacement.phase === 'deploy1' && !AC.game.busy, 'starting another match cancels stale Calm continuations');
+
+    AC.sanjaya.stop(); await tick(0);
+    voices = [];
+    AC.sanjaya.say('win_capture', { force: true });
+    AC.sanjaya.say('dawn', { force: true });
+    AC.sanjaya.say('fort_won', { force: true });
+    ok(voices.length === 1 && voices[0].stopped == null, 'queued narration never interrupts the current line');
+    await tick(1000);
+    ok(voices.length === 2 && /fort_won/.test(voices[1].url), 'a higher-priority line replaces a waiting sky line');
+    await tick(1000);
+    ok(voices.length === 2, 'the discarded waiting line is not played later');
+    voiceMs = 10000;
+    AC.sanjaya.say('win_capture', { force: true });
+    await tick(3600);
+    ok(voices.at(-1).stopped == null, 'a long recorded line is not cut at 3.5 seconds');
+    await tick(2400);
+    ok(voices.at(-1).stopped === now, 'a stalled line is still bounded at 6 seconds');
+    AC.sanjaya.say('win_capture', { force: true });
+    const long = voices.at(-1); long.duration = 4.2; long.onloadedmetadata();
+    await tick(4799);
+    ok(long.stopped == null, 'a 4.2 s line plays to its end');
+    await tick(1);
+    ok(long.stopped === now, 'the watchdog follows the file length plus 0.6 s');
+
+    voiceMs = 1000;
+    ({ st, action } = battle(true));
+    AC.ui.patchSettings({ pace: 'quick', narrator: false });
+    const quickAt = now;
+    AC.game.perform(action);
+    ok(st.stats.actions === 1, 'Quick still applies a move immediately');
+    await tick(1499);
+    ok(!!$('.stage') && choices.length === 0, 'Quick still holds a clash for the original 1.5 s cap');
+    await tick(1 + AC.units.DIFFICULTIES.archon.think);
+    ok(choices[0] - quickAt === 1500 + AC.units.DIFFICULTIES.archon.think, 'Quick retains the original difficulty think delay');
+
+    cueMs = 600;
+    ({ st, action } = battle(true));
+    AC.game.perform(action); await tick(400);
+    AC.ui.show('home'); await tick(10000);
+    ok(st.stats.actions === 1 && !AC.game.busy && !$('.stage'), 'leaving the battle cancels cards, audio and delayed AI actions');
+  } finally {
+    AC.game.clearOverlays();
+    AC.sanjaya.stop();
+    w.setTimeout = original.set; w.clearTimeout = original.clear; w.Date.now = original.now; w.Math.random = original.random;
+    w.Audio = original.Audio; AC.audio.cue = original.cue; AC.ai.chooseAction = original.choose;
+  }
+}
+
 async function run() {
   await sleep(900);
   ok(!!AC, 'AC namespace loaded');
+  ok(AC.app.settings.pace === 'calm', 'battle pace defaults to Calm');
+  // Existing synchronous interaction smoke tests exercise unchanged Quick.
+  AC.ui.patchSettings({ pace: 'quick' });
   await sleep(200);
   ok(!$('#screen-home').hidden, 'no login wall: a first-time player lands on home');
   ok(AC.app.profile && AC.app.profile.name === 'Yoddha', 'and is a yoddha straight away');
@@ -164,6 +328,10 @@ async function run() {
   AC.app.modals.slice().forEach((m) => m.close());
   AC.ui.openSettings();
   ok($$('.modal-backdrop [data-toggle]').length > 5, 'settings toggles render');
+  ok($$('[data-seg="pace"] .seg-btn').length === 2, 'Battle pace offers Calm and Quick');
+  click($('[data-seg="pace"] [data-segval="calm"]'));
+  ok(AC.storage.getSettings().pace === 'calm', 'Calm choice is persisted');
+  click($('[data-seg="pace"] [data-segval="quick"]'));
   AC.app.modals.slice().forEach((m) => m.close());
 
   // ── the Chakravyuha wheel ──
@@ -325,6 +493,28 @@ async function run() {
   Array.prototype.forEach.call(document.querySelectorAll('.curtain'), (n) => n.remove());
   ok(!!$('#hud-sky') && !$('#hud-sky').hidden, 'the HUD shows the hour');
 
+  // Film loading is independent of the optional art cache. First use must
+  // render too, and accessibility/cooling settings must avoid requesting it.
+  AC.ui.patchSettings({ pace: 'calm', reducedMotion: false, batterySaver: false });
+  document.querySelectorAll('.stage-out').forEach((n) => n.remove());
+  for (const astra of ['vayavya', 'sammohana', 'agneya', 'brahma']) {
+    AC.stage.astra({ astra, owner: 1, text: '' }, 1);
+    const film = $('.stage > .st-astra-anim');
+    ok(film && film.getAttribute('src') === 'assets/art/opt/astras/' + astra + '-anim.webp', astra + ' film mounts on first invocation above the stage card');
+    film.dispatchEvent(new w.Event('error'));
+    ok(!$('.st-astra-anim') && !!$('.st-astra-mark'), astra + ' keeps its emblem if the film cannot load');
+    AC.stage.close(false);
+  }
+  AC.ui.patchSettings({ reducedMotion: true });
+  AC.stage.astra({ astra: 'brahma', owner: 1, text: '' }, 1);
+  ok(!$('.st-astra-anim') && !!$('.stage-astra'), 'reduced motion keeps the card without loading an animated WebP');
+  AC.stage.close(false);
+  AC.ui.patchSettings({ reducedMotion: false, batterySaver: true });
+  AC.stage.astra({ astra: 'agneya', owner: 1, text: '' }, 1);
+  ok(!$('.st-astra-anim'), 'battery saver avoids loading the Astra film');
+  AC.stage.close(false);
+  AC.ui.patchSettings({ pace: 'quick', batterySaver: false });
+
   // ── Pehla Yuddh ──
   AC.modes.startTutorial();
   await sleep(30);
@@ -408,6 +598,53 @@ async function run() {
   ok($('[data-data="export"]') && $('[data-data="import"]') && $('[data-data="reset"]'), 'backup and reset live in Settings');
   ok(document.documentElement.classList.contains('lite') === AC.app.liteOn(), 'battery saver follows the setting');
   AC.app.modals.slice().forEach((m) => m.close());
+
+  // Interface language must persist without changing the narrator or battle.
+  const languageData = lang => JSON.parse(fs.readFileSync(path.join(root, 'docs/i18n/strings.' + lang + '.json'), 'utf8'));
+  const oldSay = AC.sanjaya.say;
+  let languagePreviewCalls = 0;
+  AC.sanjaya.say = () => { languagePreviewCalls++; return null; };
+  AC.ui.patchSettings({ narratorLang: 'en', stories: false });
+  for (const lang of ['hi', 'mr']) {
+    AC.ui.show('home'); AC.ui.openSettings(); languagePreviewCalls = 0;
+    click($('[data-seg="uiLang"] [data-segval="' + lang + '"]'));
+    const dict = languageData(lang);
+    ok(AC.storage.getSettings().uiLang === lang && document.documentElement.lang === lang, lang + ' interface language persists and marks the document');
+    ok($('#ci-quick').textContent.trim() === dict['home.quick'] && $('.home-tag').textContent === dict['home.tagline'], lang + ' home controls use the reviewed strings');
+    ok(AC.app.settings.narratorLang === 'en' && languagePreviewCalls === 0, lang + ' UI switch leaves narration alone');
+    AC.app.modals.slice().forEach(m => m.close()); AC.ui.openCodex('units');
+    ok($('.unit-desc').textContent === dict['unit.10.desc'], lang + ' unit help is localised');
+    AC.app.modals.slice().forEach(m => m.close());
+    const state = AC.engine.newState({ mode: 'ai', board: 'wheel', timer: 0 });
+    AC.engine.beginBattle(state); AC.game.startPrepared(state, { save: false });
+    const savedState = JSON.stringify(state); AC.ui.patchSettings({ uiLang: lang });
+    ok(JSON.stringify(state) === savedState && $('#hud-turn').textContent.includes(dict['battle.round']), lang + ' battle redraw keeps the exact game state');
+    AC.modes.startTutorial();
+    ok($('#coach').textContent.includes(dict['lesson.move.title']) && $('#coach').textContent.includes(dict['lesson.move.text']), lang + ' lesson uses translated title and instructions');
+    AC.game.clearOverlays(); if (AC.modes.clear) AC.modes.clear();
+  }
+  AC.sanjaya.say = oldSay; AC.ui.patchSettings({ uiLang: 'en' }); AC.ui.show('home');
+
+  // Score selection is shared by rendering, unlock and Settings.
+  AC.game.clearOverlays();
+  const musicState = AC.engine.newState({ mode: 'ai', board: 'wheel', rules: { hours: true } });
+  AC.game.state = musicState;
+  ok(AC.game.musicMode() === 'tabla', 'deployment keeps the tabla score');
+  AC.engine.beginBattle(musicState);
+  musicState.turn = 1;
+  ok(AC.game.musicMode() === 'battle_night', 'ordinary night battle uses the supplied night theme');
+  musicState.turn = 5;
+  ok(AC.game.musicMode() === 'battle', 'ordinary day battle returns to the day theme');
+  for (const [scenario, score] of [['daily', 'daily'], ['shiksha', 'lesson'], ['abhimanyu', 'abhimanyu']]) {
+    musicState.scenario = scenario;
+    ok(AC.game.musicMode() === score, scenario + ' keeps its own theme through sky changes');
+  }
+  AC.ui.patchSettings({ musicOn: false });
+  AC.game.render();
+  ok(AC.audio.getSettings().musicOn === false, 'Music Off reaches the audio engine and survives a board redraw');
+  AC.ui.patchSettings({ musicOn: true });
+
+  await calmPaceChecks();
 
   // jsdom has no media stack and no canvas backend; those notices are not
   // game errors (audio is verified in the browser instead)

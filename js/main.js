@@ -43,6 +43,7 @@
       };
 
       AC.art.onArtLoaded(function (slot) {
+        if (AC.ui.artLanded) AC.ui.artLanded(slot);
         const screen = AC.app.screen;
         const relevant =
           screen === 'game' ? needsBoard(slot) || slot.indexOf('banner:') === 0

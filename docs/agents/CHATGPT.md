@@ -7,84 +7,18 @@ it, wires it into the game, and says plainly if something needs another pass.
 
 **Before any task**, paste the context block once per conversation.
 
-## ▶ Batch 3 — from the Director, 30 Oct 2026 (do these first)
+## ▶ Batch 4 — from the Director, 1 Nov 2026 (do these first)
 
-Batch 1 and 2 are merged and good: Daily fixes, Drishti panel, balance screening, the writing
-pack. Of your 25 Daily drafts, the 17 that held the 30–55% band in both seed banks are now
-**live from 1 Nov** (`MODIFIERS_II` in `js/modes.js`); "The gate is open" is retired.
-
-### 3.0 — FIRST: Calm pace (the Commander's request, 30 Oct 20:17)
-
-**The problem, in the Commander's words:** the game is too fast. The player strikes, and before
-they have seen what happened the AI has already moved and it is their turn again. Sanjaya's line
-for the player's strike is cut off by his line for the AI's move. Sound effects and voice
-overlap. *"Let the player play one move and enjoy what he has done."*
-
-**Director's decision:** no End-turn button (it doubles every tap). Instead a **calm rhythm**
-the player can always cut short by tapping. Add a setting **Battle pace: Calm (default) /
-Quick**; Quick keeps today's behaviour exactly.
-
-One turn in Calm, in this order — nothing starts until the previous step is done:
-
-1. **The move is seen.** The piece *slides* to its cell (350–450 ms, ease-out) instead of
-   jumping. For the AI's move, first glow the piece it will move for ~500 ms, then slide it.
-2. **The sound lands.** The effect (clash, volley, breach, astra) plays as the stage card opens.
-3. **The moment holds.** The stage card stays ~2.2 s (clash), ~2.6 s (fort, Brahmastra). The
-   Makara jaw / Padma links draw over ~900 ms *during* the card and stay until it closes.
-4. **Then Sanjaya speaks** — only after the effect has finished (start the voice when the
-   effect's audio ends, or 600 ms after it starts if its length is unknown). **One line per
-   side's turn**: if a turn produced several events, say the most important one (fort > breach >
-   astra > capture > trap > sky). Lines **queue, never interrupt**; drop a waiting line if a
-   newer one of higher importance arrives.
-5. **A breath.** When the voice ends (its `ended` event, max 3.5 s), wait ~400 ms, then show
-   "Shakuni is thinking" for 900–1400 ms, then the AI's turn runs steps 1–4.
-6. **Your turn** banner, then input is live.
-
-**Tap anywhere on the stage or board to skip ahead** one step (stops the voice, closes the
-card) — a player in a hurry must never be held. Reduced motion: no slide, gaps kept. The calm
-pauses must be timers or `ended` events — **no animation loops while waiting** (keep the phone
-cool rule below).
-
-**Where the code is:**
-- `js/game.js` — `performAction()` (~line 1306: events → `sfx`, `FX`, `speak(narrate(...))`,
-  `playBeats(beats, me, finish)`; `finish` calls `scheduleAi()`), `playBeats()` (~1393),
-  `scheduleAi()` (~1408, `think` delay from `U.DIFFICULTIES`), `speak()` (~105), `narrate()` (~1241).
-  Today the voice is fired at the same moment as the effect and the cinematic.
-- `js/stage.js` — `show()`: line 42 caps every beat at 1500 ms (`ms = Math.min(ms, 1500)`);
-  in Calm raise the cap to the times above.
-- `js/sanjaya.js` — `say()` and `playVoice()` (~172–205): `playVoice` pauses whatever was
-  playing (that is the cut-off). Turn this into a small queue that returns a Promise resolving
-  on `ended`/error/timeout.
-- `js/audio.js` — `play()`; expose a cue's duration if known (`sfxEls[name].duration`).
-- `js/storage.js` default `pace: 'calm'`; `js/ui.js` `openSettings()` — a segment like the
-  narrator-language one.
-
-**Done when:**
-- With Calm: a plain move → AI move begins ~1.5–2 s later; a clash → ~4–5 s later. Sanjaya's
-  two lines never overlap, and his voice never starts while an effect is still sounding.
-- With Quick: timings as on `main` today.
-- New `tests/ui.mjs` checks: pace setting exists and defaults to Calm; in Calm the AI does not
-  move before the player's beat and line have finished (use fake timers or a short test scale).
-- `tests/*.mjs`, `tools/perf-idle.mjs` (< 3% busy), `tools/playtest-bot.mjs` ("no problems";
-  give it Quick pace or longer waits) all pass. Rebuild the standalone, bump `sw.js` cache.
-- Branch + PR with a 20-second screen recording or GIF of one Calm turn on a phone viewport.
-  The Commander tests it on his phone before merge.
+Your Batch 3 is integrated and live on `main` (PR #8): Calm pace (re-paced — see `docs/PACING.md`), sky and
+share preview, the music pack, localisation, the four portraits (now live as 512 px WebPs), and
+your landscape design, which is now **built** (CSS layer at the end of `css/app.css`, one-time
+hint in `js/game.js`, acceptance harness `tools/landscape.mjs`).
 
 | # | Task | Deliver |
 |---|---|---|
-| 3.1 | **Four avatar portraits** — Drona, Bhishma, Draupadi, Dhrishtadyumna. Prompts in [`ART.md`](../prompts/ART.md) → *Four more portraits*. Same set look as the five heroes. | `incoming/art/heroes/*.png` |
-| 3.2 | **First-run walkthrough (code, PR).** Three cards on the first battle only, each pointing at real buttons: the eye (intel), the book (log/rules), the diya lamps and astra shelf. Skippable, never shown again once closed (a setting key `walkthroughDone`). Uses the existing `modal`/coach styles. Add a `tests/ui.mjs` check. | branch + PR |
-| 3.3 | **Landscape battle (design note first, no code).** One page: how the board, the strips and the action bar sit in landscape on a 6.5" phone, what the "turn your phone" hint says, and the portrait fallback. A sketch image is welcome. | `incoming/text/landscape.md` |
-| 3.4 | **Daily retune.** `harvest`, `quiet-gate`, `brass-reserve` run raider-heavy; `double-scout`, `silver-watch`, `shishir`, `vasant`, `archers-watch` sit near 30%. Propose one knob change each, screen with a **third** fresh seed bank (`--output=incoming/text/daily-balance-bank3.json`). Nothing is promoted without two passing banks. | JSON report + short note |
-
-**New hard rule for any code — keep the phone cool.** The game was heating phones because the
-screen repainted 60 times a second while the player thought. That is fixed (idle CPU ~40% → ~0%).
-So: no `animation: … infinite` on anything that stays on screen; no animated `box-shadow`,
-`filter` or SVG stroke loops; a pulse may play 2–3 times and stop. Before a PR, run
-`node tools/perf-idle.mjs` (every screen must stay under 3% busy) and
-`node tools/playtest-bot.mjs` (must end with "no problems"), as well as the four test suites.
-
----
+| 4.1 | **Robot in landscape.** Extend `tools/playtest-bot.mjs` so it also plays four battles at 844 × 390 and 640 × 360 (all four fields), plus lesson and Daily, and still ends with `no problems`. Do not change game code to make it pass — report any failure instead. | PR on a branch |
+| 4.3 | **Retune `quiet-gate`** (`docs/balance/daily-candidates.json`): it ran 58.3 % on the lotus in bank 4. One knob change, then screen in two fresh banks that miss banks 1–4 (`docs/balance/README.md`). | report in `docs/balance/` + note |
+| 4.2 | **Design review of the built landscape** against `docs/LANDSCAPE.md`: run `node tools/landscape.mjs <dir>`, look at every screenshot, and list each difference from your design with a suggested fix (CSS selector + change). No code changes in this task. | `incoming/text/landscape-review.md` |
 
 ## Context block (paste first)
 
@@ -126,7 +60,7 @@ Paste:
 > deities as characters), a Devanagari word, and one plain sentence a player understands.
 > Return **only** JSON: an array of objects with keys `key`, `deva`, `name`, `one`, `knobs`.
 
-Save as `incoming/text/daily-modifiers.json`. The Director simulates each one and keeps those
+Save as `incoming/text/daily-drafts.json`. The Director simulates each one and keeps those
 the raiders win 30–55% of the time.
 
 ## Task 3 — Store listing and launch words

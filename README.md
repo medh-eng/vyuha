@@ -22,13 +22,17 @@ Free, offline, no account, no tracking. One static web app — open it and play.
 |---|---|
 | **Yuddh karo** | One tap from the home screen into a battle. No login wall. |
 | **Pehla Yuddh** | A two-minute guided first battle: move, look, volley, strike, clear a trap, take a fort. |
-| **Daily Chakravyuha** | One seeded wheel for all of India each day, a modifier, a streak, and a WhatsApp share card with a round-by-round grid. |
+| **Daily Chakravyuha** | One seeded wheel for all of India each day — 28 balanced modifiers — a streak, and a WhatsApp share card with a round-by-round grid. |
 | **The fort gate** | The first blow breaks the gate; the second takes the fort. |
 | **Surya & Chandra** | Every fifth round the sky turns; the side in its hour strikes at +1. |
 | **Makara & Padma** | A pincer adds +1 to a strike; a guarded piece defends at +1. |
 | **Shakti & astras** | Five lamps; Vayavyastra, Sammohanastra, Agneyastra, Brahmastra — each once per battle. |
 | **The stage** | Clash cinematics with Devanagari verdicts, odds on the board, tap-twice strikes. |
-| **Sanjaya** | Narration in Hinglish, हिन्दी or English; recorded voice plays when present. |
+| **Sanjaya** | Narration in Hinglish, हिन्दी or English, with 88 recorded lines. |
+| **Calm pace** | One moment at a time — the move, the clash, Sanjaya's line, then the opponent. Tap to skip; Quick in Settings. |
+| **Your language** | The whole interface in English, हिन्दी or मराठी (Settings). |
+| **Sideways** | Turn the phone: controls move beside the board, nothing in the turn is lost. |
+| **Profile** | Ten painted avatars or your own photo (kept on the phone), frames, record per opponent. |
 | **Opponents** | Sainik, Dronacharya and Shakuni — and they never peek at your hidden ranks or fort. |
 | **Fields** | Chakravyuha, Padmavyuha, Sarvatobhadra (6 × 8), Kurukshetra (8 × 10). |
 | **Titles** | Shishya → Sainik → Rathi → Atirathi → Maharathi → Atimaharathi. |
@@ -65,7 +69,7 @@ Or open `vyuha-standalone.html` directly — a single file with the whole game i
 
 ```
 index.html                  app shell (screens, HUD, board, coach)
-css/app.css                 design system; Chapter III section at the end
+css/app.css                 design system; phone-landscape layer at the end
 js/units.js                 the balance file: pieces, astras, hours, fields, opponents, scenarios
 js/geometry.js              fields as cell graphs: square arenas, the wheel, the lotus
 js/engine.js                pure rules engine (no DOM): gates, hours, formations, Shakti, astras
@@ -73,26 +77,34 @@ js/ai.js                    the opponents: belief model, honest fort guess, astr
 js/sanjaya.js               the narrator: every line in English, Hinglish and Hindi
 js/stage.js                 cinematic beats: clash, volley, sight, gate, astra, the sky
 js/game.js                  battle screen: board, input, odds, astras, AI loop, results
-js/modes.js                 Pehla Yuddh, Daily Chakravyuha, sharing
+js/modes.js                 Pehla Yuddh, Daily Chakravyuha (catalogues I–III), sharing
+js/languages.js             interface strings: English, Hindi, Marathi (built from docs/i18n/)
 js/ui.js                    home, setup, codex, settings, saves, profiles
 js/audio.js · js/fx.js · js/art.js · js/storage.js · js/main.js
-assets/art/                 masters (as made) and opt/ (what the game loads)
+assets/                    what the game loads: art/opt, audio, voice, 3D pieces
+masters/                    originals as made (never shipped in an app build)
 assets/audio/               music and one-shots
 assets/3d/                  starter 3D pieces: GLB for renders, STL for printing
-docs/                       DIRECTOR.md, ROADMAP.md, prompts/, agents/, voice/, i18n/
-incoming/                   drop zone for new art, audio, voice and text
-tests/                      rules, self-play and DOM tests
-tools/                      standalone build, voice script, strings export, 3D pieces
+docs/                       DIRECTOR, ROADMAP, HANDOFF, PACING, LANDSCAPE; balance/, i18n/, prompts/, agents/, voice/
+incoming/                   drop zone; text/ holds drafts for the next chapter
+tests/                      rules, self-play, Daily, languages, assets, DOM
+tools/                      standalone build, phone harnesses (shots, idle heat, robot, landscape, media),
+                            Calm budget, Daily simulator, voice and strings scripts
 ```
 
 ## Tests
 
 ```bash
 npm install                 # only for the DOM test (jsdom)
-node tests/rules.mjs        # 119 rule checks, including every Chapter III layer
+node tests/rules.mjs        # 121 rule checks, including every Chapter III layer
 node tests/selfplay.mjs 60  # AI-vs-AI battles on all four fields
-node tests/ui.mjs           # boots index.html in jsdom: home, battle, astras, lesson, daily
+node tests/daily.mjs        # Daily catalogues, IST rollover, seeded AI
+node tests/languages.mjs    # 149-key Hindi/Marathi catalogues
+node tests/ui.mjs           # boots index.html in jsdom: home, battle, Calm pace, astras, lesson, daily
 ```
+
+Browser harnesses (need Chromium; set `CHROMIUM_PATH`): `tools/shots.mjs`, `tools/perf-idle.mjs`,
+`tools/playtest-bot.mjs`, `tools/landscape.mjs`, `tools/media-qa.mjs`. The full list is in `AGENTS.md`.
 
 ## Making things for the game
 

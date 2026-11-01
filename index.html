@@ -7,7 +7,10 @@
 <meta name="description" content="VYUHA — a hidden-rank war of formations from the Indian epics. Break the Chakravyuha, play the Daily puzzle, challenge your friends." />
 <meta property="og:title" content="VYUHA · व्यूह — Abhimanyu got in. Can you get out?" />
 <meta property="og:description" content="A hidden-rank strategy game of the epics: formations, the hours of Surya and Chandra, astras, and a Daily Chakravyuha for all of India." />
-<meta property="og:image" content="assets/art/opt/ui/hero.jpg" />
+<meta property="og:image" content="https://medh-eng.github.io/vyuha/assets/art/opt/ui/hero.jpg" />
+<meta property="og:image:width" content="1600" />
+<meta property="og:image:height" content="893" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>VYUHA · व्यूह — the war of formations</title>
@@ -136,7 +139,7 @@
           <div class="home-hero-text">
             <div class="kicker" id="home-greeting">Pranam</div>
             <h2 class="home-title">VYUHA <span class="deva">व्यूह</span></h2>
-            <p class="home-tag">Abhimanyu got in. Can you get out?</p>
+            <p class="home-tag" data-i18n="home.tagline">Abhimanyu got in. Can you get out?</p>
             <button class="btn btn-primary btn-hero" id="btn-quick">
               <span class="btn-hero-main" id="ci-quick"></span>
               <span class="btn-hero-sub" id="quick-sub">Chakravyuha · vs Dronacharya</span>
@@ -153,27 +156,27 @@
           </button>
           <button class="card-action" id="btn-tutorial">
             <span class="card-icon" id="ci-tutorial"></span>
-            <span class="card-title">Pehla Yuddh <span class="deva">पहला युद्ध</span></span>
+            <span class="card-title" data-i18n="home.lesson">Pehla Yuddh</span>
             <span class="card-sub" id="tutorial-sub">Learn the field in two minutes</span>
           </button>
           <button class="card-action" id="btn-new-match">
             <span class="card-icon" id="ci-new"></span>
-            <span class="card-title">Custom battle</span>
-            <span class="card-sub">Board, opponent, scenario and rules</span>
+            <span class="card-title" data-i18n="home.custom">Custom battle</span>
+            <span class="card-sub" data-i18n="home.custom.sub">Board, opponent, scenario and rules</span>
           </button>
           <button class="card-action" id="btn-resume">
             <span class="card-icon" id="ci-resume"></span>
-            <span class="card-title">Continue</span>
+            <span class="card-title" data-i18n="home.continue">Continue</span>
             <span class="card-sub" id="resume-sub">No game in progress</span>
           </button>
           <button class="card-action" id="btn-saves">
             <span class="card-icon" id="ci-saves"></span>
-            <span class="card-title">Saved games</span>
+            <span class="card-title" data-i18n="home.saves">Saved games</span>
             <span class="card-sub" id="saves-sub">0 of 3 slots used</span>
           </button>
           <button class="card-action" id="btn-rules">
             <span class="card-icon" id="ci-rules"></span>
-            <span class="card-title">Rules <span class="deva">ग्रंथ</span></span>
+            <span class="card-title" data-i18n="home.codex">Rules</span>
             <span class="card-sub">Pieces, astras, hours and formations</span>
           </button>
         </div>
@@ -195,7 +198,7 @@
   <section id="screen-setup" class="screen setup-screen" hidden>
     <header class="top-bar">
       <button class="icon-btn" id="btn-setup-back" aria-label="Back"></button>
-      <div class="top-name">Custom battle</div>
+      <div class="top-name" data-i18n="home.custom">Custom battle</div>
       <div class="top-actions"></div>
     </header>
     <div class="setup-wrap">
@@ -262,6 +265,7 @@
     </div>
 
     <div class="tip-bar" id="tip-bar"><span id="tip-text"></span></div>
+    <div class="rotate-hint" id="rotate-hint" role="note" hidden><span>Turn your phone sideways to place the controls beside the board. Portrait works too.</span><button type="button" id="btn-rotate-hint" aria-label="Dismiss hint"></button></div>
   <footer class="action-bar" id="action-bar"></footer>
     <div class="scrim" id="scrim"></div>
   </section>
@@ -279,6 +283,7 @@
 </noscript>
 
 <script src="js/units.js"></script>
+<script src="js/languages.js"></script>
 <script src="js/geometry.js"></script>
 <script src="js/engine.js"></script>
 <script src="js/ai.js"></script>

@@ -6,21 +6,16 @@ Sarvam's chat assistant handles the writing tasks; its text-to-speech tool (Bulb
 voice. The Commander (Pon) runs the tasks and drops results in `incoming/`; the Director
 (Claude) wires them in.
 
-## ▶ Batch 3 — from the Director, 30 Oct 2026 (do these first)
+## ▶ Batch 4 — from the Director, 1 Nov 2026 (do these first)
 
-Your voice landed: 88 lines, re-voiced with speaker **rahul** at pace **1.15** — much livelier.
-Batch 1 of the Hindi review (14 lines) is now in the game, with one correction: *"गुरु द्रोण ने
-दुश्मन को रोके हुए हैं"* mixes ने with रोके हुए हैं; it now reads **"गुरु द्रोण दुश्मन को रोके हुए
-हैं"**. Please double-check verb agreement like this in the next batch.
+Batch 3.2–3.4 is merged: the Hindi review, both interface catalogues (now selectable in
+Settings) and the two approved rewrites. Thank you — the glossary held throughout.
 
 | # | Task | Deliver |
 |---|---|---|
-| 3.1 | **Re-record four lines** whose Hindi changed: `start_abhimanyu_1`, `start_tutorial_1`, `lose_capture_1`, `trap_defused_1` (text in `docs/voice/sanjaya-lines.csv`). Same speaker and pace: `tools/voice-gen.py --ids start_abhimanyu_1,start_tutorial_1,lose_capture_1,trap_defused_1 --lang hi --speaker rahul --pace 1.15`. | `assets/audio/voice/hi/<id>.mp3` |
-| 3.2 | **Hindi review, batch 2** — the remaining 30 lines (everything not in `incoming/text/sanjaya-review.csv`). Same columns. | `incoming/text/sanjaya-review-2.csv` |
-| 3.3 | **Interface strings** — Task 2 below; the file now has **149** strings (the new Daily variants added). | `incoming/i18n/strings.hi.json`, `strings.mr.json` |
-| 3.4 | **Two lines the Commander found flat** — after he approves the rewrite (see `docs/HANDOFF-2026-10-30-director.md`), record them in Hindi and English. | voice files |
-
----
+| 4.1 | **Record the 18 pending lines** listed in `docs/voice/pending-recordings.json` (16 Hindi, 2 English; their text changed in review). Speaker **rahul**, pace **1.15**. Until then they show as text only. | `assets/audio/voice/<hi\|en>/<id>.mp3` |
+| 4.2 | **Four lines run too long for Calm.** Each must be **≤ 3.3 seconds**: `volley_kill_1` (Hindi, now 3.76 s), `assassinate_1` (Hindi, 3.47 s), `trap_defused_1` (English, 3.53 s), `rotate_padma_1` (English, 3.40 s). Shorten the wording first (keep the meaning, keep Sanjaya's voice), give the new text in all three columns, then record. Check: `node tools/pace-budget.mjs --strict` passes. | `incoming/text/sanjaya-short-2026-11-01.csv` + voice files |
+| 4.3 | **A person reads `strings.mr.json`.** If a native Marathi speaker can review it, record their corrections in the same file and name the reviewer in the handoff. Do not claim a review that did not happen. | `docs/i18n/strings.mr.json` |
 
 ## Context block (paste first in the chat)
 
@@ -61,7 +56,7 @@ the daily modifiers, buttons). Paste:
 > JSON.
 > [paste the file]
 
-Save as `incoming/i18n/strings.hi.json`. Then the same prompt with **Marathi** → save as
+Save as `incoming/i18n/strings.hi.json` (the Director moves it to `docs/i18n/`). Then the same prompt with **Marathi** → save as
 `incoming/i18n/strings.mr.json`.
 
 The Director then adds a language switch (English / हिन्दी / मराठी) to the game — that wiring is
