@@ -82,7 +82,8 @@
     sfxBus.gain.setTargetAtTime(settings.sfx, now(), 0.05);
     if (!musicPlaying) musicBus.gain.setTargetAtTime(0, now(), 0.05);
     else musicBus.gain.setTargetAtTime(settings.music * 0.5, now(), 0.08);
-    if (musicState.el) musicState.el.volume = Math.max(0.02, settings.music * 0.55);
+    Object.keys(musicEls).forEach(function (key) { musicEls[key].muted = settings.muted || settings.musicOn === false; });
+    if (musicState.el) musicState.el.volume = Math.max(0, settings.music * 0.55);
   }
 
   function setSettings(s) {
@@ -364,6 +365,11 @@
       menu: 'assets/audio/music/menu.mp3',
       tabla: 'assets/audio/music/tabla.mp3',
       battle: 'assets/audio/music/battle.mp3',
+      battle_night: 'assets/audio/music/battle_night.mp3',
+      daily: 'assets/audio/music/daily_theme.mp3',
+      lesson: 'assets/audio/music/lesson.mp3',
+      abhimanyu: 'assets/audio/music/abhimanyu.mp3',
+      victory_big: 'assets/audio/music/victory_big.mp3',
       victory: 'assets/audio/music/victory.mp3',
       defeat: 'assets/audio/music/defeat.mp3'
     },
@@ -402,6 +408,11 @@
   const sfxEls = {};
   const musicEls = {};
   let musicState = { mode: null, el: null };
+  let stingEl = null;
+  function stopSting() {
+    if (stingEl) { try { stingEl.pause(); } catch (e) { /* already stopped */ } }
+    stingEl = null;
+  }
   let sfxLoading = false;
 
   function loadSfx() {
@@ -469,6 +480,7 @@
     el.loop = true;
     el.preload = 'auto';
     el.volume = 0;
+    el.muted = settings.muted || settings.musicOn === false;
     musicEls[mode] = el;
     return el;
   }
@@ -598,6 +610,7 @@
     init();
     if (settings.muted || settings.musicOn === false) return;
     if (musicState.mode === mode) return;
+    stopSting();
     const el = getMusicEl(mode);
     if (!el) { startSynthMusic(mode); return; }
 
@@ -611,23 +624,25 @@
     if (attempt && attempt.catch) {
       attempt.catch(function () { musicState = { mode: null, el: null }; startSynthMusic(mode); });
     }
-    fade(el, Math.max(0.02, settings.music * 0.55), 900);
+    fade(el, Math.max(0, settings.music * 0.55), 900);
     if (old && old !== el) fade(old, 0, 500).then(function () { try { old.pause(); } catch (e) { /* ignore */ } });
   }
 
   /* A one-off cue (victory / defeat) that ducks the score while it plays. */
   function sting(kind) {
+    stopSting();
     if (settings.muted || settings.musicOn === false) return;
     init();
     const el = getMusicEl(kind);
     if (!el) return;
+    stingEl = el;
     const current = musicState.el;
     musicState = { mode: null, el: null };
     if (current) fade(current, 0, 350).then(function () { try { current.pause(); } catch (e) { /* ignore */ } });
     const once = musicEls[kind];
     if (once) once.loop = false;
     try { el.currentTime = 0; } catch (e) { /* ignore */ }
-    el.volume = Math.max(0.05, settings.music * 0.7);
+    el.volume = Math.max(0, settings.music * 0.7);
     let attempt = null;
     try { attempt = el.play(); } catch (e) { attempt = null; }
     if (attempt && attempt.catch) attempt.catch(function () { /* stay silent */ });
@@ -638,7 +653,7 @@
   function duck(ms) {
     const el = musicState.el;
     if (!el) return;
-    const base = Math.max(0.02, settings.music * 0.55);
+    const base = Math.max(0, settings.music * 0.55);
     fade(el, base * 0.35, 200);
     if (duckTimer) clearTimeout(duckTimer);
     duckTimer = setTimeout(function () {
@@ -660,6 +675,7 @@
   }
 
   function stopMusic() {
+    stopSting();
     stopSynthMusic();
     const el = musicState.el;
     musicState = { mode: null, el: null };
@@ -669,20 +685,22 @@
   /* When the phone locks or the player switches app, everything goes quiet:
    * the score pauses, the audio engine sleeps, and both come back on return.
    * A game left playing music in the background is a warm phone in a pocket. */
-  let sleptEl = null;
+  let sleptEls = [];
   function onVisibility() {
     const hidden = root.document && root.document.visibilityState === 'hidden';
     if (hidden) {
-      const el = musicState.el;
-      if (el && !el.paused) { sleptEl = el; try { el.pause(); } catch (e) { /* ignore */ } }
+      sleptEls = [musicState.el, stingEl].filter(function (el) { return el && !el.paused; });
+      sleptEls.forEach(function (el) { try { el.pause(); } catch (e) { /* ignore */ } });
       if (ctx && ctx.state === 'running' && ctx.suspend) ctx.suspend().catch(function () {});
     } else {
       if (ctx && ctx.state === 'suspended' && ctx.resume) ctx.resume().catch(function () {});
-      if (sleptEl && sleptEl === musicState.el && !settings.muted && settings.musicOn !== false) {
-        const p = sleptEl.play && sleptEl.play();
-        if (p && p.catch) p.catch(function () {});
-      }
-      sleptEl = null;
+      sleptEls.forEach(function (el) {
+        if ((el === musicState.el || el === stingEl) && !settings.muted && settings.musicOn !== false) {
+          const p = el.play && el.play();
+          if (p && p.catch) p.catch(function () {});
+        }
+      });
+      sleptEls = [];
     }
   }
   if (root.document && root.document.addEventListener) {

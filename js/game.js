@@ -345,14 +345,27 @@
   let rendering = false;
   let renderAgain = false;
 
+  // Special modes keep their theme across sky changes. Settings and audio
+  // unlock use the same route, so they cannot replace the score with menu music.
+  g.musicMode = function () {
+    const st = g.state;
+    if (!st) return null;
+    if (st.phase === 'deploy1' || st.phase === 'deploy2') return 'tabla';
+    if (st.phase !== 'battle') return null;
+    if (st.scenario === 'daily') return 'daily';
+    if (st.scenario === 'shiksha') return 'lesson';
+    if (st.scenario === 'abhimanyu') return 'abhimanyu';
+    return E.hourOf(st) === 'night' ? 'battle_night' : 'battle';
+  };
+
   function render() {
     if (!g.state) return;
     if (rendering) { renderAgain = true; return; }   // never rebuild the board mid-build
     rendering = true;
     try {
     // deployment gets the tabla score, battle gets the war drums
-    if (g.state.phase === 'deploy1' || g.state.phase === 'deploy2') AU.startMusic('tabla');
-    else if (g.state.phase === 'battle') AU.startMusic('battle');
+    const score = g.musicMode();
+    if (score) AU.startMusic(score);
     renderHud();
     renderStrips();
     renderBoard();
@@ -1743,7 +1756,7 @@
     const cls = winner === 0 ? 'draw' : (isAiGame ? (outcome === 'win' ? 'win' : 'lose') : 'win');
     sfx(winner === 0 ? 'draw' : isAiGame ? (outcome === 'win' ? 'win' : 'lose') : 'win');
     if (winner === 0) AU.sting('defeat');
-    else if (!isAiGame || outcome === 'win') { AU.sting('victory'); sfx('shankh'); }
+    else if (!isAiGame || outcome === 'win') { AU.sting('victory_big'); sfx('shankh'); }
     else AU.sting('defeat');
     if (winner !== 0) FX.shake(9);
     speak([winner === 0 ? 'draw' : (isAiGame ? (outcome === 'win' ? 'victory' : 'defeat') : 'victory')]);

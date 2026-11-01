@@ -1,0 +1,60 @@
+{
+  "viewport": "390x844",
+  "routes": [
+    {
+      "scenario": "duel",
+      "turn": 1,
+      "mode": "battle_night",
+      "playing": [
+        "battle_night.mp3"
+      ]
+    },
+    {
+      "scenario": "duel",
+      "turn": 5,
+      "mode": "battle",
+      "playing": [
+        "battle.mp3"
+      ]
+    },
+    {
+      "scenario": "daily",
+      "turn": 1,
+      "mode": "daily",
+      "playing": [
+        "daily_theme.mp3"
+      ]
+    },
+    {
+      "scenario": "daily",
+      "turn": 5,
+      "mode": "daily",
+      "playing": [
+        "daily_theme.mp3"
+      ]
+    },
+    {
+      "scenario": "shiksha",
+      "turn": 1,
+      "mode": "lesson",
+      "playing": [
+        "lesson.mp3"
+      ]
+    },
+    {
+      "scenario": "abhimanyu",
+      "turn": 5,
+      "mode": "abhimanyu",
+      "playing": [
+        "abhimanyu.mp3"
+      ]
+    }
+  ],
+  "musicOffSurvivesRedraw": true,
+  "settingsRestoreCorrectTheme": true,
+  "recordedMusicMuteAndZeroVolume": true,
+  "victoryStopsOnHome": true,
+  "trapBufferSeconds": 1.1,
+  "errors": [],
+  "physicalPhone": false
+}

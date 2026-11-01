@@ -409,6 +409,25 @@ async function run() {
   ok(document.documentElement.classList.contains('lite') === AC.app.liteOn(), 'battery saver follows the setting');
   AC.app.modals.slice().forEach((m) => m.close());
 
+  // Score selection is shared by rendering, unlock and Settings.
+  AC.game.clearOverlays();
+  const musicState = AC.engine.newState({ mode: 'ai', board: 'wheel', rules: { hours: true } });
+  AC.game.state = musicState;
+  ok(AC.game.musicMode() === 'tabla', 'deployment keeps the tabla score');
+  AC.engine.beginBattle(musicState);
+  musicState.turn = 1;
+  ok(AC.game.musicMode() === 'battle_night', 'ordinary night battle uses the supplied night theme');
+  musicState.turn = 5;
+  ok(AC.game.musicMode() === 'battle', 'ordinary day battle returns to the day theme');
+  for (const [scenario, score] of [['daily', 'daily'], ['shiksha', 'lesson'], ['abhimanyu', 'abhimanyu']]) {
+    musicState.scenario = scenario;
+    ok(AC.game.musicMode() === score, scenario + ' keeps its own theme through sky changes');
+  }
+  AC.ui.patchSettings({ musicOn: false });
+  AC.game.render();
+  ok(AC.audio.getSettings().musicOn === false, 'Music Off reaches the audio engine and survives a board redraw');
+  AC.ui.patchSettings({ musicOn: true });
+
   // jsdom has no media stack and no canvas backend; those notices are not
   // game errors (audio is verified in the browser instead)
   const realErrors = errors.filter((e) => !/Not implemented: (window\.|HTMLCanvas|HTMLMediaElement)/.test(e));

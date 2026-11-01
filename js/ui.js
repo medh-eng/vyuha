@@ -46,6 +46,11 @@
   /* ── screens ─────────────────────────────────────────────────── */
   const SCREENS = ['auth', 'home', 'setup', 'game'];
 
+  function resumeScore() {
+    const mode = app.screen === 'game' && AC.game ? AC.game.musicMode() : app.screen === 'setup' ? 'tabla' : 'menu';
+    if (mode && app.settings.musicOn !== false) AU.startMusic(mode);
+  }
+
   function show(name) {
     if (name !== 'game' && AC.game && AC.game.clearOverlays) AC.game.clearOverlays();
     app.screen = name;
@@ -201,7 +206,7 @@
     document.documentElement.classList.toggle('hc', !!s.highContrast);
     document.documentElement.classList.toggle('reduce-motion', !!s.reducedMotion);
     document.documentElement.classList.toggle('lite', liteOn(s));
-    AU.setSettings({ sfx: s.sfx, music: s.music, muted: s.muted, haptics: s.haptics });
+    AU.setSettings({ sfx: s.sfx, music: s.music, musicOn: s.musicOn, muted: s.muted, haptics: s.haptics });
     FX.setReducedMotion(s.reducedMotion);
     if (AC.sanjaya) {
       AC.sanjaya.setLang(s.narratorLang || 'hinglish');
@@ -1002,7 +1007,7 @@
       if (key === 'muted') patch.muted = !app.settings.muted;
       else if (key === 'musicOn') {
         patch.musicOn = !(app.settings.musicOn !== false);
-        if (patch.musicOn) AU.startMusic('menu'); else AU.stopMusic();
+        if (!patch.musicOn) AU.stopMusic();
       } else if (key === 'haptics') patch.haptics = !app.settings.haptics;
       else if (key === 'confirmActions') patch.confirmActions = !(app.settings.confirmActions !== false);
       else if (key === 'narrator') patch.narrator = app.settings.narrator === false;
@@ -1015,6 +1020,7 @@
       else if (key === 'colorblind') patch.colorblind = !app.settings.colorblind;
       else if (key === 'highContrast') patch.highContrast = !app.settings.highContrast;
       patchSettings(patch);
+      if (key === 'musicOn' && patch.musicOn) resumeScore();
       rowEl.querySelector('.switch').classList.toggle('on');
       const on = rowEl.querySelector('.switch').classList.contains('on');
       rowEl.setAttribute('aria-checked', on ? 'true' : 'false');
@@ -1372,7 +1378,7 @@
     // first interaction unlocks Web Audio (browser policy)
     const unlockOnce = function () {
       AU.unlock();
-      if (app.settings.musicOn !== false) AU.startMusic(app.screen === 'game' ? 'battle' : 'menu');
+      resumeScore();
       document.removeEventListener('pointerdown', unlockOnce);
       document.removeEventListener('keydown', unlockOnce);
     };
