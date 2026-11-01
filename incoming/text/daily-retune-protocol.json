@@ -1,0 +1,97 @@
+{
+  "lockedAtUtc": "2026-11-01T09:30:16.583596+00:00",
+  "baseCommit": "ce9c0dee7a08516248a7a3131a426cb0d4f8b4df",
+  "freshSeedBase": 9621579,
+  "freshSeedBaseHex": "0x92d04b",
+  "gamesPerVariantPerBoard": 120,
+  "boards": [
+    "wheel",
+    "padma"
+  ],
+  "expectedRows": 42,
+  "expectedGames": 5040,
+  "priorBanks": [
+    {
+      "seedBase": 5370206,
+      "games": 60
+    },
+    {
+      "seedBase": 7287209,
+      "games": 120
+    }
+  ],
+  "seedSetsDisjoint": true,
+  "selection": "Calibrated on bank 2 first 60 seeds, then locked before bank 3. No retuning after bank 3.",
+  "promotionRule": "No promotion: require two independent passing banks for the exact revised knobs. Calibration does not count. Bank 3 is only the first fresh validation bank for these revisions.",
+  "screenBandPercent": [
+    30,
+    55
+  ],
+  "changes": [
+    {
+      "key": "harvest",
+      "selectedCalibrationRound": 4,
+      "path": "raiders[0]",
+      "from": "9",
+      "to": "5"
+    },
+    {
+      "key": "quiet-gate",
+      "selectedCalibrationRound": 4,
+      "path": "raiders[0]",
+      "from": "9",
+      "to": "5"
+    },
+    {
+      "key": "brass-reserve",
+      "selectedCalibrationRound": 3,
+      "path": "defenders[1]",
+      "from": "3",
+      "to": "6"
+    },
+    {
+      "key": "double-scout",
+      "selectedCalibrationRound": 2,
+      "path": "raiders[4]",
+      "from": "2",
+      "to": "7"
+    },
+    {
+      "key": "silver-watch",
+      "selectedCalibrationRound": 1,
+      "path": "startShakti.raiders",
+      "from": 3,
+      "to": 4
+    },
+    {
+      "key": "shishir",
+      "selectedCalibrationRound": 1,
+      "path": "startShakti.raiders",
+      "from": 2,
+      "to": 3
+    },
+    {
+      "key": "vasant",
+      "selectedCalibrationRound": 1,
+      "path": "turnLimit",
+      "from": 26,
+      "to": 28
+    },
+    {
+      "key": "archers-watch",
+      "selectedCalibrationRound": 1,
+      "path": "startShakti.raiders",
+      "from": 2,
+      "to": 3
+    }
+  ],
+  "inputsSha256": "5d8791bc7c8771ae2f8f8a57d922acec13e2280c15860f58fd1c3bcccda11ff2",
+  "sourceSha256": {
+    "tools/simulate-daily.mjs": "c70fee8514883e2cc69f2452019ea44493bc0db174a5d27178e1e34cb55ad3bf",
+    "js/units.js": "798580046489f35712ff37fbaea18bbe9ca8300299aaf50e2badedbfb9d8713e",
+    "js/geometry.js": "ddce3a819ff70d9fc061c7753cd16ad9ad69c7f6deb5dbfc595b170d3ea2313f",
+    "js/engine.js": "71220cd65b78182de972690ba4f0c1df202f82f0c8eb2f6285609c51c92de934",
+    "js/ai.js": "8ce58c390f9378ef5752753e4e9da2e1ebee74efd6cd91506b101051dfd564de",
+    "js/modes.js": "f49e17e1ee06e9e46d5d72ecf922ae9cd370b2068a0c7f3696ae95e57a1524fb"
+  }
+}
