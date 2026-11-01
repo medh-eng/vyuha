@@ -194,3 +194,17 @@ tuning.
 - Draft integration proposal only. Existing English fallback copy, native
   Marathi review and replacement recordings remain. No Calm timing changes.
 - See `docs/HANDOFF-2026-11-01-localisation.md` and saved evidence.
+## 1 Nov 2026 (ChatGPT) — landscape design proposal
+- Batch 3.3 delivered at `incoming/text/landscape.md` with a dimensioned SVG
+  sketch. Three columns keep the board at full height, status/player strips
+  left and actions/narration right; rotation hint is optional and shown once.
+- Budgets checked at 844×390 and 640×360; SVG parsed and rendered for visual
+  review. No runtime files changed. Implementation, regression and physical
+  Android checks remain with the later code work.
+- Portrait delivery is PR #7, localisation integration PR #9. This separate
+  design proposal preserves Claude's ownership of Calm pacing in PR #8.
+- See `docs/HANDOFF-2026-11-01-landscape.md`.
+| 1 | Sanjaya's 44 Hindi lines — full review | **batch 1 done** (14 highest-frequency lines in `incoming/text/sanjaya-review.csv`); 30 remain |
+| 2 | 115 interface strings → Hindi and Marathi | not started — blocks the language switch |
+| 3 | Sanjaya's lines → Marathi | waiting on 1 |
+| 4 | Bulbul voice re-record after review | one command: `tools/voice-gen.py --ids <id>` |
