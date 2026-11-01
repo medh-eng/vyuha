@@ -383,11 +383,41 @@
     renderIntel();
     renderLog();
     startClockIfNeeded();
+    rotateHint();
     modeHook('afterRender');
     } finally {
       rendering = false;
       if (renderAgain) { renderAgain = false; setTimeout(render, 0); }
     }
+  }
+
+  /* Once, on a first ordinary portrait battle while the player is free to act:
+   * suggest landscape. Dismissing it, or turning the phone, retires it. */
+  function landscapeNow() {
+    return typeof matchMedia === 'function' && matchMedia('(orientation: landscape) and (max-height: 520px) and (min-width: 560px)').matches;
+  }
+  function retireRotateHint() {
+    const el = $('#rotate-hint');
+    if (el) el.hidden = true;
+    if (!settings().landscapeHintDismissed && AC.ui && AC.ui.patchSettings) AC.ui.patchSettings({ landscapeHintDismissed: true });
+  }
+  function rotateHint() {
+    const el = $('#rotate-hint');
+    if (!el) return;
+    const st = g.state;
+    if (!el.dataset.wired) {
+      el.dataset.wired = '1';
+      const btn = $('#btn-rotate-hint');
+      if (btn) { btn.innerHTML = A.icon('close'); btn.addEventListener('click', function () { sfx('ui'); retireRotateHint(); }); }
+      if (typeof matchMedia === 'function') {
+        const mq = matchMedia('(orientation: landscape) and (max-height: 520px) and (min-width: 560px)');
+        const onTurn = function () { if (mq.matches && !el.hidden) retireRotateHint(); };
+        if (mq.addEventListener) mq.addEventListener('change', onTurn); else if (mq.addListener) mq.addListener(onTurn);
+      }
+    }
+    const touch = typeof matchMedia === 'function' && matchMedia('(pointer: coarse) and (orientation: portrait) and (max-width: 560px)').matches;
+    const idle = st.phase === 'battle' && !g.busy && !g.thinking && st.viewer !== 0 && (!st.scenario || st.scenario === 'duel') && !$('#coach:not([hidden])');
+    el.hidden = !(touch && idle && !settings().landscapeHintDismissed && !landscapeNow());
   }
 
   function skyIcon(hour) { return A.icon(hour === 'day' ? 'sun' : 'moon'); }

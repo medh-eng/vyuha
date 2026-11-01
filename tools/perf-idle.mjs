@@ -2,7 +2,7 @@
  * A phone heats up when the browser keeps painting even though nothing changed.
  *   node tools/perf-idle.mjs            (serves the repo on a local port)
  * Reports, per screen, the main-thread busy time and the paint count over 4 s of
- * idle on a 390×844 phone viewport with 4× CPU throttling.
+ * idle on a 390×844 phone viewport (VW/VH env override, e.g. 844×390 landscape) with 4× CPU throttling.
  */
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -26,7 +26,7 @@ const server = http.createServer((req, res) => {
 const base = 'http://127.0.0.1:' + server.address().port + '/';
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined, args: ['--mute-audio'] });
-const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, serviceWorkers: 'block' });
+const ctx = await browser.newContext({ viewport: { width: +(process.env.VW || 390), height: +(process.env.VH || 844) }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, serviceWorkers: 'block' });
 const page = await ctx.newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));

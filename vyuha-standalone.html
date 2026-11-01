@@ -2298,6 +2298,115 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
   letter-spacing: normal; line-height: 1.45;
 }
 
+/* ── Phone landscape battle (Batch 3.3, incoming/text/landscape.md) ──────────
+ * Three columns: status rail · battlefield · action rail. Pure CSS, so turning
+ * the phone only reflows: selection, clock, voice and cards are untouched.
+ * Static surfaces only — no animation is added here. */
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 560px) {
+  #screen-game {
+    --rail-l: clamp(96px, calc(96px + (100vw - 640px) * 0.0784), 112px);
+    --rail-r: clamp(136px, calc(136px + (100vw - 640px) * 0.196), 176px);
+    display: grid;
+    grid-template-columns: var(--rail-l) minmax(0, 1fr) var(--rail-r);
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    --tip-h: 76px;
+    position: relative;
+    column-gap: 8px;
+    row-gap: 6px;
+    padding: max(6px, var(--safe-t, 0px)) max(8px, env(safe-area-inset-right)) max(6px, var(--safe-b)) max(8px, env(safe-area-inset-left));
+  }
+  #screen-game .game-body, #screen-game .board-column, #screen-game .hud-right { display: contents; }
+
+  /* left rail: controls in a 2-up grid, then the two armies */
+  #screen-game .game-hud {
+    grid-column: 1; grid-row: 1;
+    display: grid; grid-template-columns: repeat(2, 44px); justify-content: space-between;
+    gap: 4px; padding: 0; border: 0; background: none; backdrop-filter: none;
+  }
+  #screen-game .game-hud .icon-btn { width: 44px; height: 44px; border-radius: 12px; }
+  #btn-game-menu { order: 1; }
+  #btn-hud-settings { order: 2; }
+  #screen-game .hud-centre { order: 3; grid-column: 1 / -1; }
+  #hud-sky { order: 4; min-width: 44px; min-height: 44px; padding: 0 4px; justify-content: center; }
+  #hud-clock { order: 5; min-width: 44px; height: 44px; padding: 0 2px; display: grid; place-items: center; font-size: 12px; }
+  #hud-clock.hidden { display: none; }
+  #btn-hud-intel { order: 6; }
+  #btn-hud-log { order: 7; }
+  #screen-game .turn-pill {
+    white-space: normal; text-align: center; justify-content: center; width: 100%;
+    font-size: 9.5px; line-height: 1.25; letter-spacing: 0.06em; padding: 4px 6px; clip-path: none; border-radius: 8px;
+  }
+  #screen-game .hud-sub { display: none; }
+
+  #strip-top { grid-column: 1; grid-row: 2; }
+  #strip-bottom { grid-column: 1; grid-row: 3; }
+  #screen-game .player-strip {
+    display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 3px; min-height: 0; height: auto; padding: 6px 7px; border-radius: 10px;
+  }
+  #screen-game .player-strip .strip-name {
+    font-size: 9.5px; letter-spacing: 0.04em; white-space: normal;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  #screen-game .player-strip .capture-tray { display: none; }
+  #screen-game .player-strip .diyas { margin-left: 0; }
+  #screen-game .player-strip .diya, #screen-game .player-strip .diya .ico { width: 11px; height: 11px; }
+
+  /* centre: the whole height belongs to the field */
+  #screen-game .board-shell { grid-column: 2; grid-row: 1 / -1; padding: 0; border-radius: 18px; }
+  #screen-game .board-svg { inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); }
+
+  /* right rail: lesson coach, then the order panel, then Sanjaya */
+  #screen-game .coach { grid-column: 3; grid-row: 1; margin: 0; max-height: 46vh; overflow-y: auto; font-size: 11px; }
+  #screen-game .action-bar {
+    grid-column: 3; grid-row: 1 / -1; margin-bottom: calc(var(--tip-h) + 6px);
+    flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 6px;
+    min-height: 0; padding: 8px; border: 1px solid var(--line); border-radius: 12px;
+    overflow-y: auto; overscroll-behavior: contain;
+  }
+  #screen-game:has(#coach:not([hidden])) .action-bar { grid-row: 2 / -1; }
+  #screen-game .action-info { flex: none; align-items: flex-start; }
+  #screen-game .sel-badge { width: 32px; height: 32px; border-radius: 10px; }
+  #screen-game .sel-name { font-size: 11.5px; white-space: normal; }
+  #screen-game .sel-desc { display: -webkit-box; -webkit-line-clamp: 3; font-size: 10px; }
+  #screen-game .action-buttons { flex: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; justify-content: stretch; }
+  #screen-game .action-buttons > * { min-height: 44px; justify-content: center; white-space: normal; text-align: center; line-height: 1.2; }
+  #screen-game .action-buttons .mode-btn { padding: 4px 6px; font-size: 10.5px; }
+  #screen-game .action-buttons .btn { grid-column: 1 / -1; }
+  #screen-game .action-buttons .mode-btn[data-mode="move"],
+  #screen-game .action-buttons .mode-btn[data-act="advisor"] { grid-column: 1 / -1; }
+  #screen-game .action-buttons .mode-btn[data-act="deselect"]:nth-last-child(2) { grid-column: auto; }
+  #screen-game .action-bar .astra-row {
+    grid-column: 1 / -1; order: -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; overflow: visible;
+  }
+  #screen-game .action-bar .astra-btn { min-height: 44px; width: auto; }
+
+  /* Sanjaya: a fixed plate at the foot of the action rail, so the two rails
+   * never share row heights; a long line scrolls inside it. */
+  #screen-game .tip-bar {
+    position: absolute; right: max(8px, env(safe-area-inset-right)); bottom: max(6px, var(--safe-b)); width: var(--rail-r);
+    height: var(--tip-h); margin: 0; min-height: 0; overflow-y: auto; box-sizing: border-box;
+    font-size: 10.5px; line-height: 1.35; padding: 6px 8px; text-align: left; justify-content: flex-start; align-items: flex-start;
+  }
+
+  /* toasts sit over the action rail, never over the field's targets */
+  .toast-root { left: auto; right: max(8px, env(safe-area-inset-right)); top: auto; bottom: calc(88px + var(--safe-b)); transform: none; width: min(176px, 30vw); }
+  .toast { border-radius: 10px; font-size: 11px; padding: 7px 10px; }
+  .toast-root .toast:not(:last-child) { display: none; }   /* one at a time over the rail */
+  .rotate-hint { display: none; }
+  /* the rail is too short for banners; side colour and border carry the house */
+  #screen-game .player-strip .strip-banner, #screen-game .player-strip .crest { display: none; }
+}
+
+/* One-time portrait hint: turn sideways for controls beside the board. */
+.rotate-hint {
+  display: flex; align-items: center; gap: 8px; margin: 0 var(--pad) 4px; padding: 6px 6px 6px 12px;
+  border-radius: 10px; border: 1px solid rgba(224, 169, 74, 0.32); background: rgba(40, 30, 16, 0.92);
+  font-size: 11px; color: var(--txt-2); line-height: 1.35;
+}
+.rotate-hint[hidden] { display: none; }
+.rotate-hint span { flex: 1; }
+.rotate-hint button { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; color: var(--dim); }
+
 </style>
 </head>
 <body>
@@ -2543,6 +2652,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     </div>
 
     <div class="tip-bar" id="tip-bar"><span id="tip-text"></span></div>
+    <div class="rotate-hint" id="rotate-hint" role="note" hidden><span>Turn your phone sideways to place the controls beside the board. Portrait works too.</span><button type="button" id="btn-rotate-hint" aria-label="Dismiss hint"></button></div>
   <footer class="action-bar" id="action-bar"></footer>
     <div class="scrim" id="scrim"></div>
   </section>
@@ -6495,7 +6605,8 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     pace: 'calm',
     batterySaver: null,   // null = decide from the phone (low memory / few cores → on)
     stories: true,
-    tutorialDone: false
+    tutorialDone: false,
+    landscapeHintDismissed: false
   };
 
   function nowIso() {
@@ -8893,11 +9004,22 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     });
   }
 
+  let hubPaint = null, hubTimer = null;
+  function artLanded(slot) {
+    if (!hubPaint || !/^(hero|portrait):/.test(slot)) return;
+    clearTimeout(hubTimer);
+    hubTimer = setTimeout(function () { if (hubPaint) hubPaint(); }, 60);
+  }
+
   function openProfile() {
     let p = app.profile;
     if (!p) { show('auth'); return; }
-    const m = modal({ kicker: 'Yoddha', title: 'Your profile', body: '<div id="hub"></div>', actions: [{ label: 'Done', cls: 'btn-primary' }] });
+    const m = modal({ kicker: 'Yoddha', title: 'Your profile', body: '<div id="hub"></div>', actions: [{ label: 'Done', cls: 'btn-primary' }],
+      onClose: function () { hubPaint = null; } });
     const host = m.el.querySelector('#hub');
+    // Portraits load lazily the first time the hub asks for them; repaint the
+    // picker as each one lands instead of showing sigils until a reopen.
+    hubPaint = function () { if (host.isConnected) paint(); };
 
     function save(patch) {
       const av = Object.assign({}, p.avatar || {}, patch);
@@ -9258,6 +9380,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     patchSettings: patchSettings,
     boot: boot,
     openProfile: openProfile,
+    artLanded: artLanded,
     esc: esc,
     timeAgo: timeAgo,
     describeSave: describeSave,
@@ -9895,11 +10018,41 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     renderIntel();
     renderLog();
     startClockIfNeeded();
+    rotateHint();
     modeHook('afterRender');
     } finally {
       rendering = false;
       if (renderAgain) { renderAgain = false; setTimeout(render, 0); }
     }
+  }
+
+  /* Once, on a first ordinary portrait battle while the player is free to act:
+   * suggest landscape. Dismissing it, or turning the phone, retires it. */
+  function landscapeNow() {
+    return typeof matchMedia === 'function' && matchMedia('(orientation: landscape) and (max-height: 520px) and (min-width: 560px)').matches;
+  }
+  function retireRotateHint() {
+    const el = $('#rotate-hint');
+    if (el) el.hidden = true;
+    if (!settings().landscapeHintDismissed && AC.ui && AC.ui.patchSettings) AC.ui.patchSettings({ landscapeHintDismissed: true });
+  }
+  function rotateHint() {
+    const el = $('#rotate-hint');
+    if (!el) return;
+    const st = g.state;
+    if (!el.dataset.wired) {
+      el.dataset.wired = '1';
+      const btn = $('#btn-rotate-hint');
+      if (btn) { btn.innerHTML = A.icon('close'); btn.addEventListener('click', function () { sfx('ui'); retireRotateHint(); }); }
+      if (typeof matchMedia === 'function') {
+        const mq = matchMedia('(orientation: landscape) and (max-height: 520px) and (min-width: 560px)');
+        const onTurn = function () { if (mq.matches && !el.hidden) retireRotateHint(); };
+        if (mq.addEventListener) mq.addEventListener('change', onTurn); else if (mq.addListener) mq.addListener(onTurn);
+      }
+    }
+    const touch = typeof matchMedia === 'function' && matchMedia('(pointer: coarse) and (orientation: portrait) and (max-width: 560px)').matches;
+    const idle = st.phase === 'battle' && !g.busy && !g.thinking && st.viewer !== 0 && (!st.scenario || st.scenario === 'duel') && !$('#coach:not([hidden])');
+    el.hidden = !(touch && idle && !settings().landscapeHintDismissed && !landscapeNow());
   }
 
   function skyIcon(hour) { return A.icon(hour === 'day' ? 'sun' : 'moon'); }
@@ -12276,6 +12429,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       };
 
       AC.art.onArtLoaded(function (slot) {
+        if (AC.ui.artLanded) AC.ui.artLanded(slot);
         const screen = AC.app.screen;
         const relevant =
           screen === 'game' ? needsBoard(slot) || slot.indexOf('banner:') === 0
