@@ -24,6 +24,12 @@ can enforce the same <3% requirement; no battle pacing values are adjusted.
 
 ## Integration notes for Claude
 
+- PR #8 (`claude/integrate-2026-11-01`, observed head `126a07a`) now combines
+  #3/#4/#5/#6 and Claude's revised Calm pacing. It remains open and main is
+  unchanged. When combining this proposal, retain #8's pacing/audio sequence
+  and tests; the older #4 references below describe the original overlap.
+  Apply the locale display changes and pending-recording guard to #8's final
+  implementations rather than replacing them with this branch's older base.
 - This branch contains PR #5's source text commits; do not discard its catalogues
   or recreate different copies when combining proposals.
 - Keep PR #4's narration queue and `finished` Promise; insert the pending voice
