@@ -52,6 +52,15 @@ correct theme, mute/zero volume, victory stopping on Home and a single decoded
 1.1-second trap buffer. No runtime errors. JSON evidence is alongside levels.
 Seven new UI assertions cover shared routing and Music Off propagation.
 
+The final local combination of PR #4, PR #3 and this audio work passed **121
+rules, 40 self-play games, Daily, 132 UI checks, asset checks, desktop/phone
+screenshots, eleven real-file media scenarios and audio control checks**.
+Every idle screen stayed under 3% busy (maximum 0.7%). Eight robot battles at
+two phone sizes plus lesson/Daily/Settings ended with `no problems`. See
+`INTEGRATION-2026-11-01.md` and `evidence/integration-2026-11-01/` for raw results
+and the source hashes actually tested. Standalone was regenerated for both the
+audio branch and the combined QA branch.
+
 This branch adds files/routing; **Calm event sequencing comes from PR #4**. Main's
 Quick behaviour is not advertised as sequential. Review and test the combined
 branches before release, regenerate the standalone, and keep the newest cache
