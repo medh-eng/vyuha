@@ -268,7 +268,10 @@
 
   function stopAll() {
     pending.splice(0).forEach(function (item) { item.resolve(null); });
-    if (active && active.cue) active.cue.stop();
+    // Free the floor now, so a line said right after a stop starts at once.
+    const item = active;
+    active = null;
+    if (item && item.cue) item.cue.stop();
   }
 
   function idle() {

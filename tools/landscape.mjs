@@ -1,4 +1,4 @@
-/* Phone-landscape acceptance (Batch 3.3, incoming/text/landscape.md).
+/* Phone-landscape acceptance (Batch 3.3, docs/LANDSCAPE.md).
  * CHROMIUM_PATH=/path/to/chrome node tools/landscape.mjs [outDir]
  * Real Chromium, touch emulation. Checks every field at three landscape sizes
  * and three interface languages, rotation in the middle of a turn, a clash

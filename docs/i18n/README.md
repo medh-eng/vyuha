@@ -4,7 +4,7 @@ The runtime bundles the 149-key English catalogue and Sarvam's matching Hindi
 and Marathi catalogues. Source translations are unchanged from PR #5 (`c52bb2b`).
 
 - English: `docs/i18n/strings.en.json`
-- Hindi/Marathi: `incoming/i18n/strings.hi.json`, `strings.mr.json`
+- Hindi/Marathi: `docs/i18n/strings.hi.json`, `strings.mr.json`
 - Generator: `node tools/build-languages.mjs`
 - Runtime: generated `js/languages.js`
 - Portable build: `node tools/build-standalone.mjs` rebuilds the bundle first.

@@ -7,9 +7,9 @@ for (const file of ['units', 'languages', 'geometry', 'engine', 'ai', 'modes']) 
   vm.runInThisContext(fs.readFileSync(new URL('js/' + file + '.js', root), 'utf8'));
 }
 const { engine: E, ai, modes: M } = globalThis.AC;
-const candidates = JSON.parse(fs.readFileSync(new URL('incoming/text/daily-modifiers.json', root)));
-assert.equal(candidates.length, 25);
-assert.equal(new Set(candidates.map(m => m.key)).size, 25);
+// Every live catalogue plus the drafts still held in docs/balance/.
+const candidates = M.MODIFIERS_III.concat(JSON.parse(fs.readFileSync(new URL('docs/balance/daily-candidates.json', root))));
+assert.equal(new Set(candidates.map(m => m.key)).size, candidates.length, 'Daily keys are unique');
 const sunday = M.dailyInfo(new Date('2026-11-01T12:00:00+05:30'));
 assert.equal(sunday.boardKey, 'padma');
 assert.equal(M.buildDaily(sunday).boardKey, 'padma', 'Sunday must actually deploy on the lotus');
@@ -62,10 +62,23 @@ for (const difficulty of ['recruit', 'veteran', 'archon']) {
 // the retired "gate is open" never appears after it.
 assert.equal(M.dailyInfo(new Date('2026-10-30T12:00:00+05:30')).mod.key, 'open', 'past puzzles keep their modifier');
 assert.equal(M.dailyInfo(new Date('2026-10-31T12:00:00+05:30')).mod.key, 'twin', 'past puzzles keep their modifier');
-for (let d = 0; d < 120; d++) {
+const nov1 = M.dailyInfo(new Date('2026-11-01T12:00:00+05:30')).mod.key;
+const nov2 = M.dailyInfo(new Date('2026-11-02T12:00:00+05:30')).mod.key;
+for (const d of [0, 1]) {
+  const info = M.dailyInfo(new Date(Date.UTC(2026, 10, 1, 6) + d * 86400000));
+  assert.ok(M.MODIFIERS_II.includes(info.mod), 'catalogue II on 1–2 Nov');
+}
+for (let d = 2; d < 120; d++) {
   const info = M.dailyInfo(new Date(Date.UTC(2026, 10, 1, 6) + d * 86400000));
   assert.notEqual(info.mod.key, 'open', 'the retired modifier stays retired');
-  assert.ok(M.MODIFIERS_II.includes(info.mod), 'catalogue II from 1 Nov');
+  assert.notEqual(info.mod.key, 'quiet-gate', 'the held retune is not live');
+  assert.ok(M.MODIFIERS_III.includes(info.mod), 'catalogue III from 3 Nov');
 }
 assert.equal(M.MODIFIERS_II.length, 21);
+assert.equal(M.MODIFIERS_III.length, 28);
+for (const mod of M.MODIFIERS_III) for (const board of ['wheel', 'padma']) {
+  const s = M.buildDaily({ ...M.dailyInfo(new Date('2026-11-05T12:00:00+05:30')), mod, boardKey: board, seed: 7 });
+  assert.equal(s.phase, 'battle', mod.key + ' builds on ' + board);
+}
+void nov1; void nov2;
 console.log('Daily regressions passed: 30 modifiers, both boards, IST rollover, seeded AI and saved RNG.');

@@ -12,7 +12,8 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const out = process.argv[2] || path.join(root, 'docs/evidence/calm-pace');
+// The video stays out of the repo; docs/evidence/calm-pace/timeline.json is the kept evidence.
+const out = process.argv[2] || '/tmp/vyuha-calm-turn';
 fs.mkdirSync(out, { recursive: true });
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.mp3': 'audio/mpeg', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml' };
 const server = http.createServer((req, res) => {

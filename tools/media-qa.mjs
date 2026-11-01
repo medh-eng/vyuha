@@ -57,7 +57,7 @@ try {
       const cue = AC.audio.cue;
       AC.audio.cue = function (name) { const c = cue(name); note('effect-start', { name, duration: c.duration }); c.finished.then(() => note('effect-end', { name })); return c; };
       const say = AC.sanjaya.say;
-      AC.sanjaya.say = function (key, opts) { note('voice-start', { key }); const p = say(key, opts); p.then(() => note('voice-end', { key })); return p; };
+      AC.sanjaya.say = function (key, opts) { note('voice-start', { key }); const p = say(key, opts); p.then((line) => note('voice-end', { key, id: line && line[0] })); return p; };
       const play = HTMLMediaElement.prototype.play;
       HTMLMediaElement.prototype.play = function () {
         if (this.src.includes('/voice/')) {
@@ -90,14 +90,19 @@ try {
     await page.waitForFunction(() => qa.events.some(e => e.kind === 'voice-start'), { timeout: 20000 });
     await page.waitForFunction(() => !AC.game.busy, { timeout: 20000 });
     const row = await page.evaluate(() => qa);
-    let effectEnd = 0, activeVoice = false;
+    // docs/PACING.md: one voice at a time, entering only after the card's 1.1 s read
+    // (over the softened tail of the effect, never its body).
+    let effectStart = null, activeVoice = false;
     for (const e of row.events) {
-      if (e.kind === 'effect-end') effectEnd = e.ms;
-      if (e.kind === 'voice-start') { assert.ok(e.ms >= effectEnd, scenario + ': voice overlaps effect'); assert.ok(!activeVoice, scenario + ': voices overlap'); activeVoice = true; }
+      if (e.kind === 'effect-start' && effectStart == null) effectStart = e.ms;
+      if (e.kind === 'voice-start') { assert.ok(effectStart == null || e.ms >= effectStart + 1050, scenario + ': voice entered over the effect body'); assert.ok(!activeVoice, scenario + ': voices overlap'); activeVoice = true; }
       if (e.kind === 'voice-end') activeVoice = false;
     }
     assert.equal(row.events.filter(e => e.kind === 'voice-start').length, 1, scenario + ': one line for the turn');
-    assert.ok(row.events.some(e => e.kind === 'voice-playing'), scenario + ': real voice played');
+    // A line held for re-recording (docs/voice/pending-recordings.json) is text only.
+    const spoken = row.events.find(e => e.kind === 'voice-end');
+    const held = await page.evaluate((id) => !!id && Object.values(AC.sanjaya.voicePending).some(list => list.includes(id)), spoken && spoken.id);
+    assert.ok(held || row.events.some(e => e.kind === 'voice-playing'), scenario + ': real voice played');
     const filmExpected = ['vayavya', 'sammohana', 'agneya', 'brahma'].includes(scenario);
     assert.equal(row.films.length, filmExpected ? 1 : 0, scenario + ': correct motion gate');
     for (const film of row.films) assert.ok(film.loaded && film.fixed && film.aboveBoard && film.width === 390 && film.height === 844, scenario + ': first film loaded above the board: ' + JSON.stringify(film));

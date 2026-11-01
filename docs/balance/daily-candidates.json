@@ -1,0 +1,26 @@
+[
+  {
+    "key": "quiet-gate",
+    "deva": "द्वार",
+    "name": "Quiet gate",
+    "one": "The gate is open, but a second Divyadrishti replaces your Maharathi; raiders start without Shakti, defenders with three, and you have 22 rounds.",
+    "knobs": {
+      "gateOpen": true,
+      "startShakti": {
+        "raiders": 0,
+        "defenders": 3
+      },
+      "turnLimit": 22,
+      "raiders": [
+        "5",
+        "7",
+        "6",
+        "5",
+        "2",
+        "2",
+        "1",
+        "3"
+      ]
+    }
+  }
+]

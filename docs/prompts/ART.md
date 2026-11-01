@@ -7,7 +7,7 @@ checks it on a phone. Anything missing keeps its vector stand-in, so art can arr
 at a time.
 
 The Chapter II pack (ten pieces, two crests, three boards, scene art, banners, scenario cards)
-is in [`docs/art-brief.md`](../art-brief.md) and is already in the game.
+is already in the game (its brief is in git history).
 
 ## Three rules that matter more than any prompt
 

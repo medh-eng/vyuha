@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const read = p => JSON.parse(fs.readFileSync(root + p, 'utf8'));
-const data = { en: read('docs/i18n/strings.en.json'), hi: read('incoming/i18n/strings.hi.json'), mr: read('incoming/i18n/strings.mr.json') };
+const data = { en: read('docs/i18n/strings.en.json'), hi: read('docs/i18n/strings.hi.json'), mr: read('docs/i18n/strings.mr.json') };
 for (const lang of ['hi', 'mr']) assert.deepEqual(Object.keys(data[lang]), Object.keys(data.en), lang + ': catalogue keys/order');
 for (const dictionary of Object.values(data)) for (const value of Object.values(dictionary)) assert.equal(typeof value, 'string');
 const runtime = `

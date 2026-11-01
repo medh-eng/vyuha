@@ -58,7 +58,7 @@ try {
     await page.screenshot({ path: path.join(out, lang + '-' + width + '-battle.png'), fullPage: true });
     await page.evaluate(() => AC.game.resign());
     const title = await page.$eval('.result-title', el => el.textContent);
-    const dict = JSON.parse(fs.readFileSync(path.join(root, 'incoming/i18n/strings.' + lang + '.json')));
+    const dict = JSON.parse(fs.readFileSync(path.join(root, 'docs/i18n/strings.' + lang + '.json')));
     assert.equal(title, dict['result.defeat']);
     await page.reload(); await page.waitForSelector('#boot', { hidden: true });
     assert.equal(await page.evaluate(() => AC.app.settings.uiLang), lang);

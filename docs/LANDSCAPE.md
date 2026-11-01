@@ -73,4 +73,4 @@ No overflow, lost action, hidden clock, accidental double move or focus trap.
 Then run the required regression, screenshot, idle (<3%) and robot suites, plus
 physical-phone reach/heat checks. These checks are proposed, not completed here.
 
-Sketch: [`landscape.svg`](landscape.svg).
+Built 1 Nov 2026: CSS layer at the end of `css/app.css`; acceptance `node tools/landscape.mjs`. The original sketch is in git history (PR #10).

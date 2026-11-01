@@ -208,3 +208,10 @@ tuning.
 | 2 | 115 interface strings → Hindi and Marathi | not started — blocks the language switch |
 | 3 | Sanjaya's lines → Marathi | waiting on 1 |
 | 4 | Bulbul voice re-record after review | one command: `tools/voice-gen.py --ids <id>` |
+
+## 1 Nov 2026 (night) — Director: Chapter III complete
+
+- Integrated ChatGPT 3.4 (Daily retune, PR #11). Ran the second fresh bank (`0xc4e7d3`, 120 games/board): 7 of 8 retunes pass on both boards → **Catalogue III from 3 Nov** (28 variants); `quiet-gate` held (58.3 % lotus). Past Dailies unchanged.
+- Narrator: a stop now frees the floor immediately, so a line said right after it starts at once.
+- Repo clean-up: superseded handoffs/plans/evidence and integrated drafts removed (in git history); `docs/balance/`, `docs/i18n/` hold the live sources; single living `docs/HANDOFF.md`; harness outputs to `/tmp`.
+- PR #8 merged to `main` (all agent work through #11); stale branches deleted.

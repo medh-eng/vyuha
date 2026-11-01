@@ -600,7 +600,7 @@ async function run() {
   AC.app.modals.slice().forEach((m) => m.close());
 
   // Interface language must persist without changing the narrator or battle.
-  const languageData = lang => JSON.parse(fs.readFileSync(path.join(root, 'incoming/i18n/strings.' + lang + '.json'), 'utf8'));
+  const languageData = lang => JSON.parse(fs.readFileSync(path.join(root, 'docs/i18n/strings.' + lang + '.json'), 'utf8'));
   const oldSay = AC.sanjaya.say;
   let languagePreviewCalls = 0;
   AC.sanjaya.say = () => { languagePreviewCalls++; return null; };

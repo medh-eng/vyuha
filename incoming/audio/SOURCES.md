@@ -11,6 +11,6 @@ downloaded or substituted during this work.
 
 Processing: `tools/prepare-audio-pack.py`, using FFmpeg. Runtime duration,
 integrated loudness and encoded true-peak measurements are recorded in
-`docs/evidence/audio-pack-2026-11-01/levels.json`. Four music tracks use one-second
+`tools/prepare-audio-pack.py` (levels report written to a temp folder). Four music tracks use one-second
 loop crossfades; victory and trap use short end fades. Runtime copies are MP3,
 44.1 kHz, 96 kbps, stereo except mono trap.

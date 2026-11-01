@@ -10,7 +10,7 @@ const originalDefinitions = JSON.stringify(U);
 const state = E.newState({ board: 'wheel', mode: 'ai' });
 const before = JSON.stringify(state);
 for (const lang of ['hi', 'mr']) {
-  const dict = JSON.parse(fs.readFileSync(new URL('incoming/i18n/strings.' + lang + '.json', root)));
+  const dict = JSON.parse(fs.readFileSync(new URL('docs/i18n/strings.' + lang + '.json', root)));
   L.setLang(lang);
   for (const key of L.keys) assert.equal(L.text(key), dict[key], lang + ': ' + key);
   for (const key of U.RANK_ORDER) for (const field of ['role', 'one', 'desc', 'tip']) {
@@ -32,8 +32,10 @@ assert.equal(L.setLang('xx'), 'en'); assert.equal(L.text('home.codex'), 'Rules')
 assert.equal(L.text('lesson.move.title', 'Existing English'), 'Existing English');
 const played = [];
 globalThis.Audio = class { constructor(url) { this.url = url; } play() { played.push(this.url); return Promise.resolve(); } pause() {} };
-SJ.setLang('hi'); SJ.say('scan', { force: true }); assert.equal(played.length, 0);
-SJ.say('fort_won', { force: true }); assert.ok(played.at(-1).endsWith('/hi/fort_won_1.mp3'));
-SJ.setLang('en'); SJ.say('astra_vayavya_enemy', { force: true }); assert.equal(played.length, 1);
+// Lines queue rather than interrupt, so each check starts from a quiet narrator.
+SJ.setLang('hi'); SJ.say('scan', { force: true }); assert.equal(played.length, 0, 'a held Hindi recording stays silent');
+SJ.stop(); SJ.say('fort_won', { force: true }); assert.ok(played.at(-1).endsWith('/hi/fort_won_1.mp3'), 'a current recording plays');
+SJ.stop(); SJ.setLang('en'); SJ.say('astra_vayavya_enemy', { force: true }); assert.equal(played.length, 1, 'a held English recording stays silent');
+SJ.stop();
 assert.equal(SJ.voicePending.hi.length, 16); assert.equal(SJ.voicePending.en.length, 2);
 console.log('149-key catalogues, state separation, fallbacks and stale voice guards passed.');

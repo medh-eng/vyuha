@@ -11,7 +11,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "masters/audio/supplied-2026-10-30"
-REPORT = ROOT / "docs/evidence/audio-pack-2026-11-01"
+REPORT = Path(tempfile.gettempdir()) / "vyuha-audio-pack"
 REPORT.mkdir(parents=True, exist_ok=True)
 rows = []
 
