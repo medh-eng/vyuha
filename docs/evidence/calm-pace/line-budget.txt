@@ -1,0 +1,52 @@
+Calm: slide 300 ms · card read 1100 ms · breath 250 ms (AI thinks during the line)
+
+line                      voice  effect     line s  → AI preview s
+breach_own_1              hi     breach       3.84      5.74  over (major moment)
+volley_kill_1             hi     volley       3.76      5.41  OVER (routine)
+breach_enemy_1            hi     breach        3.4       5.3  over (major moment)
+dusk_enemy_1              hi     dusk         3.55       5.2  over (major moment)
+astra_sammohana_1         hi     sammohana     3.4       5.2  over (major moment)
+astra_agneya_1            en     agneya       3.24      5.19  over (major moment)
+trap_defused_1            en     trap         3.53      5.18  OVER (routine)
+astra_brahma_1            en     brahma       2.72      5.17  over (major moment)
+astra_brahma_enemy_1      hi     brahma       2.72      5.17  over (major moment)
+assassinate_1             hi     clash        3.47      5.12  OVER (routine)
+breach_enemy_1            en     breach       3.16      5.06  over (major moment)
+rotate_padma_1            en     chakra        3.4      5.05  OVER (routine)
+astra_brahma_enemy_1      en     brahma       2.59      5.04  over (major moment)
+assassinate_1             en     clash        3.32      4.97
+astra_brahma_1            hi     brahma       2.51      4.96
+astra_agneya_1            hi     agneya       2.87      4.82
+rotate_padma_1            hi     chakra       3.16      4.81
+astra_sammohana_1         en     sammohana    2.95      4.75
+breach_own_1              en     breach        2.8       4.7
+lose_capture_1            en     clash           3      4.65
+dusk_enemy_1              en     dusk            3      4.65
+trap_hit_1                hi     trap         2.95       4.6
+dusk_1                    en     dusk         2.95       4.6
+astra_vayavya_1           en     vayavya      2.95       4.6
+astra_agneya_enemy_1      hi     agneya       2.51      4.46
+lose_capture_2            hi     clash         2.8      4.45
+win_capture_1             hi     clash        2.64      4.29
+both_fell_1               hi     clash        2.64      4.29
+both_fell_1               en     clash        2.59      4.24
+padma_1                   hi     clash        2.59      4.24
+volley_kill_1             en     volley       2.56      4.21
+astra_vayavya_1           hi     vayavya      2.56      4.21
+win_capture_1             en     clash        2.51      4.16
+trap_hit_1                en     trap         2.51      4.16
+fort_won_1                hi     shankh       2.43      4.08
+dusk_1                    hi     dusk         2.43      4.08
+lose_capture_2            en     clash        2.35         4
+fort_lost_1               en     shankh       2.35         4
+padma_1                   en     clash        2.27      3.92
+fort_lost_1               hi     shankh       2.19      3.84
+fort_won_1                en     shankh       2.12      3.77
+makara_1                  hi     clash        1.99      3.64
+astra_agneya_enemy_1      en     agneya       1.54      3.49
+makara_1                  en     clash        1.83      3.48
+lose_capture_1            hi     clash           1*     2.65
+trap_defused_1            hi     trap            1*     2.65
+
+33 of 46 line/voice pairs reach the AI within 5.0 s. * = text only until re-voiced.
+Routine lines over budget (re-voice to ≤ 3.35 s): volley_kill_1 (hi), trap_defused_1 (en), assassinate_1 (hi), rotate_padma_1 (en)

@@ -48,16 +48,30 @@ median 3 s line, 5.6 s with the longest lines.**
 `docs/evidence/calm-pace/timeline.json`. Eleven media-QA scenarios still pass (capture, trap,
 breach, victory, volley, four astras, reduced motion, battery saver).
 
-## Next steps, in order
+## Every line, measured (1 Nov, second pass)
 
-| # | Task | Owner | Why |
-|---|---|---|---|
-| 1 | **Phone test** on the PR preview: play 3 battles on Calm, 1 on Quick. Note any line that feels rushed, any moment that feels slow, phone warmth after 10 min. | Commander | Only a person can judge feel and heat. |
-| 2 | **Shorter narration for routine clashes.** Lines over ~3 s (20 files) push the clash past 5 s. Re-voice or rewrite routine-event lines (capture, volley, trap) to ≤ 2.5 s; keep long lines for fort, breach, astra, victory. List from `tools/sfx-envelope.py`-style measurement of `assets/audio/voice`. | Sarvam (text + Bulbul) | Biggest remaining lever; lines are the clock now. |
-| 3 | **Narration budget.** In Calm, speak for every fort/breach/astra/major capture, but for an ordinary clash speak at most once every two turns (text still shows). | ChatGPT | Less repetition, faster rhythm. |
-| 4 | **Slide start overhead.** Measured slide → impact is ~520 ms vs the 300 ms target; profile the card mount (`stage.js show`) on a 4× throttled phone. | ChatGPT | ~0.2 s per action. |
-| 5 | Trim `clash.mp3` tail to ~1.6 s with a fade (master kept) and re-measure `SPEAK_AT`. | ChatGPT | Cleaner mix; smaller file. |
-| 6 | Battle-idle busy is 2.5 % (limit 3 %). Find the 5 paints on idle battle before adding any animation. | ChatGPT | Heat headroom. |
+`node tools/pace-budget.mjs` computes clash → AI preview for every battle line in both voices
+from the shipped recordings and the constants in the code:
+
+- **33 of 46** line/voice pairs reach the AI within 5.0 s; typical routine clash **4.0–4.6 s**;
+  shortest 3.5 s.
+- **Four routine lines** are over by 0.05–0.4 s: `volley_kill_1` (hi 3.76 s),
+  `trap_defused_1` (en 3.53 s), `assassinate_1` (hi 3.47 s), `rotate_padma_1` (en 3.40 s).
+  These need re-voicing at **≤ 3.3 s** (Sarvam Batch 4). Nothing is sped up in code.
+- The rest of the over-5 s pairs are **major moments** (gate breach, astras, dusk) where a
+  longer beat is intended.
+- The "520 ms slide" seen in the recording was screen-capture overhead: without capture the card
+  and effect start 315 ms after the slide begins (446 ms at 4× CPU throttle).
+- Re-check after any new recording: `node tools/pace-budget.mjs --strict` fails if a routine line
+  is over budget.
+
+## Next steps
+
+| # | Task | Owner |
+|---|---|---|
+| 1 | Phone test of PR #8: three Calm battles, one Quick, portrait **and** landscape. Note any line that feels rushed, any moment that feels slow, warmth after 10 min. | Commander |
+| 2 | Re-voice the four routine lines above to ≤ 3.3 s (rewrite text shorter if needed), plus the 18 pending recordings in `docs/voice/pending-recordings.json`. | Sarvam |
+| 3 | Only if the Commander still finds ordinary clashes slow after #1: speak on an ordinary clash every other turn (text still shows). Not built — decide from the phone test. | Director |
 
 When an effect file changes: run `python3 tools/sfx-envelope.py assets/audio/sfx/*.mp3` and update
 `SPEAK_AT` in `js/audio.js` (the −20 dB column).

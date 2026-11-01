@@ -6,7 +6,18 @@ Sarvam's chat assistant handles the writing tasks; its text-to-speech tool (Bulb
 voice. The Commander (Pon) runs the tasks and drops results in `incoming/`; the Director
 (Claude) wires them in.
 
-## ▶ Batch 3 — from the Director, 30 Oct 2026 (do these first)
+## ▶ Batch 4 — from the Director, 1 Nov 2026 (do these first)
+
+Batch 3.2–3.4 is merged: the Hindi review, both interface catalogues (now selectable in
+Settings) and the two approved rewrites. Thank you — the glossary held throughout.
+
+| # | Task | Deliver |
+|---|---|---|
+| 4.1 | **Record the 18 pending lines** listed in `docs/voice/pending-recordings.json` (16 Hindi, 2 English; their text changed in review). Speaker **rahul**, pace **1.15**. Until then they show as text only. | `assets/audio/voice/<hi\|en>/<id>.mp3` |
+| 4.2 | **Four lines run too long for Calm.** Each must be **≤ 3.3 seconds**: `volley_kill_1` (Hindi, now 3.76 s), `assassinate_1` (Hindi, 3.47 s), `trap_defused_1` (English, 3.53 s), `rotate_padma_1` (English, 3.40 s). Shorten the wording first (keep the meaning, keep Sanjaya's voice), give the new text in all three columns, then record. Check: `node tools/pace-budget.mjs --strict` passes. | `incoming/text/sanjaya-short-2026-11-01.csv` + voice files |
+| 4.3 | **A person reads `strings.mr.json`.** If a native Marathi speaker can review it, record their corrections in the same file and name the reviewer in the handoff. Do not claim a review that did not happen. | `incoming/i18n/strings.mr.json` |
+
+## ▶ Batch 3 — from the Director, 30 Oct 2026 (done)
 
 Your voice landed: 88 lines, re-voiced with speaker **rahul** at pace **1.15** — much livelier.
 Batch 1 of the Hindi review (14 lines) is now in the game, with one correction: *"गुरु द्रोण ने

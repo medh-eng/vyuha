@@ -7,7 +7,19 @@ it, wires it into the game, and says plainly if something needs another pass.
 
 **Before any task**, paste the context block once per conversation.
 
-## ▶ Batch 3 — from the Director, 30 Oct 2026 (do these first)
+## ▶ Batch 4 — from the Director, 1 Nov 2026 (do these first)
+
+Your Batch 3 is integrated in PR #8: Calm pace (re-paced — see `docs/PACING.md`), sky and
+share preview, the music pack, localisation, the four portraits (now live as 512 px WebPs), and
+your landscape design, which is now **built** (CSS layer at the end of `css/app.css`, one-time
+hint in `js/game.js`, acceptance harness `tools/landscape.mjs`).
+
+| # | Task | Deliver |
+|---|---|---|
+| 4.1 | **Robot in landscape.** Extend `tools/playtest-bot.mjs` so it also plays four battles at 844 × 390 and 640 × 360 (all four fields), plus lesson and Daily, and still ends with `no problems`. Do not change game code to make it pass — report any failure instead. | PR on a branch |
+| 4.2 | **Design review of the built landscape** against `incoming/text/landscape.md`: run `node tools/landscape.mjs <dir>`, look at every screenshot, and list each difference from your design with a suggested fix (CSS selector + change). No code changes in this task. | `docs/HANDOFF-2026-11-0x-landscape-review.md` |
+
+## ▶ Batch 3 — from the Director, 30 Oct 2026 (done)
 
 Batch 1 and 2 are merged and good: Daily fixes, Drishti panel, balance screening, the writing
 pack. Of your 25 Daily drafts, the 17 that held the 30–55% band in both seed banks are now
