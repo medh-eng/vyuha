@@ -183,3 +183,14 @@ tuning.
 - Hex deployment (full 12 pieces), facing wiring, hex AI tuning.
 - Hero cards, campaign map screen, Dvandva, Pratigya (Phase C — the art is staged and waiting).
 - Store screenshots and the 30 s trailer (record from the game).
+## 1 Nov 2026 (ChatGPT) — localisation integration proposal
+- Wired the unchanged 149-key Hindi/Marathi catalogues into a persisted UI
+  language selector, independent of narrator language; generated bundle works
+  offline and in the standalone. Applied reviewed Sanjaya text and suppressed
+  superseded recordings pending 16 Hindi and two English replacements.
+- Rules 119, UI 94, 40 self-play games, Daily and language suites passed. Both
+  languages passed touch/overflow/reload/offline checks at two phone sizes;
+  idle maximum 0.8%; Marathi robot completed eight battles with `no problems`.
+- Draft integration proposal only. Existing English fallback copy, native
+  Marathi review and replacement recordings remain. No Calm timing changes.
+- See `docs/HANDOFF-2026-11-01-localisation.md` and saved evidence.

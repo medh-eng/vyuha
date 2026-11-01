@@ -2263,3 +2263,14 @@ html.lite .astra-btn.ready, html.lite .card-pulse, html.lite .diya.lit { animati
 .calm-links .vyuha-link { stroke-dasharray: 1; stroke-dashoffset: 0; animation: calmLinkDraw .9s ease-out both; }
 @keyframes calmLinkDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 .reduce-motion .calm-links .vyuha-link { animation: none; }
+
+/* Static Devanagari typography: room for matras, no language observer/loop. */
+html[lang="hi"], html[lang="mr"] {
+  --font: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', system-ui, sans-serif;
+  --display: 'Rozha One', 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', serif;
+}
+html[lang="hi"] .btn, html[lang="mr"] .btn,
+html[lang="hi"] .mode-btn, html[lang="mr"] .mode-btn,
+html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
+  letter-spacing: normal; line-height: 1.45;
+}

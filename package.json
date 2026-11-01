@@ -9,6 +9,7 @@
     "start": "python3 -m http.server 8080",
     "test": "node tests/rules.mjs && node tests/daily.mjs && node tests/selfplay.mjs 40",
     "test:ui": "node tests/ui.mjs",
+    "test:languages": "node tests/languages.mjs",
     "shots": "node tools/shots.mjs",
     "build": "node tools/build-standalone.mjs"
   },

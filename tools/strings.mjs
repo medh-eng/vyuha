@@ -15,7 +15,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, '..');
 // modes.js needs a few engine globals at load time; a light stub is enough
 globalThis.AC = { ui: { esc: (s) => String(s) }, fx: {}, art: {} };
-['js/units.js', 'js/geometry.js', 'js/engine.js', 'js/modes.js'].forEach((f) => {
+['js/units.js', 'js/languages.js', 'js/geometry.js', 'js/engine.js', 'js/modes.js'].forEach((f) => {
   vm.runInThisContext(fs.readFileSync(path.join(root, f), 'utf8'), { filename: f });
 });
 const { units: U, modes: M } = globalThis.AC;

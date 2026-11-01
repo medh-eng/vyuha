@@ -69,6 +69,7 @@ await page.goto(base + 'index.html');
 await page.evaluate(() => { localStorage.clear(); });
 await page.reload();
 await page.waitForSelector('#screen-home:not([hidden])');
+await page.evaluate(lang => AC.ui.patchSettings({ uiLang: lang }), process.env.UI_LANG || 'en');
 await page.waitForSelector('#boot', { state: 'hidden' });
 const rows = [];
 rows.push(await measure('home'));

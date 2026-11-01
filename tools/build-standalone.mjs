@@ -4,6 +4,7 @@
  * stick, or open by double-clicking with no server and no network.
  */
 import fs from 'node:fs';
+import './build-languages.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 

@@ -29,6 +29,7 @@
     // Chapter III
     narrator: true,
     narratorLang: 'hinglish',
+    uiLang: 'en',
     voice: true,
     cinematics: true,
     pace: 'calm',

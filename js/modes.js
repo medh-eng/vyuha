@@ -7,6 +7,8 @@
 (function (root) {
   'use strict';
   const AC = (root.AC = root.AC || {});
+  const L = AC.i18n;
+  const tr = function (key, fallback) { return L.text(key, fallback); };
   const E = AC.engine;
   const U = AC.units;
   const A = AC.art;
@@ -98,7 +100,7 @@
   /* ── shared helpers for prepared matches ─────────────────────── */
 
   function place(state, id, owner, key, extra) {
-    const def = U.UNIT_DEFS[key];
+    const def = L.unit(key);
     const u = {
       id: 'P' + owner + '_' + key + '_' + id.replace(/[^0-9a-z]/gi, ''), owner: owner, key: key,
       rank: def.rank, badge: def.badge, name: def.name, short: def.short,
@@ -180,8 +182,8 @@
         return '<i class="' + (i < m.step ? 'done' : i === m.step ? 'on' : '') + '"></i>';
       }).join('') + '</div>' +
       '<div class="coach-body"><span class="coach-deva deva">' + esc(step.deva) + '</span>' +
-      '<b>' + (done ? 'Lesson complete' : (m.step + 1) + ' / ' + LESSON.length + ' · ' + esc(step.title)) + '</b>' +
-      '<span>' + esc(done ? 'You know enough to fight. The rest you learn on the field.' : step.text) + '</span></div>';
+      '<b>' + (done ? 'Lesson complete' : (m.step + 1) + ' / ' + LESSON.length + ' · ' + esc(L.lesson(step, 'title'))) + '</b>' +
+      '<span>' + esc(done ? 'You know enough to fight. The rest you learn on the field.' : L.lesson(step, 'text')) + '</span></div>';
   }
 
   function coachHint() {
@@ -348,16 +350,16 @@
     AC.game.startPrepared(st, {
       line: 'start_daily',
       bannerTitle: 'Daily Chakravyuha #' + info.n,
-      bannerSub: info.mod.name + (official ? '' : ' · practice'),
+      bannerSub: L.daily(info.mod).name + (official ? '' : ' · practice'),
       save: true
     });
     AC.ui.modal({
       kicker: 'Daily Chakravyuha #' + info.n + (official ? '' : ' · practice run'),
-      title: 'Abhimanyu got in. Can you get out?',
+      title: tr('home.tagline', 'Abhimanyu got in. Can you get out?'),
       art: A.artFor('card:daily') || A.artFor('card:abhimanyu'),
       body: '<p class="daily-lede">Everyone in India faces this same wheel today. Eight raiders, ten defenders, ' +
         st.turnLimit + ' rounds. ' + (info.mod.knobs.gateOpen ? 'The gate is open: take the fort.' : 'Break the gate, then take the fort.') + '</p>' +
-        '<div class="daily-mod"><span class="deva">' + esc(info.mod.deva) + '</span><b>' + esc(info.mod.name) + '</b><span>' + esc(info.mod.one) + '</span></div>' +
+        '<div class="daily-mod"><span class="deva">' + esc(info.mod.deva) + '</span><b>' + esc(L.daily(info.mod).name) + '</b><span>' + esc(L.daily(info.mod).one) + '</span></div>' +
         (official ? '' : '<p class="intel-note">You have already fought today’s official battle. This one is for practice — your shared result stays the first one.</p>'),
       actions: [{ label: 'Take the field', cls: 'btn-primary' }]
     });
@@ -396,7 +398,7 @@
       ? '🛞 Broke in on round ' + res.rounds + ' of ' + res.limit
       : '🛞 The wheel closed on me (' + res.rounds + ' rounds)';
     const line2 = '⚔️ ' + res.taken + ' taken · 🩸 ' + res.lost + ' lost' + (res.astras ? ' · 🔥 ' + res.astras + ' astra' + (res.astras === 1 ? '' : 's') : '');
-    return head + '\n' + line1 + '\n' + line2 + '\n' + res.grid + '\nAbhimanyu got in. Can you get out?';
+    return head + '\n' + line1 + '\n' + line2 + '\n' + res.grid + '\n' + tr('share.cta', 'Abhimanyu got in. Can you get out?');
   }
 
   function finishDaily(m) {
@@ -466,7 +468,7 @@
             m.step++;
             AC.audio.play('unlock');
             const next = LESSON[m.step];
-            if (next) FX.toast('Good. Next: ' + next.title + '.', 'success');
+            if (next) FX.toast('Good. Next: ' + L.lesson(next, 'title') + '.', 'success');
           }
         });
         renderCoach();

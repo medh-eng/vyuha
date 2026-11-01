@@ -33,7 +33,7 @@
     ],
     win_capture: [
       ['win_capture_1', 'A clean blow, Maharaj. Their piece falls.', 'Kya vaar tha, Maharaj! Unka mohra gir gaya.', 'क्या वार था, महाराज! उनका मोहरा गिर गया।'],
-      ['win_capture_2', 'Our line pushes forward.', 'Hamari pankti aage badh rahi hai.', 'हमारी पंक्ति आगे बढ़ रही है।']
+      ["win_capture_2", "One of theirs is down. The way is opening, Maharaj.", "Unka ek yoddha gira. Raasta khul raha hai, Maharaj.", "उनका एक योद्धा गिरा। रास्ता खुल रहा है, महाराज।"]
     ],
     lose_capture: [
       ['lose_capture_1', 'We lost one, Maharaj. They were stronger than they looked.', 'Humne ek mohra kho diya, Maharaj. Woh dikhne se zyada taaqatwar the.', 'हमने एक मोहरा खो दिया, महाराज। वो दिखने से ज़्यादा ताक़तवर थे।'],
@@ -55,10 +55,10 @@
       ['volley_kill_1', 'A rain of arrows. The archer never moved.', 'Teeron ki barsaat. Dhanurdhar apni jagah se hila bhi nahi.', 'तीरों की बरसात। धनुर्धर अपनी जगह से हिला भी नहीं।']
     ],
     volley_turned: [
-      ['volley_turned_1', 'The arrows broke on heavy armour.', 'Teer bhaari kavach se takra ke toot gaye.', 'तीर भारी कवच से टकरा के टूट गए।']
+      ["volley_turned_1", "The arrows broke on heavy armour.", "Teer bhaari kavach se takra ke toot gaye.", "तीर भारी कवच से टकराकर टूट गए।"]
     ],
     scan: [
-      ['scan_1', 'Divya-drishti. Nothing stays hidden from the seer.', 'Divya-drishti. Drashta se kuch nahi chhupta.', 'दिव्य-दृष्टि। द्रष्टा से कुछ नहीं छुपता।']
+      ["scan_1", "Divya-drishti. Nothing stays hidden from the seer.", "Divya-drishti. Drashta se kuch nahi chhupta.", "दिव्यदृष्टि। द्रष्टा से कुछ नहीं छिपता।"]
     ],
     breach_enemy: [
       ['breach_enemy_1', 'Their gate is broken! One more blow, Maharaj!', 'Unka dwaar toot gaya! Bas ek vaar aur, Maharaj!', 'उनका द्वार टूट गया! बस एक वार और, महाराज!']
@@ -73,16 +73,16 @@
       ['fort_lost_1', 'Our fort has fallen, Maharaj.', 'Hamara durg gir gaya, Maharaj.', 'हमारा दुर्ग गिर गया, महाराज।']
     ],
     rotate: [
-      ['rotate_1', 'The chakra turns! Everything on the inner rings is exposed.', 'Chakra ghoom gaya! Andar ke gheron par sab kuch dikh gaya.', 'चक्र घूम गया! अंदर के घेरों पर सब कुछ दिख गया।']
+      ["rotate_1", "The chakra turns! Everything on the inner rings is exposed.", "Chakra ghoom gaya! Andar ke gheron par sab kuch dikh gaya.", "चक्र घूम गया! भीतरी घेरों का सब कुछ खुल गया।"]
     ],
     rotate_padma: [
       ['rotate_padma_1', 'The lotus turns, Maharaj. Its petals give away their secrets.', 'Kamal ghoom gaya, Maharaj. Pankhudiyon ke raaz khul gaye.', 'कमल घूम गया, महाराज। पंखुड़ियों के राज़ खुल गए।']
     ],
     dawn: [
-      ['dawn_1', 'Dawn. The hour of Surya — our blows land harder.', 'Subah ho gayi. Surya ka pehar — hamare vaar bhaari padenge.', 'सुबह हो गई। सूर्य का पहर — हमारे वार भारी पड़ेंगे।']
+      ["dawn_1", "Dawn. The hour of Surya — our blows land harder.", "Subah ho gayi. Surya ka pehar — hamare vaar bhaari padenge.", "सुबह हो गई। सूर्य का पहर है — हमारे वार भारी पड़ेंगे।"]
     ],
     dawn_enemy: [
-      ['dawn_enemy_1', 'Dawn, and the sun is theirs. Hold the line.', 'Subah ho gayi, aur suraj unka hai. Pankti sambhaliye.', 'सुबह हो गई, और सूरज उनका है। पंक्ति संभालिए।']
+      ["dawn_enemy_1", "Dawn, and the sun is theirs. Hold the line.", "Subah ho gayi, aur suraj unka hai. Pankti sambhaliye.", "सुबह हो गई, और सूरज उनका है। मोर्चा संभालिए।"]
     ],
     dusk: [
       ['dusk_1', 'Night falls. The hour of Chandra is ours.', 'Raat ho gayi. Chandra ka pehar hamara hai.', 'रात हो गई। चंद्र का पहर हमारा है।']
@@ -97,22 +97,22 @@
       ['padma_1', 'Padma — the petals closed around it.', 'Padma — pankhudiyon ne use gher liya.', 'पद्म — पंखुड़ियों ने उसे घेर लिया।']
     ],
     shield_break: [
-      ['shield_break_1', 'It won, but its shield is cracked.', 'Jeet gaya, par dhaal toot gayi.', 'जीत गया, पर ढाल टूट गई।']
+      ["shield_break_1", "It won, but its shield is cracked.", "Jeet gaya, par dhaal toot gayi.", "वह जीत गया, पर उसकी ढाल टूट गई।"]
     ],
     shakti_full: [
-      ['shakti_full_1', 'Five lamps burn, Maharaj. The Brahmastra can be called.', 'Paanchon diye jal rahe hain, Maharaj. Brahmastra bulaya ja sakta hai.', 'पाँचों दिये जल रहे हैं, महाराज। ब्रह्मास्त्र बुलाया जा सकता है।']
+      ["shakti_full_1", "Five lamps burn, Maharaj. The Brahmastra can be called.", "Paanchon diye jal rahe hain, Maharaj. Brahmastra bulaya ja sakta hai.", "पाँचों दीये जल रहे हैं, महाराज। ब्रह्मास्त्र बुलाया जा सकता है।"]
     ],
     astra_vayavya: [
       ['astra_vayavya_1', 'Vayavyastra! A wind moves our pieces.', 'Vayavyastra! Hawa ne hamare mohre badal diye.', 'वायव्यास्त्र! हवा ने हमारे मोहरे बदल दिए।']
     ],
     astra_vayavya_enemy: [
-      ['astra_vayavya_enemy_1', 'A wind on their side of the field. Two of their pieces have changed places.', 'Unki taraf hawa chali. Unke do mohre jagah badal chuke hain.', 'उनकी तरफ़ हवा चली। उनके दो मोहरे जगह बदल चुके हैं।']
+      ["astra_vayavya_enemy_1", "They called the wind. Two of their pieces traded places — what you knew of them may be wrong now.", "Unhone Vayavyastra chalaya — do mohre jagah badal gaye. Jo pehchana tha, dobara parakhiye.", "उन्होंने वायव्यास्त्र चलाया — दो मोहरे जगह बदल गए। जो पहचाना था, दोबारा परखिए।"]
     ],
     astra_sammohana: [
       ['astra_sammohana_1', 'Sammohanastra! Their warrior stands entranced.', 'Sammohanastra! Unka yoddha sammohit khada hai.', 'सम्मोहनास्त्र! उनका योद्धा सम्मोहित खड़ा है।']
     ],
     astra_sammohana_enemy: [
-      ['astra_sammohana_enemy_1', 'One of ours is entranced, Maharaj. Two turns of stillness.', 'Hamara ek yoddha sammohit hai, Maharaj. Do chaal tak ruk gaya.', 'हमारा एक योद्धा सम्मोहित है, महाराज। दो चाल तक रुक गया।']
+      ["astra_sammohana_enemy_1", "One of ours is entranced, Maharaj. Two turns of stillness.", "Hamara ek yoddha sammohit hai, Maharaj. Do chaal tak ruk gaya.", "हमारा एक योद्धा सम्मोहित है, महाराज। दो बारी वह हिल नहीं पाएगा।"]
     ],
     astra_agneya: [
       ['astra_agneya_1', 'Agneyastra! Fire sweeps their line.', 'Agneyastra! Aag unki pankti par baras rahi hai.', 'आग्नेयास्त्र! आग उनकी पंक्ति पर बरस रही है।']
@@ -127,10 +127,10 @@
       ['astra_brahma_enemy_1', 'They have loosed the Brahmastra, Maharaj!', 'Unhone Brahmastra chhod diya, Maharaj!', 'उन्होंने ब्रह्मास्त्र छोड़ दिया, महाराज!']
     ],
     entranced_pass: [
-      ['entranced_pass_1', 'Every warrior who could move stands entranced. The turn passes.', 'Har chalne wala yoddha sammohit hai. Baari nikal gayi.', 'हर चलने वाला योद्धा सम्मोहित है। बारी निकल गई।']
+      ["entranced_pass_1", "Every warrior who could move stands entranced. The turn passes.", "Har chalne wala yoddha sammohit hai. Baari nikal gayi.", "हर चलने वाला योद्धा सम्मोहित है। यह बारी बीत गई।"]
     ],
     last_rounds: [
-      ['last_rounds_1', 'Only a few rounds left, Maharaj. The wheel is closing.', 'Bas kuch hi chaal baaki hain, Maharaj. Chakra band ho raha hai.', 'बस कुछ ही चाल बाकी हैं, महाराज। चक्र बंद हो रहा है।']
+      ["last_rounds_1", "Only a few rounds left, Maharaj. The wheel is closing.", "Bas kuch hi chaal baaki hain, Maharaj. Chakra band ho raha hai.", "बस कुछ ही चालें बाकी हैं, महाराज। चक्र बंद हो रहा है।"]
     ],
     sunset_near: [
       ['sunset_near_1', 'The sun is low. At sunset, the stronger army holds the field.', 'Suraj dhal raha hai. Shaam ko jo senaa takatwar hogi, maidan uska.', 'सूरज ढल रहा है। शाम को जो सेना ताक़तवर होगी, मैदान उसका।']
@@ -147,6 +147,8 @@
   };
 
   const LANGS = ['hinglish', 'en', 'hi'];
+  // Reviewed text supersedes these recordings. Clear IDs only after re-recording.
+  const VOICE_PENDING = {"hi": ["start_abhimanyu_1", "start_tutorial_1", "lose_capture_1", "trap_defused_1", "volley_turned_1", "scan_1", "rotate_1", "dawn_1", "dawn_enemy_1", "shield_break_1", "shakti_full_1", "astra_sammohana_enemy_1", "entranced_pass_1", "last_rounds_1", "win_capture_2", "astra_vayavya_enemy_1"], "en": ["win_capture_2", "astra_vayavya_enemy_1"]};
   let lang = 'hinglish';
   let voiceOn = true;
   const voiceMissing = {};
@@ -199,9 +201,13 @@
       finish();
     }
     const settings = AC.audio && AC.audio.getSettings ? AC.audio.getSettings() : {};
-    const url = 'assets/audio/voice/' + (lang === 'en' ? 'en' : 'hi') + '/' + line[0] + '.mp3';
+    // one Hindi recording serves both the Hinglish and the Hindi text
+    const vlang = lang === 'en' ? 'en' : 'hi';
+    const url = 'assets/audio/voice/' + vlang + '/' + line[0] + '.mp3';
     // Text-only lines still have a short reading gap, skippable like a voice.
     timer = setTimeout(stop, 1000);
+    // A recording superseded by reviewed text stays silent until it is re-voiced.
+    if (VOICE_PENDING[vlang].indexOf(line[0]) !== -1) return result;
     if (!voiceOn || opts.voice === false || typeof Audio === 'undefined' || settings.muted || voiceMissing[url]) return result;
     try {
       el = new Audio(url);
@@ -280,6 +286,7 @@
 
   AC.sanjaya = {
     LINES: LINES,
+    voicePending: VOICE_PENDING,
     LANGS: LANGS,
     say: say,
     priority: priority,
