@@ -305,3 +305,15 @@ UI_LANG=mr node tools/perf-idle.mjs
 {"screen":"battle-mid","busyPct":0.2,"paints":0,"frames":0}
 {"renderMsPerCall_4xThrottle":31.2}
 Every screen under 3% busy.
+
+
+UI_LANG=mr node tools/playtest-bot.mjs
+phone wheel moves 26 {"winner":1,"reason":"Suryavansh captured the enemy fort on turn 26."} start
+phone padma moves 23 {"winner":2,"reason":"Chandravansh captured the enemy fort on turn 23."} start
+phone small moves 35 {"winner":1,"reason":"Suryavansh captured the enemy fort on turn 35."} start
+phone wheel moves 14 {"winner":2,"reason":"Chandravansh took the enemy fort with a volley on turn 14."} start
+small-phone wheel moves 16 {"winner":2,"reason":"Suryavansh has no piece left that can move — only the fort and its traps stand. The field is conceded."} start
+small-phone padma moves 25 {"winner":1,"reason":"Chandravansh has no piece left that can move — only the fort and its traps stand. The field is conceded."} start
+small-phone small moves 21 {"winner":2,"reason":"Chandravansh captured the enemy fort on turn 21."} start
+small-phone wheel moves 16 {"winner":2,"reason":"Chandravansh captured the enemy fort on turn 16."} start
+no problems

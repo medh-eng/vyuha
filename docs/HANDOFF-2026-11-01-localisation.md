@@ -36,6 +36,24 @@ can enforce the same <3% requirement; no battle pacing values are adjusted.
 - Keep `languages.js` in `index.html` before UI/game/modes, and in the service
   worker shell. Choose a fresh combined cache and regenerate the standalone.
 
+## Validation completed
+
+- Rules: 119 assertions; self-play: 40 games, zero failures; Daily suite passed.
+- Language tests: all 149 reviewed values in each catalogue, safe fallbacks,
+  unchanged definition/state data and pending-voice guards passed.
+- UI: 94 assertions, no errors. Standard desktop and phone screenshots passed.
+- Touch checks: Hindi and Marathi at 390×844 and 360×640, a real move and AI
+  reply, result screen, persisted language after reload and no horizontal
+  overflow. Network-disabled standalone checks passed.
+- Idle probe: Hindi and Marathi, four screens each, maximum 0.8% busy (limit 3%).
+- Marathi phone robot: eight battles over two phone sizes, lesson, Daily and
+  Settings, ending with `no problems`.
+- Standalone rebuilt and `git diff --check` passed. Evidence is under
+  `docs/evidence/localisation-2026-11-01/`.
+
+These are browser checks, not physical Android heat testing or native-speaker
+approval. No replacement narration recordings were produced.
+
 ## Remaining after this integration proposal
 
 Landscape is a design note first (`incoming/text/landscape.md`), not a runtime
