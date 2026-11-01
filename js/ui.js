@@ -1096,11 +1096,22 @@
     });
   }
 
+  let hubPaint = null, hubTimer = null;
+  function artLanded(slot) {
+    if (!hubPaint || !/^(hero|portrait):/.test(slot)) return;
+    clearTimeout(hubTimer);
+    hubTimer = setTimeout(function () { if (hubPaint) hubPaint(); }, 60);
+  }
+
   function openProfile() {
     let p = app.profile;
     if (!p) { show('auth'); return; }
-    const m = modal({ kicker: 'Yoddha', title: 'Your profile', body: '<div id="hub"></div>', actions: [{ label: 'Done', cls: 'btn-primary' }] });
+    const m = modal({ kicker: 'Yoddha', title: 'Your profile', body: '<div id="hub"></div>', actions: [{ label: 'Done', cls: 'btn-primary' }],
+      onClose: function () { hubPaint = null; } });
     const host = m.el.querySelector('#hub');
+    // Portraits load lazily the first time the hub asks for them; repaint the
+    // picker as each one lands instead of showing sigils until a reopen.
+    hubPaint = function () { if (host.isConnected) paint(); };
 
     function save(patch) {
       const av = Object.assign({}, p.avatar || {}, patch);
@@ -1461,6 +1472,7 @@
     patchSettings: patchSettings,
     boot: boot,
     openProfile: openProfile,
+    artLanded: artLanded,
     esc: esc,
     timeAgo: timeAgo,
     describeSave: describeSave,
