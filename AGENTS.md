@@ -5,7 +5,10 @@ Read this file before starting work, then read:
 1. `docs/DIRECTOR.md` — Claude's design, rules, respect charter and integration instructions.
 2. `docs/ROADMAP.md` — current owners and pending work.
 3. Your brief: `docs/agents/CHATGPT.md` or `docs/agents/SARVAM.md`.
-4. `docs/HANDOFF-2026-10-30-director.md` — latest status (cool-phone pass, profile hub, Daily catalogue II) and each agent's Batch 3. `docs/HANDOFF-2026-10-30.md` (ChatGPT's review) and the 29 Oct handoff remain as history.
+4. `docs/HANDOFF-2026-11-01-director.md` — latest status (four agent PRs integrated, Calm re-paced).
+5. `docs/PACING.md` — Calm timing budget and overlap rules. Follow it for any audio, voice, card or animation change.
+
+Older handoffs in `docs/` are history.
 
 The user is Commander and final authority. Claude is Director. ChatGPT and Sarvam AI are agents. Follow the Director's assignments within the Commander's instructions. The Commander authorised ChatGPT to take over part of development for two days starting 29 October 2026; this does not transfer final authority.
 

@@ -85,12 +85,15 @@ try {
   assert.equal(probe.status, 0, probe.stderr.toString());
   assert.equal(+JSON.parse(probe.stdout).format.duration, 20, 'recording is exactly 20 seconds');
   assert.equal(errors.length, 0, errors.join('\n'));
-  let effectEnd = 0, voiceEnd = 0;
+  // Overlap rules (docs/PACING.md): one voice at a time; Sanjaya enters only
+  // after the card's 1.1 s read, over a softened effect tail; the AI acts only
+  // after the voice and its 250 ms breath.
+  let effectStart = 0, voiceEnd = 0, speaking = false;
   for (const e of evidence.events) {
-    if (e.kind === 'effect-end') effectEnd = e.ms;
-    if (e.kind === 'voice-start') assert.ok(e.ms >= effectEnd, 'voice before effect ended');
-    if (e.kind === 'voice-end') voiceEnd = e.ms;
-    if (e.kind === 'phase' && e.step === 'thinking') assert.ok(e.ms >= voiceEnd + 390, 'AI before voice + breath');
+    if (e.kind === 'effect-start') effectStart = e.ms;
+    if (e.kind === 'voice-start') { assert.ok(!speaking, 'two voices at once'); assert.ok(e.ms >= effectStart + 1050, 'voice entered before the read'); speaking = true; }
+    if (e.kind === 'voice-end') { voiceEnd = e.ms; speaking = false; }
+    if (e.kind === 'phase' && (e.step === 'thinking' || e.step === 'preview') && voiceEnd) assert.ok(e.ms >= voiceEnd + 240, 'AI before voice + breath');
   }
   fs.writeFileSync(path.join(out, 'timeline.json'), JSON.stringify(evidence, null, 2) + '\n');
   console.log(JSON.stringify(evidence, null, 2));

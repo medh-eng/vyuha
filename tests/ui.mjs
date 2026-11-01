@@ -107,9 +107,12 @@ async function calmPaceChecks() {
   };
   AC.audio.cue = (name) => {
     let resolve;
-    const item = { name, started: now, stopped: null, duration: cueMs / 1000, finished: new Promise((r) => { resolve = r; }),
-      stop() { if (this.stopped != null) return; this.stopped = now; w.clearTimeout(this.timer); resolve(); } };
+    let speak;
+    const item = { name, started: now, stopped: null, softened: null, duration: cueMs / 1000, finished: new Promise((r) => { resolve = r; }),
+      speakable: new Promise((r) => { speak = r; }), soften() { this.softened = now; },
+      stop() { if (this.stopped != null) return; this.stopped = now; w.clearTimeout(this.timer); resolve(); speak(); } };
     item.timer = w.setTimeout(() => item.stop(), cueMs);
+    w.setTimeout(speak, Math.min(cueMs, 1000)); // body of the effect ends by 1 s
     cues.push(item); return item;
   };
   AC.ai.chooseAction = (st, owner) => {
@@ -131,26 +134,25 @@ async function calmPaceChecks() {
   try {
     let { st, action } = battle(true);
     const start = now;
-    AC.game.perform(action); await tick(399);
-    ok(st.stats.actions === 0 && AC.game.busy, 'Calm shows the slide before resolving the move');
+    AC.game.perform(action); await tick(299);
+    ok(st.stats.actions === 0 && AC.game.busy, 'Calm shows the 300 ms slide before resolving the move');
     await tick(1);
     ok(!!$('.stage-clash') && voices.length === 0, 'Calm opens the card and effect before Sanjaya');
     ok(AC.game.timerId == null && AC.game.timeLeft === 30, 'the player clock waits throughout the Calm presentation');
-    await tick(2199);
-    ok(choices.length === 0 && voices.length === 0, 'AI and voice wait for the whole player beat');
+    await tick(1099);
+    ok(choices.length === 0 && voices.length === 0, 'the card gets a full 1.1 s read before the voice');
     await tick(1);
-    ok(voices.length === 1 && cues.every((c) => c.stopped <= voices[0].started), 'voice starts after the card and every effect ends');
+    ok(voices.length === 1 && !!$('.stage-clash'), 'Sanjaya enters with the card still up');
+    ok(cues[0].softened === now && cues.every((c) => c.stopped == null || c.stopped <= now), 'the effect body has ended and its tail is softened under the voice');
     await tick(999);
     ok(choices.length === 0 && AC.game.busy, 'AI cannot move while the player line is sounding');
     await tick(1);
-    ok(AC.game.paceStep === 'breath', 'a 400 ms breath follows the voice ended event');
-    await tick(400);
-    ok(AC.game.thinking && choices.length === 0, 'the opponent thinking indicator precedes its move');
-    await tick(900);
-    ok(choices[0] - start === 4900 && !!$('.calm-preview'), 'clash → AI preview takes 4.9 s with a one-second line');
-    await tick(499);
-    ok(st.stats.actions === 1, 'AI glows for 500 ms before sliding');
-    await tick(401);
+    ok(AC.game.paceStep === 'breath' && !$('.stage'), 'the card closes and a breath follows the voice ended event');
+    await tick(250);
+    ok(choices[0] - start === 2650 && !!$('.calm-preview'), 'clash → AI preview takes 2.65 s with a one-second line (thinking ran during the voice)');
+    await tick(399);
+    ok(st.stats.actions === 1, 'AI glows for 400 ms before sliding');
+    await tick(301);
     ok(st.stats.actions === 2, 'AI resolves only after its own preview and slide');
     ok(!/Your move/.test($('#action-bar').textContent) && /unfolds/.test($('#hud-turn').textContent), 'Calm keeps the turn handover hidden while the AI moment is playing');
     await tick(600 + 400);
@@ -160,17 +162,17 @@ async function calmPaceChecks() {
     cueMs = 100;
     ({ st, action } = battle(false, true));
     const plainAt = now;
-    AC.game.perform(action); await tick(399);
+    AC.game.perform(action); await tick(299);
     ok(st.stats.actions === 0, 'reduced motion keeps the Calm gap without a slide');
-    await tick(1401);
-    ok(choices[0] - plainAt === 1800, 'plain move → AI preview takes 1.8 s');
+    await tick(1351);
+    ok(choices[0] - plainAt === 1650, 'plain move → AI preview takes 1.65 s');
 
     cueMs = 3000;
     ({ st, action } = battle(true));
-    AC.game.perform(action); await tick(2600);
-    ok(voices.length === 0 && choices.length === 0, 'a long effect outlasting its card still blocks the voice and AI');
-    await tick(800);
-    ok(voices.length === 1 && voices[0].started === now, 'an effect ended event releases narration');
+    AC.game.perform(action); await tick(1399);
+    ok(voices.length === 0 && choices.length === 0, 'a long effect still gets the full read before the voice');
+    await tick(1);
+    ok(voices.length === 1 && cues[0].stopped == null && cues[0].softened === now, 'a long effect tail is softened under the voice, not waited through');
 
     ({ st, action } = battle(true));
     AC.game.perform(action); await tick(400);
@@ -201,8 +203,16 @@ async function calmPaceChecks() {
     ok(voices.length === 2, 'the discarded waiting line is not played later');
     voiceMs = 10000;
     AC.sanjaya.say('win_capture', { force: true });
-    await tick(3500);
-    ok(voices.at(-1).stopped === now, 'voice timeout is bounded to 3.5 seconds');
+    await tick(3600);
+    ok(voices.at(-1).stopped == null, 'a long recorded line is not cut at 3.5 seconds');
+    await tick(2400);
+    ok(voices.at(-1).stopped === now, 'a stalled line is still bounded at 6 seconds');
+    AC.sanjaya.say('win_capture', { force: true });
+    const long = voices.at(-1); long.duration = 4.2; long.onloadedmetadata();
+    await tick(4799);
+    ok(long.stopped == null, 'a 4.2 s line plays to its end');
+    await tick(1);
+    ok(long.stopped === now, 'the watchdog follows the file length plus 0.6 s');
 
     voiceMs = 1000;
     ({ st, action } = battle(true));

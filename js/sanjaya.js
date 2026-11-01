@@ -194,7 +194,7 @@
       if (done) return;
       done = true;
       clearTimeout(timer);
-      if (el) { el.onended = el.onerror = null; el.pause(); }
+      if (el) { el.onended = el.onerror = el.onloadedmetadata = null; el.pause(); }
       if (playing === el) playing = null;
       finish();
     }
@@ -208,12 +208,20 @@
       el.volume = Math.min(1, Math.max(0.1, (settings.sfx != null ? settings.sfx : 0.7) * 1.2));
       el.onended = stop;
       el.onerror = function () { voiceMissing[url] = true; stop(); };
+      // Bound a stalled line, never a long one: 20 of 88 recordings run past
+      // 3.5 s, so the watchdog follows the file's own length once known.
       clearTimeout(timer);
-      timer = setTimeout(stop, 3500);
+      timer = setTimeout(stop, 6000);
+      el.onloadedmetadata = function () {
+        if (done || !(el.duration > 0) || !Number.isFinite(el.duration)) return;
+        clearTimeout(timer);
+        timer = setTimeout(stop, el.duration * 1000 + 600);
+        if (AC.audio && AC.audio.duck) AC.audio.duck(el.duration * 1000 + 200);
+      };
       playing = el;
       const p = el.play();
       if (p && p.catch) p.catch(function () { voiceMissing[url] = true; stop(); });
-      if (AC.audio && AC.audio.duck) AC.audio.duck(3500);
+      if (AC.audio && AC.audio.duck) AC.audio.duck(4000);
     } catch (e) { voiceMissing[url] = true; stop(); }
     return result;
   }

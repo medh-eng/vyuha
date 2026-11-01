@@ -359,9 +359,33 @@
     return Number.isFinite(n) && n > 0 ? n : null;
   }
 
+  // Where each recording's audible body ends (the point it falls 20 dB below its
+  // peak), measured from the shipped files. Calm lets Sanjaya enter here and
+  // softens the remaining tail instead of waiting through near-silence.
+  // Re-measure with tools/sfx-envelope.py whenever an effect file is replaced.
+  const SPEAK_AT = {
+    clash: 1.0, trap: 0.85, volley: 0.45, breach: 1.35, shankh: 1.0, dawn: 0.8, dusk: 1.0,
+    chakra: 0.5, scan: 1.15, place: 0.45, shakti: 0.7,
+    vayavya: 0.95, sammohana: 1.25, agneya: 1.4, brahma: 1.9
+  };
+
   function cue(name) {
-    let resolve, timer, sources = [], ended = false;
-    const result = { duration: duration(name), finished: new Promise(function (r) { resolve = r; }), stop: stop };
+    let resolve, timer, sources = [], ended = false, speakTimer = null, speakResolve;
+    const speakable = new Promise(function (r) { speakResolve = r; });
+    const result = { duration: duration(name), finished: new Promise(function (r) { resolve = r; }), stop: stop,
+      speakable: speakable, soften: soften };
+    // Lower whatever is left of the effect by about 10 dB under the voice.
+    function soften() {
+      sources.forEach(function (src) {
+        try {
+          if (src._gain && ctx) src._gain.gain.setTargetAtTime(0.3, ctx.currentTime, 0.08);
+          else if (src.volume != null) src.volume = src.volume * 0.3;
+        } catch (e) { /* ignore */ }
+      });
+    }
+    const key0 = SFX_SAMPLE[name];
+    if (SPEAK_AT[key0] != null) speakTimer = setTimeout(speakResolve, SPEAK_AT[key0] * 1000);
+    result.finished.then(function () { clearTimeout(speakTimer); speakResolve(); });
     function stop() {
       if (ended) return;
       ended = true;
@@ -378,7 +402,9 @@
       if (buffers[key] && ctx) {
         const src = ctx.createBufferSource();
         src.buffer = buffers[key];
-        src.connect(sfxBus);
+        src._gain = ctx.createGain();
+        src.connect(src._gain);
+        src._gain.connect(sfxBus);
         sources.push(src);
         src.onended = stop;
         timer = setTimeout(stop, src.buffer.duration * 1000 + 250);

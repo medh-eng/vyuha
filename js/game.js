@@ -1337,6 +1337,12 @@
 
   // A cancellable, skippable sequence. Each wait uses a timer or an audio
   // ended event; there is no frame loop while the player watches or thinks.
+  // Calm budget (see docs/PACING.md): slide → impact → Sanjaya enters where the
+  // effect's body ends (its tail is softened, never two loud sounds) → breath.
+  // The opponent "thinks" while Sanjaya speaks, so a clash reaches the AI
+  // preview in about 3.6 s with a 2 s line and about 4.6 s with a 3 s line.
+  const PACE = { slide: 300, read: 1100, breath: 250, preview: 400, thinkMin: 700, thinkJitter: 400, alone: 1000 };
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   let paceRun = null;
   function alive(run) { return paceRun === run && !run.cancelled && g.state === run.state; }
   function cancelPace() {
@@ -1350,6 +1356,7 @@
   g.skipPace = function () {
     if (!paceRun || !paceRun.skip) return false;
     if (SJ) SJ.skip();
+    if (g.paceStep === 'moment') paceRun.skippedMoment = true;
     paceRun.skip();
     return true;
   };
@@ -1386,7 +1393,7 @@
     let token = document.querySelector('#board .cell[data-id="' + id + '"] .token');
     if (ai && token) {
       token.classList.add('calm-preview');
-      await waitPace(run, 'preview', 500, null, function () { token.classList.remove('calm-preview'); });
+      await waitPace(run, 'preview', PACE.preview, null, function () { token.classList.remove('calm-preview'); });
       if (!alive(run)) return;
     }
     if (action.type !== 'move' && action.type !== 'attack') return;
@@ -1397,11 +1404,11 @@
       animation = token.animate([
         { transform: 'translate(' + from.x + 'px,' + from.y + 'px)' },
         { transform: 'translate(' + to.x + 'px,' + to.y + 'px)' }
-      ], { duration: 400, easing: 'ease-out', fill: 'forwards' });
+      ], { duration: PACE.slide, easing: 'ease-out', fill: 'forwards' });
     }
-    await waitPace(run, 'slide', 400, null, function () { if (animation) animation.cancel(); });
+    await waitPace(run, 'slide', PACE.slide, null, function () { if (animation) animation.cancel(); });
   }
-  async function calmBeat(run, ev, me) {
+  async function calmBeat(run, ev, me, voiced) {
     if (!alive(run)) return;
     const st = run.state;
     function clearLinks() {
@@ -1423,11 +1430,24 @@
       });
     }
     cue = ev.sfx && AU.cue ? AU.cue(ev.sfx) : null;
+    if (voiced) {
+      // The last beat before a line: hold the card for a minimum read, let the
+      // effect's body play out, then hand the floor to Sanjaya with the card up.
+      const body = cue ? (cue.speakable || cue.finished) : Promise.resolve();
+      let skipped = false;
+      await waitPace(run, 'moment', null, Promise.all([sleep(PACE.read), body]), function () {
+        if (run.skippedMoment) { skipped = true; }
+      });
+      if (!alive(run) || skipped) { if (cue) cue.stop(); if (ST) ST.close(false); clearLinks(); return null; }
+      if (ST && ST.extend) ST.extend();
+      return { cue: cue, clearLinks: clearLinks };
+    }
     await waitPace(run, 'moment', null, Promise.all([cardDone, cue ? cue.finished : Promise.resolve()]), function () {
       if (cue) cue.stop();
       if (ST) ST.close(false);
       clearLinks();
     });
+    return null;
   }
   async function performCalm(action, existingRun) {
     const run = existingRun || newPaceRun(), st = run.state;
@@ -1460,16 +1480,29 @@
       if (ev.kind === 'clash' && (major || hasAstra)) return false;
       return ['clash', 'barrage', 'scan', 'breach', 'astra', 'core', 'sky', 'rotate'].indexOf(ev.kind) !== -1;
     });
-    for (const ev of beats) {
+    const keys = narrate(events, me, st).sort(function (a, b) { return SJ.priority(b) - SJ.priority(a); });
+    if (st.phase === 'over' && !keys.length) keys.push(st.winner === 0 ? 'draw' : st.winner === me ? 'victory' : 'defeat');
+    const voiced = !!(keys.length && SJ && settings().narrator !== false);
+    let tail = null;
+    for (let i = 0; i < beats.length; i++) {
+      const ev = beats[i];
       if (ev.kind === 'rotate' && !settings().reducedMotion) spinRings();
-      await calmBeat(run, ev, me);
+      run.skippedMoment = false;
+      tail = await calmBeat(run, ev, me, voiced && i === beats.length - 1);
       if (!alive(run)) return;
     }
     g.lastShakti = { 1: st.shakti[1], 2: st.shakti[2] };
-    const keys = narrate(events, me, st).sort(function (a, b) { return SJ.priority(b) - SJ.priority(a); });
-    if (st.phase === 'over' && !keys.length) keys.push(st.winner === 0 ? 'draw' : st.winner === me ? 'victory' : 'defeat');
-    if (keys.length && SJ && settings().narrator !== false) {
-      await waitPace(run, 'voice', null, SJ.say(keys[0], { force: true }), function () { SJ.stop(); });
+    const aiNext = isAi() && st.owner === 2 && st.phase !== 'over';
+    if (voiced) {
+      // The opponent decides while Sanjaya speaks; the wait is only what is left.
+      if (aiNext) run.thought = sleep(PACE.thinkMin + Math.random() * PACE.thinkJitter);
+      if (tail && tail.cue && tail.cue.soften) tail.cue.soften();
+      const closeTail = function () {
+        if (tail && tail.cue) tail.cue.stop();
+        if (tail) { if (ST) ST.close(false); tail.clearLinks(); }
+      };
+      await waitPace(run, 'voice', null, SJ.say(keys[0], { force: true }), function () { SJ.stop(); closeTail(); });
+      closeTail();
       if (!alive(run)) return;
     }
     if (st.phase === 'over') g.calmResultNarrated = true;
@@ -1478,7 +1511,7 @@
     autosave();
     if (st.phase === 'over') { cancelPace(); g.busy = false; handleGameOver(); return; }
     if (isAi() && st.owner === 2) {
-      await waitPace(run, 'breath', 400);
+      await waitPace(run, 'breath', PACE.breath);
       if (!alive(run)) return;
       await calmAi(run);
     } else {
@@ -1495,7 +1528,10 @@
   async function calmAi(run) {
     const st = run.state;
     g.thinking = true; g.busy = true; render();
-    await waitPace(run, 'thinking', 900 + Math.random() * 500);
+    const thought = run.thought;
+    run.thought = null;
+    if (thought) await waitPace(run, 'thinking', null, thought);
+    else await waitPace(run, 'thinking', PACE.alone + Math.random() * PACE.thinkJitter);
     if (!alive(run)) return;
     const act = AI.chooseAction(st, 2, st.config.difficulty || 'veteran', modeHook('aiRng'));
     g.thinking = false;

@@ -6,109 +6,109 @@
   "pace": "calm",
   "events": [
     {
-      "ms": 4554,
+      "ms": 3669,
       "kind": "phase",
       "step": null
     },
     {
-      "ms": 4554,
+      "ms": 3669,
       "kind": "phase",
       "step": "previous-line"
     },
     {
-      "ms": 4558,
+      "ms": 3670,
       "kind": "phase",
       "step": "slide"
     },
     {
-      "ms": 5151,
+      "ms": 4196,
       "kind": "effect-start",
       "name": "clash-win",
       "duration": 2.562448979591837
     },
     {
-      "ms": 5151,
+      "ms": 4196,
       "kind": "phase",
       "step": "moment"
     },
     {
-      "ms": 7746,
-      "kind": "effect-end",
-      "name": "clash-win"
-    },
-    {
-      "ms": 7746,
+      "ms": 5296,
       "kind": "voice-start",
       "key": "makara"
     },
     {
-      "ms": 7752,
+      "ms": 5297,
       "kind": "phase",
       "step": "voice"
     },
     {
-      "ms": 9823,
+      "ms": 6757,
+      "kind": "effect-end",
+      "name": "clash-win"
+    },
+    {
+      "ms": 7198,
       "kind": "voice-end",
       "key": "makara"
     },
     {
-      "ms": 9824,
+      "ms": 7203,
       "kind": "phase",
       "step": "breath"
     },
     {
-      "ms": 10232,
+      "ms": 7460,
       "kind": "phase",
       "step": "thinking"
     },
     {
-      "ms": 11230,
+      "ms": 7482,
       "kind": "phase",
       "step": "previous-line"
     },
     {
-      "ms": 11231,
+      "ms": 7483,
       "kind": "phase",
       "step": "preview"
     },
     {
-      "ms": 11776,
+      "ms": 7921,
       "kind": "effect-start",
       "name": "laser",
       "duration": 0.6719954648526077
     },
     {
-      "ms": 11776,
+      "ms": 7921,
       "kind": "phase",
       "step": "moment"
     },
     {
-      "ms": 12479,
+      "ms": 8597,
       "kind": "effect-end",
       "name": "laser"
     },
     {
-      "ms": 13964,
+      "ms": 9021,
       "kind": "voice-start",
       "key": "volley_kill"
     },
     {
-      "ms": 13964,
+      "ms": 9022,
       "kind": "phase",
       "step": "voice"
     },
     {
-      "ms": 17011,
+      "ms": 11772,
       "kind": "voice-end",
       "key": "volley_kill"
     },
     {
-      "ms": 17017,
+      "ms": 11777,
       "kind": "phase",
       "step": "your-turn"
     },
     {
-      "ms": 17418,
+      "ms": 12177,
       "kind": "phase",
       "step": null
     }

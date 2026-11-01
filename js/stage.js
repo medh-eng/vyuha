@@ -40,6 +40,11 @@
     if (fire !== false && c.done) c.done();
   }
 
+  /* Calm: keep the current card up until the game closes it (after the voice). */
+  function extend() {
+    if (current) { clearTimeout(current.timer); current.timer = null; }
+  }
+
   /* Mount a beat. `ms` is how long it holds before it leaves on its own. */
   function show(html, cls, ms, done, opts) {
     if (current) close(true);
@@ -224,6 +229,7 @@
     astra: astra,
     sky: sky,
     close: close,
+    extend: extend,
     busy: function () { return !!current; }
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
