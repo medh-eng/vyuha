@@ -3,8 +3,8 @@
 The live status board. Ticked = on `main` and playable. Owner tags: **[C]** Commander (Pon),
 **[D]** Director (Claude), **[G]** ChatGPT, **[S]** Sarvam AI.
 
-Last updated: **1 Nov 2026 (night)** — Chapter III complete and live: Calm pace, phone landscape,
-Hindi/Marathi interface, ten avatars, Daily Catalogue III. History of each step: `docs/WORKLOG.md`.
+Last updated: **2 Nov 2026** — Chapter IV begun on `claude/chapter-4-pratigya-heroes`: Pratigya
+vows playable; hero engine for four passive heroes (hidden until screened). History: `docs/WORKLOG.md`.
 
 ---
 
@@ -33,8 +33,13 @@ Hindi/Marathi interface, ten avatars, Daily Catalogue III. History of each step:
 
 ## Chapter IV — depth and heroes (next)
 
-- [ ] **[D]** Hero cards — one trait per army on a Maharathi or Senapati (drafts: `incoming/text/heroes-vows.json`)
-- [ ] **[D]** Pratigya — secret vows that earn stars and titles
+- [x] **[D]** **Pratigya** — 12 secret vows (after the first win, AI duels only), stars, three titles (Vrati · Dridhavrata · Satyavrata), stamps; Settings toggle. Cosmetic only (`js/pratigya.js`)
+- [x] **[D]** Hero engine: Bhima, Karna, Ghatotkacha, Dhrishtadyumna (`state.heroes`, off unless named; 19 rules tests; `tools/hero-sim.mjs`)
+- [ ] **[G]** Screen the four heroes (50–58 % target) — Karna on the Maharathi ran 60.5 % in the first bank
+- [ ] **[G]** AI values hero traits (`predict`, `strikeOdds`)
+- [ ] **[G]→[D]** Hero card design (`incoming/text/hero-cards-design.md`), then the Director builds the card, the pick and the four active heroes (Arjuna, Drona, Abhimanyu, Bhishma)
+- [ ] **[S]** Vow strings in Hindi/Marathi; Sanjaya's vow and hero lines
+- [ ] **[C]** Vow stamps and title seals (`docs/prompts/ART.md`, Chapter IV)
 - [ ] **[D]** Campaign map: the seven vyuhas, one lesson each (drafts: `incoming/text/campaign.md`)
 - [ ] **[D]** Facing, introduced in the Krauncha chapter
 - [ ] **[D]** Marathi narrator (text drafted: `incoming/text/sanjaya-marathi.csv`)

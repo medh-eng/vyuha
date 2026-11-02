@@ -644,6 +644,39 @@ async function run() {
   ok(AC.audio.getSettings().musicOn === false, 'Music Off reaches the audio engine and survives a board redraw');
   AC.ui.patchSettings({ musicOn: true });
 
+  // ── Chapter IV: Pratigya vow before an AI duel ──
+  {
+    const prof = AC.app.profile;
+    AC.storage.recordResult(prof.id, { outcome: 'win', difficulty: 'recruit' });
+    AC.app.profile = AC.storage.getProfile(prof.id);
+    AC.ui.patchSettings({ vows: true });
+    AC.game.start({ mode: 'ai', board: 'wheel', difficulty: 'veteran' });
+    await sleep(40);
+    click(document.querySelector('#action-bar [data-deploy="lock"]'));
+    await sleep(40);
+    ok($$('.vow-card').length === 3 && AC.game.state.phase === 'deploy1', 'after a first win, locking offers three vows and waits');
+    click($$('.vow-card')[0]);
+    await sleep(60);
+    const vs = AC.game.state;
+    ok(vs.phase === 'battle' && vs.pratigya && AC.pratigya.get(vs.pratigya.key), 'choosing a vow starts the battle with it');
+    AC.game.render();
+    ok(!$('#hud-vow').hidden && $('#hud-vow').textContent === AC.pratigya.get(vs.pratigya.key).deva, 'the vow seal shows in the HUD');
+    AC.game.resign();
+    await sleep(40);
+    ok(!!$('.vow-result.broken') && AC.app.profile.vows && AC.app.profile.vows.broken === 1, 'a lost battle records the vow as not kept');
+    $('#modal-root').innerHTML = '';
+    AC.ui.patchSettings({ vows: false });
+    AC.game.start({ mode: 'ai', board: 'wheel', difficulty: 'veteran' });
+    await sleep(40);
+    click(document.querySelector('#action-bar [data-deploy="lock"]'));
+    await sleep(60);
+    ok(!$('.vow-card') && AC.game.state.phase === 'battle' && !AC.game.state.pratigya, 'with vows off in Settings, no vow is offered');
+    AC.ui.patchSettings({ vows: true });
+    AC.game.resign();
+    await sleep(20);
+    $('#modal-root').innerHTML = '';
+  }
+
   await calmPaceChecks();
 
   // jsdom has no media stack and no canvas backend; those notices are not

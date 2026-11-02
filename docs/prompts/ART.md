@@ -159,6 +159,35 @@ at 512 px. The hub then shows the painting instead of the sigil, with no code ch
 
 ---
 
+## Chapter IV — Pratigya stamps and title seals (2 Nov 2026) · Commander
+
+Vows are live in code with text-only stamps; these images replace the text chips in the profile
+hub and the result card. Small objects: each must read at **48 px**. Paste the master style block,
+then this, then one subject line at a time:
+
+> A single round brass seal stamp, seen straight on, centred on pure black, an engraved emblem in
+> the middle, a thin raised rim, no text. Emblem: **[subject]**.
+
+| File | Subject |
+|---|---|
+| `incoming/art/vows/restraint.png` | a sheathed sword lying across an open palm |
+| `incoming/art/vows/shield.png` | a closed fort gate with two lamps beside it |
+| `incoming/art/vows/scout.png` | a single open eye with rays, inside a lotus bud |
+| `incoming/art/vows/engineer.png` | crossed hammer and tongs over a cog |
+| `incoming/art/vows/chariot.png` | a chariot wheel on a straight road |
+| `incoming/art/vows/sky.png` | half sun, half crescent moon, joined |
+| `incoming/art/vows/formation.png` | a makara (crocodile-like river creature) curled in a pincer shape |
+| `incoming/art/vows/lotus.png` | an eight-petal lotus seen from above |
+| `incoming/art/vows/lamp.png` | one clay diya with a single flame |
+| `incoming/art/vows/brass.png` | an empty ornate brass border ring (the emblem is the ring itself) |
+| `incoming/art/vows/camp.png` | three tents under a banner |
+| `incoming/art/vows/gate.png` | a gate standing open with light through it |
+
+Title seals, same prompt but **a larger seal with a double rim and a small flame on top**:
+`incoming/art/vows/title-vrati.png` (a single lamp), `title-dridhavrata.png` (a lamp inside a
+fort), `title-satyavrata.png` (a lamp inside a sun disc). 512 × 512 PNG, black background.
+Director converts them to WebP and wires them in.
+
 ## Priority 4 — folk-art editions (cosmetic, later)
 
 One test board per style first, so we can see which one players love.
@@ -190,6 +219,7 @@ incoming/art/app/icon-1024.png        1024²             P2
 incoming/art/store/feature.jpg        1024×500          P2
 incoming/art/store/og.jpg             1200×630          P2
 incoming/art/heroes/*.png             1024²  black bg   P3
+incoming/art/vows/*.png               512²   black bg   P2  (Chapter IV)
 incoming/art/editions/*-board.jpg     2048²             P4
 ```
 

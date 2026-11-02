@@ -960,6 +960,7 @@
           toggleRow('Sanjaya narrates', 'narrator', s.narrator !== false) +
           toggleRow('Sanjaya’s voice (when recorded)', 'voice', s.voice !== false) +
           toggleRow('Battle cinematics', 'cinematics', s.cinematics !== false) +
+          toggleRow('Offer a vow before battle', 'vows', s.vows !== false) +
           toggleRow('Haptics', 'haptics', s.haptics !== false) +
           toggleRow('Tap twice to strike', 'confirmActions', s.confirmActions !== false) +
           toggleRow('Show intel panel', 'showIntel', s.showIntel !== false) +
@@ -1031,6 +1032,7 @@
       else if (key === 'narrator') patch.narrator = app.settings.narrator === false;
       else if (key === 'voice') patch.voice = app.settings.voice === false;
       else if (key === 'cinematics') patch.cinematics = app.settings.cinematics === false;
+      else if (key === 'vows') patch.vows = app.settings.vows === false;
       else if (key === 'showIntel') patch.showIntel = !(app.settings.showIntel !== false);
       else if (key === 'coordinates') patch.coordinates = !(app.settings.coordinates !== false);
       else if (key === 'reducedMotion') patch.reducedMotion = !app.settings.reducedMotion;
@@ -1103,6 +1105,31 @@
     hubTimer = setTimeout(function () { if (hubPaint) hubPaint(); }, 60);
   }
 
+  /* Pratigya in the hub: stars, the vow title, and the stamps earned. */
+  const VOW_STAMPS = {
+    restraint: 'Restraint', shield: 'Shield', scout: 'Scout', engineer: 'Engineer', chariot: 'Chariot',
+    sky: 'Sky', formation: 'Formation', lotus: 'Lotus', lamp: 'Lamp', brass: 'Brass border', camp: 'Camp', gate: 'Gate'
+  };
+  function vowSection(p) {
+    const PR = AC.pratigya;
+    if (!PR) return '';
+    const v = p.vows || { stars: 0, kept: 0, broken: 0, stamps: [] };
+    const t = PR.titleFor(v.stars);
+    const next = PR.nextTitle(v.stars);
+    const wins = (p.stats && p.stats.wins) || 0;
+    const stamps = (v.stamps || []).map(function (k) {
+      return '<span class="vow-stamp">' + esc(L.text('vow.stamp.' + k, VOW_STAMPS[k] || k)) + '</span>';
+    }).join('');
+    return '<div class="hub-h">' + esc(L.text('vow.hub', 'Pratigya · vows')) + '</div>' +
+      '<div class="hub-vows"><b>★ ' + v.stars + '</b>' +
+        (t ? ' <span class="vow-title">' + esc(t.name) + ' <span class="deva">' + esc(t.deva) + '</span></span>' : '') +
+        '<span class="fineprint"> · ' + v.kept + ' kept · ' + v.broken + ' not kept</span></div>' +
+      (stamps ? '<div class="vow-stamps">' + stamps + '</div>' : '') +
+      '<p class="fineprint">' + esc(wins < 1
+        ? 'After your first win, you may take a vow before each battle against the AI.'
+        : next ? (next.stars - v.stars) + ' more stars to ' + next.name + ' · ' + next.deva + '.' : 'You have earned every vow title.') + '</p>';
+  }
+
   function openProfile() {
     let p = app.profile;
     if (!p) { show('auth'); return; }
@@ -1152,6 +1179,7 @@
           statCell(st.bestStreak || 0, 'Best run') + statCell(st.captures || 0, 'Taken') +
           statCell(st.cores || 0, 'Forts') + statCell(daily ? (daily.streak || 0) : 0, 'Daily streak') +
         '</div>' +
+        vowSection(p) +
         '<div class="hub-h">Level of play</div>' +
         '<div class="hub-standing">' + standing + '</div>' +
         (nextOpp ? '<p class="fineprint">' + (best < 0 ? 'Win a battle against ' + esc(nextOpp) + ' to set your level.' : 'Beat ' + esc(nextOpp) + ' to rise.') + '</p>' : '<p class="fineprint">You have beaten Shakuni. Few can say so.</p>') +

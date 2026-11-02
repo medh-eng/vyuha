@@ -215,3 +215,11 @@ tuning.
 - Narrator: a stop now frees the floor immediately, so a line said right after it starts at once.
 - Repo clean-up: superseded handoffs/plans/evidence and integrated drafts removed (in git history); `docs/balance/`, `docs/i18n/` hold the live sources; single living `docs/HANDOFF.md`; harness outputs to `/tmp`.
 - PR #8 merged to `main` (all agent work through #11); stale branches deleted.
+
+## 2 Nov 2026 — Director: Chapter IV, first slice
+
+- **Pratigya** built (`js/pratigya.js`): 12 vows from `incoming/text/heroes-vows.json` (wording tightened to what the engine can judge), offered three at a time at lock-in of an AI duel once the player has a win; HUD seal (static), result line, profile stars/titles/stamps, Settings toggle. Closing the offer by any route starts the battle with no vow.
+- Engine **chronicle** per side (Senapati strikes, gate broken, scans, dismantles, Rath runs, captures by hour, Makara captures, Padma holds, fort taken); old saves get an empty one.
+- **Hero engine** for Bhima, Karna, Ghatotkacha, Dhrishtadyumna behind `config.heroes`; not in any UI. First screen (`tools/hero-sim.mjs`, 200 games, wheel/veteran): Karna (9) 60.5 %, others in noise.
+- Robot player now takes the offered vow (it was stuck behind the offer from battle 2 on).
+- Briefs: ChatGPT Batch 5 (hero screening, AI hero awareness, hero-card design), Sarvam Batch 5 (vow strings, Chapter IV lines, respect read), Commander art (vow stamps).

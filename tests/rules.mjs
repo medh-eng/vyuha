@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, '..');
-['js/units.js', 'js/geometry.js', 'js/engine.js', 'js/ai.js'].forEach((f) => {
+['js/units.js', 'js/geometry.js', 'js/engine.js', 'js/pratigya.js', 'js/ai.js'].forEach((f) => {
   vm.runInThisContext(fs.readFileSync(path.join(root, f), 'utf8'), { filename: f });
 });
 const { engine: E, geometry: G, units: U } = globalThis.AC;
@@ -648,6 +648,130 @@ console.log('The opponent does not peek');
   put(s, '1,4', 2, 'F');               // the real fort is shallower
   put(s, '7,0', 1, '3');
   ok(AI.fortGuess(s, 1) === '0,2', 'it aims at the deepest unmoved piece, not the hidden fort');
+}
+
+
+console.log('Chapter IV — heroes (engine only, off unless named)');
+{
+  const H = (o, key, host) => ({ [o]: { key, host: host || '9' } });
+  // Bhima wins an equal clash without cracking his shield
+  const s = blank({ tie: 'attacker', heroes: H(1, 'bhima') });
+  const bh = put(s, '5,0', 1, '9'); put(s, '4,0', 2, '9');
+  act(s, '5,0', '4,0');
+  ok(s.board['4,0'] === bh && bh.rank === 9 && !bh.shieldBroken, 'Bhima wins an equal clash and keeps his shield');
+  const s2 = blank({ tie: 'both', heroes: H(2, 'bhima') });
+  put(s2, '5,0', 1, '9'); const bd = put(s2, '4,0', 2, '9');
+  act(s2, '5,0', '4,0');
+  ok(s2.board['4,0'] === bd && !s2.board['5,0'], 'Bhima holds an equal clash on defence');
+  const s3 = blank({ heroes: H(1, 'bhima') });
+  put(s3, '5,0', 1, '9'); put(s3, '4,0', 2, '10');
+  act(s3, '5,0', '4,0');
+  ok(!s3.board['5,0'] && s3.board['4,0'].key === '10', 'Bhima still loses an unequal clash');
+  const s4 = blank({ heroes: H(1, 'bhima', '10') });
+  put(s4, '5,0', 1, '9'); put(s4, '4,0', 2, '9');
+  act(s4, '5,0', '4,0');
+  ok(s4.board['4,0'].owner === 1 && s4.board['4,0'].shieldBroken, 'only the host carries the trait');
+}
+{
+  // Ghatotkacha: +1 at night only, within the cap
+  const night = fresh({ heroes: { 1: { key: 'ghatotkacha', host: '9' } } });
+  night.sky.startNight = true;
+  put(night, '5,0', 1, '9'); put(night, '4,0', 2, '9');
+  const ctx = E.combatContext(night, '5,0', '4,0');
+  ok(ctx.attParts.some((p) => p.key === 'hero'), 'Ghatotkacha gains strength at night');
+  const day = fresh({ heroes: { 1: { key: 'ghatotkacha', host: '9' } } });
+  day.sky.startNight = false;
+  put(day, '5,0', 1, '9'); put(day, '4,0', 2, '9');
+  ok(!E.combatContext(day, '5,0', '4,0').attParts.some((p) => p.key === 'hero'), 'but not by day');
+  const def = fresh({ heroes: { 2: { key: 'ghatotkacha', host: '9' } } });
+  def.sky.startNight = true;
+  put(def, '5,0', 1, '9'); put(def, '4,0', 2, '9');
+  ok(E.combatContext(def, '5,0', '4,0').def === 1, 'and on defence');
+}
+{
+  // Karna: once, a lost clash costs ground, not life
+  const s = blank({ heroes: { 1: { key: 'karna', host: '9' } } });
+  const k = put(s, '5,0', 1, '9'); put(s, '4,0', 2, '10');
+  act(s, '5,0', '4,0');
+  ok(s.board['5,0'] === k && s.board['4,0'].key === '10' && s.heroes[1].used, 'Karna survives his first lost attack and stays put');
+  s.owner = 1;
+  act(s, '5,0', '4,0');
+  ok(!s.board['5,0'] && s.captured[2].length === 1, 'the second lost clash kills him');
+  const d = blank({ heroes: { 2: { key: 'karna', host: '9' } } });
+  const kd = put(d, '3,0', 2, '9'); kd.moveHistory.push({ from: '2,0', to: '3,0' });
+  put(d, '4,0', 1, '10');
+  act(d, '4,0', '3,0');
+  ok(d.board['2,0'] === kd && d.board['3,0'].key === '10', 'a beaten Karna on defence retreats to his previous cell');
+  const d2 = blank({ heroes: { 2: { key: 'karna', host: '9' } } });
+  const kb = put(d2, '3,0', 2, '9'); kb.moveHistory.push({ from: '2,0', to: '3,0' });
+  put(d2, '2,0', 2, '3');
+  put(d2, '4,0', 1, '10');
+  act(d2, '4,0', '3,0');
+  ok(!Object.values(d2.board).includes(kb), 'with his road blocked he falls');
+  const c = blank({ heroes: { 2: { key: 'karna', host: '9' } } });
+  put(c, '4,0', 1, '1'); const kc = put(c, '3,0', 2, '9'); kc.moveHistory.push({ from: '2,0', to: '3,0' });
+  act(c, '4,0', '3,0');
+  ok(!Object.values(c.board).includes(kc), 'no armour against the Chara’s first strike');
+}
+{
+  // Dhrishtadyumna: one Shakti for his own first breach
+  const s = fresh({ heroes: { 1: { key: 'dhrishtadyumna', host: '10' } } });
+  put(s, '1,0', 1, '10'); put(s, '0,0', 2, 'F');
+  act(s, '1,0', '0,0');
+  ok(s.board['0,0'].breached && s.shakti[1] === 1 && s.shakti[2] === 2, 'his breach earns one Shakti; the defender still gets two');
+}
+
+console.log('Chapter IV — the chronicle the vows read');
+{
+  const s = fresh();
+  s.sky.startNight = false;
+  put(s, '5,0', 1, '10'); put(s, '4,0', 2, '3');
+  act(s, '5,0', '4,0');
+  const c = E.chronicle(s, 1);
+  ok(c.senapatiStruck && c.capDay === 1 && c.capNight === 0, 'it records a Senapati strike and a capture by day');
+  const m2 = fresh();
+  put(m2, '5,0', 1, '5'); put(m2, '3,0', 1, '3'); put(m2, '4,0', 2, '3');
+  act(m2, '5,0', '4,0');
+  ok(E.chronicle(m2, 1).makaraCaps === 1, 'it counts a Makara capture');
+  const y = fresh();
+  put(y, '5,0', 1, '3'); put(y, '4,0', 2, 'B');
+  act(y, '5,0', '4,0');
+  ok(E.chronicle(y, 1).dismantled === 1, 'it counts a Yantrik dismantling a trap');
+  const r = fresh();
+  put(r, '5,0', 1, '2');
+  act(r, '5,0', '2,0');
+  ok(E.chronicle(r, 1).rathRuns[r.board['2,0'].id] === 1, 'it counts a long Rath run');
+  const g = fresh();
+  put(g, '1,0', 1, '9'); put(g, '0,0', 2, 'F');
+  act(g, '1,0', '0,0');
+  ok(E.chronicle(g, 2).gateBroken && !E.chronicle(g, 1).gateBroken, 'it marks whose gate broke');
+  const old = E.deserialize(JSON.stringify(Object.assign({}, fresh(), { chronicle: undefined, heroes: undefined })));
+  ok(old.chronicle && old.chronicle[1] && old.heroes, 'old saves gain an empty chronicle');
+}
+
+console.log('Chapter IV — Pratigya vows');
+{
+  const P = globalThis.AC.pratigya;
+  ok(P.VOWS.length === 12, 'twelve vows are defined');
+  ok(P.eligible(CLASSIC).every((v) => !(v.needs || []).length), 'Classic offers only vows that need no Chapter III layer');
+  ok(P.offer(FULL, () => 0.3).length === 3 && new Set(P.offer(FULL).map((v) => v.key)).size === 3, 'three different vows are offered');
+  ok(P.allowed({ config: { mode: 'ai' }, scenario: 'duel' }) && !P.allowed({ config: { mode: 'ai' }, scenario: 'daily' }) && !P.allowed({ config: { mode: 'pass' }, scenario: 'duel' }), 'vows only in AI duels');
+
+  const won = fresh();
+  won.sky.startNight = false;
+  put(won, '5,0', 1, '10'); put(won, '4,0', 2, '3'); put(won, '0,5', 2, 'F'); put(won, '7,5', 1, 'F');
+  act(won, '5,0', '4,0');
+  E.endGame(won, 1, 'test');
+  ok(!P.judge(won, 1, 'restraint').kept, 'restraint breaks when the Senapati strikes');
+  ok(P.judge(won, 1, 'guarded').kept, 'the guarded fort holds with the gate unbroken');
+  ok(!P.judge(won, 1, 'dawn-watch').kept, 'dawn watch needs a capture at night too');
+  const lost = fresh();
+  E.endGame(lost, 2, 'test');
+  ok(!P.judge(lost, 1, 'guarded').kept, 'no vow is kept in defeat');
+  const one = fresh(); one.astraLog = [{ owner: 1, astra: 'vayavya', turn: 3 }, { owner: 2, astra: 'agneya', turn: 4 }];
+  E.endGame(one, 1, 'test');
+  ok(P.judge(one, 1, 'single-flame').kept && P.judge(one, 1, 'without-fire').kept, 'astra vows count only your own astras');
+  ok(P.titleFor(2) === null && P.titleFor(3).key === 'vrati' && P.titleFor(30).key === 'satyavrata' && P.nextTitle(4).key === 'dridhavrata', 'vow titles by stars');
 }
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');

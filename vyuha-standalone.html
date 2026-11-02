@@ -2328,6 +2328,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
   #btn-hud-settings { order: 2; }
   #screen-game .hud-centre { order: 3; grid-column: 1 / -1; }
   #hud-sky { order: 4; min-width: 44px; min-height: 44px; padding: 0 4px; justify-content: center; }
+  #hud-vow { order: 4; min-width: 44px; min-height: 44px; padding: 0 4px; justify-content: center; }
   #hud-clock { order: 5; min-width: 44px; height: 44px; padding: 0 2px; display: grid; place-items: center; font-size: 12px; }
   #hud-clock.hidden { display: none; }
   #btn-hud-intel { order: 6; }
@@ -2406,6 +2407,38 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
 .rotate-hint[hidden] { display: none; }
 .rotate-hint span { flex: 1; }
 .rotate-hint button { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; color: var(--dim); }
+
+/* ── Chapter IV · Pratigya (vows). Static: no animation, nothing loops. ── */
+.vow-chip {
+  display: inline-flex; align-items: center; height: 34px; padding: 0 10px; border-radius: 11px;
+  border: 1px solid rgba(242, 207, 139, 0.45); background: rgba(224, 169, 74, 0.12);
+  color: var(--gold); font-family: var(--deva); font-size: 14px; line-height: 1;
+}
+.vow-list { display: grid; gap: 8px; }
+.vow-card {
+  display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: auto auto; column-gap: 10px;
+  text-align: left; padding: 10px 12px; border-radius: var(--r-sm);
+  border: 1px solid var(--line-strong); background: rgba(255, 255, 255, 0.03); color: var(--txt);
+}
+.vow-card:hover, .vow-card:focus-visible { border-color: rgba(242, 207, 139, 0.6); background: rgba(224, 169, 74, 0.08); }
+.vow-deva { grid-row: 1 / 3; align-self: center; font-family: var(--deva); font-size: 20px; color: var(--gold); min-width: 2.6em; text-align: center; }
+.vow-name { font-weight: 800; font-size: 14px; }
+.vow-rule { grid-column: 2; font-size: 12.5px; color: var(--txt-2); }
+.vow-stars { grid-column: 3; grid-row: 1; color: var(--gold); font-size: 12px; letter-spacing: 1px; }
+.vow-rule-big { font-size: 15px; line-height: 1.45; }
+.vow-rule-big .deva { color: var(--gold); margin-right: 6px; }
+.vow-result {
+  display: flex; gap: 10px; align-items: center; margin: 4px 0 12px; padding: 10px 12px;
+  border-radius: var(--r-sm); border: 1px solid var(--line); font-size: 13px;
+}
+.vow-result.kept { border-color: rgba(242, 207, 139, 0.55); background: rgba(224, 169, 74, 0.1); }
+.vow-result.broken { color: var(--txt-2); }
+.vow-result .vow-deva { grid-row: auto; min-width: 2.2em; }
+.hub-vows { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+.hub-vows b { color: var(--gold); font-size: 17px; }
+.vow-title .deva { font-family: var(--deva); color: var(--gold); }
+.vow-stamps { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; }
+.vow-stamp { font-size: 11px; padding: 3px 8px; border-radius: 999px; border: 1px solid rgba(242, 207, 139, 0.4); color: var(--solar-2); }
 
 </style>
 </head>
@@ -2621,6 +2654,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       </div>
       <div class="hud-right">
         <button class="sky-chip" id="hud-sky" hidden aria-label="The hour"></button>
+        <button class="vow-chip" id="hud-vow" hidden aria-label="Your vow"></button>
         <div class="clock hidden" id="hud-clock">1:00</div>
         <button class="icon-btn" id="btn-hud-intel" aria-label="Intel"></button>
         <button class="icon-btn" id="btn-hud-log" aria-label="Battle log"></button>
@@ -3879,6 +3913,56 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     return state.rules || DEFAULT_RULES;
   }
 
+  /* ── chronicle: what each side did, read by the Pratigya vows ─── */
+
+  function newChronicle() {
+    return {
+      senapatiStruck: false, gateBroken: false, tookFort: false,
+      scanned: [], dismantled: 0, rathRuns: {},
+      capDay: 0, capNight: 0, makaraCaps: 0, padmaHolds: 0
+    };
+  }
+
+  function chron(state, owner) {
+    if (!state.chronicle) state.chronicle = { 1: newChronicle(), 2: newChronicle() };
+    if (!state.chronicle[owner]) state.chronicle[owner] = newChronicle();
+    return state.chronicle[owner];
+  }
+
+  /* ── heroes (Chapter IV): one trait per army, carried by its
+   * Senapati or Maharathi. Off unless the match config names them:
+   * `heroes: { 1: { key: 'bhima', host: '9' }, 2: … }`. ─────────── */
+
+  const HEROES = {
+    bhima: { name: 'Bhima', deva: 'भीम' },
+    karna: { name: 'Karna', deva: 'कर्ण' },
+    ghatotkacha: { name: 'Ghatotkacha', deva: 'घटोत्कच' },
+    dhrishtadyumna: { name: 'Dhrishtadyumna', deva: 'धृष्टद्युम्न' }
+  };
+
+  function heroesFrom(cfg) {
+    const out = { 1: null, 2: null };
+    if (!cfg) return out;
+    [1, 2].forEach(function (o) {
+      const h = cfg[o];
+      if (h && HEROES[h.key]) out[o] = { key: h.key, host: h.host === '10' ? '10' : '9', used: false };
+    });
+    return out;
+  }
+
+  /* The hero trait `key` if `unit` is its army's host, else null. */
+  function heroOf(state, unit) {
+    if (!unit || !state.heroes) return null;
+    const h = state.heroes[unit.owner];
+    if (!h || h.host !== unit.key) return null;
+    return h;
+  }
+
+  function isHero(state, unit, key) {
+    const h = heroOf(state, unit);
+    return !!(h && h.key === key);
+  }
+
   function createArmy(owner, keys) {
     const roster = keys || U.ROSTER_ORDER;
     return roster.map(function (key, idx) {
@@ -3939,6 +4023,8 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       astrasUsed: { 1: {}, 2: {} },
       astraLog: [],
       stats: { actions: 0, attacks: 0, wins: 0, losses: 0, probes: 0, firstBlood: 0, lastCapturePly: 0 },
+      chronicle: { 1: newChronicle(), 2: newChronicle() },
+      heroes: heroesFrom(cfg.heroes),
       startedAt: Date.now()
     };
     const startShakti = cfg.startShakti || scenario.startShakti;
@@ -4359,6 +4445,9 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       key: dead.key, badge: dead.badge, name: dead.name, owner: dead.owner, rank: dead.rank, turn: state.turn
     });
     gainShakti(state, byOwner, 1);
+    const h = hourOf(state);
+    if (h === 'day') chron(state, byOwner).capDay++;
+    else if (h === 'night') chron(state, byOwner).capNight++;
   }
 
   /* ── the hours: Surya and Chandra ────────────────────────────── */
@@ -4405,6 +4494,10 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     const r = rules(state);
     if (r.hours && hourOwner(state) === att.owner) {
       ctx.attParts.push({ key: hourOf(state) === 'day' ? 'surya' : 'chandra', v: 1 });
+    }
+    if (r.hours && hourOf(state) === 'night') {
+      if (isHero(state, att, 'ghatotkacha')) ctx.attParts.push({ key: 'hero', v: 1 });
+      if (isHero(state, def, 'ghatotkacha')) ctx.defParts.push({ key: 'hero', v: 1 });
     }
     if (r.vyuha) {
       const jaws = alliesAround(state, to, att.owner, from);
@@ -4465,6 +4558,12 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     }
     if (a < d) {
       return { winner: 'def', a: a, d: d, text: 'The defending ' + defender.name + ' [' + shown(defender, d) + '] repelled the ' + attacker.name + ' [' + shown(attacker, a) + '].' };
+    }
+    if (isHero(state, attacker, 'bhima')) {
+      return { winner: 'att', hero: 'bhima', a: a, d: d, text: 'Equal strength ' + a + ' — Bhima would not yield, and the ' + defender.name + ' fell.' };
+    }
+    if (isHero(state, defender, 'bhima')) {
+      return { winner: 'def', hero: 'bhima', a: a, d: d, text: 'Equal strength ' + a + ' — Bhima held his ground, and the ' + attacker.name + ' fell.' };
     }
     if (state.config.tie === 'attacker') {
       const before = attacker.rank;
@@ -4699,6 +4798,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       if (t.key === 'F') {
         if (rules(state).gates && !t.breached) {
           t.breached = true;
+          chron(state, t.owner).gateBroken = true;
           ev.breach = true;
           ev.text = 'Agneyastra: the fort gate burns. One more blow takes it.';
         } else {
@@ -4747,8 +4847,15 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
   function breachFort(state, fort, events, at, by) {
     fort.breached = true;
     fort.revealed = true;
+    chron(state, fort.owner).gateBroken = true;
     state.stats.lastCapturePly = state.stats.actions;
     gainShakti(state, fort.owner, 2);      // a besieged house finds its strength
+    const hero = heroOf(state, by);
+    if (hero && hero.key === 'dhrishtadyumna' && !hero.used) {
+      hero.used = true;
+      gainShakti(state, by.owner, 1);
+      log(state, 'hero', 'Dhrishtadyumna opened the gate: his army gains one Shakti.', at);
+    }
     log(state, 'breach', 'The ' + faction(fort.owner) + ' fort gate is broken.', at);
     events.push({ kind: 'breach', sfx: 'breach', at: at, unit: by, target: fort, text: 'The gate of the ' + faction(fort.owner) + ' fort is broken. One more blow takes it.' });
   }
@@ -4785,6 +4892,10 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       if (state.config.facing && dir != null) unit.facing = dir;
       state.board[to] = unit;
       state.board[from] = null;
+      if (unit.key === '2' && dist >= 3) {
+        const runs = chron(state, unit.owner).rathRuns;
+        runs[unit.id] = (runs[unit.id] || 0) + 1;
+      }
       if (unit.key === '2' && dist >= 2) {
         unit.revealed = true;
         events.push({ kind: 'reveal', text: 'The chariot ran ' + dist + ' cells — its position is now exposed.' });
@@ -4807,6 +4918,8 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     if (type === 'scan') {
       unit.revealed = true;
       target.revealed = true;
+      const seen = chron(state, unit.owner).scanned;
+      if (seen.indexOf(target.id) === -1) seen.push(target.id);
       events.push({
         kind: 'scan', sfx: 'scan', at: to, unit: unit, target: target,
         text: 'Divya-drishti: ' + target.name + ' [' + target.badge + '] revealed at no cost.'
@@ -4837,6 +4950,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
           text: 'Shara-varsha punched through the fort from two cells out. The enemy objective is gone.'
         });
         log(state, 'core', faction(unit.owner) + ' took the enemy fort with a volley!', to);
+        chron(state, unit.owner).tookFort = true;
         snapshot(state, 'barrage-core');
         endGame(state, unit.owner, faction(unit.owner) + ' took the enemy fort with a volley on turn ' + state.turn + '.', events);
         return { ok: true, type: type, events: events };
@@ -4877,6 +4991,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     unit.revealed = true;
     target.revealed = true;
     state.stats.attacks++;
+    if (unit.key === '10') chron(state, unit.owner).senapatiStruck = true;
 
     const res = resolveMelee(state, unit, target, ctx);
 
@@ -4888,16 +5003,40 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       return { ok: true, type: type, events: events };
     }
 
-    if (res.winner === 'att') {
+    // Karna's armour: once, a losing clash costs him his ground, not his life
+    let karna = null;
+    const ranked = !res.mine && !res.core && !res.assassinate && !res.rear;
+    if (ranked && res.winner === 'def' && isHero(state, unit, 'karna') && !heroOf(state, unit).used) {
+      karna = { unit: unit, to: from };
+    } else if (ranked && res.winner === 'att' && isHero(state, target, 'karna') && !heroOf(state, target).used) {
+      const prev = target.moveHistory.length ? target.moveHistory[target.moveHistory.length - 1].from : null;
+      const g = board(state);
+      if (prev && !state.board[prev] && (g.neighbours[to] || []).indexOf(prev) !== -1) karna = { unit: target, to: prev };
+    }
+
+    if (karna) {
+      heroOf(state, karna.unit).used = true;
+      if (karna.unit === target) {
+        state.board[karna.to] = target;
+        state.board[to] = unit;
+        state.board[from] = null;
+      }
+      res.winner = 'none';
+      res.hero = 'karna';
+      res.text = 'Karna’s armour held — he gave ground and lives to fight on.';
+    } else if (res.winner === 'att') {
       state.board[to] = unit;
       state.board[from] = null;
       recordCapture(state, unit.owner, target);
       state.stats.wins++;
+      if (res.mine) chron(state, unit.owner).dismantled++;
+      else if (ctx.attParts.some(function (p) { return p.key === 'makara'; })) chron(state, unit.owner).makaraCaps++;
     } else if (res.winner === 'def') {
       state.board[from] = null;
       if (res.mine) state.board[to] = target;
       recordCapture(state, target.owner, unit);
       state.stats.losses++;
+      if (!res.mine && ctx.defParts.some(function (p) { return p.key === 'padma'; })) chron(state, target.owner).padmaHolds++;
     } else {
       state.board[to] = null;
       state.board[from] = null;
@@ -4919,6 +5058,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       unit: unit,
       target: target,
       outcome: res.winner,
+      hero: res.hero || null,
       core: !!res.core,
       mine: !!res.mine,
       assassinate: !!res.assassinate,
@@ -4935,6 +5075,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     snapshot(state, 'clash');
 
     if (res.core) {
+      chron(state, unit.owner).tookFort = true;
       endGame(state, unit.owner, faction(unit.owner) + ' captured the enemy fort on turn ' + state.turn + '.', events);
       return { ok: true, type: type, events: events };
     }
@@ -5168,6 +5309,8 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     if (!s.astraLog) s.astraLog = [];
     if (!s.sky) s.sky = { startNight: false };
     if (!s.limitWinner) s.limitWinner = 2;
+    if (!s.chronicle) s.chronicle = { 1: newChronicle(), 2: newChronicle() };
+    if (!s.heroes) s.heroes = { 1: null, 2: null };
     s.version = VERSION;
     return s;
   }
@@ -5182,6 +5325,9 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     ASTRA_ORDER: ASTRA_ORDER,
     PRESETS: PRESETS,
     newState: newState,
+    HEROES: HEROES,
+    heroOf: heroOf,
+    chronicle: chron,
     createArmy: createArmy,
     clone: clone,
     board: board,
@@ -5231,6 +5377,147 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     compactBoard: compactBoard,
     faction: faction,
     log: log
+  };
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<script>
+/* js/pratigya.js */
+/* VYUHA — Pratigya (प्रतिज्ञा): secret vows (Chapter IV)
+ * Before an AI duel the player may take one vow. Keeping it earns vow
+ * stars toward cosmetic titles and stamps; nothing here changes combat.
+ * Pure: reads the engine's per-side chronicle and the final state.
+ * Text is English here; Hindi/Marathi arrive through the string catalogue
+ * under `vow.<key>.name` / `vow.<key>.rule` (Sarvam, Batch 5).
+ */
+(function (root) {
+  'use strict';
+  const AC = (root.AC = root.AC || {});
+
+  function chron(state, owner) {
+    return (state.chronicle && state.chronicle[owner]) || {};
+  }
+  function myAstras(state, owner) {
+    return (state.astraLog || []).filter(function (a) { return a.owner === owner; });
+  }
+  function aliveFighters(state, owner) {
+    let n = 0;
+    Object.keys(state.board || {}).forEach(function (id) {
+      const u = state.board[id];
+      if (u && u.owner === owner && u.key !== 'F' && u.key !== 'B') n++;
+    });
+    return n;
+  }
+
+  /* needs: the rule layers a vow depends on. stars: reward. stamp: cosmetic id.
+   * test(state, owner) → true when kept (only asked after a win). */
+  const VOWS = [
+    { key: 'restraint', deva: 'संयम', name: 'Bhishma’s restraint', stars: 2, stamp: 'restraint',
+      rule: 'Win without your Senapati ever striking.',
+      test: function (s, o) { return !chron(s, o).senapatiStruck; } },
+    { key: 'guarded', deva: 'रक्षा', name: 'The guarded fort', stars: 1, stamp: 'shield', needs: ['gates'],
+      rule: 'Win with your own fort gate never broken.',
+      test: function (s, o) { return !chron(s, o).gateBroken; } },
+    { key: 'clear-eyes', deva: 'दृष्टि', name: 'Clear eyes', stars: 1, stamp: 'scout',
+      rule: 'Win after your Divyadrishti reveals two different enemies.',
+      test: function (s, o) { return (chron(s, o).scanned || []).length >= 2; } },
+    { key: 'engineer', deva: 'यंत्रिक', name: 'The patient engineer', stars: 1, stamp: 'engineer',
+      rule: 'Win after a Yantrik dismantles the Shataghni.',
+      test: function (s, o) { return (chron(s, o).dismantled || 0) >= 1; } },
+    { key: 'open-road', deva: 'पथ', name: 'The open road', stars: 1, stamp: 'chariot',
+      rule: 'Win after one Rath makes two runs of three cells or more without striking.',
+      test: function (s, o) {
+        const runs = chron(s, o).rathRuns || {};
+        return Object.keys(runs).some(function (k) { return runs[k] >= 2; });
+      } },
+    { key: 'dawn-watch', deva: 'प्रहर', name: 'Dawn watch', stars: 2, stamp: 'sky', needs: ['hours'],
+      rule: 'Win after taking a piece by day and another by night.',
+      test: function (s, o) { const c = chron(s, o); return c.capDay >= 1 && c.capNight >= 1; } },
+    { key: 'joined-hands', deva: 'संगति', name: 'Joined hands', stars: 1, stamp: 'formation', needs: ['vyuha'],
+      rule: 'Win after two captures with the Makara bonus.',
+      test: function (s, o) { return (chron(s, o).makaraCaps || 0) >= 2; } },
+    { key: 'petal-guard', deva: 'पद्म', name: 'Petal guard', stars: 1, stamp: 'lotus', needs: ['vyuha'],
+      rule: 'Win after a piece guarded by Padma throws back an attack.',
+      test: function (s, o) { return (chron(s, o).padmaHolds || 0) >= 1; } },
+    { key: 'single-flame', deva: 'दीप', name: 'A single flame', stars: 2, stamp: 'lamp', needs: ['astras'],
+      rule: 'Win after invoking exactly one astra.',
+      test: function (s, o) { return myAstras(s, o).length === 1; } },
+    { key: 'without-fire', deva: 'धैर्य', name: 'Without fire', stars: 1, stamp: 'brass', needs: ['astras'],
+      rule: 'Win without invoking Agneyastra or Brahmastra.',
+      test: function (s, o) {
+        return !myAstras(s, o).some(function (a) { return a.astra === 'agneya' || a.astra === 'brahma'; });
+      } },
+    { key: 'companions', deva: 'साथ', name: 'Companions return', stars: 2, stamp: 'camp',
+      rule: 'Win with at least six of your fighting pieces alive.',
+      test: function (s, o) { return aliveFighters(s, o) >= 6; } },
+    { key: 'breach-early', deva: 'प्रवेश', name: 'Breach before sunset', stars: 2, stamp: 'gate',
+      rule: 'Win by taking the enemy fort within 20 rounds.',
+      test: function (s, o) { return !!chron(s, o).tookFort && s.turn <= 20; } }
+  ];
+
+  const BY_KEY = {};
+  VOWS.forEach(function (v) { BY_KEY[v.key] = v; });
+
+  /* Titles earned by vow stars — never lost, cosmetic only. */
+  const TITLES = [
+    { stars: 3, key: 'vrati', name: 'Vrati', deva: 'व्रती' },
+    { stars: 10, key: 'dridhavrata', name: 'Dridhavrata', deva: 'दृढ़व्रत' },
+    { stars: 25, key: 'satyavrata', name: 'Satyavrata', deva: 'सत्यव्रत' }
+  ];
+
+  function eligible(rules) {
+    rules = rules || {};
+    return VOWS.filter(function (v) {
+      return (v.needs || []).every(function (n) { return rules[n] !== false; });
+    });
+  }
+
+  /* Three vows to choose from; `rng` is optional (tests pass a seeded one). */
+  function offer(rules, rng, n) {
+    const pool = eligible(rules).slice();
+    const r = rng || Math.random;
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(r() * (i + 1));
+      const t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+    }
+    return pool.slice(0, n || 3);
+  }
+
+  /* Only AI duels carry a vow: not the lesson, the Daily or a scenario. */
+  function allowed(state) {
+    return !!state && state.config && state.config.mode === 'ai' &&
+      (!state.scenario || state.scenario === 'duel');
+  }
+
+  /* After the battle: { kept, vow }. A vow is kept only with a win. */
+  function judge(state, owner, key) {
+    const v = BY_KEY[key];
+    if (!v) return null;
+    const kept = state.phase === 'over' && state.winner === owner && !!v.test(state, owner);
+    return { kept: kept, vow: v };
+  }
+
+  function titleFor(stars) {
+    let t = null;
+    TITLES.forEach(function (x) { if (stars >= x.stars) t = x; });
+    return t;
+  }
+
+  function nextTitle(stars) {
+    for (let i = 0; i < TITLES.length; i++) if (stars < TITLES[i].stars) return TITLES[i];
+    return null;
+  }
+
+  AC.pratigya = {
+    VOWS: VOWS,
+    TITLES: TITLES,
+    get: function (k) { return BY_KEY[k] || null; },
+    eligible: eligible,
+    offer: offer,
+    allowed: allowed,
+    judge: judge,
+    titleFor: titleFor,
+    nextTitle: nextTitle
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
@@ -6605,6 +6892,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     pace: 'calm',
     batterySaver: null,   // null = decide from the phone (low memory / few cores → on)
     stories: true,
+    vows: true,          // offer a Pratigya before AI duels (after the first win)
     tutorialDone: false,
     landscapeHintDismissed: false
   };
@@ -6854,6 +7142,25 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     return s;
   }
 
+  /* Pratigya: a kept vow adds its stars and stamp; a broken one is counted
+   * so the hub can show how often the player has held their word. */
+  function recordVow(profileId, key, kept, stars, stamp) {
+    const db = loadDb();
+    const p = db.profiles.filter(function (x) { return x.id === profileId; })[0];
+    if (!p) return null;
+    const v = p.vows = p.vows || { stars: 0, kept: 0, broken: 0, byKey: {}, stamps: [] };
+    if (kept) {
+      v.kept++;
+      v.stars += stars || 0;
+      v.byKey[key] = (v.byKey[key] || 0) + 1;
+      if (stamp && v.stamps.indexOf(stamp) === -1) v.stamps.push(stamp);
+    } else {
+      v.broken++;
+    }
+    saveDb(db);
+    return v;
+  }
+
   function resetStats(profileId) {
     const db = loadDb();
     const p = db.profiles.filter(function (x) { return x.id === profileId; })[0];
@@ -7032,6 +7339,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     renameProfile: renameProfile,
     updateProfile: updateProfile,
     recordResult: recordResult,
+    recordVow: recordVow,
     resetStats: resetStats,
     getSettings: getSettings,
     patchSettings: patchSettings,
@@ -8871,6 +9179,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
           toggleRow('Sanjaya narrates', 'narrator', s.narrator !== false) +
           toggleRow('Sanjaya’s voice (when recorded)', 'voice', s.voice !== false) +
           toggleRow('Battle cinematics', 'cinematics', s.cinematics !== false) +
+          toggleRow('Offer a vow before battle', 'vows', s.vows !== false) +
           toggleRow('Haptics', 'haptics', s.haptics !== false) +
           toggleRow('Tap twice to strike', 'confirmActions', s.confirmActions !== false) +
           toggleRow('Show intel panel', 'showIntel', s.showIntel !== false) +
@@ -8942,6 +9251,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       else if (key === 'narrator') patch.narrator = app.settings.narrator === false;
       else if (key === 'voice') patch.voice = app.settings.voice === false;
       else if (key === 'cinematics') patch.cinematics = app.settings.cinematics === false;
+      else if (key === 'vows') patch.vows = app.settings.vows === false;
       else if (key === 'showIntel') patch.showIntel = !(app.settings.showIntel !== false);
       else if (key === 'coordinates') patch.coordinates = !(app.settings.coordinates !== false);
       else if (key === 'reducedMotion') patch.reducedMotion = !app.settings.reducedMotion;
@@ -9014,6 +9324,31 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     hubTimer = setTimeout(function () { if (hubPaint) hubPaint(); }, 60);
   }
 
+  /* Pratigya in the hub: stars, the vow title, and the stamps earned. */
+  const VOW_STAMPS = {
+    restraint: 'Restraint', shield: 'Shield', scout: 'Scout', engineer: 'Engineer', chariot: 'Chariot',
+    sky: 'Sky', formation: 'Formation', lotus: 'Lotus', lamp: 'Lamp', brass: 'Brass border', camp: 'Camp', gate: 'Gate'
+  };
+  function vowSection(p) {
+    const PR = AC.pratigya;
+    if (!PR) return '';
+    const v = p.vows || { stars: 0, kept: 0, broken: 0, stamps: [] };
+    const t = PR.titleFor(v.stars);
+    const next = PR.nextTitle(v.stars);
+    const wins = (p.stats && p.stats.wins) || 0;
+    const stamps = (v.stamps || []).map(function (k) {
+      return '<span class="vow-stamp">' + esc(L.text('vow.stamp.' + k, VOW_STAMPS[k] || k)) + '</span>';
+    }).join('');
+    return '<div class="hub-h">' + esc(L.text('vow.hub', 'Pratigya · vows')) + '</div>' +
+      '<div class="hub-vows"><b>★ ' + v.stars + '</b>' +
+        (t ? ' <span class="vow-title">' + esc(t.name) + ' <span class="deva">' + esc(t.deva) + '</span></span>' : '') +
+        '<span class="fineprint"> · ' + v.kept + ' kept · ' + v.broken + ' not kept</span></div>' +
+      (stamps ? '<div class="vow-stamps">' + stamps + '</div>' : '') +
+      '<p class="fineprint">' + esc(wins < 1
+        ? 'After your first win, you may take a vow before each battle against the AI.'
+        : next ? (next.stars - v.stars) + ' more stars to ' + next.name + ' · ' + next.deva + '.' : 'You have earned every vow title.') + '</p>';
+  }
+
   function openProfile() {
     let p = app.profile;
     if (!p) { show('auth'); return; }
@@ -9063,6 +9398,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
           statCell(st.bestStreak || 0, 'Best run') + statCell(st.captures || 0, 'Taken') +
           statCell(st.cores || 0, 'Forts') + statCell(daily ? (daily.streak || 0) : 0, 'Daily streak') +
         '</div>' +
+        vowSection(p) +
         '<div class="hub-h">Level of play</div>' +
         '<div class="hub-standing">' + standing + '</div>' +
         (nextOpp ? '<p class="fineprint">' + (best < 0 ? 'Win a battle against ' + esc(nextOpp) + ' to set your level.' : 'Beat ' + esc(nextOpp) + ' to rise.') + '</p>' : '<p class="fineprint">You have beaten Shakuni. Few can say so.</p>') +
@@ -10084,6 +10420,16 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
           '. The sky turns in ' + left + ' round' + (left === 1 ? '' : 's') + '.';
       } else {
         skyEl.hidden = true;
+      }
+    }
+
+    const vowEl = $('#hud-vow');
+    if (vowEl) {
+      const v = st.pratigya && PR && PR.get(st.pratigya.key);
+      vowEl.hidden = !(v && st.phase === 'battle');
+      if (v) {
+        vowEl.textContent = v.deva;
+        vowEl.title = vowText(v, 'name') + ' — ' + vowText(v, 'rule');
       }
     }
 
@@ -11430,6 +11776,63 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     FX.toast((PRESET_NAMES[style] || style) + ' formation applied.', 'info');
   }
 
+  /* ── Pratigya: one optional secret vow before an AI duel ──── */
+
+  const PR = AC.pratigya;
+  function vowText(v, field) { return tr('vow.' + v.key + '.' + field, v[field]); }
+
+  function vowOffered(st) {
+    const p = AC.app.profile;
+    return !!(PR && PR.allowed(st) && !st.pratigya && settings().vows !== false &&
+      p && !AC.app.guest && p.stats && (p.stats.wins || 0) >= 1);
+  }
+
+  function offerVow(st, done) {
+    const choices = PR.offer(st.rules);
+    let picked = false;
+    const card = function (v, i) {
+      return '<button class="vow-card" data-vow="' + i + '">' +
+        '<span class="vow-deva deva">' + esc(v.deva) + '</span>' +
+        '<span class="vow-name">' + esc(vowText(v, 'name')) + '</span>' +
+        '<span class="vow-rule">' + esc(vowText(v, 'rule')) + '</span>' +
+        '<span class="vow-stars">' + '★'.repeat(v.stars) + '</span>' +
+      '</button>';
+    };
+    const m = AC.ui.modal({
+      kicker: tr('vow.kicker', 'Pratigya · प्रतिज्ञा'),
+      title: tr('vow.title', 'Take a vow?'),
+      sub: '<span>' + esc(tr('vow.sub', 'Keep it and win to earn vow stars. It changes nothing on the field.')) + '</span>',
+      dismissible: false,
+      body: '<div class="vow-list">' + choices.map(card).join('') + '</div>',
+      actions: [{ label: tr('vow.none', 'Fight without a vow'), cls: 'btn-ghost' }],
+      // any way out of the dialog (button, back, Escape) begins the battle
+      onClose: function () { if (!picked) { picked = true; done(); } }
+    });
+    m.el.querySelector('.vow-list').addEventListener('click', function (e) {
+      const b = e.target.closest('[data-vow]');
+      if (!b || picked) return;
+      picked = true;
+      st.pratigya = { key: choices[Number(b.getAttribute('data-vow'))].key };
+      sfx('lock');
+      m.close();
+      done();
+    });
+  }
+
+  function showVow() {
+    const st = g.state;
+    const v = st && st.pratigya && PR && PR.get(st.pratigya.key);
+    if (!v) return;
+    AC.ui.modal({
+      kicker: tr('vow.kicker', 'Pratigya · प्रतिज्ञा'),
+      title: vowText(v, 'name'),
+      body: '<p class="vow-rule-big"><span class="deva">' + esc(v.deva) + '</span> ' + esc(vowText(v, 'rule')) + '</p>' +
+        '<p class="fineprint">' + esc(tr('vow.secret', 'Only you know this vow. Win and keep it to earn ')) + '★'.repeat(v.stars) + '</p>',
+      actions: [{ label: 'Back to battle', cls: 'btn-primary' }]
+    });
+  }
+  g.showVow = showVow;
+
   function lockFormation() {
     const st = g.state;
     if (st.phase === 'deploy1') {
@@ -11439,14 +11842,10 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
         st.phase = 'deploy2';
         autosave();
         showCurtain(2, 'deploy');
+      } else if (vowOffered(st)) {
+        offerVow(st, function () { if (g.state === st && st.phase === 'deploy1') beginAiBattle(st); });
       } else {
-        E.beginBattle(st);
-        sfx('shankh');
-        render();
-        banner(st.turnLimit ? 'The breach begins' : 'Yuddh aarambh',
-          (st.turnLimit ? st.turnLimit + ' rounds to take the fort' : 'break the gate, take the fort'), 'gold', 1600);
-        autosave();
-        startClockIfNeeded();
+        beginAiBattle(st);
       }
       return;
     }
@@ -11460,6 +11859,16 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       if (isPass()) showCurtain(1, 'battle');
       startClockIfNeeded();
     }
+  }
+
+  function beginAiBattle(st) {
+    E.beginBattle(st);
+    sfx('shankh');
+    render();
+    banner(st.turnLimit ? 'The breach begins' : 'Yuddh aarambh',
+      (st.turnLimit ? st.turnLimit + ' rounds to take the fort' : 'break the gate, take the fort'), 'gold', 1600);
+    autosave();
+    startClockIfNeeded();
   }
 
   function keepFormation() {
@@ -11648,6 +12057,33 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     }
     S.deleteSave('auto');
 
+    // Pratigya: judge the vow once, record it, show it under the result
+    let vowHtml = '';
+    if (st.pratigya && PR && !st.pratigya.judged) {
+      const j = PR.judge(st, 1, st.pratigya.key);
+      st.pratigya.judged = true;
+      if (j) {
+        st.pratigya.kept = j.kept;
+        let line = '';
+        if (AC.app.profile && !AC.app.guest) {
+          const before = (AC.app.profile.vows && AC.app.profile.vows.stars) || 0;
+          const rec = S.recordVow(AC.app.profile.id, j.vow.key, j.kept, j.vow.stars, j.vow.stamp);
+          AC.app.profile = S.getProfile(AC.app.profile.id);
+          const t = rec && PR.titleFor(rec.stars);
+          if (j.kept && t && !(PR.titleFor(before) && PR.titleFor(before).key === t.key)) {
+            line = tr('vow.newTitle', 'New title: ') + t.name + ' · ' + t.deva;
+          } else if (rec) {
+            line = '★ ' + rec.stars;
+          }
+        }
+        vowHtml = '<div class="vow-result ' + (j.kept ? 'kept' : 'broken') + '">' +
+          '<span class="vow-deva deva">' + esc(j.vow.deva) + '</span>' +
+          '<div><b>' + esc(vowText(j.vow, 'name')) + '</b> — ' +
+          esc(j.kept ? tr('vow.kept', 'vow kept') + ' ' + '★'.repeat(j.vow.stars) : tr('vow.broken', 'vow not kept')) +
+          (line ? '<div class="fineprint">' + esc(line) + '</div>' : '') + '</div></div>';
+      }
+    }
+
     const englishTitle = winner === 0 ? 'The field is shared' : (winner === 1 ? 'Suryavansh triumphs' : 'Chandravansh conquers');
     const title = tr(winner === 0 ? 'result.shared' : isAiGame && outcome !== 'win' ? 'result.defeat' : 'result.victory', englishTitle);
     const deva = winner === 0 ? 'समान' : ((isAiGame ? outcome === 'win' : true) ? 'विजय' : 'पराजय');
@@ -11691,6 +12127,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
           '<div class="result-stat"><b>' + (st.captured[2] || []).length + '</b><span>lost</span></div>' +
           '<div class="result-stat"><b>' + astrasUsed + '</b><span>astras</span></div>' +
         '</div>' +
+        vowHtml +
         (extra && extra.html ? extra.html : ''),
       actions: actions
     });
@@ -11829,6 +12266,8 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     });
     const sky = document.getElementById('hud-sky');
     if (sky) sky.addEventListener('click', function () { sfx('ui'); g.openIntel(); });
+    const vow = document.getElementById('hud-vow');
+    if (vow) vow.addEventListener('click', function () { sfx('ui'); showVow(); });
   }
 
   g.wire = wire;

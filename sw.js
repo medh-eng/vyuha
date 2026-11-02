@@ -11,6 +11,7 @@ const SHELL = [
   './js/languages.js',
   './js/geometry.js',
   './js/engine.js',
+  './js/pratigya.js',
   './js/ai.js',
   './js/audio.js',
   './js/storage.js',

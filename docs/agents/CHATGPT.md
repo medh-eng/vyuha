@@ -7,6 +7,20 @@ it, wires it into the game, and says plainly if something needs another pass.
 
 **Before any task**, paste the context block once per conversation.
 
+## ▶ Batch 5 — from the Director, 2 Nov 2026 (Chapter IV starts)
+
+Chapter IV is on branch `claude/chapter-4-pratigya-heroes`. Read its `docs/HANDOFF.md` first.
+**Pratigya vows** are built and playable; the **hero engine** is built for four passive heroes
+(Bhima, Karna, Ghatotkacha, Dhrishtadyumna) but **not shown to players** until they pass
+balance screening — that screening is yours. Batch 4 below is still owed; do 4.1 first (it is
+quick), then Batch 5.
+
+| # | Task | Deliver |
+|---|---|---|
+| 5.1 | **Screen the four heroes.** Run `node tools/hero-sim.mjs 400 <board> <opponent>` for wheel and padma × veteran and archon (first run, 200 games, wheel/veteran: Karna on the Maharathi **60.5 %**, all others inside noise; baseline 52.5 %). A hero ships at **50–58 %** on every board/opponent pair and must actually fire in real games. For each hero that misses, propose **one** change (e.g. Karna: only on defence, or only on the Senapati) and re-screen it. Seed your runs and write the seed in the report. Do not change rules in `js/engine.js`; propose, the Director decides. | `docs/balance/heroes-2026-11.md` |
+| 5.2 | **Teach the AI the heroes.** Today `E.predict`/`strikeOdds` and `js/ai.js` ignore hero traits, so the AI misjudges a clash with a hero host. Design decision (Director, 2 Nov): **each army's hero and its host rank are public** (shown on the hero card); the host piece itself stays hidden until revealed. Pass the hero into `predict` options so ties (Bhima), night +1 (Ghatotkacha) and Karna's one survival are valued — only when the host is revealed or the reasoning uses public information. Add rules tests; `tests/rules.mjs`, `tests/selfplay.mjs 40` and the robot must still pass. | PR on a branch |
+| 5.3 | **Design the hero card and the four active heroes.** (a) Hero card: where it sits in portrait and landscape (deploy screen pick, battle HUD, result), using the existing portraits in `assets/art/opt/heroes/`. (b) Turn flows for Arjuna (one volley at three cells), Drona (one reveal instead of a move), Abhimanyu (cannot step back; ignores Padma) and Bhishma (Padma aura while unmoved) — which button, which preview, what the board shows. Rules text is in `incoming/text/heroes-vows.json`. Keep the phone-cool rules (no looping animation). Text and wire-frame sketches only. | `incoming/text/hero-cards-design.md` |
+
 ## ▶ Batch 4 — from the Director, 1 Nov 2026 (do these first)
 
 Your Batch 3 is integrated and live on `main` (PR #8): Calm pace (re-paced — see `docs/PACING.md`), sky and

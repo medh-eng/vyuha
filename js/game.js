@@ -449,6 +449,16 @@
       }
     }
 
+    const vowEl = $('#hud-vow');
+    if (vowEl) {
+      const v = st.pratigya && PR && PR.get(st.pratigya.key);
+      vowEl.hidden = !(v && st.phase === 'battle');
+      if (v) {
+        vowEl.textContent = v.deva;
+        vowEl.title = vowText(v, 'name') + ' — ' + vowText(v, 'rule');
+      }
+    }
+
     pill.className = 'turn-pill';
     if (st.phase === 'deploy1' || st.phase === 'deploy2') {
       const owner = st.phase === 'deploy1' ? 1 : 2;
@@ -1792,6 +1802,63 @@
     FX.toast((PRESET_NAMES[style] || style) + ' formation applied.', 'info');
   }
 
+  /* ── Pratigya: one optional secret vow before an AI duel ──── */
+
+  const PR = AC.pratigya;
+  function vowText(v, field) { return tr('vow.' + v.key + '.' + field, v[field]); }
+
+  function vowOffered(st) {
+    const p = AC.app.profile;
+    return !!(PR && PR.allowed(st) && !st.pratigya && settings().vows !== false &&
+      p && !AC.app.guest && p.stats && (p.stats.wins || 0) >= 1);
+  }
+
+  function offerVow(st, done) {
+    const choices = PR.offer(st.rules);
+    let picked = false;
+    const card = function (v, i) {
+      return '<button class="vow-card" data-vow="' + i + '">' +
+        '<span class="vow-deva deva">' + esc(v.deva) + '</span>' +
+        '<span class="vow-name">' + esc(vowText(v, 'name')) + '</span>' +
+        '<span class="vow-rule">' + esc(vowText(v, 'rule')) + '</span>' +
+        '<span class="vow-stars">' + '★'.repeat(v.stars) + '</span>' +
+      '</button>';
+    };
+    const m = AC.ui.modal({
+      kicker: tr('vow.kicker', 'Pratigya · प्रतिज्ञा'),
+      title: tr('vow.title', 'Take a vow?'),
+      sub: '<span>' + esc(tr('vow.sub', 'Keep it and win to earn vow stars. It changes nothing on the field.')) + '</span>',
+      dismissible: false,
+      body: '<div class="vow-list">' + choices.map(card).join('') + '</div>',
+      actions: [{ label: tr('vow.none', 'Fight without a vow'), cls: 'btn-ghost' }],
+      // any way out of the dialog (button, back, Escape) begins the battle
+      onClose: function () { if (!picked) { picked = true; done(); } }
+    });
+    m.el.querySelector('.vow-list').addEventListener('click', function (e) {
+      const b = e.target.closest('[data-vow]');
+      if (!b || picked) return;
+      picked = true;
+      st.pratigya = { key: choices[Number(b.getAttribute('data-vow'))].key };
+      sfx('lock');
+      m.close();
+      done();
+    });
+  }
+
+  function showVow() {
+    const st = g.state;
+    const v = st && st.pratigya && PR && PR.get(st.pratigya.key);
+    if (!v) return;
+    AC.ui.modal({
+      kicker: tr('vow.kicker', 'Pratigya · प्रतिज्ञा'),
+      title: vowText(v, 'name'),
+      body: '<p class="vow-rule-big"><span class="deva">' + esc(v.deva) + '</span> ' + esc(vowText(v, 'rule')) + '</p>' +
+        '<p class="fineprint">' + esc(tr('vow.secret', 'Only you know this vow. Win and keep it to earn ')) + '★'.repeat(v.stars) + '</p>',
+      actions: [{ label: 'Back to battle', cls: 'btn-primary' }]
+    });
+  }
+  g.showVow = showVow;
+
   function lockFormation() {
     const st = g.state;
     if (st.phase === 'deploy1') {
@@ -1801,14 +1868,10 @@
         st.phase = 'deploy2';
         autosave();
         showCurtain(2, 'deploy');
+      } else if (vowOffered(st)) {
+        offerVow(st, function () { if (g.state === st && st.phase === 'deploy1') beginAiBattle(st); });
       } else {
-        E.beginBattle(st);
-        sfx('shankh');
-        render();
-        banner(st.turnLimit ? 'The breach begins' : 'Yuddh aarambh',
-          (st.turnLimit ? st.turnLimit + ' rounds to take the fort' : 'break the gate, take the fort'), 'gold', 1600);
-        autosave();
-        startClockIfNeeded();
+        beginAiBattle(st);
       }
       return;
     }
@@ -1822,6 +1885,16 @@
       if (isPass()) showCurtain(1, 'battle');
       startClockIfNeeded();
     }
+  }
+
+  function beginAiBattle(st) {
+    E.beginBattle(st);
+    sfx('shankh');
+    render();
+    banner(st.turnLimit ? 'The breach begins' : 'Yuddh aarambh',
+      (st.turnLimit ? st.turnLimit + ' rounds to take the fort' : 'break the gate, take the fort'), 'gold', 1600);
+    autosave();
+    startClockIfNeeded();
   }
 
   function keepFormation() {
@@ -2010,6 +2083,33 @@
     }
     S.deleteSave('auto');
 
+    // Pratigya: judge the vow once, record it, show it under the result
+    let vowHtml = '';
+    if (st.pratigya && PR && !st.pratigya.judged) {
+      const j = PR.judge(st, 1, st.pratigya.key);
+      st.pratigya.judged = true;
+      if (j) {
+        st.pratigya.kept = j.kept;
+        let line = '';
+        if (AC.app.profile && !AC.app.guest) {
+          const before = (AC.app.profile.vows && AC.app.profile.vows.stars) || 0;
+          const rec = S.recordVow(AC.app.profile.id, j.vow.key, j.kept, j.vow.stars, j.vow.stamp);
+          AC.app.profile = S.getProfile(AC.app.profile.id);
+          const t = rec && PR.titleFor(rec.stars);
+          if (j.kept && t && !(PR.titleFor(before) && PR.titleFor(before).key === t.key)) {
+            line = tr('vow.newTitle', 'New title: ') + t.name + ' · ' + t.deva;
+          } else if (rec) {
+            line = '★ ' + rec.stars;
+          }
+        }
+        vowHtml = '<div class="vow-result ' + (j.kept ? 'kept' : 'broken') + '">' +
+          '<span class="vow-deva deva">' + esc(j.vow.deva) + '</span>' +
+          '<div><b>' + esc(vowText(j.vow, 'name')) + '</b> — ' +
+          esc(j.kept ? tr('vow.kept', 'vow kept') + ' ' + '★'.repeat(j.vow.stars) : tr('vow.broken', 'vow not kept')) +
+          (line ? '<div class="fineprint">' + esc(line) + '</div>' : '') + '</div></div>';
+      }
+    }
+
     const englishTitle = winner === 0 ? 'The field is shared' : (winner === 1 ? 'Suryavansh triumphs' : 'Chandravansh conquers');
     const title = tr(winner === 0 ? 'result.shared' : isAiGame && outcome !== 'win' ? 'result.defeat' : 'result.victory', englishTitle);
     const deva = winner === 0 ? 'समान' : ((isAiGame ? outcome === 'win' : true) ? 'विजय' : 'पराजय');
@@ -2053,6 +2153,7 @@
           '<div class="result-stat"><b>' + (st.captured[2] || []).length + '</b><span>lost</span></div>' +
           '<div class="result-stat"><b>' + astrasUsed + '</b><span>astras</span></div>' +
         '</div>' +
+        vowHtml +
         (extra && extra.html ? extra.html : ''),
       actions: actions
     });
@@ -2191,6 +2292,8 @@
     });
     const sky = document.getElementById('hud-sky');
     if (sky) sky.addEventListener('click', function () { sfx('ui'); g.openIntel(); });
+    const vow = document.getElementById('hud-vow');
+    if (vow) vow.addEventListener('click', function () { sfx('ui'); showVow(); });
   }
 
   g.wire = wire;
