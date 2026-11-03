@@ -159,6 +159,11 @@ Maharathi (35) → Atimaharathi (75) — the warrior grades of the epic.
 
 ## 4. Look — art direction
 
+> **Changing (Chapter IV · Rang, accepted 3 Nov 2026):** the game moves to *Sanjaya's Pata* —
+> flat-colour narrative cloth painting, hidden enemies unpainted, cotton by day and indigo by
+> night. See `docs/LOOK.md` and `docs/prompts/PATA.md`. Temple-punk below stays as the
+> "Classic bronze" skin and the fallback until Gate 1 and Phase 1 land.
+
 **Temple-punk.** Carved brass and obsidian, lit like a lamp-lit mandapa. Saffron and gold for
 Suryavansh and the day; indigo, silver and moonstone for Chandravansh and the night. Boards are
 yantra linework: concentric rings, petals, kolam dots.

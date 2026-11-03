@@ -7,6 +7,14 @@ it, wires it into the game, and says plainly if something needs another pass.
 
 **Before any task**, paste the context block once per conversation.
 
+## ▶ Note — 3 Nov 2026: new look *Sanjaya's Pata*
+
+The game is moving to a painted-cloth look (`docs/LOOK.md`). In task 5.3, do the hero card's
+**placement and the turn flows** as text and wire-frames now, but **hold its visual styling and
+any card art until the Commander picks the look at Gate 1**, so hero art is made once. Image
+prompts for the new look are in `docs/prompts/PATA.md` (figures on transparent or flat magenta,
+never black). All other tasks go ahead.
+
 ## ▶ Batch 5 — from the Director, 2 Nov 2026 (Chapter IV starts)
 
 Chapter IV is on branch `claude/chapter-4-pratigya-heroes`. Read its `docs/HANDOFF.md` first.

@@ -3,8 +3,9 @@
 The live status board. Ticked = on `main` and playable. Owner tags: **[C]** Commander (Pon),
 **[D]** Director (Claude), **[G]** ChatGPT, **[S]** Sarvam AI.
 
-Last updated: **2 Nov 2026** — Chapter IV begun on `claude/chapter-4-pratigya-heroes`: Pratigya
-vows playable; hero engine for four passive heroes (hidden until screened). History: `docs/WORKLOG.md`.
+Last updated: **3 Nov 2026** — *Rang* look plan accepted (`docs/LOOK.md`); Chapter IV first slice
+in PR #12: Pratigya vows playable, hero engine for four passive heroes (hidden until screened).
+History: `docs/WORKLOG.md`.
 
 ---
 
@@ -31,13 +32,31 @@ vows playable; hero engine for four passive heroes (hidden until screened). Hist
 - [ ] **[C][G]** Art still open: full-screen effects, gate-breach art, store art (`docs/prompts/ART.md`)
 - [ ] **[C]** Respect review by at least three players from different backgrounds (`DIRECTOR.md` §6)
 
+## Chapter IV · Rang — the new look, *Sanjaya's Pata* (accepted 3 Nov 2026)
+
+Plan: `docs/LOOK.md` (full doc with pictures: <https://claude.ai/artifact/D1JS6qLuZEVKt3zEiFppy2>).
+Engine and rules untouched; runs beside the hero work.
+
+- [x] **[D]** Plan and prompt pack `docs/prompts/PATA.md`
+- [ ] **[C]** Seven decisions in `docs/LOOK.md` (confirm or change)
+- [ ] **[D]** Phase 0: 32 px legibility sheet, skin system with "Classic bronze", three phone mockups
+- [ ] **[C]** **Gate 1** — pick the look on the phone
+- [ ] **[C]** Phase 1 art and sound (`PATA.md` §1–6, about 35 images + 8 sounds)
+- [ ] **[D]** Phase 1: Chakravyuha at full quality, effects, UI kit, home, Sanjaya bust
+- [ ] **[C]** **Gate 2** — beats today's build; 5 people name 8 of 10 pieces at 32 px; idle < 3 %
+- [ ] **[D][C]** Phase 2: other fields, astras, avatars, every screen
+- [ ] **[D]** Phase 3: Sanjaya's Scroll, charcoal notes, festival days, haptics, sound pass
+- [ ] **[C]** **Gate 3** — five-person playtest + respect review
+- [ ] **[D]** Phase 4: hero cards in the new style, dhvaja banners, folk-art edition, campaign scroll
+- [ ] **[C]** Replace today's paintings that carry a corner watermark before any store launch
+
 ## Chapter IV — depth and heroes (next)
 
 - [x] **[D]** **Pratigya** — 12 secret vows (after the first win, AI duels only), stars, three titles (Vrati · Dridhavrata · Satyavrata), stamps; Settings toggle. Cosmetic only (`js/pratigya.js`)
 - [x] **[D]** Hero engine: Bhima, Karna, Ghatotkacha, Dhrishtadyumna (`state.heroes`, off unless named; 19 rules tests; `tools/hero-sim.mjs`)
 - [ ] **[G]** Screen the four heroes (50–58 % target) — Karna on the Maharathi ran 60.5 % in the first bank
 - [ ] **[G]** AI values hero traits (`predict`, `strikeOdds`)
-- [ ] **[G]→[D]** Hero card design (`incoming/text/hero-cards-design.md`), then the Director builds the card, the pick and the four active heroes (Arjuna, Drona, Abhimanyu, Bhishma)
+- [ ] **[G]→[D]** Hero card design (`incoming/text/hero-cards-design.md`), then the Director builds the card, the pick and the four active heroes (Arjuna, Drona, Abhimanyu, Bhishma); the card's art and styling wait for Gate 1 of *Rang*
 - [ ] **[S]** Vow strings in Hindi/Marathi; Sanjaya's vow and hero lines
 - [ ] **[C]** Vow stamps and title seals (`docs/prompts/ART.md`, Chapter IV)
 - [ ] **[D]** Campaign map: the seven vyuhas, one lesson each (drafts: `incoming/text/campaign.md`)

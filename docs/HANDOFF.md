@@ -1,11 +1,17 @@
 # Handoff — latest status
 
-**2 November 2026 · Director.** Replace this file at the end of each session.
+**3 November 2026 · Director.** Replace this file at the end of each session.
 
 ## State
 
-Chapter III is live on `main`. Chapter IV has begun on branch
-**`claude/chapter-4-pratigya-heroes`** (pull request open, not yet merged).
+Chapter III is live on `main`. Two Chapter IV tracks run side by side:
+
+1. **Heroes and vows** — branch **`claude/chapter-4-pratigya-heroes`** (PR #12, now merged up
+   with `main`, waiting for the Commander's phone look).
+2. **Rang, the new look** — *Sanjaya's Pata*, plan merged in PR #13 (`docs/LOOK.md`,
+   `docs/prompts/PATA.md`). Full plan with pictures: <https://claude.ai/artifact/D1JS6qLuZEVKt3zEiFppy2>.
+
+### Heroes and vows (PR #12)
 
 | Area | What is on the branch | Where |
 |---|---|---|
@@ -18,25 +24,31 @@ Vow wording differs slightly from the draft where the draft could not be judged 
 dismantles the trap). A clash Karna survives emits `outcome: 'none'`, which the clash cinematic
 does not yet draw specially — handle it when the hero UI is built.
 
-## Checks on the branch (all passed)
+Checks on the branch before the merge-up (all passed): rules 150 · self-play 40, 0 failures ·
+Daily · languages · UI 152 · assets · desktop/phone screenshots · idle < 3 % portrait and
+landscape · landscape 115 · robot "no problems" · standalone rebuilt. The merge-up from `main`
+touched docs only; tests re-run after it are listed in the PR.
 
-rules 150 (19 hero/chronicle + 10 vow tests new) · self-play 40, 0 failures · Daily · languages ·
-UI 152 (5 vow tests new) · assets · desktop/phone screenshots · idle < 3 % portrait and
-landscape · landscape 115 · robot "no problems" (now takes the offered vow) · standalone rebuilt.
-Calm line budget unchanged: 33/46 within 5 s, same four routine lines over (Sarvam 4.2).
+### Rang (PR #13, merged)
+
+Docs only: `docs/LOOK.md` (idea, palette, phases, gates, seven Commander decisions) and
+`docs/prompts/PATA.md` (Phase 1 art and sound briefs). Found in today's art: a small four-point
+star at bottom right of many paintings (looks like a generator watermark — replace before a
+store launch); Yantrik emblem is a wrench and gear, Chara an Egyptian-style eye.
 
 Not done by anyone yet: physical-phone feel and heat, human listening, real-player playtest,
 native Marathi review, Hindi/Marathi vow text.
 
 ## Next
 
-1. **Commander:** merge the PR after a look on the phone (win one battle, then lock a
-   formation — the vow offer appears). Phone test and five-person playtest still open. Art:
-   vow stamps and title seals (`docs/prompts/ART.md`, *Chapter IV*).
-2. **ChatGPT Batch 5** (`docs/agents/CHATGPT.md`): screen the four heroes; teach the AI the
-   heroes; design the hero card and the four active heroes. Batch 4 still owed.
-3. **Sarvam Batch 5** (`docs/agents/SARVAM.md`): vow strings in Hindi/Marathi; Sanjaya's vow and
-   hero lines (text first); respect read of hero texts. Batch 4 still owed.
-4. **Director, next session:** integrate whatever lands; adjust heroes from 5.1; build the hero
-   card and pick from 5.3; then Arjuna, Drona, Abhimanyu, Bhishma; then the seven-vyuha campaign
-   (`incoming/text/campaign.md`).
+1. **Commander:** merge PR #12 after a look on the phone (win one battle, then lock a formation
+   — the vow offer appears); answer the seven decisions in `docs/LOOK.md`; Phase 1 art from
+   `docs/prompts/PATA.md` if you want to work ahead. Phone test and five-person playtest still open.
+2. **Director:** Rang Phase 0 — 32 px legibility sheet, skin system ("Classic bronze"), three
+   phone mockups → **Gate 1**. Then integrate agent work; adjust heroes from 5.1; build the
+   hero card (styled after Gate 1) and pick; Arjuna, Drona, Abhimanyu, Bhishma; then the
+   seven-vyuha campaign.
+3. **ChatGPT Batch 5** (`docs/agents/CHATGPT.md`): screen the four heroes; teach the AI the
+   heroes; hero-card placement and flows as text (styling waits for Gate 1). Batch 4 still owed.
+4. **Sarvam Batch 5** (`docs/agents/SARVAM.md`): vow strings in Hindi/Marathi; Sanjaya's vow and
+   hero lines; respect read. Batch 4 still owed.
