@@ -14,6 +14,8 @@ Use exactly the file names from the prompt packs — that is how the game finds 
 incoming/
   art/        astras/  portraits/  boards/  cards/  sky/  app/  store/  heroes/  editions/
               → names and sizes in docs/prompts/ART.md
+  art/pata/   pieces/  fields/  frame/  scenes/  portraits/
+              → the new look, names and sizes in docs/prompts/PATA.md (magenta or transparent, never black)
   3d/         <piece>.glb / <piece>.stl     → docs/prompts/3D.md
   renders/    store and trailer renders     → docs/prompts/3D.md
   audio/      sfx/  music/  ui/             → docs/prompts/AUDIO.md

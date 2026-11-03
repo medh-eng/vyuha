@@ -1,41 +1,44 @@
 # Handoff — latest status
 
-**1 November 2026, night · Director.** Replace this file at the end of each session.
+**3 November 2026 · Director.** Replace this file at the end of each session.
 
 ## State
 
-Chapter III is complete and on `main` (live). Everything the agents delivered up to PR #11 is
-integrated; PRs #3–#11 are closed as merged through #8.
+Chapter III is complete and live on `main` (797226e). Chapter IV first slice (Pratigya vows,
+hidden hero engine) waits in **PR #12** for the Commander's phone look and merge.
 
-| Area | What shipped | Where |
-|---|---|---|
-| Calm pace | Default. Sanjaya enters at each effect's measured end, AI thinks while he speaks; clash → AI 3.8 s | `docs/PACING.md`, `js/game.js` (`PACE`), `js/audio.js` (`SPEAK_AT`) |
-| Landscape | Status rail · field · action rail; one-time portrait hint | `docs/LANDSCAPE.md`, end of `css/app.css`, `tools/landscape.mjs` |
-| Languages | Interface in English / हिन्दी / मराठी; 18 re-reviewed lines show as text until re-voiced | `docs/i18n/`, `js/languages.js`, `docs/voice/pending-recordings.json` |
-| Art & sound | Ten avatars, skies, share preview, trap and five music tracks | `assets/`, originals in `masters/` |
-| Daily | Catalogue III from 3 Nov: 28 variants, each passed two fresh seed banks; `quiet-gate` held | `js/modes.js`, `docs/balance/` |
+**New this session — Chapter IV · Rang (the look).** The Commander accepted the plan to move
+VYUHA from dark "temple-punk" to *Sanjaya's Pata*: the battle as a painted narrative cloth,
+hidden enemies unpainted until revealed, painted pieces, cotton by day and indigo by night,
+Sanjaya's Scroll share strip. Rules, engine, AI, Daily and tests stay untouched.
 
-## Clean-up done this session
+| File | What it is |
+|---|---|
+| `docs/LOOK.md` | The plan: idea, style rules, palette, phases and gates, seven Commander decisions |
+| `docs/prompts/PATA.md` | Prompt pack for Phase 1: 20 pieces, hidden sketch, fort states, banners, Chakravyuha day/night, frame, home, Sanjaya, 8 sounds |
+| `docs/ROADMAP.md` | New *Rang* section with gates |
+| `docs/DIRECTOR.md` §4 | Note that the look is changing; temple-punk becomes "Classic bronze" |
+| `docs/agents/CHATGPT.md` | Hold hero-card design until Gate 1 |
+| `incoming/README.md` | New drop path `incoming/art/pata/` |
 
-Old dated handoffs, integration notes, Chapter II plans, the bulk evidence (videos, media-QA
-screenshots) and integrated drafts were removed; all remain in git history. Balance reports moved
-to `docs/balance/`, Hindi/Marathi catalogues to `docs/i18n/`. Harness outputs (videos, audio
-reports) now go to `/tmp`, not the repo. Stale agent branches were deleted after merge.
+Full plan with screenshots and roadmap: <https://claude.ai/artifact/D1JS6qLuZEVKt3zEiFppy2>.
 
-## Checks (all passed)
+Docs-only session: no runtime file changed, so the game checks were not re-run here (they all
+passed on 797226e on 1 Nov). Screenshots of today's build were taken with `tools/shots.mjs` for
+the plan.
 
-rules 121 · self-play 40, 0 failures · Daily · languages · UI 147 · assets · desktop/phone
-screenshots · idle < 3 % portrait and landscape · robot "no problems" · landscape 115 · media QA
-11/11 · Calm line budget.
+## Found in the current art
 
-Not done by anyone yet: physical-phone feel and heat, human listening, real-player playtest,
-native Marathi review.
+- Many paintings in `assets/art/opt/` carry a small four-point star at bottom right that looks
+  like an image generator's visible watermark — must be replaced before a store launch.
+- Yantrik emblem is a wrench and gear, Chara an Egyptian-style eye (off-period).
 
 ## Next
 
-1. **Commander:** phone test (Calm and Quick, portrait and landscape); five-person playtest
-   (`incoming/text/playtest.md`).
-2. **Sarvam Batch 4:** 18 pending + 4 shorter recordings; Marathi human read.
-3. **ChatGPT Batch 4:** robot in landscape; landscape design review; retune `quiet-gate`.
-4. **Director, Chapter IV:** hero cards and Pratigya vows from `incoming/text/heroes-vows.json`,
-   then the seven-vyuha campaign (`incoming/text/campaign.md`). See `docs/ROADMAP.md`.
+1. **Commander:** answer the seven decisions in `docs/LOOK.md`; phone look + merge of PR #12;
+   start Phase 1 art from `docs/prompts/PATA.md` if you want to work ahead.
+2. **Director, Phase 0:** 32 px legibility sheet, skin system (today's art = "Classic bronze"),
+   three phone mockups of the battle screen (A Pata, B Pahari, C bright bronze) → **Gate 1**.
+3. **ChatGPT:** Batch 4 and Batch 5 as briefed, except hero-card design (waits for Gate 1).
+4. **Sarvam:** Batch 4 and Batch 5 as briefed.
+5. Still not done by anyone: physical-phone feel and heat, real-player playtest, native Marathi review.
