@@ -2305,6 +2305,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
   #btn-hud-settings { order: 2; }
   #screen-game .hud-centre { order: 3; grid-column: 1 / -1; }
   #hud-sky { order: 4; min-width: 44px; min-height: 44px; padding: 0 4px; justify-content: center; }
+  #hud-vow { order: 4; min-width: 44px; min-height: 44px; padding: 0 4px; justify-content: center; }
   #hud-clock { order: 5; min-width: 44px; height: 44px; padding: 0 2px; display: grid; place-items: center; font-size: 12px; }
   #hud-clock.hidden { display: none; }
   #btn-hud-intel { order: 6; }
@@ -2383,3 +2384,35 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
 .rotate-hint[hidden] { display: none; }
 .rotate-hint span { flex: 1; }
 .rotate-hint button { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; color: var(--dim); }
+
+/* ── Chapter IV · Pratigya (vows). Static: no animation, nothing loops. ── */
+.vow-chip {
+  display: inline-flex; align-items: center; height: 34px; padding: 0 10px; border-radius: 11px;
+  border: 1px solid rgba(242, 207, 139, 0.45); background: rgba(224, 169, 74, 0.12);
+  color: var(--gold); font-family: var(--deva); font-size: 14px; line-height: 1;
+}
+.vow-list { display: grid; gap: 8px; }
+.vow-card {
+  display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: auto auto; column-gap: 10px;
+  text-align: left; padding: 10px 12px; border-radius: var(--r-sm);
+  border: 1px solid var(--line-strong); background: rgba(255, 255, 255, 0.03); color: var(--txt);
+}
+.vow-card:hover, .vow-card:focus-visible { border-color: rgba(242, 207, 139, 0.6); background: rgba(224, 169, 74, 0.08); }
+.vow-deva { grid-row: 1 / 3; align-self: center; font-family: var(--deva); font-size: 20px; color: var(--gold); min-width: 2.6em; text-align: center; }
+.vow-name { font-weight: 800; font-size: 14px; }
+.vow-rule { grid-column: 2; font-size: 12.5px; color: var(--txt-2); }
+.vow-stars { grid-column: 3; grid-row: 1; color: var(--gold); font-size: 12px; letter-spacing: 1px; }
+.vow-rule-big { font-size: 15px; line-height: 1.45; }
+.vow-rule-big .deva { color: var(--gold); margin-right: 6px; }
+.vow-result {
+  display: flex; gap: 10px; align-items: center; margin: 4px 0 12px; padding: 10px 12px;
+  border-radius: var(--r-sm); border: 1px solid var(--line); font-size: 13px;
+}
+.vow-result.kept { border-color: rgba(242, 207, 139, 0.55); background: rgba(224, 169, 74, 0.1); }
+.vow-result.broken { color: var(--txt-2); }
+.vow-result .vow-deva { grid-row: auto; min-width: 2.2em; }
+.hub-vows { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+.hub-vows b { color: var(--gold); font-size: 17px; }
+.vow-title .deva { font-family: var(--deva); color: var(--gold); }
+.vow-stamps { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; }
+.vow-stamp { font-size: 11px; padding: 3px 8px; border-radius: 999px; border: 1px solid rgba(242, 207, 139, 0.4); color: var(--solar-2); }

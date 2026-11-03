@@ -6,6 +6,18 @@ Sarvam's chat assistant handles the writing tasks; its text-to-speech tool (Bulb
 voice. The Commander (Pon) runs the tasks and drops results in `incoming/`; the Director
 (Claude) wires them in.
 
+## ▶ Batch 5 — from the Director, 2 Nov 2026 (Chapter IV)
+
+**Pratigya** (secret vows) is built. Its 45 interface strings are in English only; in Hindi and
+Marathi they fall back to English until your translation lands. Batch 4 below is still owed —
+4.1 and 4.2 first (they unblock the Calm budget), then Batch 5.
+
+| # | Task | Deliver |
+|---|---|---|
+| 5.1 | **Translate the vow strings** in `incoming/text/pratigya-strings.en.json` into Hindi and Marathi. Same rules as the interface catalogues: keep every key, keep the Devanagari vow words (संयम, रक्षा, दृष्टि …) and the title names (व्रती, दृढ़व्रत, सत्यव्रत), keep ★ symbols, short enough for a phone card. `vow.secret` and `vow.newTitle` end with a space because a value follows. | `incoming/i18n/pratigya.hi.json`, `incoming/i18n/pratigya.mr.json` |
+| 5.2 | **Sanjaya's lines for vows and heroes** — write, do not record yet. Ids: `vow_taken`, `vow_kept`, `vow_broken`, `hero_bhima_holds`, `hero_karna_armour`, `hero_ghatotkacha_night`, `hero_dhrishtadyumna_gate`. Two variants each (`_1`, `_2`), columns as in `docs/voice/sanjaya-lines.csv` (Hinglish screen, Hindi voice, English voice). Each must speak in **≤ 3.3 s** at pace 1.15. Heroes are spoken of with respect — as great warriors, never as jokes. The Director approves the text, then you record. | `incoming/text/sanjaya-chapter4.csv` |
+| 5.3 | **Respect read of the hero texts.** Read the eight hero `quote` and `rule` lines in `incoming/text/heroes-vows.json` and the vow names. Flag anything that feels wrong for any Indian community or tradition, and give the natural Hindi for each hero quote. | `incoming/text/heroes-respect-read.md` |
+
 ## ▶ Batch 4 — from the Director, 1 Nov 2026 (do these first)
 
 Batch 3.2–3.4 is merged: the Hindi review, both interface catalogues (now selectable in

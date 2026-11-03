@@ -65,6 +65,56 @@
     return state.rules || DEFAULT_RULES;
   }
 
+  /* ── chronicle: what each side did, read by the Pratigya vows ─── */
+
+  function newChronicle() {
+    return {
+      senapatiStruck: false, gateBroken: false, tookFort: false,
+      scanned: [], dismantled: 0, rathRuns: {},
+      capDay: 0, capNight: 0, makaraCaps: 0, padmaHolds: 0
+    };
+  }
+
+  function chron(state, owner) {
+    if (!state.chronicle) state.chronicle = { 1: newChronicle(), 2: newChronicle() };
+    if (!state.chronicle[owner]) state.chronicle[owner] = newChronicle();
+    return state.chronicle[owner];
+  }
+
+  /* ── heroes (Chapter IV): one trait per army, carried by its
+   * Senapati or Maharathi. Off unless the match config names them:
+   * `heroes: { 1: { key: 'bhima', host: '9' }, 2: … }`. ─────────── */
+
+  const HEROES = {
+    bhima: { name: 'Bhima', deva: 'भीम' },
+    karna: { name: 'Karna', deva: 'कर्ण' },
+    ghatotkacha: { name: 'Ghatotkacha', deva: 'घटोत्कच' },
+    dhrishtadyumna: { name: 'Dhrishtadyumna', deva: 'धृष्टद्युम्न' }
+  };
+
+  function heroesFrom(cfg) {
+    const out = { 1: null, 2: null };
+    if (!cfg) return out;
+    [1, 2].forEach(function (o) {
+      const h = cfg[o];
+      if (h && HEROES[h.key]) out[o] = { key: h.key, host: h.host === '10' ? '10' : '9', used: false };
+    });
+    return out;
+  }
+
+  /* The hero trait `key` if `unit` is its army's host, else null. */
+  function heroOf(state, unit) {
+    if (!unit || !state.heroes) return null;
+    const h = state.heroes[unit.owner];
+    if (!h || h.host !== unit.key) return null;
+    return h;
+  }
+
+  function isHero(state, unit, key) {
+    const h = heroOf(state, unit);
+    return !!(h && h.key === key);
+  }
+
   function createArmy(owner, keys) {
     const roster = keys || U.ROSTER_ORDER;
     return roster.map(function (key, idx) {
@@ -125,6 +175,8 @@
       astrasUsed: { 1: {}, 2: {} },
       astraLog: [],
       stats: { actions: 0, attacks: 0, wins: 0, losses: 0, probes: 0, firstBlood: 0, lastCapturePly: 0 },
+      chronicle: { 1: newChronicle(), 2: newChronicle() },
+      heroes: heroesFrom(cfg.heroes),
       startedAt: Date.now()
     };
     const startShakti = cfg.startShakti || scenario.startShakti;
@@ -545,6 +597,9 @@
       key: dead.key, badge: dead.badge, name: dead.name, owner: dead.owner, rank: dead.rank, turn: state.turn
     });
     gainShakti(state, byOwner, 1);
+    const h = hourOf(state);
+    if (h === 'day') chron(state, byOwner).capDay++;
+    else if (h === 'night') chron(state, byOwner).capNight++;
   }
 
   /* ── the hours: Surya and Chandra ────────────────────────────── */
@@ -591,6 +646,10 @@
     const r = rules(state);
     if (r.hours && hourOwner(state) === att.owner) {
       ctx.attParts.push({ key: hourOf(state) === 'day' ? 'surya' : 'chandra', v: 1 });
+    }
+    if (r.hours && hourOf(state) === 'night') {
+      if (isHero(state, att, 'ghatotkacha')) ctx.attParts.push({ key: 'hero', v: 1 });
+      if (isHero(state, def, 'ghatotkacha')) ctx.defParts.push({ key: 'hero', v: 1 });
     }
     if (r.vyuha) {
       const jaws = alliesAround(state, to, att.owner, from);
@@ -651,6 +710,12 @@
     }
     if (a < d) {
       return { winner: 'def', a: a, d: d, text: 'The defending ' + defender.name + ' [' + shown(defender, d) + '] repelled the ' + attacker.name + ' [' + shown(attacker, a) + '].' };
+    }
+    if (isHero(state, attacker, 'bhima')) {
+      return { winner: 'att', hero: 'bhima', a: a, d: d, text: 'Equal strength ' + a + ' — Bhima would not yield, and the ' + defender.name + ' fell.' };
+    }
+    if (isHero(state, defender, 'bhima')) {
+      return { winner: 'def', hero: 'bhima', a: a, d: d, text: 'Equal strength ' + a + ' — Bhima held his ground, and the ' + attacker.name + ' fell.' };
     }
     if (state.config.tie === 'attacker') {
       const before = attacker.rank;
@@ -885,6 +950,7 @@
       if (t.key === 'F') {
         if (rules(state).gates && !t.breached) {
           t.breached = true;
+          chron(state, t.owner).gateBroken = true;
           ev.breach = true;
           ev.text = 'Agneyastra: the fort gate burns. One more blow takes it.';
         } else {
@@ -933,8 +999,15 @@
   function breachFort(state, fort, events, at, by) {
     fort.breached = true;
     fort.revealed = true;
+    chron(state, fort.owner).gateBroken = true;
     state.stats.lastCapturePly = state.stats.actions;
     gainShakti(state, fort.owner, 2);      // a besieged house finds its strength
+    const hero = heroOf(state, by);
+    if (hero && hero.key === 'dhrishtadyumna' && !hero.used) {
+      hero.used = true;
+      gainShakti(state, by.owner, 1);
+      log(state, 'hero', 'Dhrishtadyumna opened the gate: his army gains one Shakti.', at);
+    }
     log(state, 'breach', 'The ' + faction(fort.owner) + ' fort gate is broken.', at);
     events.push({ kind: 'breach', sfx: 'breach', at: at, unit: by, target: fort, text: 'The gate of the ' + faction(fort.owner) + ' fort is broken. One more blow takes it.' });
   }
@@ -971,6 +1044,10 @@
       if (state.config.facing && dir != null) unit.facing = dir;
       state.board[to] = unit;
       state.board[from] = null;
+      if (unit.key === '2' && dist >= 3) {
+        const runs = chron(state, unit.owner).rathRuns;
+        runs[unit.id] = (runs[unit.id] || 0) + 1;
+      }
       if (unit.key === '2' && dist >= 2) {
         unit.revealed = true;
         events.push({ kind: 'reveal', text: 'The chariot ran ' + dist + ' cells — its position is now exposed.' });
@@ -993,6 +1070,8 @@
     if (type === 'scan') {
       unit.revealed = true;
       target.revealed = true;
+      const seen = chron(state, unit.owner).scanned;
+      if (seen.indexOf(target.id) === -1) seen.push(target.id);
       events.push({
         kind: 'scan', sfx: 'scan', at: to, unit: unit, target: target,
         text: 'Divya-drishti: ' + target.name + ' [' + target.badge + '] revealed at no cost.'
@@ -1023,6 +1102,7 @@
           text: 'Shara-varsha punched through the fort from two cells out. The enemy objective is gone.'
         });
         log(state, 'core', faction(unit.owner) + ' took the enemy fort with a volley!', to);
+        chron(state, unit.owner).tookFort = true;
         snapshot(state, 'barrage-core');
         endGame(state, unit.owner, faction(unit.owner) + ' took the enemy fort with a volley on turn ' + state.turn + '.', events);
         return { ok: true, type: type, events: events };
@@ -1063,6 +1143,7 @@
     unit.revealed = true;
     target.revealed = true;
     state.stats.attacks++;
+    if (unit.key === '10') chron(state, unit.owner).senapatiStruck = true;
 
     const res = resolveMelee(state, unit, target, ctx);
 
@@ -1074,16 +1155,40 @@
       return { ok: true, type: type, events: events };
     }
 
-    if (res.winner === 'att') {
+    // Karna's armour: once, a losing clash costs him his ground, not his life
+    let karna = null;
+    const ranked = !res.mine && !res.core && !res.assassinate && !res.rear;
+    if (ranked && res.winner === 'def' && isHero(state, unit, 'karna') && !heroOf(state, unit).used) {
+      karna = { unit: unit, to: from };
+    } else if (ranked && res.winner === 'att' && isHero(state, target, 'karna') && !heroOf(state, target).used) {
+      const prev = target.moveHistory.length ? target.moveHistory[target.moveHistory.length - 1].from : null;
+      const g = board(state);
+      if (prev && !state.board[prev] && (g.neighbours[to] || []).indexOf(prev) !== -1) karna = { unit: target, to: prev };
+    }
+
+    if (karna) {
+      heroOf(state, karna.unit).used = true;
+      if (karna.unit === target) {
+        state.board[karna.to] = target;
+        state.board[to] = unit;
+        state.board[from] = null;
+      }
+      res.winner = 'none';
+      res.hero = 'karna';
+      res.text = 'Karna’s armour held — he gave ground and lives to fight on.';
+    } else if (res.winner === 'att') {
       state.board[to] = unit;
       state.board[from] = null;
       recordCapture(state, unit.owner, target);
       state.stats.wins++;
+      if (res.mine) chron(state, unit.owner).dismantled++;
+      else if (ctx.attParts.some(function (p) { return p.key === 'makara'; })) chron(state, unit.owner).makaraCaps++;
     } else if (res.winner === 'def') {
       state.board[from] = null;
       if (res.mine) state.board[to] = target;
       recordCapture(state, target.owner, unit);
       state.stats.losses++;
+      if (!res.mine && ctx.defParts.some(function (p) { return p.key === 'padma'; })) chron(state, target.owner).padmaHolds++;
     } else {
       state.board[to] = null;
       state.board[from] = null;
@@ -1105,6 +1210,7 @@
       unit: unit,
       target: target,
       outcome: res.winner,
+      hero: res.hero || null,
       core: !!res.core,
       mine: !!res.mine,
       assassinate: !!res.assassinate,
@@ -1121,6 +1227,7 @@
     snapshot(state, 'clash');
 
     if (res.core) {
+      chron(state, unit.owner).tookFort = true;
       endGame(state, unit.owner, faction(unit.owner) + ' captured the enemy fort on turn ' + state.turn + '.', events);
       return { ok: true, type: type, events: events };
     }
@@ -1354,6 +1461,8 @@
     if (!s.astraLog) s.astraLog = [];
     if (!s.sky) s.sky = { startNight: false };
     if (!s.limitWinner) s.limitWinner = 2;
+    if (!s.chronicle) s.chronicle = { 1: newChronicle(), 2: newChronicle() };
+    if (!s.heroes) s.heroes = { 1: null, 2: null };
     s.version = VERSION;
     return s;
   }
@@ -1368,6 +1477,9 @@
     ASTRA_ORDER: ASTRA_ORDER,
     PRESETS: PRESETS,
     newState: newState,
+    HEROES: HEROES,
+    heroOf: heroOf,
+    chronicle: chron,
     createArmy: createArmy,
     clone: clone,
     board: board,

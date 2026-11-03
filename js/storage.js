@@ -35,6 +35,7 @@
     pace: 'calm',
     batterySaver: null,   // null = decide from the phone (low memory / few cores → on)
     stories: true,
+    vows: true,          // offer a Pratigya before AI duels (after the first win)
     tutorialDone: false,
     landscapeHintDismissed: false
   };
@@ -284,6 +285,25 @@
     return s;
   }
 
+  /* Pratigya: a kept vow adds its stars and stamp; a broken one is counted
+   * so the hub can show how often the player has held their word. */
+  function recordVow(profileId, key, kept, stars, stamp) {
+    const db = loadDb();
+    const p = db.profiles.filter(function (x) { return x.id === profileId; })[0];
+    if (!p) return null;
+    const v = p.vows = p.vows || { stars: 0, kept: 0, broken: 0, byKey: {}, stamps: [] };
+    if (kept) {
+      v.kept++;
+      v.stars += stars || 0;
+      v.byKey[key] = (v.byKey[key] || 0) + 1;
+      if (stamp && v.stamps.indexOf(stamp) === -1) v.stamps.push(stamp);
+    } else {
+      v.broken++;
+    }
+    saveDb(db);
+    return v;
+  }
+
   function resetStats(profileId) {
     const db = loadDb();
     const p = db.profiles.filter(function (x) { return x.id === profileId; })[0];
@@ -462,6 +482,7 @@
     renameProfile: renameProfile,
     updateProfile: updateProfile,
     recordResult: recordResult,
+    recordVow: recordVow,
     resetStats: resetStats,
     getSettings: getSettings,
     patchSettings: patchSettings,

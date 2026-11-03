@@ -76,7 +76,10 @@ for (const [label, w, h] of [['phone', 390, 844], ['small-phone', 360, 640]]) {
     await sleep(400); await closeModals(page);
     const lock = await page.$('#action-bar [data-deploy="lock"]');
     if (lock) { await lock.tap(); } else note(label + ' ' + board + ': no lock button');
-    await sleep(500); await closeModals(page);
+    await sleep(500);
+    const vow = await page.$('.vow-card');            // Chapter IV: take the offered vow
+    if (vow) { await vow.tap(); await sleep(300); }
+    await closeModals(page);
     let moves = 0, last = 'start';
     for (; moves < 160; moves++) {
       const s = await waitMyTurn(page, 20000);

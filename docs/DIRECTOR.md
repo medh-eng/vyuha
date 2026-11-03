@@ -249,6 +249,9 @@ yantra linework: concentric rings, petals, kolam dots.
 | 29 Oct 2026 | Facing rule (Padmavyuha) stays built but off by default. | Hardest rule to learn; hooks first, depth later. |
 | 29 Oct 2026 | No login wall; first-time players are "Yoddha". | Every extra screen before the first battle loses players. |
 | 29 Oct 2026 | Daily seeded by the IST date; Sunday is Padmavyuha day. | One wheel for all of India; a reason to come back. |
+| 2 Nov 2026 | Pratigya vows are cosmetic, AI duels only, offered only after the player's first win; closing the offer means "no vow". | No new screen before the first battle; vows reward style, never power. |
+| 2 Nov 2026 | Each army's hero and host rank are public (on the hero card); the host piece stays hidden until revealed. | A trait you cannot see is unfair; hiding the host keeps the bluff. |
+| 2 Nov 2026 | Heroes ship only after screening at 50–58 % for the hero side on every field/opponent. | A trait, not a trump. |
 
 ## 9. Balance — the numbers
 
