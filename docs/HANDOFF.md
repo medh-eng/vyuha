@@ -1,54 +1,45 @@
 # Handoff — latest status
 
-**3 November 2026 · Director.** Replace this file at the end of each session.
+**3 November 2026, evening · Director.** Replace this file at the end of each session.
 
 ## State
 
-Chapter III is live on `main`. Two Chapter IV tracks run side by side:
+PR #12 (Pratigya vows, hidden hero engine) and PR #13 (Rang look plan) are merged; `main` is live.
+This session: **Rang Phase 0** on branch `claude/rang-phase-0` (PR open).
 
-1. **Heroes and vows** — branch **`claude/chapter-4-pratigya-heroes`** (PR #12, now merged up
-   with `main`, waiting for the Commander's phone look).
-2. **Rang, the new look** — *Sanjaya's Pata*, plan merged in PR #13 (`docs/LOOK.md`,
-   `docs/prompts/PATA.md`). Full plan with pictures: <https://claude.ai/artifact/D1JS6qLuZEVKt3zEiFppy2>.
+| What | Where |
+|---|---|
+| Skin system: `bronze` (Classic, default) · `pata` · `pahari` · `bright`; Settings → *Look (preview)*; `?skin=` link override | `js/art.js` (`setSkin`, `SKINS`), `js/ui.js` (`skinOf`), `js/storage.js` (`skin`) |
+| Stand-in painted figures for all ten pieces, and the hidden-enemy ink sketch | `js/art.js` (`FIGURES`, `SKETCH`) |
+| Three looks, day and night, for battle, home and panels | last block of `css/app.css` |
+| Gate 1 landing page with the four links | `rang.html` → live at `/vyuha/rang.html` after merge |
+| 32 px legibility sheet tool | `tools/legibility.mjs` |
+| Heat probe can measure a look | `SKIN=pata node tools/perf-idle.mjs` |
 
-### Heroes and vows (PR #12)
+## Checks (all passed)
 
-| Area | What is on the branch | Where |
-|---|---|---|
-| Pratigya (vows) | 12 vows; three offered at lock-in of an AI duel once the player has won once; static HUD seal (tap for the rule); kept/not-kept line on the result card; stars, three titles (Vrati 3 · Dridhavrata 10 · Satyavrata 25) and stamps in the profile; Settings → "Offer a vow before battle". Cosmetic only. | `js/pratigya.js`, `js/game.js` (search `Pratigya`), `js/ui.js` (`vowSection`), `js/storage.js` (`recordVow`), end of `css/app.css` |
-| Chronicle | Per-side record of what happened, read by the vows | `js/engine.js` (`chron`, `newChronicle`) |
-| Heroes (engine only) | Bhima (wins equal clashes), Karna (once survives a lost ranked clash), Ghatotkacha (+1 at night), Dhrishtadyumna (+1 Shakti on his own first breach). Off unless `config.heroes = {1: {key, host: '9'\|'10'}}`. **No UI yet.** | `js/engine.js` (`HEROES`, `heroOf`), `tools/hero-sim.mjs` |
+rules 150 · self-play 40, 0 failures · Daily · languages · UI 157 (5 new look checks) · assets ·
+desktop/phone screenshots · idle < 3 % portrait and landscape for Classic, Pata, Pahari and
+Bright · landscape 115 · robot "no problems" · Calm line budget unchanged (33/46; same four
+routine lines over, Sarvam 4.2) · standalone rebuilt · offline cache bumped to v26.
 
-Vow wording differs slightly from the draft where the draft could not be judged by the engine
-(e.g. "Bhishma's restraint" = the Senapati never strikes; "The patient engineer" = a Yantrik
-dismantles the trap). A clash Karna survives emits `outcome: 'none'`, which the clash cinematic
-does not yet draw specially — handle it when the hero UI is built.
+Not done: the Commander's phone look at the three skins (Gate 1); physical-phone heat; real
+players. The figures are vector stand-ins, not final art.
 
-Checks on the branch before the merge-up (all passed): rules 150 · self-play 40, 0 failures ·
-Daily · languages · UI 152 · assets · desktop/phone screenshots · idle < 3 % portrait and
-landscape · landscape 115 · robot "no problems" · standalone rebuilt. The merge-up from `main`
-touched docs only; tests re-run after it are listed in the PR.
+## Known limits of the preview looks
 
-### Rang (PR #13, merged)
-
-Docs only: `docs/LOOK.md` (idea, palette, phases, gates, seven Commander decisions) and
-`docs/prompts/PATA.md` (Phase 1 art and sound briefs). Found in today's art: a small four-point
-star at bottom right of many paintings (looks like a generator watermark — replace before a
-store launch); Yantrik emblem is a wrench and gear, Chara an Egyptian-style eye.
-
-Not done by anyone yet: physical-phone feel and heat, human listening, real-player playtest,
-native Marathi review, Hindi/Marathi vow text.
+- Setup, profile, rules and result screens get the cotton panels but were not individually
+  restyled; some dark art (astra buttons, clash cinematics, hero portraits) still shows in the old style.
+- "Yuddh Aarambh" and other banners are restyled only in Pata/Pahari.
 
 ## Next
 
-1. **Commander:** merge PR #12 after a look on the phone (win one battle, then lock a formation
-   — the vow offer appears); answer the seven decisions in `docs/LOOK.md`; Phase 1 art from
-   `docs/prompts/PATA.md` if you want to work ahead. Phone test and five-person playtest still open.
-2. **Director:** Rang Phase 0 — 32 px legibility sheet, skin system ("Classic bronze"), three
-   phone mockups → **Gate 1**. Then integrate agent work; adjust heroes from 5.1; build the
-   hero card (styled after Gate 1) and pick; Arjuna, Drona, Abhimanyu, Bhishma; then the
-   seven-vyuha campaign.
-3. **ChatGPT Batch 5** (`docs/agents/CHATGPT.md`): screen the four heroes; teach the AI the
-   heroes; hero-card placement and flows as text (styling waits for Gate 1). Batch 4 still owed.
-4. **Sarvam Batch 5** (`docs/agents/SARVAM.md`): vow strings in Hindi/Marathi; Sanjaya's vow and
-   hero lines; respect read. Batch 4 still owed.
+1. **Commander — Gate 1:** merge the PR, open `https://medh-eng.github.io/vyuha/rang.html` on
+   the phone, play a few turns in each look (the sky turns at round 5), and say which one wins.
+   Also answer the seven decisions in `docs/LOOK.md`.
+2. **Director, after Gate 1 — Phase 1:** the chosen look on Chakravyuha at full quality: reveal
+   colour-flood, field memory banners, sky re-dye, cotton/lacquer kit for every screen, Sanjaya's
+   chamber home, then wire the painted files from `docs/prompts/PATA.md` as they arrive.
+3. **ChatGPT:** Batch 4 and 5 as briefed (hero-card styling waits for Gate 1).
+4. **Sarvam:** Batch 4 and 5 as briefed; add the Settings label "Look (preview)" and the four
+   look names in Hindi/Marathi when convenient.

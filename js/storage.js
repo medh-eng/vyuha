@@ -36,6 +36,7 @@
     batterySaver: null,   // null = decide from the phone (low memory / few cores → on)
     stories: true,
     vows: true,          // offer a Pratigya before AI duels (after the first win)
+    skin: 'bronze',      // Rang look: bronze (Classic) · pata · pahari · bright (docs/LOOK.md)
     tutorialDone: false,
     landscapeHintDismissed: false
   };
