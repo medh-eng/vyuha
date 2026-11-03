@@ -7,6 +7,13 @@ it, wires it into the game, and says plainly if something needs another pass.
 
 **Before any task**, paste the context block once per conversation.
 
+## ▶ Note — 3 Nov 2026: new look *Sanjaya's Pata*
+
+The game is moving to a painted-cloth look (`docs/LOOK.md`). **Hold the hero-card design (Batch 5, arriving with PR #12)
+until the Commander picks the look at Gate 1**, so hero art is made once. Image prompts
+for the new look are in `docs/prompts/PATA.md` (figures on transparent or flat magenta, never
+black). All other tasks go ahead.
+
 ## ▶ Batch 4 — from the Director, 1 Nov 2026 (do these first)
 
 Your Batch 3 is integrated and live on `main` (PR #8): Calm pace (re-paced — see `docs/PACING.md`), sky and

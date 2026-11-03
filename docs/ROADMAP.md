@@ -3,7 +3,7 @@
 The live status board. Ticked = on `main` and playable. Owner tags: **[C]** Commander (Pon),
 **[D]** Director (Claude), **[G]** ChatGPT, **[S]** Sarvam AI.
 
-Last updated: **1 Nov 2026 (night)** — Chapter III complete and live: Calm pace, phone landscape,
+Last updated: **3 Nov 2026** — *Rang* look plan accepted (`docs/LOOK.md`). Before that, 1 Nov 2026 (night) — Chapter III complete and live: Calm pace, phone landscape,
 Hindi/Marathi interface, ten avatars, Daily Catalogue III. History of each step: `docs/WORKLOG.md`.
 
 ---
@@ -31,9 +31,27 @@ Hindi/Marathi interface, ten avatars, Daily Catalogue III. History of each step:
 - [ ] **[C][G]** Art still open: full-screen effects, gate-breach art, store art (`docs/prompts/ART.md`)
 - [ ] **[C]** Respect review by at least three players from different backgrounds (`DIRECTOR.md` §6)
 
+## Chapter IV · Rang — the new look, *Sanjaya's Pata* (accepted 3 Nov 2026)
+
+Plan: `docs/LOOK.md` (full doc with pictures: <https://claude.ai/artifact/D1JS6qLuZEVKt3zEiFppy2>).
+Engine and rules untouched; runs beside the hero work.
+
+- [x] **[D]** Plan and prompt pack `docs/prompts/PATA.md`
+- [ ] **[C]** Seven decisions in `docs/LOOK.md` (confirm or change)
+- [ ] **[D]** Phase 0: 32 px legibility sheet, skin system with "Classic bronze", three phone mockups
+- [ ] **[C]** **Gate 1** — pick the look on the phone
+- [ ] **[C]** Phase 1 art and sound (`PATA.md` §1–6, about 35 images + 8 sounds)
+- [ ] **[D]** Phase 1: Chakravyuha at full quality, effects, UI kit, home, Sanjaya bust
+- [ ] **[C]** **Gate 2** — beats today's build; 5 people name 8 of 10 pieces at 32 px; idle < 3 %
+- [ ] **[D][C]** Phase 2: other fields, astras, avatars, every screen
+- [ ] **[D]** Phase 3: Sanjaya's Scroll, charcoal notes, festival days, haptics, sound pass
+- [ ] **[C]** **Gate 3** — five-person playtest + respect review
+- [ ] **[D]** Phase 4: hero cards in the new style, dhvaja banners, folk-art edition, campaign scroll
+- [ ] **[C]** Replace today's paintings that carry a corner watermark before any store launch
+
 ## Chapter IV — depth and heroes (next)
 
-- [ ] **[D]** Hero cards — one trait per army on a Maharathi or Senapati (drafts: `incoming/text/heroes-vows.json`)
+- [ ] **[D]** Hero cards — one trait per army on a Maharathi or Senapati (drafts: `incoming/text/heroes-vows.json`); card art waits for Gate 1 of *Rang*
 - [ ] **[D]** Pratigya — secret vows that earn stars and titles
 - [ ] **[D]** Campaign map: the seven vyuhas, one lesson each (drafts: `incoming/text/campaign.md`)
 - [ ] **[D]** Facing, introduced in the Krauncha chapter
