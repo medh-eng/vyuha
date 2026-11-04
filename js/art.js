@@ -143,6 +143,7 @@
   }
 
   function emblem(key, cls) {
+    if (figuresOn()) return figureSvg(key, cls);
     const painted = IMG['unit:' + key];
     if (painted) {
       return '<img class="emblem emblem-art ' + (cls || '') + '" src="' + painted + '" alt="" draggable="false">';
@@ -153,6 +154,7 @@
 
   /* Inside an SVG token: a painted disc, or the engraved vector paths. */
   function tokenInner(key, R) {
+    if (figuresOn()) return figureInner(key, R);
     const painted = IMG['unit:' + key];
     const size = R * 1.5;
     if (painted) {
@@ -337,7 +339,112 @@
       (opts.size ? ' style="--av:' + opts.size + 'px"' : '') + '>' + face + b + '</span>';
   }
 
+  /* ── Rang skins (docs/LOOK.md) ──────────────────────────────────
+     A skin is a look: today's art is "bronze" (Classic). The preview skins
+     draw every piece as a flat painted figure — a stand-in until the painted
+     files from docs/prompts/PATA.md arrive. Colours come from CSS classes
+     (.m army main, .s army second, .k skin, .g gold, .w horse, .e elephant,
+     .d cloak, .b wood, .t steel, .n line only), so one drawing serves both
+     armies, day and night, and every skin. 64-unit grid, figure facing right. */
+  const SKINS = ['bronze', 'pata', 'pahari', 'bright'];
+  const FIGURE_SKINS = { pata: true, pahari: true };
+  let skin = 'bronze';
+  function setSkin(name) {
+    skin = SKINS.indexOf(name) === -1 ? 'bronze' : name;
+    if (typeof document !== 'undefined') document.documentElement.setAttribute('data-skin', skin);
+    return skin;
+  }
+  function figuresOn() { return !!FIGURE_SKINS[skin]; }
+
+  const HEAD = function (x, y, r) {
+    return '<circle class="k" cx="' + x + '" cy="' + y + '" r="' + r + '"/>' +
+      '<path class="m" d="M' + (x - r - 0.6) + ' ' + (y - 0.6) + ' C' + (x - r) + ' ' + (y - r * 2.1) + ' ' + (x + r) + ' ' + (y - r * 2.1) + ' ' +
+      (x + r + 0.6) + ' ' + (y - 0.6) + ' Z"/>' +
+      '<circle class="dot" cx="' + (x + r * 0.45) + '" cy="' + (y + 0.4) + '" r="1"/>';
+  };
+  const FIGURES = {
+    // Senapati: commander on a war elephant under a parasol
+    '10': '<path class="n" d="M33 32 V9"/>' +
+      '<path class="m" d="M15 15 Q33 0 51 15 Q47 13 44 16 Q40 13 37 16 Q33 13 29 16 Q26 13 22 16 Q19 13 15 15 Z"/><circle class="g" cx="33" cy="5.5" r="2.2"/>' +
+      '<path class="e" d="M11 44 C10 33 19 29 31 29 C40 29 46 30 50 33 C56 33 59 38 58 44 L57 57 L53 57 C53 51 54 47 52 45 C50 48 47 49 45 49 L45 57 L39 57 L38 50 L22 50 L21 57 L15 57 L15 50 C12 49 11 47 11 44 Z"/>' +
+      '<path class="m" d="M17 33 Q30 29 43 33 L41 45 Q29 48 19 45 Z"/><path class="s" d="M19 42 Q29 45 41 42 L41 45 Q29 48 19 45 Z"/>' +
+      '<path class="s" d="M28 29 L37 29 L36 22 L29 22 Z"/>' + HEAD(32.5, 18.5, 3.8) +
+      '<circle class="dot" cx="53" cy="37.5" r="1.2"/>',
+    // Maharathi: a warrior in a chariot drawing a long bow
+    '9': '<path class="n" d="M42 4 Q60 25 42 46"/><path class="n thin" d="M42 4 L42 46"/>' +
+      '<path class="s" d="M24 26 L34 26 L35 40 L23 40 Z"/>' + HEAD(29, 19.5, 5) +
+      '<path class="n" d="M33 29 L42 26 M14 26 L60 26"/><path class="g" d="M60 26 L55 23.5 L55 28.5 Z"/>' +
+      '<path class="m" d="M8 38 L44 38 L41 50 L11 50 Z"/>' +
+      '<circle class="s" cx="24" cy="51" r="9"/><path class="n thin" d="M24 42 V60 M15 51 H33 M17.6 44.6 L30.4 57.4 M30.4 44.6 L17.6 57.4"/><circle class="g" cx="24" cy="51" r="2.2"/>',
+    // Ashvarohi: a rider on a rearing horse, spear raised
+    '7': '<path class="w" d="M10 46 C11 36 20 31 31 31 L40 19 C42 14 49 11 54 15 L57 21 L51 24 L47 31 C48 40 42 46 35 47 L31 58 L26 58 L28 47 L19 48 L14 58 L9 58 Z"/>' +
+      '<path class="w" d="M43 33 L54 37 L52 42 L42 39 Z"/><circle class="dot" cx="51" cy="16.5" r="1.1"/>' +
+      '<path class="m" d="M20 33 L36 31 L38 42 L22 44 Z"/>' +
+      '<path class="s" d="M24 33 L32 33 L32 23 L25 23 Z"/>' + HEAD(28.5, 17, 4.4) +
+      '<path class="n" d="M18 40 L50 2"/><path class="g" d="M50 2 L44.5 5 L48 8.5 Z"/>',
+    // Dhanurdhar: a kneeling archer, the long arc of the bow
+    '6': '<path class="n bow" d="M40 4 Q60 32 40 60"/><path class="n thin" d="M40 4 L40 60"/>' +
+      '<path class="m" d="M19 27 L31 27 L33 41 L20 43 Z"/>' + HEAD(25.5, 20.5, 5) +
+      '<path class="s" d="M20 42 L34 43 L37 55 L31 55 L29 49 L18 51 L15 57 L8 57 Z"/>' +
+      '<path class="n" d="M29 31 L40 32 M18 32 L56 32"/><path class="g" d="M56 32 L51 29.5 L51 34.5 Z"/>',
+    // Divyadrishti: a seer holding up a lamp
+    '5': '<circle class="glow" cx="47" cy="10" r="9"/>' +
+      '<path class="s" d="M21 27 L36 27 L43 58 L15 58 Z"/><path class="m" d="M22 30 L35 27 L37 33 L23 37 Z"/>' +
+      HEAD(28.5, 19.5, 5.3) +
+      '<path class="n arm" d="M35 30 L45 19"/><path class="g" d="M41 17.5 L52 17.5 Q50 21.5 46.5 21.5 Q43 21.5 41 17.5 Z"/>' +
+      '<path class="flame" d="M46.5 3 Q52 10 46.5 15 Q41 10 46.5 3 Z"/>',
+    // Yantrik: a siege sapper with an axe and a coil of rope
+    '3': '<path class="n haft" d="M17 46 L45 10"/><path class="t" d="M40 4 L55 9 L51 21 L42 15 Z"/>' +
+      '<path class="m" d="M21 27 L36 27 L38 46 L19 46 Z"/>' + HEAD(28.5, 20, 5.2) +
+      '<path class="s" d="M19 46 L38 46 L36 58 L30.5 58 L28.5 51 L27 58 L21 58 Z"/>' +
+      '<circle class="n rope" cx="37" cy="44" r="5"/>',
+    // Rath: a racing chariot with a pennant and its horse
+    '2': '<path class="n" d="M12 31 V5"/><path class="m" d="M12 5 L30 10 L12 16 Z"/>' +
+      '<path class="m" d="M7 30 L34 30 L32 42 L10 42 Z"/>' +
+      '<circle class="s" cx="20" cy="46" r="11"/><path class="n thin" d="M20 35 V57 M9 46 H31 M12.2 38.2 L27.8 53.8 M27.8 38.2 L12.2 53.8"/><circle class="g" cx="20" cy="46" r="2.4"/>' +
+      '<path class="w" d="M34 35 C40 31 47 31 51 33 L55 25 C57 22 62 23 61 28 L58 34 L54 36 C54 42 50 44 47 44 L49 55 L45 55 L42 44 L39 44 L37 55 L33 55 L35 42 Z"/>' +
+      '<circle class="dot" cx="58" cy="27" r="1"/>',
+    // Chara: a hooded spy, half turned away, a curved dagger
+    '1': '<path class="d" d="M17 58 C15 41 19 24 30 14 C41 14 47 24 47 35 L49 58 Z"/>' +
+      '<path class="m" d="M20 43 L46 38 L46 43 L20 48 Z"/>' +
+      '<path class="d" d="M23 23 C23 9 41 7 43 21 L41 31 C36 27 30 27 26 31 Z"/><ellipse class="shade" cx="35" cy="24" rx="4.2" ry="5"/>' +
+      '<path class="t" d="M46 42 Q57 36 59 24 Q53 36 44 39 Z"/><path class="g" d="M42 38 L47 37 L48 42 L43 43 Z"/>',
+    // Shataghni: a spiked log hanging, ready to fall
+    'B': '<path class="n" d="M16 4 L19 26 M48 4 L45 26"/>' +
+      '<path class="t" d="M14 39 L17 52 L20 39 Z M22 39 L25 54 L28 39 Z M30 39 L33 55 L36 39 Z M38 39 L41 54 L44 39 Z M46 39 L49 52 L52 39 Z"/>' +
+      '<rect class="b" x="9" y="25" width="46" height="15" rx="7.5"/><path class="m" d="M13 26 L19 26 L19 39 L13 39 Z M45 26 L51 26 L51 39 L45 39 Z"/>' +
+      '<path class="n thin" d="M23 31 H41 M27 35 H37"/>',
+    // Durg: a fort with a carved gate; a broken gate once breached
+    'F': '<path class="m" d="M10 9 L18 12 L10 15 Z M54 9 L62 12 L54 15 Z"/><path class="n thin" d="M10 9 V18 M54 9 V18"/>' +
+      '<path class="ston" d="M6 18 H20 V58 H6 Z M44 18 H58 V58 H44 Z"/>' +
+      '<path class="ston lt" d="M20 27 H44 V58 H20 Z"/>' +
+      '<path class="n thin" d="M6 22 H20 M44 22 H58 M20 31 H44"/>' +
+      '<path class="b gate" d="M25 58 V42 Q32 32 39 42 V58 Z"/><path class="n thin gate" d="M32 38 V58"/>' +
+      '<circle class="g gate" cx="28.5" cy="49" r="1.1"/><circle class="g gate" cx="35.5" cy="49" r="1.1"/>' +
+      '<path class="b breach" d="M25 58 V44 L29 47 L27 58 Z M39 58 V44 L35 48 L37 58 Z"/><path class="ember breach" d="M30 56 Q32 50 34 56 Z"/>'
+  };
+  // Hidden: the same veiled warrior for every unknown piece, ink only
+  const SKETCH = '<path class="sk" d="M32 7 C25 7 22 16 24.5 22 C17 30 14 44 13 58 L51 58 C50 44 47 30 39.5 22 C42 16 39 7 32 7 Z"/>' +
+    '<path class="sk thin" d="M24.5 22 C29 25 35 25 39.5 22 M23 32 C27 40 26 50 24 58 M41 32 C37 40 38 50 40 58 M32 26 V40"/>';
+
+  function figure(key) { return FIGURES[key] || FIGURES['2']; }
+  function figureSvg(key, cls) {
+    return '<svg class="emblem fig-svg ' + (cls || '') + '" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g class="fig">' +
+      (key === '?' ? SKETCH : figure(key)) + '</g></svg>';
+  }
+  function figureInner(key, R) {
+    const s = (R * 1.56) / 64;
+    return '<g class="fig" transform="translate(' + (-R * 0.78) + ',' + (-R * 0.8) + ') scale(' + s.toFixed(4) + ')">' +
+      (key === '?' ? SKETCH : figure(key)) + '</g>';
+  }
+
   AC.art = {
+    setSkin: setSkin,
+    getSkin: function () { return skin; },
+    SKINS: SKINS,
+    figuresOn: figuresOn,
+    figureSvg: figureSvg,
+    figureInner: figureInner,
     avatar: avatar,
     AVATARS: AVATARS,
     AVATAR_FRAMES: FRAMES,

@@ -39,7 +39,7 @@ Engine and rules untouched; runs beside the hero work.
 
 - [x] **[D]** Plan and prompt pack `docs/prompts/PATA.md`
 - [ ] **[C]** Seven decisions in `docs/LOOK.md` (confirm or change)
-- [ ] **[D]** Phase 0: 32 px legibility sheet, skin system with "Classic bronze", three phone mockups
+- [x] **[D]** Phase 0: skin system (Settings → Look (preview), `?skin=`), "Classic bronze" default, three looks to try on a phone at `rang.html`, stand-in painted figures, 32 px sheet (`tools/legibility.mjs`)
 - [ ] **[C]** **Gate 1** — pick the look on the phone
 - [ ] **[C]** Phase 1 art and sound (`PATA.md` §1–6, about 35 images + 8 sounds)
 - [ ] **[D]** Phase 1: Chakravyuha at full quality, effects, UI kit, home, Sanjaya bust

@@ -39,11 +39,25 @@ board plus the one effects canvas, one-shot effects only, idle < 3 % on every sc
 
 | Phase | Sessions | Work | Gate after |
 |---|---|---|---|
-| 0 Direction | 1–2 | Prompt pack (`docs/prompts/PATA.md`) ✅, 32 px legibility sheet, three phone mockups (A Pata, B Pahari, C bright bronze), skin system | **Gate 1:** Commander picks the look on his phone |
+| 0 Direction ✅ | 1–2 | Prompt pack (`docs/prompts/PATA.md`), 32 px legibility sheet (`tools/legibility.mjs`), three looks to try on a phone (`rang.html`: A Pata, B Pahari, C Bright), skin system | **Gate 1:** Commander picks the look on his phone |
 | 1 One field | 4–5 | Chakravyuha day/night, 20 pieces + hidden sketch + fort states + banners, reveal/clash/fall/sky effects, cotton & lacquer UI kit, Sanjaya's chamber home, ravanhatta theme | **Gate 2:** beats today's build side by side; 5 people name 8 of 10 pieces at 32 px; idle < 3 % |
 | 2 Fields | 3–4 | Other three fields, astra films and ten avatars repainted, every screen, hi/mr strings | — |
 | 3 New feel | 3–4 | Sanjaya's Scroll, charcoal notes, festival days, phone buzz, sound pass | **Gate 3:** five-person playtest + respect review |
 | 4 Heroes | 3–5 | Hero cards in the new style, dhvaja banners, first folk-art edition, campaign scroll | then launch art |
+
+## How the skins work (Phase 0)
+
+- `html[data-skin]` = `bronze` (Classic, the default) · `pata` · `pahari` · `bright`. Chosen in
+  Settings → *Look (preview)*, or for a quick look with `index.html?skin=pata` (the link wins).
+  Landing page for Gate 1: `rang.html`.
+- Pata and Pahari draw every piece as a stand-in vector figure (`FIGURES` in `js/art.js`, 64-unit
+  grid, colours from CSS classes so one drawing serves both armies and every skin). Hidden enemies
+  are the same ink sketch (`SKETCH`). The painted files from `PATA.md` replace the figures later.
+- Skin CSS is the last block of `css/app.css`; nothing in it animates. The fort shows a broken
+  gate once breached. Board stone texture and sky photos are off in Pata and Pahari.
+- Checks: `tests/ui.mjs` has five look checks; `SKIN=pata node tools/perf-idle.mjs` measures a
+  look's idle heat (all three under 3 % portrait and landscape on 3 Nov);
+  `node tools/legibility.mjs <dir> pata` writes the 32 px sheet.
 
 ## Commander decisions (recommendations; confirm or change)
 

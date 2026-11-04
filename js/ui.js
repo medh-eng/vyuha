@@ -202,8 +202,17 @@
   }
   app.liteOn = function () { return liteOn(app.settings); };
 
+  /* Rang preview skins (docs/LOOK.md): Settings, or ?skin= in the link for a quick look on a phone. */
+  function skinOf(s) {
+    let q = null;
+    try { q = new URLSearchParams(location.search).get('skin'); } catch (e) { q = null; }
+    return (q && A.SKINS.indexOf(q) !== -1) ? q : (s.skin || 'bronze');
+  }
+
   function applySettings() {
     const s = app.settings;
+    const before = A.getSkin();
+    if (A.setSkin(skinOf(s)) !== before && AC.game && AC.game.state && AC.game.render) AC.game.render();
     L.setLang(s.uiLang || 'en');
     L.applyDOM(document);
     document.documentElement.classList.toggle('cb', !!s.colorblind);
@@ -946,6 +955,12 @@
           '<div class="seg" data-seg="uiLang">' +
             [['en', 'English'], ['hi', 'हिन्दी'], ['mr', 'मराठी']].map(function (o) {
               return '<button class="seg-btn' + (L.getLang() === o[0] ? ' on' : '') + '" data-segval="' + o[0] + '">' + o[1] + '</button>';
+            }).join('') +
+          '</div></div>' +
+        '<div class="slider-row"><label>Look (preview)</label>' +
+          '<div class="seg seg-4" data-seg="skin">' +
+            [['bronze', 'Classic'], ['pata', 'Pata'], ['pahari', 'Pahari'], ['bright', 'Bright']].map(function (o) {
+              return '<button class="seg-btn' + (A.getSkin() === o[0] ? ' on' : '') + '" data-segval="' + o[0] + '">' + o[1] + '</button>';
             }).join('') +
           '</div></div>' +
         '<div class="slider-row"><label>Sanjaya speaks in</label>' +

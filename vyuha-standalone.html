@@ -2440,6 +2440,241 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
 .vow-stamps { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; }
 .vow-stamp { font-size: 11px; padding: 3px 8px; border-radius: 999px; border: 1px solid rgba(242, 207, 139, 0.4); color: var(--solar-2); }
 
+/* ══════════════════════════════════════════════════════════════════
+   Chapter IV · Rang — preview skins (docs/LOOK.md, Phase 0)
+   html[data-skin] = bronze (Classic, everything above) · pata · pahari · bright.
+   Static: nothing here animates or loops. Stand-in vector figures live in
+   js/art.js (FIGURES); painted files from docs/prompts/PATA.md replace them.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── shared: the painted figures ── */
+.fig * { stroke: var(--ink, #1c1510); stroke-width: 2.3; stroke-linejoin: round; stroke-linecap: round; }
+.fig .m { fill: var(--army-main, #c8341c); }
+.fig .s { fill: var(--army-second, #ee8f1c); }
+.fig .k { fill: var(--skin-tone, #c98a5a); }
+.fig .g { fill: var(--leaf, #d6a23c); }
+.fig .w { fill: #f6efe0; }
+.fig .e { fill: #cfc7b8; }
+.fig .d { fill: #2b2420; }
+.fig .b { fill: #7a4a22; }
+.fig .t { fill: #c3c8cd; }
+.fig .ston { fill: #d9a35b; }
+.fig .ston.lt { fill: #ecc488; }
+.fig .n, .fig .rope { fill: none; }
+.fig .rope { stroke: #c68a2e; stroke-width: 3; }
+.fig .thin { stroke-width: 1.4; }
+.fig .bow { stroke-width: 3.6; }
+.fig .haft { stroke: #5a3416; stroke-width: 3.6; }
+.fig .arm { stroke: #c98a5a; stroke-width: 4; }
+.fig .dot { fill: var(--ink, #1c1510); stroke: none; }
+.fig .glow { fill: #f5b731; fill-opacity: 0.32; stroke: none; }
+.fig .flame { fill: #f5a623; }
+.fig .shade { fill: #6b4630; }
+.fig .ember { fill: #f06a1c; }
+.fig .breach { display: none; }
+.token.breached .fig .gate { display: none; }
+.token.breached .fig .breach { display: inline; }
+.fig .sk { fill: none; stroke-width: 2.1; stroke-dasharray: none; }
+.fig .sk.thin { stroke-width: 1.3; }
+.emblem.fig-svg { color: inherit; }
+.solar, .zone-1 { --army-main: var(--surya-main); --army-second: var(--surya-second); }
+.void, .zone-2 { --army-main: var(--chandra-main); --army-second: var(--chandra-second); }
+
+/* ── A · Sanjaya's Pata: painted cloth, cotton by day, indigo by night ── */
+html[data-skin="pata"], html[data-skin="pahari"] {
+  --ink: #1c1510;
+  --cotton: #f2e4c4;
+  --cotton-2: #f8efd9;
+  --indigo-cloth: #1f2a5c;
+  --vermilion: #c8341c;
+  --saffron: #ee8f1c;
+  --lapis: #2c58a8;
+  --conch: #f7f1e3;
+  --malachite: #2e8a62;
+  --ochre: #c68a2e;
+  --leaf: #d6a23c;
+  --surya-main: #c8341c;
+  --surya-second: #ee8f1c;
+  --chandra-main: #2c58a8;
+  --chandra-second: #f7f1e3;
+  --bg: #efe0bd;
+  --bg-2: #f2e4c4;
+  --bg-3: #f8efd9;
+  --panel: rgba(248, 239, 217, 0.96);
+  --panel-solid: #f8efd9;
+  --panel-hi: #fff7e6;
+  --line: rgba(28, 21, 16, 0.22);
+  --line-strong: rgba(28, 21, 16, 0.5);
+  --txt: #1c1510;
+  --txt-2: #3d2f22;
+  --dim: #5e4b38;
+  --faint: #7d6750;
+  --solar: #c8341c;
+  --solar-2: #b5481c;
+  --void: #2c58a8;
+  --void-2: #2c58a8;
+  --gold: #a87414;
+  --green: #2e8a62;
+  --night: #2c58a8;
+  --shadow-1: 0 1px 0 rgba(28, 21, 16, 0.12);
+  --shadow-2: 0 8px 24px rgba(60, 40, 10, 0.18);
+  --shadow-glow: none;
+  color-scheme: light;
+}
+html[data-skin="pata"] body, html[data-skin="pahari"] body {
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M0 3h6M3 0v6' stroke='%23c9b48a' stroke-opacity='.18' stroke-width='1'/%3E%3C/svg%3E");
+  color: var(--txt);
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .app {
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M0 3h6M3 0v6' stroke='%23b89a64' stroke-opacity='.16' stroke-width='1'/%3E%3C/svg%3E") !important;
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .app::before,
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .app::after,
+html[data-skin="bright"] .app::before, html[data-skin="bright"] .app::after { display: none; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.tip-bar, .tip-bar.sanjaya, .toast, .coach, .rotate-hint) {
+  background: var(--cotton-2) !important; color: var(--ink) !important; border: 2px solid var(--line-strong) !important; box-shadow: var(--shadow-1) !important;
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .tip-bar.sanjaya { border-color: var(--saffron) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.coach-body, .coach-body b, .coach-body span:last-child, .coach-deva) { color: var(--ink) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .sanjaya-text b { color: var(--vermilion); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn { background: var(--cotton-2); border: 1.5px solid var(--line-strong); color: var(--ink); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .turn-banner { background: rgba(248, 239, 217, 0.96) !important; color: var(--ink) !important; border: 3px solid var(--vermilion) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .turn-banner * { color: var(--ink) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.hub image { display: none; }
+
+/* panels, cards and buttons: cotton cloth, ink outline, lacquer main button */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.panel, .card-action, .player-strip, .modal, .home-hero, .top-bar, .game-hud, .action-bar, .sanjaya-strip, .intel-panel, .seg, .setup-card, .mode-card, .option-card) {
+  background: var(--panel) !important;
+  border-color: var(--line-strong) !important;
+  color: var(--txt);
+  box-shadow: var(--shadow-1) !important;
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.card-title, .home-title, .modal-title, h2, h3, .top-name) { color: var(--ink); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.card-sub, .home-tag, .hud-sub, .top-rank, .kicker, .fineprint, .briefing) { color: var(--dim) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.card-icon, .icon-btn, .icon-btn .ico) { color: var(--vermilion) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .icon-btn { background: var(--cotton-2) !important; border: 1.5px solid var(--line-strong) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .btn-primary {
+  background: linear-gradient(180deg, #d8452a, #b02c16) !important;
+  color: #fff8ea !important;
+  border: 2px solid var(--leaf) !important;
+  box-shadow: 0 2px 0 #7e1f0f !important;
+  text-shadow: none;
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .btn-ghost { color: var(--ink); border-color: var(--line-strong); background: var(--cotton-2); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .card-daily { border: 2px solid var(--saffron) !important; background: linear-gradient(135deg, #fbe1b8, var(--cotton-2)) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .card-badge { background: var(--vermilion); color: #fff8ea; border-color: var(--vermilion); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .home-hero {
+  border: 3px solid var(--vermilion) !important;
+  background:
+    repeating-linear-gradient(90deg, var(--saffron) 0 10px, var(--vermilion) 10px 20px) top / 100% 8px no-repeat,
+    repeating-linear-gradient(90deg, var(--saffron) 0 10px, var(--vermilion) 10px 20px) bottom / 100% 8px no-repeat,
+    var(--cotton-2) !important;
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .home-title .deva { color: var(--vermilion); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .home-chakra :is(circle, line) { stroke: var(--vermilion); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .home-chakra .hc-bindu { fill: var(--saffron); filter: none; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .home-chakra :is(.hc-spokes, .hc-inner) { animation: none; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .seg-btn.on { background: var(--vermilion) !important; color: #fff8ea !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .sky-chip { background: var(--cotton-2); color: var(--ink); border-color: var(--line-strong); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .turn-pill { background: var(--ink) !important; color: var(--cotton) !important; }
+
+/* the field: a painted cloth */
+html[data-skin="pata"] .board-shell {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(238, 143, 28, 0.32) 0 46%, transparent 47%),
+    radial-gradient(circle at 50% 50%, var(--cotton-2) 0 60%, #f3dcae 100%) !important;
+  border: 3px solid var(--vermilion) !important;
+  outline: 6px solid var(--saffron);
+  outline-offset: -11px;
+  box-shadow: inset 0 0 0 12px var(--cotton-2), inset 0 0 0 14px var(--ink) !important;
+  border-radius: 14px;
+}
+html[data-skin="pata"] .board-shell.sky-night {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(44, 88, 168, 0.55) 0 46%, transparent 47%),
+    radial-gradient(circle at 50% 50%, #26336d 0 60%, var(--indigo-cloth) 100%) !important;
+  border-color: #c7cbe0 !important;
+  outline-color: #3d4c8e;
+  box-shadow: inset 0 0 0 12px var(--indigo-cloth), inset 0 0 0 14px #c7cbe0 !important;
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .cell-tex { display: none; }
+html[data-skin="pata"] .cell .cell-fill { fill: #f6e7c3; stroke: var(--ink); stroke-width: 0.022; }
+html[data-skin="pata"] .cell:nth-child(even) .cell-fill { fill: #eccf95; }
+html[data-skin="pata"] .cell.hub .cell-fill { fill: var(--saffron); stroke: var(--ink); }
+html[data-skin="pata"] .sky-night .cell .cell-fill { fill: #2f3d7c; stroke: #c7cbe0; }
+html[data-skin="pata"] .sky-night .cell:nth-child(even) .cell-fill { fill: #27346c; }
+html[data-skin="pata"] .sky-night .cell.hub .cell-fill { fill: #4b5aa0; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.zone-1 .cell-fill { stroke: var(--vermilion); stroke-width: 0.035; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.zone-2 .cell-fill { stroke: var(--lapis); stroke-width: 0.035; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.selected .cell-fill { fill: #ffd98a; stroke: var(--ink); stroke-width: 0.04; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.target-move .cell-fill { fill: #bfe3c8; stroke: var(--malachite); stroke-width: 0.035; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.target-attack .cell-fill { fill: #f4b3a3; stroke: var(--vermilion); stroke-width: 0.04; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.last-move .cell-fill { stroke: var(--leaf); stroke-width: 0.04; }
+html[data-skin="pata"] .yantra :is(circle, line) { stroke: var(--vermilion); stroke-width: 0.03; fill: none; }
+html[data-skin="pata"] .yantra .dot { fill: var(--saffron); stroke: var(--ink); stroke-width: 0.012; }
+html[data-skin="pata"] .sky-night .yantra :is(circle, line) { stroke: #c7cbe0; }
+
+/* pieces: a cotton disc, the army in the rim — rays for Surya, a solid ring for Chandra */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .token .tok-disc { fill: var(--cotton-2); filter: none; stroke-width: 0.06; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .token.solar .tok-disc { stroke: var(--vermilion); stroke-dasharray: 0.07 0.035; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .token.void .tok-disc { stroke: var(--lapis); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .token.hidden-unit .tok-disc { fill: #fbf6ea; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .token.hidden-unit.void .tok-disc { stroke: var(--lapis); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .token .tok-rank {
+  fill: var(--ink); stroke: var(--leaf); stroke-width: 0.06; paint-order: stroke; font-weight: 800;
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .token .sel-ring { stroke: var(--ink); stroke-width: 0.05; fill: none; }
+
+/* strips, Sanjaya, the HUD */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .player-strip { border-width: 2px !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .player-strip :is(.strip-banner, .crest) { display: none; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.diya) { color: var(--leaf); }
+
+/* ── B · Pahari miniature: ivory paper, green field, red border, finer line ── */
+html[data-skin="pahari"] {
+  --surya-main: #c8341c; --surya-second: #f2c14e;
+  --chandra-main: #1f6e5a; --chandra-second: #f7f1e3;
+  --vermilion: #b8261a;
+  --bg: #f4ead2;
+}
+html[data-skin="pahari"] .fig * { stroke-width: 1.7; }
+html[data-skin="pahari"] .board-shell {
+  background: radial-gradient(circle at 50% 45%, #a9c98c 0 40%, #7fae6a 70%, #5d8f55 100%) !important;
+  border: 10px solid #b8261a !important;
+  box-shadow: inset 0 0 0 3px #f2c14e, inset 0 0 0 5px var(--ink) !important;
+  border-radius: 4px;
+}
+html[data-skin="pahari"] .board-shell.sky-night { background: radial-gradient(circle at 50% 45%, #3e5d70 0 40%, #2a4256 70%, #1b2c3d 100%) !important; }
+html[data-skin="pahari"] .cell .cell-fill { fill: rgba(250, 244, 226, 0.78); stroke: #3c4a2a; stroke-width: 0.016; }
+html[data-skin="pahari"] .cell:nth-child(even) .cell-fill { fill: rgba(236, 226, 196, 0.78); }
+html[data-skin="pahari"] .cell.hub .cell-fill { fill: #f2c14e; }
+html[data-skin="pahari"] .sky-night .cell .cell-fill { fill: rgba(210, 222, 230, 0.32); stroke: #dfe6ea; }
+html[data-skin="pahari"] .yantra :is(circle, line) { stroke: #f2c14e; stroke-width: 0.02; fill: none; }
+html[data-skin="pahari"] .yantra .dot { fill: #b8261a; }
+html[data-skin="pahari"] .token.void .tok-disc, html[data-skin="pahari"] .token.hidden-unit.void .tok-disc { stroke: #1f6e5a; }
+html[data-skin="pahari"] .cell.zone-2 .cell-fill { stroke: #1f6e5a; }
+html[data-skin="pahari"] .home-hero { border-color: #b8261a !important; }
+
+/* ── C · Bright bronze: today's art, lifted out of the dark ── */
+html[data-skin="bright"] {
+  --bg: #2a1f17; --bg-2: #33261b; --bg-3: #3d2e20;
+  --panel: rgba(70, 50, 30, 0.88); --panel-solid: #46321e; --panel-hi: rgba(92, 66, 38, 0.92);
+  --line: rgba(242, 207, 139, 0.26); --line-strong: rgba(242, 207, 139, 0.5);
+  --txt: #fff6e6; --txt-2: #f2dfc0; --dim: #d9bf98; --faint: #b89c74;
+  --surya-main: #f08a24; --chandra-main: #8b8ff0;
+}
+html[data-skin="bright"] .app { background: radial-gradient(1200px 700px at 50% 0%, #7a5028, #2a1f17 75%) !important; }
+html[data-skin="bright"] .board-shell { background: radial-gradient(circle at 50% 50%, #8a5a2c 0 45%, #4a321d 100%) !important; }
+html[data-skin="bright"] .cell .cell-fill { fill: rgba(122, 84, 46, 0.92); stroke: rgba(255, 214, 140, 0.55); }
+html[data-skin="bright"] .cell:nth-child(even) .cell-fill { fill: rgba(104, 70, 38, 0.92); }
+html[data-skin="bright"] .board-shell.sky-night { background: radial-gradient(circle at 50% 50%, #3b3f8a 0 45%, #1d1f46 100%) !important; }
+html[data-skin="bright"] .sky-night .cell .cell-fill { fill: rgba(62, 66, 140, 0.92); stroke: rgba(200, 205, 255, 0.5); }
+html[data-skin="bright"] .token.solar .tok-disc { fill: #6b3d12; stroke: #ffb347; stroke-width: 0.05; }
+html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff; stroke-width: 0.05; }
+
+/* the Settings segment with four looks */
+.seg.seg-4 .seg-btn { padding-left: 6px; padding-right: 6px; }
+
 </style>
 </head>
 <body>
@@ -6893,6 +7128,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     batterySaver: null,   // null = decide from the phone (low memory / few cores → on)
     stories: true,
     vows: true,          // offer a Pratigya before AI duels (after the first win)
+    skin: 'bronze',      // Rang look: bronze (Classic) · pata · pahari · bright (docs/LOOK.md)
     tutorialDone: false,
     landscapeHintDismissed: false
   };
@@ -7508,6 +7744,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
   }
 
   function emblem(key, cls) {
+    if (figuresOn()) return figureSvg(key, cls);
     const painted = IMG['unit:' + key];
     if (painted) {
       return '<img class="emblem emblem-art ' + (cls || '') + '" src="' + painted + '" alt="" draggable="false">';
@@ -7518,6 +7755,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
 
   /* Inside an SVG token: a painted disc, or the engraved vector paths. */
   function tokenInner(key, R) {
+    if (figuresOn()) return figureInner(key, R);
     const painted = IMG['unit:' + key];
     const size = R * 1.5;
     if (painted) {
@@ -7702,7 +7940,112 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       (opts.size ? ' style="--av:' + opts.size + 'px"' : '') + '>' + face + b + '</span>';
   }
 
+  /* ── Rang skins (docs/LOOK.md) ──────────────────────────────────
+     A skin is a look: today's art is "bronze" (Classic). The preview skins
+     draw every piece as a flat painted figure — a stand-in until the painted
+     files from docs/prompts/PATA.md arrive. Colours come from CSS classes
+     (.m army main, .s army second, .k skin, .g gold, .w horse, .e elephant,
+     .d cloak, .b wood, .t steel, .n line only), so one drawing serves both
+     armies, day and night, and every skin. 64-unit grid, figure facing right. */
+  const SKINS = ['bronze', 'pata', 'pahari', 'bright'];
+  const FIGURE_SKINS = { pata: true, pahari: true };
+  let skin = 'bronze';
+  function setSkin(name) {
+    skin = SKINS.indexOf(name) === -1 ? 'bronze' : name;
+    if (typeof document !== 'undefined') document.documentElement.setAttribute('data-skin', skin);
+    return skin;
+  }
+  function figuresOn() { return !!FIGURE_SKINS[skin]; }
+
+  const HEAD = function (x, y, r) {
+    return '<circle class="k" cx="' + x + '" cy="' + y + '" r="' + r + '"/>' +
+      '<path class="m" d="M' + (x - r - 0.6) + ' ' + (y - 0.6) + ' C' + (x - r) + ' ' + (y - r * 2.1) + ' ' + (x + r) + ' ' + (y - r * 2.1) + ' ' +
+      (x + r + 0.6) + ' ' + (y - 0.6) + ' Z"/>' +
+      '<circle class="dot" cx="' + (x + r * 0.45) + '" cy="' + (y + 0.4) + '" r="1"/>';
+  };
+  const FIGURES = {
+    // Senapati: commander on a war elephant under a parasol
+    '10': '<path class="n" d="M33 32 V9"/>' +
+      '<path class="m" d="M15 15 Q33 0 51 15 Q47 13 44 16 Q40 13 37 16 Q33 13 29 16 Q26 13 22 16 Q19 13 15 15 Z"/><circle class="g" cx="33" cy="5.5" r="2.2"/>' +
+      '<path class="e" d="M11 44 C10 33 19 29 31 29 C40 29 46 30 50 33 C56 33 59 38 58 44 L57 57 L53 57 C53 51 54 47 52 45 C50 48 47 49 45 49 L45 57 L39 57 L38 50 L22 50 L21 57 L15 57 L15 50 C12 49 11 47 11 44 Z"/>' +
+      '<path class="m" d="M17 33 Q30 29 43 33 L41 45 Q29 48 19 45 Z"/><path class="s" d="M19 42 Q29 45 41 42 L41 45 Q29 48 19 45 Z"/>' +
+      '<path class="s" d="M28 29 L37 29 L36 22 L29 22 Z"/>' + HEAD(32.5, 18.5, 3.8) +
+      '<circle class="dot" cx="53" cy="37.5" r="1.2"/>',
+    // Maharathi: a warrior in a chariot drawing a long bow
+    '9': '<path class="n" d="M42 4 Q60 25 42 46"/><path class="n thin" d="M42 4 L42 46"/>' +
+      '<path class="s" d="M24 26 L34 26 L35 40 L23 40 Z"/>' + HEAD(29, 19.5, 5) +
+      '<path class="n" d="M33 29 L42 26 M14 26 L60 26"/><path class="g" d="M60 26 L55 23.5 L55 28.5 Z"/>' +
+      '<path class="m" d="M8 38 L44 38 L41 50 L11 50 Z"/>' +
+      '<circle class="s" cx="24" cy="51" r="9"/><path class="n thin" d="M24 42 V60 M15 51 H33 M17.6 44.6 L30.4 57.4 M30.4 44.6 L17.6 57.4"/><circle class="g" cx="24" cy="51" r="2.2"/>',
+    // Ashvarohi: a rider on a rearing horse, spear raised
+    '7': '<path class="w" d="M10 46 C11 36 20 31 31 31 L40 19 C42 14 49 11 54 15 L57 21 L51 24 L47 31 C48 40 42 46 35 47 L31 58 L26 58 L28 47 L19 48 L14 58 L9 58 Z"/>' +
+      '<path class="w" d="M43 33 L54 37 L52 42 L42 39 Z"/><circle class="dot" cx="51" cy="16.5" r="1.1"/>' +
+      '<path class="m" d="M20 33 L36 31 L38 42 L22 44 Z"/>' +
+      '<path class="s" d="M24 33 L32 33 L32 23 L25 23 Z"/>' + HEAD(28.5, 17, 4.4) +
+      '<path class="n" d="M18 40 L50 2"/><path class="g" d="M50 2 L44.5 5 L48 8.5 Z"/>',
+    // Dhanurdhar: a kneeling archer, the long arc of the bow
+    '6': '<path class="n bow" d="M40 4 Q60 32 40 60"/><path class="n thin" d="M40 4 L40 60"/>' +
+      '<path class="m" d="M19 27 L31 27 L33 41 L20 43 Z"/>' + HEAD(25.5, 20.5, 5) +
+      '<path class="s" d="M20 42 L34 43 L37 55 L31 55 L29 49 L18 51 L15 57 L8 57 Z"/>' +
+      '<path class="n" d="M29 31 L40 32 M18 32 L56 32"/><path class="g" d="M56 32 L51 29.5 L51 34.5 Z"/>',
+    // Divyadrishti: a seer holding up a lamp
+    '5': '<circle class="glow" cx="47" cy="10" r="9"/>' +
+      '<path class="s" d="M21 27 L36 27 L43 58 L15 58 Z"/><path class="m" d="M22 30 L35 27 L37 33 L23 37 Z"/>' +
+      HEAD(28.5, 19.5, 5.3) +
+      '<path class="n arm" d="M35 30 L45 19"/><path class="g" d="M41 17.5 L52 17.5 Q50 21.5 46.5 21.5 Q43 21.5 41 17.5 Z"/>' +
+      '<path class="flame" d="M46.5 3 Q52 10 46.5 15 Q41 10 46.5 3 Z"/>',
+    // Yantrik: a siege sapper with an axe and a coil of rope
+    '3': '<path class="n haft" d="M17 46 L45 10"/><path class="t" d="M40 4 L55 9 L51 21 L42 15 Z"/>' +
+      '<path class="m" d="M21 27 L36 27 L38 46 L19 46 Z"/>' + HEAD(28.5, 20, 5.2) +
+      '<path class="s" d="M19 46 L38 46 L36 58 L30.5 58 L28.5 51 L27 58 L21 58 Z"/>' +
+      '<circle class="n rope" cx="37" cy="44" r="5"/>',
+    // Rath: a racing chariot with a pennant and its horse
+    '2': '<path class="n" d="M12 31 V5"/><path class="m" d="M12 5 L30 10 L12 16 Z"/>' +
+      '<path class="m" d="M7 30 L34 30 L32 42 L10 42 Z"/>' +
+      '<circle class="s" cx="20" cy="46" r="11"/><path class="n thin" d="M20 35 V57 M9 46 H31 M12.2 38.2 L27.8 53.8 M27.8 38.2 L12.2 53.8"/><circle class="g" cx="20" cy="46" r="2.4"/>' +
+      '<path class="w" d="M34 35 C40 31 47 31 51 33 L55 25 C57 22 62 23 61 28 L58 34 L54 36 C54 42 50 44 47 44 L49 55 L45 55 L42 44 L39 44 L37 55 L33 55 L35 42 Z"/>' +
+      '<circle class="dot" cx="58" cy="27" r="1"/>',
+    // Chara: a hooded spy, half turned away, a curved dagger
+    '1': '<path class="d" d="M17 58 C15 41 19 24 30 14 C41 14 47 24 47 35 L49 58 Z"/>' +
+      '<path class="m" d="M20 43 L46 38 L46 43 L20 48 Z"/>' +
+      '<path class="d" d="M23 23 C23 9 41 7 43 21 L41 31 C36 27 30 27 26 31 Z"/><ellipse class="shade" cx="35" cy="24" rx="4.2" ry="5"/>' +
+      '<path class="t" d="M46 42 Q57 36 59 24 Q53 36 44 39 Z"/><path class="g" d="M42 38 L47 37 L48 42 L43 43 Z"/>',
+    // Shataghni: a spiked log hanging, ready to fall
+    'B': '<path class="n" d="M16 4 L19 26 M48 4 L45 26"/>' +
+      '<path class="t" d="M14 39 L17 52 L20 39 Z M22 39 L25 54 L28 39 Z M30 39 L33 55 L36 39 Z M38 39 L41 54 L44 39 Z M46 39 L49 52 L52 39 Z"/>' +
+      '<rect class="b" x="9" y="25" width="46" height="15" rx="7.5"/><path class="m" d="M13 26 L19 26 L19 39 L13 39 Z M45 26 L51 26 L51 39 L45 39 Z"/>' +
+      '<path class="n thin" d="M23 31 H41 M27 35 H37"/>',
+    // Durg: a fort with a carved gate; a broken gate once breached
+    'F': '<path class="m" d="M10 9 L18 12 L10 15 Z M54 9 L62 12 L54 15 Z"/><path class="n thin" d="M10 9 V18 M54 9 V18"/>' +
+      '<path class="ston" d="M6 18 H20 V58 H6 Z M44 18 H58 V58 H44 Z"/>' +
+      '<path class="ston lt" d="M20 27 H44 V58 H20 Z"/>' +
+      '<path class="n thin" d="M6 22 H20 M44 22 H58 M20 31 H44"/>' +
+      '<path class="b gate" d="M25 58 V42 Q32 32 39 42 V58 Z"/><path class="n thin gate" d="M32 38 V58"/>' +
+      '<circle class="g gate" cx="28.5" cy="49" r="1.1"/><circle class="g gate" cx="35.5" cy="49" r="1.1"/>' +
+      '<path class="b breach" d="M25 58 V44 L29 47 L27 58 Z M39 58 V44 L35 48 L37 58 Z"/><path class="ember breach" d="M30 56 Q32 50 34 56 Z"/>'
+  };
+  // Hidden: the same veiled warrior for every unknown piece, ink only
+  const SKETCH = '<path class="sk" d="M32 7 C25 7 22 16 24.5 22 C17 30 14 44 13 58 L51 58 C50 44 47 30 39.5 22 C42 16 39 7 32 7 Z"/>' +
+    '<path class="sk thin" d="M24.5 22 C29 25 35 25 39.5 22 M23 32 C27 40 26 50 24 58 M41 32 C37 40 38 50 40 58 M32 26 V40"/>';
+
+  function figure(key) { return FIGURES[key] || FIGURES['2']; }
+  function figureSvg(key, cls) {
+    return '<svg class="emblem fig-svg ' + (cls || '') + '" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g class="fig">' +
+      (key === '?' ? SKETCH : figure(key)) + '</g></svg>';
+  }
+  function figureInner(key, R) {
+    const s = (R * 1.56) / 64;
+    return '<g class="fig" transform="translate(' + (-R * 0.78) + ',' + (-R * 0.8) + ') scale(' + s.toFixed(4) + ')">' +
+      (key === '?' ? SKETCH : figure(key)) + '</g>';
+  }
+
   AC.art = {
+    setSkin: setSkin,
+    getSkin: function () { return skin; },
+    SKINS: SKINS,
+    figuresOn: figuresOn,
+    figureSvg: figureSvg,
+    figureInner: figureInner,
     avatar: avatar,
     AVATARS: AVATARS,
     AVATAR_FRAMES: FRAMES,
@@ -8421,8 +8764,17 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
   }
   app.liteOn = function () { return liteOn(app.settings); };
 
+  /* Rang preview skins (docs/LOOK.md): Settings, or ?skin= in the link for a quick look on a phone. */
+  function skinOf(s) {
+    let q = null;
+    try { q = new URLSearchParams(location.search).get('skin'); } catch (e) { q = null; }
+    return (q && A.SKINS.indexOf(q) !== -1) ? q : (s.skin || 'bronze');
+  }
+
   function applySettings() {
     const s = app.settings;
+    const before = A.getSkin();
+    if (A.setSkin(skinOf(s)) !== before && AC.game && AC.game.state && AC.game.render) AC.game.render();
     L.setLang(s.uiLang || 'en');
     L.applyDOM(document);
     document.documentElement.classList.toggle('cb', !!s.colorblind);
@@ -9165,6 +9517,12 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
           '<div class="seg" data-seg="uiLang">' +
             [['en', 'English'], ['hi', 'हिन्दी'], ['mr', 'मराठी']].map(function (o) {
               return '<button class="seg-btn' + (L.getLang() === o[0] ? ' on' : '') + '" data-segval="' + o[0] + '">' + o[1] + '</button>';
+            }).join('') +
+          '</div></div>' +
+        '<div class="slider-row"><label>Look (preview)</label>' +
+          '<div class="seg seg-4" data-seg="skin">' +
+            [['bronze', 'Classic'], ['pata', 'Pata'], ['pahari', 'Pahari'], ['bright', 'Bright']].map(function (o) {
+              return '<button class="seg-btn' + (A.getSkin() === o[0] ? ' on' : '') + '" data-segval="' + o[0] + '">' + o[1] + '</button>';
             }).join('') +
           '</div></div>' +
         '<div class="slider-row"><label>Sanjaya speaks in</label>' +
@@ -10573,8 +10931,9 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     const moved = u.hasMoved ? '<circle class="tok-moved" cx="' + (-R * 0.62) + '" cy="' + (R * 0.62) + '" r="' + (R * 0.14) + '"/>' : '';
     const extra = (u.stun > 0 ? ' entranced' : '') + (u.key === 'F' && u.breached ? ' breached' : '');
     if (!visibleToViewer(u)) {
-      const back = A.artFor('faction:' + u.owner);
-      const face = back
+      // Rang preview skins: every hidden enemy is the same bare ink sketch
+      const back = A.figuresOn() ? null : A.artFor('faction:' + u.owner);
+      const face = A.figuresOn() ? A.figureInner('?', R) : back
         ? '<image class="tok-crest" href="' + back + '" x="' + (-R * 0.74) + '" y="' + (-R * 0.74) + '" width="' + (R * 1.48) +
           '" height="' + (R * 1.48) + '" opacity="0.95" preserveAspectRatio="xMidYMid meet"/>' +
           '<text class="tok-rank" x="' + (R * 0.46) + '" y="' + (R * 0.74) + '" font-size="' + (R * 0.52) +
@@ -10655,7 +11014,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
       shell.classList.toggle('sky-night', hour === 'night');
       shell.classList.toggle('astra-mode', g.mode === 'astra');
       // a painted sky behind the field, when the art exists (docs/prompts/ART.md)
-      const skyArt = hour ? A.artFor('sky:' + hour) : null;
+      const skyArt = hour && !A.figuresOn() ? A.artFor('sky:' + hour) : null;
       shell.style.backgroundImage = skyArt
         ? 'linear-gradient(180deg, rgba(6,5,10,.45), rgba(6,5,10,.72)), url("' + skyArt + '")'
         : '';
@@ -10669,7 +11028,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     let out = '';
     let tags = '';
 
-    const tex = A.artFor('board:' + st.boardKey);
+    const tex = A.getSkin() === 'bronze' || A.getSkin() === 'bright' ? A.artFor('board:' + st.boardKey) : null;
     if (tex) {
       out += '<defs><pattern id="af-tex" patternUnits="userSpaceOnUse" patternContentUnits="objectBoundingBox" ' +
         'x="0" y="0" width="1.15" height="1.15">' +

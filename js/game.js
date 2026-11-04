@@ -599,8 +599,9 @@
     const moved = u.hasMoved ? '<circle class="tok-moved" cx="' + (-R * 0.62) + '" cy="' + (R * 0.62) + '" r="' + (R * 0.14) + '"/>' : '';
     const extra = (u.stun > 0 ? ' entranced' : '') + (u.key === 'F' && u.breached ? ' breached' : '');
     if (!visibleToViewer(u)) {
-      const back = A.artFor('faction:' + u.owner);
-      const face = back
+      // Rang preview skins: every hidden enemy is the same bare ink sketch
+      const back = A.figuresOn() ? null : A.artFor('faction:' + u.owner);
+      const face = A.figuresOn() ? A.figureInner('?', R) : back
         ? '<image class="tok-crest" href="' + back + '" x="' + (-R * 0.74) + '" y="' + (-R * 0.74) + '" width="' + (R * 1.48) +
           '" height="' + (R * 1.48) + '" opacity="0.95" preserveAspectRatio="xMidYMid meet"/>' +
           '<text class="tok-rank" x="' + (R * 0.46) + '" y="' + (R * 0.74) + '" font-size="' + (R * 0.52) +
@@ -681,7 +682,7 @@
       shell.classList.toggle('sky-night', hour === 'night');
       shell.classList.toggle('astra-mode', g.mode === 'astra');
       // a painted sky behind the field, when the art exists (docs/prompts/ART.md)
-      const skyArt = hour ? A.artFor('sky:' + hour) : null;
+      const skyArt = hour && !A.figuresOn() ? A.artFor('sky:' + hour) : null;
       shell.style.backgroundImage = skyArt
         ? 'linear-gradient(180deg, rgba(6,5,10,.45), rgba(6,5,10,.72)), url("' + skyArt + '")'
         : '';
@@ -695,7 +696,7 @@
     let out = '';
     let tags = '';
 
-    const tex = A.artFor('board:' + st.boardKey);
+    const tex = A.getSkin() === 'bronze' || A.getSkin() === 'bright' ? A.artFor('board:' + st.boardKey) : null;
     if (tex) {
       out += '<defs><pattern id="af-tex" patternUnits="userSpaceOnUse" patternContentUnits="objectBoundingBox" ' +
         'x="0" y="0" width="1.15" height="1.15">' +

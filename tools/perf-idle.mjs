@@ -65,7 +65,8 @@ async function measure(label, ms = 4000) {
   return row;
 }
 
-await page.goto(base + 'index.html');
+// SKIN=pata (or pahari, bright) measures a Rang preview look (docs/LOOK.md)
+await page.goto(base + 'index.html' + (process.env.SKIN ? '?skin=' + process.env.SKIN : ''));
 await page.evaluate(() => { localStorage.clear(); });
 await page.reload();
 await page.waitForSelector('#screen-home:not([hidden])');
