@@ -40,9 +40,11 @@ Engine and rules untouched; runs beside the hero work.
 - [x] **[D]** Plan and prompt pack `docs/prompts/PATA.md`
 - [ ] **[C]** Seven decisions in `docs/LOOK.md` (confirm or change)
 - [x] **[D]** Phase 0: skin system (Settings → Look (preview), `?skin=`), "Classic bronze" default, three looks to try on a phone at `rang.html`, stand-in painted figures, 32 px sheet (`tools/legibility.mjs`)
-- [ ] **[C]** **Gate 1** — pick the look on the phone
-- [ ] **[C]** Phase 1 art and sound (`PATA.md` §1–6, about 35 images + 8 sounds)
-- [ ] **[D]** Phase 1: Chakravyuha at full quality, effects, UI kit, home, Sanjaya bust
+- [x] **[C]** **Gate 1** — Pata chosen: the Commander made its full Phase 1 art set (5 Nov)
+- [x] **[C]** Phase 1 art and sound (`PATA.md` §1–6): 35 images + 11 sounds arrived 5 Nov
+- [x] **[D]** Phase 1 wiring: painted pieces, hidden sketch, fort gate states, painted Chakravyuha day/night, home chamber + lamp, Sanjaya portrait, pakhawaj clashes, cloth sounds, ravanhatta home music (`tools/prepare-pata.py`)
+- [ ] **[C]** Source links for the YouTube sounds (`masters/audio/supplied-2026-11-05/SOURCES.md`), or replace them before a store launch
+- [ ] **[D]** Phase 1, rest: reveal colour-flood, field banners where pieces fall, sky re-dye, every screen in cotton (setup, profile, result, astra buttons, clash cinematic), Pata as the default look
 - [ ] **[C]** **Gate 2** — beats today's build; 5 people name 8 of 10 pieces at 32 px; idle < 3 %
 - [ ] **[D][C]** Phase 2: other fields, astras, avatars, every screen
 - [ ] **[D]** Phase 3: Sanjaya's Scroll, charcoal notes, festival days, haptics, sound pass

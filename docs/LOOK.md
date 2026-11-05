@@ -40,7 +40,7 @@ board plus the one effects canvas, one-shot effects only, idle < 3 % on every sc
 | Phase | Sessions | Work | Gate after |
 |---|---|---|---|
 | 0 Direction ✅ | 1–2 | Prompt pack (`docs/prompts/PATA.md`), 32 px legibility sheet (`tools/legibility.mjs`), three looks to try on a phone (`rang.html`: A Pata, B Pahari, C Bright), skin system | **Gate 1:** Commander picks the look on his phone |
-| 1 One field | 4–5 | Chakravyuha day/night, 20 pieces + hidden sketch + fort states + banners, reveal/clash/fall/sky effects, cotton & lacquer UI kit, Sanjaya's chamber home, ravanhatta theme | **Gate 2:** beats today's build side by side; 5 people name 8 of 10 pieces at 32 px; idle < 3 % |
+| 1 One field ◐ | 4–5 | Chakravyuha day/night, 20 pieces + hidden sketch + fort states + banners, reveal/clash/fall/sky effects, cotton & lacquer UI kit, Sanjaya's chamber home, ravanhatta theme | **Gate 2:** beats today's build side by side; 5 people name 8 of 10 pieces at 32 px; idle < 3 % |
 | 2 Fields | 3–4 | Other three fields, astra films and ten avatars repainted, every screen, hi/mr strings | — |
 | 3 New feel | 3–4 | Sanjaya's Scroll, charcoal notes, festival days, phone buzz, sound pass | **Gate 3:** five-person playtest + respect review |
 | 4 Heroes | 3–5 | Hero cards in the new style, dhvaja banners, first folk-art edition, campaign scroll | then launch art |

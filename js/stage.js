@@ -101,7 +101,7 @@
       ? esc(def.badge || u.badge) + '<i>→' + opts.value + '</i>'
       : esc(u.key === 'F' || u.key === 'B' ? (u.key === 'F' ? '⚑' : '✷') : u.badge);
     return '<div class="st-piece st-' + side + ' ' + cls + (opts.dead ? ' st-dead' : '') + '">' +
-      '<div class="st-disc">' + A.emblem(u.key) + '</div>' +
+      '<div class="st-disc">' + A.emblem(u.key, '', u.owner) + '</div>' +
       '<div class="st-name">' + esc(u.name) + (def.deva ? ' <span class="deva">' + esc(def.deva) + '</span>' : '') + '</div>' +
       '<div class="st-rank">' + rankShown + '</div>' +
       chips(opts.parts) +

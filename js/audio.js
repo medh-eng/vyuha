@@ -341,7 +341,7 @@
 
   function play(name) {
     if (!ready || settings.muted) return;
-    const key = SFX_SAMPLE[name];
+    const key = sampleKey(name);
     if (key && buffers[key]) {
       const jitter = 0.94 + Math.random() * 0.12;
       if (playBuffer(key, { rate: jitter, gain: 0.9 })) return;
@@ -354,7 +354,7 @@
   // A tracked one-shot for Calm: actual ended events for recorded and synth
   // audio, metadata for duration, and a bounded fallback for unknown media.
   function duration(name) {
-    const key = SFX_SAMPLE[name];
+    const key = sampleKey(name, true);
     const n = buffers[key] ? buffers[key].duration : sfxEls[key] && sfxEls[key].duration;
     return Number.isFinite(n) && n > 0 ? n : null;
   }
@@ -366,6 +366,7 @@
   const SPEAK_AT = {
     clash: 1.0, trap: 0.85, volley: 0.45, breach: 1.35, shankh: 1.0, dawn: 0.8, dusk: 1.0,
     chakra: 0.5, scan: 1.15, place: 0.45, shakti: 0.7,
+    pk1: 0.6, pk2: 0.3, pk3: 0.4, fall: 0.7, reveal: 1.4,
     vayavya: 0.95, sammohana: 1.25, agneya: 1.4, brahma: 1.9
   };
 
@@ -383,7 +384,7 @@
         } catch (e) { /* ignore */ }
       });
     }
-    const key0 = SFX_SAMPLE[name];
+    const key0 = sampleKey(name);
     if (SPEAK_AT[key0] != null) speakTimer = setTimeout(speakResolve, SPEAK_AT[key0] * 1000);
     result.finished.then(function () { clearTimeout(speakTimer); speakResolve(); });
     function stop() {
@@ -397,7 +398,7 @@
       resolve();
     }
     if (!ready || settings.muted || settings.sfx === 0) { stop(); return result; }
-    const key = SFX_SAMPLE[name];
+    const key = key0;
     try {
       if (buffers[key] && ctx) {
         const src = ctx.createBufferSource();
@@ -455,6 +456,8 @@
       battle: 'assets/audio/music/battle.mp3',
       battle_night: 'assets/audio/music/battle_night.mp3',
       daily: 'assets/audio/music/daily_theme.mp3',
+      // Chapter IV · Rang: Sanjaya's ravanhatta, the home music in the Pata look
+      sanjaya: 'assets/audio/music/sanjaya_ravanhatta.mp3',
       lesson: 'assets/audio/music/lesson.mp3',
       abhimanyu: 'assets/audio/music/abhimanyu.mp3',
       victory_big: 'assets/audio/music/victory_big.mp3',
@@ -477,7 +480,15 @@
       brahma: 'assets/audio/sfx/astra_brahma.mp3',
       shakti: 'assets/audio/sfx/shakti_diya.mp3',
       trap: 'assets/audio/sfx/trap.mp3',
-      scan: 'assets/audio/sfx/divya_drishti.mp3'
+      scan: 'assets/audio/sfx/divya_drishti.mp3',
+      // Chapter IV · Rang (Pata look): pakhawaj clashes, cloth, the reveal sting
+      pk1: 'assets/audio/sfx/pata_clash_1.mp3',
+      pk2: 'assets/audio/sfx/pata_clash_2.mp3',
+      pk3: 'assets/audio/sfx/pata_clash_3.mp3',
+      fall: 'assets/audio/sfx/pata_fall.mp3',
+      cloth: 'assets/audio/sfx/pata_ui.mp3',
+      sky: 'assets/audio/sfx/pata_sky.mp3',
+      reveal: 'assets/audio/sfx/pata_reveal.mp3'
     }
   };
 
@@ -491,6 +502,22 @@
     shakti: 'shakti', scan: 'scan'
   };
   const missing = {};
+
+  /* The look decides a few sounds: in Pata a clash is a pakhawaj stroke (three,
+     in turn), a capture tears cloth, a menu tap rustles it, and the home music is
+     Sanjaya's ravanhatta. Every other look keeps the sounds above. */
+  let look = 'bronze';
+  let pkTurn = 0;
+  const PATA_SAMPLE = { capture: 'fall', ui: 'cloth', reveal: 'reveal' };
+  // `peek` reads the next clash stroke without using it up (duration() asks first)
+  function sampleKey(name, peek) {
+    if (look === 'pata') {
+      if (name === 'clash-win' || name === 'clash-lose' || name === 'clash-both') return 'pk' + (1 + ((peek ? pkTurn : pkTurn++) % 3));
+      if (PATA_SAMPLE[name]) return PATA_SAMPLE[name];
+    }
+    return SFX_SAMPLE[name];
+  }
+  function musicKey(mode) { return look === 'pata' && mode === 'menu' ? 'sanjaya' : mode; }
 
   const buffers = {};
   const sfxEls = {};
@@ -561,6 +588,7 @@
   }
 
   function getMusicEl(mode) {
+    mode = musicKey(mode);
     if (musicEls[mode]) return musicEls[mode];
     if (typeof Audio === 'undefined') return null;
     const el = new Audio();
@@ -727,7 +755,7 @@
     const current = musicState.el;
     musicState = { mode: null, el: null };
     if (current) fade(current, 0, 350).then(function () { try { current.pause(); } catch (e) { /* ignore */ } });
-    const once = musicEls[kind];
+    const once = musicEls[musicKey(kind)];
     if (once) once.loop = false;
     try { el.currentTime = 0; } catch (e) { /* ignore */ }
     el.volume = Math.max(0, settings.music * 0.7);
@@ -811,6 +839,7 @@
     duck: duck,
     setTension: setTension,
     setSettings: setSettings,
+    setLook: function (name) { look = name || 'bronze'; },
     getSettings: getSettings,
     state: function () {
       const el = musicState.el;
