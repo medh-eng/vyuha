@@ -110,8 +110,12 @@
     astra: function (n) { return 'assets/art/opt/astras/' + n + '.webp'; },
     portrait: function (n) { return 'assets/art/opt/portraits/' + n + '.webp'; },
     hero: function (n) { return 'assets/art/opt/heroes/' + n + '.webp'; },
-    sky: function (n) { return 'assets/art/opt/ui/' + n + '.jpg'; }
+    sky: function (n) { return 'assets/art/opt/ui/' + n + '.jpg'; },
+    // Chapter IV · Rang: the Sanjaya's Pata paintings (tools/prepare-pata.py)
+    pata: function (n) { return 'assets/art/pata/' + n + '.webp'; }
   };
+  // In the Pata look these slots show the new paintings instead of today's
+  const PATA_SLOTS = { 'portrait:sanjaya': 'pata:portraits/sanjaya' };
 
   function slotPath(slot) {
     const i = slot.indexOf(':');
@@ -134,6 +138,7 @@
   }
 
   function artFor(slot) {
+    if (skin === 'pata' && PATA_SLOTS[slot]) slot = PATA_SLOTS[slot];
     if (IMG[slot]) return IMG[slot];
     if (!tried[slot]) {
       const url = slotPath(slot);
@@ -142,8 +147,13 @@
     return IMG[slot] || null;
   }
 
-  function emblem(key, cls) {
-    if (figuresOn()) return figureSvg(key, cls);
+  function emblem(key, cls, owner) {
+    if (figuresOn()) {
+      const army = owner === 2 || / (void|zone-2)/.test(' ' + (cls || '')) ? 2 : 1;
+      const p = paintedPiece(key, army);
+      if (p) return '<img class="emblem emblem-art emblem-pata ' + (cls || '') + '" src="' + p + '" alt="" draggable="false">';
+      return figureSvg(key, cls);
+    }
     const painted = IMG['unit:' + key];
     if (painted) {
       return '<img class="emblem emblem-art ' + (cls || '') + '" src="' + painted + '" alt="" draggable="false">';
@@ -153,8 +163,17 @@
   }
 
   /* Inside an SVG token: a painted disc, or the engraved vector paths. */
-  function tokenInner(key, R) {
-    if (figuresOn()) return figureInner(key, R);
+  function tokenInner(key, R, owner, breached) {
+    if (figuresOn()) {
+      const p = paintedPiece(key, owner || 1, breached);
+      if (p) {
+        // the painting fills most of the cotton disc, inside the army's rim
+        const z = R * 1.72;
+        return '<image class="tok-pata" href="' + p + '" x="' + (-z / 2) + '" y="' + (-z / 2 - R * 0.04) + '" width="' + z +
+          '" height="' + z + '" preserveAspectRatio="xMidYMid meet"/>';
+      }
+      return figureInner(key, R);
+    }
     const painted = IMG['unit:' + key];
     const size = R * 1.5;
     if (painted) {
@@ -352,7 +371,35 @@
   function setSkin(name) {
     skin = SKINS.indexOf(name) === -1 ? 'bronze' : name;
     if (typeof document !== 'undefined') document.documentElement.setAttribute('data-skin', skin);
+    if (skin === 'pata') probePata();
     return skin;
+  }
+
+  /* The painted Pata pieces: both armies, the hidden sketch, the fort's states.
+     Until a file loads (or on file://), the vector stand-in figures show. */
+  const PATA_PIECES = ['senapati', 'maharathi', 'ashvarohi', 'dhanurdhar', 'divyadrishti', 'yantrik', 'rath', 'chara', 'shataghni',
+    'durg', 'durg-broken', 'durg-fallen', 'banner'];
+  function probePata() {
+    ['surya', 'chandra'].forEach(function (a) {
+      PATA_PIECES.forEach(function (n) { const s = 'pata:pieces/' + a + '-' + n; probe(s, slotPath(s)); });
+    });
+    probe('pata:pieces/hidden', slotPath('pata:pieces/hidden'));
+    // the wheel's two paintings too, so the first battle does not redraw as they land
+    probe('pata:fields/chakra-day', slotPath('pata:fields/chakra-day'));
+    probe('pata:fields/chakra-night', slotPath('pata:fields/chakra-night'));
+  }
+  function paintedPiece(key, owner, breached) {
+    if (skin !== 'pata') return null;
+    if (key === '?') return IMG['pata:pieces/hidden'] || null;
+    const name = SLUG[key];
+    if (!name) return null;
+    const army = owner === 2 ? 'chandra' : 'surya';
+    const slot = 'pata:pieces/' + army + '-' + name + (key === 'F' && breached ? '-broken' : '');
+    return IMG[slot] || null;
+  }
+  function pataArt(name) {
+    if (skin !== 'pata') return null;
+    return artFor('pata:' + name);
   }
   function figuresOn() { return !!FIGURE_SKINS[skin]; }
 
@@ -444,6 +491,8 @@
     SKINS: SKINS,
     figuresOn: figuresOn,
     figureSvg: figureSvg,
+    paintedPiece: paintedPiece,
+    pataArt: pataArt,
     figureInner: figureInner,
     avatar: avatar,
     AVATARS: AVATARS,

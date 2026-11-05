@@ -555,7 +555,7 @@
     if (!dead.length) return '<span class="capture-tray"><span class="tray-empty">no losses</span></span>';
     return '<span class="capture-tray">' + dead.map(function (d) {
       const cls = d.owner === 1 ? 'solar' : 'void';
-      return '<span class="capture-chip ' + cls + '" title="' + esc(d.name) + '">' + A.emblem(d.key) +
+      return '<span class="capture-chip ' + cls + '" title="' + esc(d.name) + '">' + A.emblem(d.key, '', d.owner) +
         '<span class="cap-rank">' + esc(d.badge) + '</span></span>';
     }).join('') + '</span>';
   }
@@ -601,7 +601,7 @@
     if (!visibleToViewer(u)) {
       // Rang preview skins: every hidden enemy is the same bare ink sketch
       const back = A.figuresOn() ? null : A.artFor('faction:' + u.owner);
-      const face = A.figuresOn() ? A.figureInner('?', R) : back
+      const face = A.figuresOn() ? A.tokenInner('?', R, u.owner) : back
         ? '<image class="tok-crest" href="' + back + '" x="' + (-R * 0.74) + '" y="' + (-R * 0.74) + '" width="' + (R * 1.48) +
           '" height="' + (R * 1.48) + '" opacity="0.95" preserveAspectRatio="xMidYMid meet"/>' +
           '<text class="tok-rank" x="' + (R * 0.46) + '" y="' + (R * 0.74) + '" font-size="' + (R * 0.52) +
@@ -617,7 +617,7 @@
       '" data-uid="' + u.id + '" transform="translate(' + cell.x + ',' + cell.y + ')">' +
       '<circle class="tok-disc" r="' + R + '"/>' +
       sel +
-      A.tokenInner(u.key, R) +
+      A.tokenInner(u.key, R, u.owner, u.breached) +
       '<text class="tok-rank" x="' + (R * 0.46) + '" y="' + (R * 0.74) + '" font-size="' + (R * 0.52) + '" text-anchor="middle">' +
       esc(u.badge) + '</text>' +
       moved + eye + statusMarks(u, R) + '</g>';
@@ -703,8 +703,16 @@
         '<image href="' + tex + '" width="1" height="1" preserveAspectRatio="xMidYMid slice"/></pattern></defs>';
     }
 
+    // Rang · Pata: the painted wheel under the cells. Its open field (0.29–0.73 of
+    // the painting's radius) is set so the red rim meets the outer ring at 1.60.
+    const fieldHour = st.phase === 'battle' && E.hourOf(st) === 'night' ? 'night' : 'day';
+    const field = b.kind === 'wheel' ? A.pataArt('fields/chakra-' + fieldHour) : null;
+    if (shell) shell.classList.toggle('has-field', !!field);
+    // (the painting is a kept node, added after the commit below: re-creating a
+    // 1254 px image on every redraw cost the phone ~15 extra paints a second)
+
     // the yantra frame: rings, ticks and kolam dots around the chakra
-    if (b.kind === 'wheel' || b.kind === 'hex') {
+    if ((b.kind === 'wheel' || b.kind === 'hex') && !field) {
       const R0 = Math.min(bounds.w, bounds.h) / 2 - (b.kind === 'hex' ? 0.12 : 0.05);
       const cx = bounds.x + bounds.w / 2;
       const cy = bounds.y + bounds.h / 2;
@@ -815,7 +823,19 @@
     const tpl = document.createElement('template');
     tpl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg">' + out + '</svg>';
     const parsed = tpl.content.firstElementChild;
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    let keep = svg.querySelector('image.pata-field');
+    if (keep && (!field || keep.getAttribute('href') !== field)) keep = null;
+    Array.prototype.slice.call(svg.childNodes).forEach(function (n) { if (n !== keep) svg.removeChild(n); });
+    if (field && !keep) {
+      const FH = 1.6 / 0.73;
+      keep = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      keep.setAttribute('class', 'pata-field');
+      keep.setAttribute('href', field);
+      keep.setAttribute('x', -FH); keep.setAttribute('y', -FH);
+      keep.setAttribute('width', 2 * FH); keep.setAttribute('height', 2 * FH);
+      keep.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      svg.appendChild(keep);
+    }
     if (parsed) {
       while (parsed.firstChild) svg.appendChild(parsed.firstChild);
     }
@@ -896,7 +916,7 @@
     if (selUnit) {
       const def = L.unit(selUnit.key);
       const trance = selUnit.stun > 0 ? ' Entranced for ' + selUnit.stun + ' more turn' + (selUnit.stun === 1 ? '' : 's') + '.' : '';
-      info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key) + '</span>' +
+      info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key, '', selUnit.owner) + '</span>' +
         '<span class="sel-text"><span class="sel-name">' + esc(selUnit.name) + ' · rank ' + esc(selUnit.badge) + '</span>' +
         '<span class="sel-desc">' + esc(g.armed ? tr('battle.tap_again', 'Tap the target again to strike.') : def.desc + trance) + '</span></span>';
     } else {
@@ -1004,13 +1024,13 @@
     if (known.length) {
       html += '<div class="intel-section"><div class="intel-label">Identified on the field</div><div class="intel-chips">' +
         known.map(function (u) {
-          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
+          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key, '', u.owner) + esc(u.badge) + '</span>';
         }).join('') + '</div></div>';
     }
     if (exposed.length) {
       html += '<div class="intel-section"><div class="intel-label">Your exposed pieces</div><div class="intel-chips">' +
         exposed.map(function (u) {
-          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
+          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key, '', u.owner) + esc(u.badge) + '</span>';
         }).join('') + '</div><p class="intel-note">These ranks are known to the enemy.</p></div>';
     }
 

@@ -2675,6 +2675,103 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
 /* the Settings segment with four looks */
 .seg.seg-4 .seg-btn { padding-left: 6px; padding-right: 6px; }
 
+/* ══════════════════════════════════════════════════════════════════
+   Chapter IV · Rang — Phase 1: the Commander's Pata paintings
+   (assets/art/pata, made by tools/prepare-pata.py). Static: the only motion is
+   the home lamp's one-shot flare when the screen opens.
+   ══════════════════════════════════════════════════════════════════ */
+html[data-skin="pata"] .app {
+  background: var(--bg) url("../assets/art/pata/frame/cloth-cotton.webp") 0 0 / 384px repeat !important;
+}
+
+/* the painted wheel under the cells: the cells become thin ink outlines */
+html[data-skin="pata"] .board-shell.has-field {
+  background: #f3e3bf !important;
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--ink) !important;
+  border: 3px solid var(--vermilion) !important;
+}
+html[data-skin="pata"] .board-shell.has-field.sky-night { background: #1b2452 !important; border-color: #c7cbe0 !important; }
+html[data-skin="pata"] .has-field .cell .cell-fill,
+html[data-skin="pata"] .has-field .cell:nth-child(even) .cell-fill { fill: #fff6dc; fill-opacity: 0.16; stroke: var(--ink); stroke-width: 0.014; }
+html[data-skin="pata"] .has-field.sky-night .cell .cell-fill,
+html[data-skin="pata"] .has-field.sky-night .cell:nth-child(even) .cell-fill { fill: #d9def5; fill-opacity: 0.08; stroke: #e7e9f6; }
+html[data-skin="pata"] .has-field .cell.hub .cell-fill { fill: none; }
+html[data-skin="pata"] .has-field .cell.zone-1 .cell-fill { stroke: var(--vermilion); stroke-width: 0.026; }
+html[data-skin="pata"] .has-field .cell.zone-2 .cell-fill { stroke: var(--lapis); stroke-width: 0.026; }
+html[data-skin="pata"] .has-field.sky-night .cell.zone-2 .cell-fill { stroke: #9fb6ff; }
+html[data-skin="pata"] .has-field .cell.selected .cell-fill { fill: #ffd98a; fill-opacity: 0.7; }
+html[data-skin="pata"] .has-field .cell.target-move .cell-fill { fill: #bfe3c8; fill-opacity: 0.72; stroke: var(--malachite); }
+html[data-skin="pata"] .has-field .cell.target-attack .cell-fill { fill: #f4b3a3; fill-opacity: 0.78; stroke: var(--vermilion); }
+html[data-skin="pata"] .has-field .cell.last-move .cell-fill { fill: #ffe7a8; fill-opacity: 0.45; stroke: var(--leaf); }
+html[data-skin="pata"] .pata-field { pointer-events: none; }
+
+/* the painted pieces sit on a cotton disc inside the army's rim */
+html[data-skin="pata"] .token .tok-pata { pointer-events: none; }
+html[data-skin="pata"] .token .tok-disc { fill: #fbf3df; }
+html[data-skin="pata"] .emblem-pata { object-fit: contain; }
+
+/* home: Sanjaya's chamber above the title, the marching border along its foot.
+   The painting is 1672 × 941 (56.28 %); padding and margins in % follow the width. */
+html[data-skin="pata"] .home-hero {
+  position: relative;
+  overflow: hidden;
+  padding-top: calc(56.28% + 34px + 14px) !important;
+  background: var(--cotton-2) !important;
+  border: 3px solid var(--vermilion) !important;
+}
+html[data-skin="pata"] .home-hero .home-chakra { display: none; }
+html[data-skin="pata"] .home-hero::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 0;
+  padding-bottom: calc(56.28% + 34px);
+  background:
+    url("../assets/art/pata/frame/border-chakra.webp") left bottom / auto 34px repeat-x,
+    url("../assets/art/pata/scenes/home-chamber.webp") top center / 100% auto no-repeat;
+  pointer-events: none;
+}
+html[data-skin="pata"] .home-hero::after {
+  content: "";
+  position: absolute;
+  left: -4%;
+  top: 0;
+  margin-top: 9.3%;
+  width: 14%;
+  aspect-ratio: 1;
+  background: url("../assets/art/pata/scenes/home-lamp.webp") center / contain no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  animation: pata-lamp 1.8s ease-out 0.3s 1 both;
+}
+@keyframes pata-lamp {
+  0% { opacity: 0; transform: scale(0.7); }
+  35% { opacity: 0.95; transform: scale(1.08); }
+  100% { opacity: 0; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) { html[data-skin="pata"] .home-hero::after { animation: none; } }
+html[data-skin="pata"] .home-hero > * { position: relative; }
+html[data-skin="pata"] .home-hero { grid-template-columns: minmax(0, 1fr) !important; }
+@media (min-width: 900px) {
+  html[data-skin="pata"] .home-hero { padding-top: calc(40% + 34px + 14px) !important; }
+  html[data-skin="pata"] .home-hero::before { padding-bottom: calc(40% + 34px); background-size: auto 34px, cover; }
+  html[data-skin="pata"] .home-hero::after { margin-top: 5%; width: 11%; left: -3%; }
+}
+/* the old dark scene backdrops stay in Classic and Bright only */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .screen { background-image: none !important; background-color: transparent !important; }
+/* the side drawers: cotton, and no shadow leaking in while they are closed */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.log-panel, .intel-panel) {
+  background: var(--panel-solid) !important; color: var(--txt); box-shadow: none !important; border-color: var(--line-strong) !important;
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.log-panel.open, .intel-panel.open) { box-shadow: -8px 0 24px rgba(60, 40, 10, 0.22) !important; }
+/* wide boards: let the painted wheel run out to the frame's edge */
+html[data-skin="pata"] .board-shell.has-field #board { overflow: visible; }
+/* no fade on the painted frame: a transition here repaints the whole painting every frame */
+html[data-skin="pata"] .board-shell.has-field { transition: none !important; }
+
 </style>
 </head>
 <body>
@@ -6601,7 +6698,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
 
   function play(name) {
     if (!ready || settings.muted) return;
-    const key = SFX_SAMPLE[name];
+    const key = sampleKey(name);
     if (key && buffers[key]) {
       const jitter = 0.94 + Math.random() * 0.12;
       if (playBuffer(key, { rate: jitter, gain: 0.9 })) return;
@@ -6614,7 +6711,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
   // A tracked one-shot for Calm: actual ended events for recorded and synth
   // audio, metadata for duration, and a bounded fallback for unknown media.
   function duration(name) {
-    const key = SFX_SAMPLE[name];
+    const key = sampleKey(name, true);
     const n = buffers[key] ? buffers[key].duration : sfxEls[key] && sfxEls[key].duration;
     return Number.isFinite(n) && n > 0 ? n : null;
   }
@@ -6626,6 +6723,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
   const SPEAK_AT = {
     clash: 1.0, trap: 0.85, volley: 0.45, breach: 1.35, shankh: 1.0, dawn: 0.8, dusk: 1.0,
     chakra: 0.5, scan: 1.15, place: 0.45, shakti: 0.7,
+    pk1: 0.6, pk2: 0.3, pk3: 0.4, fall: 0.7, reveal: 1.4,
     vayavya: 0.95, sammohana: 1.25, agneya: 1.4, brahma: 1.9
   };
 
@@ -6643,7 +6741,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
         } catch (e) { /* ignore */ }
       });
     }
-    const key0 = SFX_SAMPLE[name];
+    const key0 = sampleKey(name);
     if (SPEAK_AT[key0] != null) speakTimer = setTimeout(speakResolve, SPEAK_AT[key0] * 1000);
     result.finished.then(function () { clearTimeout(speakTimer); speakResolve(); });
     function stop() {
@@ -6657,7 +6755,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
       resolve();
     }
     if (!ready || settings.muted || settings.sfx === 0) { stop(); return result; }
-    const key = SFX_SAMPLE[name];
+    const key = key0;
     try {
       if (buffers[key] && ctx) {
         const src = ctx.createBufferSource();
@@ -6715,6 +6813,8 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
       battle: 'assets/audio/music/battle.mp3',
       battle_night: 'assets/audio/music/battle_night.mp3',
       daily: 'assets/audio/music/daily_theme.mp3',
+      // Chapter IV · Rang: Sanjaya's ravanhatta, the home music in the Pata look
+      sanjaya: 'assets/audio/music/sanjaya_ravanhatta.mp3',
       lesson: 'assets/audio/music/lesson.mp3',
       abhimanyu: 'assets/audio/music/abhimanyu.mp3',
       victory_big: 'assets/audio/music/victory_big.mp3',
@@ -6737,7 +6837,15 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
       brahma: 'assets/audio/sfx/astra_brahma.mp3',
       shakti: 'assets/audio/sfx/shakti_diya.mp3',
       trap: 'assets/audio/sfx/trap.mp3',
-      scan: 'assets/audio/sfx/divya_drishti.mp3'
+      scan: 'assets/audio/sfx/divya_drishti.mp3',
+      // Chapter IV · Rang (Pata look): pakhawaj clashes, cloth, the reveal sting
+      pk1: 'assets/audio/sfx/pata_clash_1.mp3',
+      pk2: 'assets/audio/sfx/pata_clash_2.mp3',
+      pk3: 'assets/audio/sfx/pata_clash_3.mp3',
+      fall: 'assets/audio/sfx/pata_fall.mp3',
+      cloth: 'assets/audio/sfx/pata_ui.mp3',
+      sky: 'assets/audio/sfx/pata_sky.mp3',
+      reveal: 'assets/audio/sfx/pata_reveal.mp3'
     }
   };
 
@@ -6751,6 +6859,22 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     shakti: 'shakti', scan: 'scan'
   };
   const missing = {};
+
+  /* The look decides a few sounds: in Pata a clash is a pakhawaj stroke (three,
+     in turn), a capture tears cloth, a menu tap rustles it, and the home music is
+     Sanjaya's ravanhatta. Every other look keeps the sounds above. */
+  let look = 'bronze';
+  let pkTurn = 0;
+  const PATA_SAMPLE = { capture: 'fall', ui: 'cloth', reveal: 'reveal' };
+  // `peek` reads the next clash stroke without using it up (duration() asks first)
+  function sampleKey(name, peek) {
+    if (look === 'pata') {
+      if (name === 'clash-win' || name === 'clash-lose' || name === 'clash-both') return 'pk' + (1 + ((peek ? pkTurn : pkTurn++) % 3));
+      if (PATA_SAMPLE[name]) return PATA_SAMPLE[name];
+    }
+    return SFX_SAMPLE[name];
+  }
+  function musicKey(mode) { return look === 'pata' && mode === 'menu' ? 'sanjaya' : mode; }
 
   const buffers = {};
   const sfxEls = {};
@@ -6821,6 +6945,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
   }
 
   function getMusicEl(mode) {
+    mode = musicKey(mode);
     if (musicEls[mode]) return musicEls[mode];
     if (typeof Audio === 'undefined') return null;
     const el = new Audio();
@@ -6987,7 +7112,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     const current = musicState.el;
     musicState = { mode: null, el: null };
     if (current) fade(current, 0, 350).then(function () { try { current.pause(); } catch (e) { /* ignore */ } });
-    const once = musicEls[kind];
+    const once = musicEls[musicKey(kind)];
     if (once) once.loop = false;
     try { el.currentTime = 0; } catch (e) { /* ignore */ }
     el.volume = Math.max(0, settings.music * 0.7);
@@ -7071,6 +7196,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     duck: duck,
     setTension: setTension,
     setSettings: setSettings,
+    setLook: function (name) { look = name || 'bronze'; },
     getSettings: getSettings,
     state: function () {
       const el = musicState.el;
@@ -7711,8 +7837,12 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     astra: function (n) { return 'assets/art/opt/astras/' + n + '.webp'; },
     portrait: function (n) { return 'assets/art/opt/portraits/' + n + '.webp'; },
     hero: function (n) { return 'assets/art/opt/heroes/' + n + '.webp'; },
-    sky: function (n) { return 'assets/art/opt/ui/' + n + '.jpg'; }
+    sky: function (n) { return 'assets/art/opt/ui/' + n + '.jpg'; },
+    // Chapter IV · Rang: the Sanjaya's Pata paintings (tools/prepare-pata.py)
+    pata: function (n) { return 'assets/art/pata/' + n + '.webp'; }
   };
+  // In the Pata look these slots show the new paintings instead of today's
+  const PATA_SLOTS = { 'portrait:sanjaya': 'pata:portraits/sanjaya' };
 
   function slotPath(slot) {
     const i = slot.indexOf(':');
@@ -7735,6 +7865,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
   }
 
   function artFor(slot) {
+    if (skin === 'pata' && PATA_SLOTS[slot]) slot = PATA_SLOTS[slot];
     if (IMG[slot]) return IMG[slot];
     if (!tried[slot]) {
       const url = slotPath(slot);
@@ -7743,8 +7874,13 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     return IMG[slot] || null;
   }
 
-  function emblem(key, cls) {
-    if (figuresOn()) return figureSvg(key, cls);
+  function emblem(key, cls, owner) {
+    if (figuresOn()) {
+      const army = owner === 2 || / (void|zone-2)/.test(' ' + (cls || '')) ? 2 : 1;
+      const p = paintedPiece(key, army);
+      if (p) return '<img class="emblem emblem-art emblem-pata ' + (cls || '') + '" src="' + p + '" alt="" draggable="false">';
+      return figureSvg(key, cls);
+    }
     const painted = IMG['unit:' + key];
     if (painted) {
       return '<img class="emblem emblem-art ' + (cls || '') + '" src="' + painted + '" alt="" draggable="false">';
@@ -7754,8 +7890,17 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
   }
 
   /* Inside an SVG token: a painted disc, or the engraved vector paths. */
-  function tokenInner(key, R) {
-    if (figuresOn()) return figureInner(key, R);
+  function tokenInner(key, R, owner, breached) {
+    if (figuresOn()) {
+      const p = paintedPiece(key, owner || 1, breached);
+      if (p) {
+        // the painting fills most of the cotton disc, inside the army's rim
+        const z = R * 1.72;
+        return '<image class="tok-pata" href="' + p + '" x="' + (-z / 2) + '" y="' + (-z / 2 - R * 0.04) + '" width="' + z +
+          '" height="' + z + '" preserveAspectRatio="xMidYMid meet"/>';
+      }
+      return figureInner(key, R);
+    }
     const painted = IMG['unit:' + key];
     const size = R * 1.5;
     if (painted) {
@@ -7953,7 +8098,35 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
   function setSkin(name) {
     skin = SKINS.indexOf(name) === -1 ? 'bronze' : name;
     if (typeof document !== 'undefined') document.documentElement.setAttribute('data-skin', skin);
+    if (skin === 'pata') probePata();
     return skin;
+  }
+
+  /* The painted Pata pieces: both armies, the hidden sketch, the fort's states.
+     Until a file loads (or on file://), the vector stand-in figures show. */
+  const PATA_PIECES = ['senapati', 'maharathi', 'ashvarohi', 'dhanurdhar', 'divyadrishti', 'yantrik', 'rath', 'chara', 'shataghni',
+    'durg', 'durg-broken', 'durg-fallen', 'banner'];
+  function probePata() {
+    ['surya', 'chandra'].forEach(function (a) {
+      PATA_PIECES.forEach(function (n) { const s = 'pata:pieces/' + a + '-' + n; probe(s, slotPath(s)); });
+    });
+    probe('pata:pieces/hidden', slotPath('pata:pieces/hidden'));
+    // the wheel's two paintings too, so the first battle does not redraw as they land
+    probe('pata:fields/chakra-day', slotPath('pata:fields/chakra-day'));
+    probe('pata:fields/chakra-night', slotPath('pata:fields/chakra-night'));
+  }
+  function paintedPiece(key, owner, breached) {
+    if (skin !== 'pata') return null;
+    if (key === '?') return IMG['pata:pieces/hidden'] || null;
+    const name = SLUG[key];
+    if (!name) return null;
+    const army = owner === 2 ? 'chandra' : 'surya';
+    const slot = 'pata:pieces/' + army + '-' + name + (key === 'F' && breached ? '-broken' : '');
+    return IMG[slot] || null;
+  }
+  function pataArt(name) {
+    if (skin !== 'pata') return null;
+    return artFor('pata:' + name);
   }
   function figuresOn() { return !!FIGURE_SKINS[skin]; }
 
@@ -8045,6 +8218,8 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     SKINS: SKINS,
     figuresOn: figuresOn,
     figureSvg: figureSvg,
+    paintedPiece: paintedPiece,
+    pataArt: pataArt,
     figureInner: figureInner,
     avatar: avatar,
     AVATARS: AVATARS,
@@ -8775,6 +8950,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     const s = app.settings;
     const before = A.getSkin();
     if (A.setSkin(skinOf(s)) !== before && AC.game && AC.game.state && AC.game.render) AC.game.render();
+    if (AC.audio && AC.audio.setLook) AC.audio.setLook(A.getSkin());
     L.setLang(s.uiLang || 'en');
     L.applyDOM(document);
     document.documentElement.classList.toggle('cb', !!s.colorblind);
@@ -10192,7 +10368,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
       ? esc(def.badge || u.badge) + '<i>→' + opts.value + '</i>'
       : esc(u.key === 'F' || u.key === 'B' ? (u.key === 'F' ? '⚑' : '✷') : u.badge);
     return '<div class="st-piece st-' + side + ' ' + cls + (opts.dead ? ' st-dead' : '') + '">' +
-      '<div class="st-disc">' + A.emblem(u.key) + '</div>' +
+      '<div class="st-disc">' + A.emblem(u.key, '', u.owner) + '</div>' +
       '<div class="st-name">' + esc(u.name) + (def.deva ? ' <span class="deva">' + esc(def.deva) + '</span>' : '') + '</div>' +
       '<div class="st-rank">' + rankShown + '</div>' +
       chips(opts.parts) +
@@ -10887,7 +11063,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     if (!dead.length) return '<span class="capture-tray"><span class="tray-empty">no losses</span></span>';
     return '<span class="capture-tray">' + dead.map(function (d) {
       const cls = d.owner === 1 ? 'solar' : 'void';
-      return '<span class="capture-chip ' + cls + '" title="' + esc(d.name) + '">' + A.emblem(d.key) +
+      return '<span class="capture-chip ' + cls + '" title="' + esc(d.name) + '">' + A.emblem(d.key, '', d.owner) +
         '<span class="cap-rank">' + esc(d.badge) + '</span></span>';
     }).join('') + '</span>';
   }
@@ -10933,7 +11109,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     if (!visibleToViewer(u)) {
       // Rang preview skins: every hidden enemy is the same bare ink sketch
       const back = A.figuresOn() ? null : A.artFor('faction:' + u.owner);
-      const face = A.figuresOn() ? A.figureInner('?', R) : back
+      const face = A.figuresOn() ? A.tokenInner('?', R, u.owner) : back
         ? '<image class="tok-crest" href="' + back + '" x="' + (-R * 0.74) + '" y="' + (-R * 0.74) + '" width="' + (R * 1.48) +
           '" height="' + (R * 1.48) + '" opacity="0.95" preserveAspectRatio="xMidYMid meet"/>' +
           '<text class="tok-rank" x="' + (R * 0.46) + '" y="' + (R * 0.74) + '" font-size="' + (R * 0.52) +
@@ -10949,7 +11125,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
       '" data-uid="' + u.id + '" transform="translate(' + cell.x + ',' + cell.y + ')">' +
       '<circle class="tok-disc" r="' + R + '"/>' +
       sel +
-      A.tokenInner(u.key, R) +
+      A.tokenInner(u.key, R, u.owner, u.breached) +
       '<text class="tok-rank" x="' + (R * 0.46) + '" y="' + (R * 0.74) + '" font-size="' + (R * 0.52) + '" text-anchor="middle">' +
       esc(u.badge) + '</text>' +
       moved + eye + statusMarks(u, R) + '</g>';
@@ -11035,8 +11211,16 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
         '<image href="' + tex + '" width="1" height="1" preserveAspectRatio="xMidYMid slice"/></pattern></defs>';
     }
 
+    // Rang · Pata: the painted wheel under the cells. Its open field (0.29–0.73 of
+    // the painting's radius) is set so the red rim meets the outer ring at 1.60.
+    const fieldHour = st.phase === 'battle' && E.hourOf(st) === 'night' ? 'night' : 'day';
+    const field = b.kind === 'wheel' ? A.pataArt('fields/chakra-' + fieldHour) : null;
+    if (shell) shell.classList.toggle('has-field', !!field);
+    // (the painting is a kept node, added after the commit below: re-creating a
+    // 1254 px image on every redraw cost the phone ~15 extra paints a second)
+
     // the yantra frame: rings, ticks and kolam dots around the chakra
-    if (b.kind === 'wheel' || b.kind === 'hex') {
+    if ((b.kind === 'wheel' || b.kind === 'hex') && !field) {
       const R0 = Math.min(bounds.w, bounds.h) / 2 - (b.kind === 'hex' ? 0.12 : 0.05);
       const cx = bounds.x + bounds.w / 2;
       const cy = bounds.y + bounds.h / 2;
@@ -11147,7 +11331,19 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     const tpl = document.createElement('template');
     tpl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg">' + out + '</svg>';
     const parsed = tpl.content.firstElementChild;
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    let keep = svg.querySelector('image.pata-field');
+    if (keep && (!field || keep.getAttribute('href') !== field)) keep = null;
+    Array.prototype.slice.call(svg.childNodes).forEach(function (n) { if (n !== keep) svg.removeChild(n); });
+    if (field && !keep) {
+      const FH = 1.6 / 0.73;
+      keep = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      keep.setAttribute('class', 'pata-field');
+      keep.setAttribute('href', field);
+      keep.setAttribute('x', -FH); keep.setAttribute('y', -FH);
+      keep.setAttribute('width', 2 * FH); keep.setAttribute('height', 2 * FH);
+      keep.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      svg.appendChild(keep);
+    }
     if (parsed) {
       while (parsed.firstChild) svg.appendChild(parsed.firstChild);
     }
@@ -11228,7 +11424,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     if (selUnit) {
       const def = L.unit(selUnit.key);
       const trance = selUnit.stun > 0 ? ' Entranced for ' + selUnit.stun + ' more turn' + (selUnit.stun === 1 ? '' : 's') + '.' : '';
-      info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key) + '</span>' +
+      info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key, '', selUnit.owner) + '</span>' +
         '<span class="sel-text"><span class="sel-name">' + esc(selUnit.name) + ' · rank ' + esc(selUnit.badge) + '</span>' +
         '<span class="sel-desc">' + esc(g.armed ? tr('battle.tap_again', 'Tap the target again to strike.') : def.desc + trance) + '</span></span>';
     } else {
@@ -11336,13 +11532,13 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
     if (known.length) {
       html += '<div class="intel-section"><div class="intel-label">Identified on the field</div><div class="intel-chips">' +
         known.map(function (u) {
-          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
+          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key, '', u.owner) + esc(u.badge) + '</span>';
         }).join('') + '</div></div>';
     }
     if (exposed.length) {
       html += '<div class="intel-section"><div class="intel-label">Your exposed pieces</div><div class="intel-chips">' +
         exposed.map(function (u) {
-          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key) + esc(u.badge) + '</span>';
+          return '<span class="intel-chip" title="' + esc(L.unit(u.key).name) + '">' + A.emblem(u.key, '', u.owner) + esc(u.badge) + '</span>';
         }).join('') + '</div><p class="intel-note">These ranks are known to the enemy.</p></div>';
     }
 
@@ -13235,7 +13431,7 @@ html[data-skin="bright"] .token.void .tok-disc { fill: #262a6e; stroke: #aab0ff;
       let dirty = false;
 
       const needsBoard = (slot) => slot.indexOf('unit:') === 0 || slot.indexOf('faction:') === 0 ||
-        slot.indexOf('board:') === 0 || slot === 'app';
+        slot.indexOf('board:') === 0 || slot.indexOf('pata:') === 0 || slot === 'app';
 
       const flush = function () {
         pending = false;

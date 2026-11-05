@@ -30,7 +30,7 @@
       let dirty = false;
 
       const needsBoard = (slot) => slot.indexOf('unit:') === 0 || slot.indexOf('faction:') === 0 ||
-        slot.indexOf('board:') === 0 || slot === 'app';
+        slot.indexOf('board:') === 0 || slot.indexOf('pata:') === 0 || slot === 'app';
 
       const flush = function () {
         pending = false;

@@ -72,6 +72,17 @@ try {
     await checkBoard(page, label + '-sunday', 18);
     assert.equal(await page.evaluate(() => AC.game.state.boardKey), 'padma');
     await shot(page, label + '-sunday-lotus');
+    // Rang · Pata: the Commander's paintings replace the stand-ins on the wheel
+    await page.evaluate(() => { AC.ui.patchSettings({ skin: 'pata' }); if (AC.modes) AC.modes.clear(); document.getElementById('btn-start-match').click(); });
+    await page.waitForFunction(() => AC.game.state?.phase === 'deploy1' && document.querySelector('#action-bar [data-deploy="lock"]'));
+    await closeModals(page);
+    await page.evaluate(() => document.querySelector('#action-bar [data-deploy="lock"]').click());
+    await page.waitForFunction(() => AC.game.state?.phase === 'battle');
+    await page.waitForFunction(() => document.querySelectorAll('#board .tok-pata').length === 24 && document.querySelector('#board .pata-field'), { timeout: 8000 });
+    await checkBoard(page, label + '-pata', 24);
+    assert.equal(await page.evaluate(() => document.querySelectorAll('#board .token.hidden-unit .tok-pata[href*="pieces/hidden"]').length), 12, label + '-pata: hidden enemies are the ink sketch');
+    await shot(page, label + '-pata-wheel');
+    await page.evaluate(() => AC.ui.patchSettings({ skin: 'bronze' }));
     await page.close();
   }
   assert.deepEqual(errors, [], 'browser runtime errors');

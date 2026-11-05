@@ -12,20 +12,23 @@ Surya = vermilion + saffron + gold. Chandra = lapis blue + conch white + silver-
 
 | Piece | Surya | Chandra |
 |---|---|---|
-| Senapati | ✅ `surya-senapati.png` (5 Nov) | `chandra-senapati.png` |
-| Maharathi | ✅ `surya-maharathi.png` (5 Nov) | `chandra-maharathi.png` |
-| Ashvarohi | `surya-ashvarohi.png` | `chandra-ashvarohi.png` |
-| Dhanurdhar | `surya-dhanurdhar.png` | `chandra-dhanurdhar.png` |
-| Divyadrishti | `surya-divyadrishti.png` | `chandra-divyadrishti.png` |
-| Yantrik | `surya-yantrik.png` | `chandra-yantrik.png` |
-| Rath | `surya-rath.png` | `chandra-rath.png` |
-| Chara | `surya-chara.png` | `chandra-chara.png` |
-| Shataghni | `surya-shataghni.png` | `chandra-shataghni.png` |
-| Durg | `surya-durg.png` | `chandra-durg.png` |
-| Durg, gate broken | `surya-durg-broken.png` | `chandra-durg-broken.png` |
-| Durg, fallen | `surya-durg-fallen.png` | `chandra-durg-fallen.png` |
-| Dropped banner | `surya-banner.png` | `chandra-banner.png` |
-| Hidden enemy (one for both) | `hidden.png` | |
+| Senapati | ✅ `surya-senapati.png` (5 Nov) | ✅ `chandra-senapati.png` |
+| Maharathi | ✅ `surya-maharathi.png` (5 Nov) | ✅ `chandra-maharathi.png` |
+| Ashvarohi | ✅ `surya-ashvarohi.png` | `chandra-ashvarohi.png` |
+| Dhanurdhar | ✅ `surya-dhanurdhar.png` | `chandra-dhanurdhar.png` |
+| Divyadrishti | ✅ `surya-divyadrishti.png` | `chandra-divyadrishti.png` |
+| Yantrik | ✅ `surya-yantrik.png` | `chandra-yantrik.png` |
+| Rath | ✅ `surya-rath.png` | `chandra-rath.png` |
+| Chara | ✅ `surya-chara.png` | `chandra-chara.png` |
+| Shataghni | ✅ `surya-shataghni.png` | `chandra-shataghni.png` |
+| Durg | ✅ `surya-durg.png` | `chandra-durg.png` |
+| Durg, gate broken | ✅ `surya-durg-broken.png` | `chandra-durg-broken.png` |
+| Durg, fallen | ✅ `surya-durg-fallen.png` | `chandra-durg-fallen.png` |
+| Dropped banner | ✅ `surya-banner.png` | `chandra-banner.png` |
+| Hidden enemy (one for both) | ✅ `hidden.png` | |
+
+**All 27 piece files arrived on 5 Nov 2026**, plus every file below; all are in the game
+(made small by `tools/prepare-pata.py`).
 
 The other folders: `fields/` (chakra-day, chakra-night), `frame/` (border-chakra, cloth-cotton,
 cloth-indigo), `scenes/` (home-chamber, home-lamp), `portraits/` (sanjaya). Sizes in `PATA.md`.

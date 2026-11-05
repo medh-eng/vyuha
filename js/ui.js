@@ -213,6 +213,7 @@
     const s = app.settings;
     const before = A.getSkin();
     if (A.setSkin(skinOf(s)) !== before && AC.game && AC.game.state && AC.game.render) AC.game.render();
+    if (AC.audio && AC.audio.setLook) AC.audio.setLook(A.getSkin());
     L.setLang(s.uiLang || 'en');
     L.applyDOM(document);
     document.documentElement.classList.toggle('cb', !!s.colorblind);

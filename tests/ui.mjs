@@ -285,11 +285,15 @@ async function run() {
   AC.ui.patchSettings({ skin: 'pata' });
   await sleep(20);
   ok(document.documentElement.getAttribute('data-skin') === 'pata', 'the Pata look applies from Settings');
-  ok($$('#board .token .fig').length === 24 && $$('#board .token.hidden-unit').filter((t) => t.querySelector('.fig .sk')).length === 12, 'Pata: 24 painted figures, 12 hidden enemies drawn as the bare sketch');
+  // the Commander's paintings once they load, the vector stand-ins until then
+  const painted = (t) => t.querySelector('.fig, .tok-pata');
+  const sketch = (t) => t.querySelector('.fig .sk') || /pieces\/hidden/.test((t.querySelector('.tok-pata') || { getAttribute: () => '' }).getAttribute('href') || '');
+  ok($$('#board .token').filter(painted).length === 24 && $$('#board .token.hidden-unit').filter(sketch).length === 12, 'Pata: 24 painted figures, 12 hidden enemies drawn as the bare sketch');
+  // (jsdom loads no images: tools/shots.mjs checks the paintings in a real browser)
   ok($$('#board .cell-tex').length === 0, 'Pata: no stone texture under the cells');
   AC.ui.patchSettings({ skin: 'bronze' });
   await sleep(20);
-  ok($$('#board .token .fig').length === 0 && $$('#board .token').length === 24, 'back to Classic: engraved marks, every token still drawn');
+  ok($$('#board .token .fig, #board .tok-pata, #board .pata-field').length === 0 && $$('#board .token').length === 24, 'back to Classic: engraved marks, every token still drawn');
 
   // swap two deployment cells through the UI
   const st = game.state;
