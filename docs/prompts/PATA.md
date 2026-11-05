@@ -41,6 +41,19 @@ Paste this before every prompt (or once, then say *"same style"*):
 - **Surya** (Suryavansh): *"Clothing, turban and horse trappings in vermilion and saffron with gold."*
 - **Chandra** (Chandravansh): *"Clothing, turban and horse trappings in lapis blue and conch white with silver-grey."*
 
+## Style reference (5 Nov 2026)
+
+The Commander's first two pieces, `incoming/art/pata/pieces/surya-senapati.png` and
+`surya-maharathi.png`, are approved as the **reference pair**. Attach one of them to every later
+prompt and add: *"Match this image exactly in style: line weight, ornament, skin tone, cream
+animals, gold trim, transparent background."* They are richer than the plain style block
+below — follow the pair, not the block, where they differ.
+
+**Chandra versions:** attach the Surya image and ask: *"Redraw this exact image, same pose
+and drawing, but recolour all clothing, turban, parasol, cloths and trappings from red and
+orange to lapis blue #2C58A8 and conch white #F7F1E3, with silver-grey instead of gold. Keep
+skin, animals and outlines the same. Transparent background."*
+
 ## 1. Pieces — 20 files
 
 `incoming/art/pata/pieces/<army>-<piece>.png` with `<army>` = `surya` or `chandra`.
