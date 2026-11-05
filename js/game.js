@@ -593,6 +593,102 @@
     return out;
   }
 
+  /* Rang · Pata: what the painted field remembers between redraws. View only —
+     nothing here touches the rules, and a loaded game starts with a clean cloth.
+     · a hidden enemy that becomes known floods with colour once (and a short
+       ravanhatta sting plays)
+     · a piece that falls leaves its army's banner on the cell where it stood */
+  const REVEAL_MS = 900;
+  function pataMemory(st, viewer) {
+    if (!g.pataMem || g.pataMem.state !== st) g.pataMem = { state: st, viewer: viewer, prev: null, at: {}, fallen: {} };
+    const mem = g.pataMem;
+    const now = {};
+    Object.keys(st.board).forEach(function (id) {
+      const u = st.board[id];
+      if (u) now[u.id] = { cell: id, owner: u.owner, hidden: !visibleToViewer(u) };
+    });
+    let revealed = false;
+    const live = st.phase === 'battle' && mem.viewer === viewer;
+    if (mem.prev && live) {
+      Object.keys(mem.prev).forEach(function (uid) {
+        const was = mem.prev[uid];
+        const is = now[uid];
+        if (!is) mem.fallen[was.cell] = was.owner;            // fell here: the last to fall marks the cell
+        else if (was.hidden && !is.hidden) { mem.at[uid] = Date.now(); revealed = true; }
+      });
+    }
+    mem.prev = now;
+    mem.viewer = viewer;
+    return { mem: mem, revealed: revealed };
+  }
+
+  /* Sanjaya's Scroll: the moments worth painting, kept as the battle goes */
+  function noteMoment(st, ev) {
+    if (!st || ['clash', 'breach', 'astra', 'core'].indexOf(ev.kind) === -1) return;
+    if (g.momentsState !== st) { g.momentsState = st; g.moments = []; }
+    const copy = function (u) { return u ? { key: u.key, owner: u.owner, name: u.name } : null; };
+    const m = { seq: g.moments.length, kind: ev.kind, round: st.turn, hour: E.hourOf ? E.hourOf(st) : null,
+      att: copy(ev.unit), def: copy(ev.target), outcome: ev.outcome, astra: ev.astra, owner: ev.owner };
+    m.fallen = ev.outcome === 'att' ? m.def : ev.outcome === 'def' ? m.att : ev.outcome === 'both' ? m.def : null;
+    if (g.moments.length < 120) g.moments.push(m);
+  }
+  function openScroll(st, outcome, title) {
+    if (!AC.scroll || !g.moments || g.momentsState !== st || !g.moments.length) return;
+    const b = L.board(st.boardKey) || U.BOARDS.wheel;
+    const when = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    AC.scroll.make({
+      moments: g.moments, outcome: outcome, result: title,
+      title: b.label + ' · vs ' + oppName(st), sub: when + ' · ' + st.turn + ' rounds'
+    }).then(function (res) {
+      AC.ui.modal({
+        kicker: 'Sanjaya ka pat',
+        title: 'The battle, as Sanjaya painted it',
+        body: '<img class="scroll-preview" src="' + res.url + '" alt="Sanjaya\'s Scroll: ' + res.panels + ' painted moments of this battle">',
+        actions: [
+          { label: 'Close', cls: 'btn-ghost' },
+          { label: tr('result.share', 'Share'), cls: 'btn-primary', icon: 'share', close: false,
+            onClick: function () { AC.scroll.share(res, shareLine(st, outcome)).then(function (how) {
+              if (how === 'saved') FX.toast('Saved as vyuha-sanjaya-scroll.png', 'info'); }); } }
+        ]
+      });
+    });
+  }
+
+  /* Charcoal notes: long-press (or right-click) a hidden enemy to pencil a guess.
+     View only, per battle and per viewer; a note wipes itself when the rank is seen. */
+  function notesFor(st, viewer) {
+    if (!g.notes || g.notes.state !== st) g.notes = { state: st, by: {} };
+    if (!g.notes.by[viewer]) g.notes.by[viewer] = {};
+    return g.notes.by[viewer];
+  }
+  function openNote(uid) {
+    const st = g.state;
+    if (!st || st.phase !== 'battle') return;
+    const u = Object.values(st.board).find(function (x) { return x && x.id === uid; });
+    if (!u || visibleToViewer(u)) return;
+    const notes = notesFor(st, viewerOf(st));
+    const keys = ['10', '9', '7', '6', '5', '3', '2', '1', 'B', 'F'];
+    const m = AC.ui.modal({
+      kicker: 'Charcoal note',
+      title: 'What do you think it is?',
+      body: '<p class="fineprint">Only you see this mark. It wipes itself when the rank is revealed.</p>' +
+        '<div class="note-grid">' + keys.map(function (k) {
+          const def = L.unit(k);
+          return '<button class="note-pick' + (notes[uid] === k ? ' on' : '') + '" data-note="' + k + '">' + A.emblem(k, '', u.owner) +
+            '<span>' + esc(def.badge || k) + ' · ' + esc(def.name) + '</span></button>';
+        }).join('') + '</div>',
+      actions: [{ label: 'Clear the mark', cls: 'btn-ghost', onClick: function () { delete notes[uid]; renderBoard(); } }]
+    });
+    m.el.addEventListener('click', function (e) {
+      const b = e.target.closest('[data-note]');
+      if (!b) return;
+      notes[uid] = b.getAttribute('data-note');
+      sfx('ui');
+      m.close();
+      renderBoard();
+    });
+  }
+
   function tokenSvg(u, cell, isSel) {
     const R = cell.tr;
     const cls = u.owner === 1 ? 'solar' : 'void';
@@ -607,13 +703,22 @@
           '<text class="tok-rank" x="' + (R * 0.46) + '" y="' + (R * 0.74) + '" font-size="' + (R * 0.52) +
           '" text-anchor="middle">?</text>'
         : '<text class="tok-q" y="' + (R * 0.33) + '" font-size="' + (R * 0.92) + '" text-anchor="middle">?</text>';
-      return '<g class="token hidden-unit ' + cls + extra + '" data-uid="' + u.id + '" transform="translate(' + cell.x + ',' + cell.y + ')">' +
-        '<circle class="tok-disc" r="' + R + '"/>' + face + moved + statusMarks(u, R) + '</g>';
+      const guess = g.notes && g.notes.state === g.state && g.notes.by[viewerOf(g.state)] ? g.notes.by[viewerOf(g.state)][u.id] : null;
+      const note = guess
+        ? '<g class="tok-note">' + (A.paintedPiece(guess, u.owner)
+            ? '<image class="tok-note-art" href="' + A.paintedPiece(guess, u.owner) + '" x="' + (-R * 0.86) + '" y="' + (-R * 0.9) + '" width="' + (R * 1.72) + '" height="' + (R * 1.72) + '" preserveAspectRatio="xMidYMid meet"/>'
+            : '') +
+          '<text class="tok-note-rank" x="' + (-R * 0.5) + '" y="' + (R * 0.78) + '" font-size="' + (R * 0.5) + '" text-anchor="middle">' + esc((L.unit(guess).badge || guess)) + '?</text></g>'
+        : '';
+      return '<g class="token hidden-unit ' + cls + extra + (guess ? ' noted' : '') + '" data-uid="' + u.id + '" transform="translate(' + cell.x + ',' + cell.y + ')">' +
+        '<circle class="tok-disc" r="' + R + '"/>' + face + note + moved + statusMarks(u, R) + '</g>';
     }
     const sel = isSel ? '<circle class="sel-ring" r="' + (R * 1.14) + '"/>' : '';
+    const revealT = g.pataMem && g.pataMem.at[u.id] ? Date.now() - g.pataMem.at[u.id] : Infinity;
+    const flood = revealT < REVEAL_MS ? ' just-revealed" style="--reveal-delay:' + (-revealT) + 'ms' : '';
     const eye = (u.revealed && u.owner === g.state.viewer && g.state.phase !== 'over')
       ? '<circle class="tok-eye" cx="' + (R * 0.6) + '" cy="' + (-R * 0.6) + '" r="' + (R * 0.15) + '"/>' : '';
-    return '<g class="token ' + cls + extra + (isSel ? ' selected-token' : '') + (u.shieldBroken ? ' shield-broken' : '') +
+    return '<g class="token ' + cls + extra + (isSel ? ' selected-token' : '') + (u.shieldBroken ? ' shield-broken' : '') + flood +
       '" data-uid="' + u.id + '" transform="translate(' + cell.x + ',' + cell.y + ')">' +
       '<circle class="tok-disc" r="' + R + '"/>' +
       sel +
@@ -706,10 +811,25 @@
     // Rang · Pata: the painted wheel under the cells. Its open field (0.29–0.73 of
     // the painting's radius) is set so the red rim meets the outer ring at 1.60.
     const fieldHour = st.phase === 'battle' && E.hourOf(st) === 'night' ? 'night' : 'day';
-    const field = b.kind === 'wheel' ? A.pataArt('fields/chakra-' + fieldHour) : null;
+    // the wheel's painting is chakra-*; every other field is <board key>-* once it is listed in A.PATA_FIELDS
+    const fieldName = b.kind === 'wheel' ? 'chakra' : (A.PATA_FIELDS && A.PATA_FIELDS.indexOf(st.boardKey) !== -1 ? st.boardKey : null);
+    const field = fieldName ? A.pataArt('fields/' + fieldName + '-' + fieldHour) : null;
     if (shell) shell.classList.toggle('has-field', !!field);
     // (the painting is a kept node, added after the commit below: re-creating a
     // 1254 px image on every redraw cost the phone ~15 extra paints a second)
+
+    const pataOn = A.getSkin() === 'pata';
+    const memo = pataOn ? pataMemory(st, viewer) : null;
+    if (memo && memo.revealed) setTimeout(function () { AU.play('reveal'); }, 320);
+    if (st.phase === 'battle' && st.turn >= 2 && !settings().noteHinted && !g.noteHintQueued) {
+      // once per player, after the opening: settings are written outside this render
+      g.noteHintQueued = true;
+      setTimeout(function () {
+        AC.ui.patchSettings({ noteHinted: true });
+        FX.toast('Tip: hold a hidden enemy to pencil your guess on it.', 'info');
+      }, 1200);
+    }
+    const bannerArt = pataOn ? { 1: A.pataArt('pieces/surya-banner'), 2: A.pataArt('pieces/chandra-banner') } : null;
 
     // the yantra frame: rings, ticks and kolam dots around the chakra
     if ((b.kind === 'wheel' || b.kind === 'hex') && !field) {
@@ -772,6 +892,9 @@
       const markerType = target === 'pick' ? 'astra' : target;
       const markup = '<g class="' + cls + '" data-id="' + id + '" tabindex="0" role="gridcell" aria-label="' + esc(label) + '">' +
         shapeSvg(cell, !!tex) + hubArt +
+        (memo && memo.mem.fallen[id] && bannerArt[memo.mem.fallen[id]]
+          ? '<image class="pata-banner" href="' + bannerArt[memo.mem.fallen[id]] + '" x="' + (cell.x - cell.tr * 1.25) + '" y="' + (cell.y - cell.tr * 1.25) +
+            '" width="' + (cell.tr * 2.5) + '" height="' + (cell.tr * 2.5) + '" preserveAspectRatio="xMidYMid meet"/>' : '') +
         (u ? tokenSvg(u, cell, isSel) : '') +
         (markerType && (markerType !== 'move' || !u) ? '<g transform="translate(' + cell.x + ',' + cell.y + ')">' + targetMarker(markerType, cell.tr) + '</g>' : '') +
         '</g>';
@@ -823,21 +946,43 @@
     const tpl = document.createElement('template');
     tpl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg">' + out + '</svg>';
     const parsed = tpl.content.firstElementChild;
-    let keep = svg.querySelector('image.pata-field');
-    if (keep && (!field || keep.getAttribute('href') !== field)) keep = null;
-    Array.prototype.slice.call(svg.childNodes).forEach(function (n) { if (n !== keep) svg.removeChild(n); });
+    let keep = svg.querySelector('image.pata-field:not(.field-out)');
+    let fadeOut = null;
+    if (keep && (!field || keep.getAttribute('href') !== field)) {
+      // the sky turned: keep the old cloth for one fade over the new one
+      if (field && st.phase === 'battle') fadeOut = keep;
+      keep = null;
+    }
+    const fading = svg.querySelector('image.pata-field.field-out');
+    Array.prototype.slice.call(svg.childNodes).forEach(function (n) { if (n !== keep && n !== fadeOut && n !== fading) svg.removeChild(n); });
     if (field && !keep) {
-      const FH = 1.6 / 0.73;
       keep = document.createElementNS('http://www.w3.org/2000/svg', 'image');
       keep.setAttribute('class', 'pata-field');
       keep.setAttribute('href', field);
-      keep.setAttribute('x', -FH); keep.setAttribute('y', -FH);
-      keep.setAttribute('width', 2 * FH); keep.setAttribute('height', 2 * FH);
-      keep.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      svg.appendChild(keep);
+      if (b.kind === 'wheel') {
+        // the painted wheel's open field (0.29–0.73 of its radius): the red rim meets the outer ring at 1.60
+        const FH = 1.6 / 0.73;
+        keep.setAttribute('x', -FH); keep.setAttribute('y', -FH);
+        keep.setAttribute('width', 2 * FH); keep.setAttribute('height', 2 * FH);
+        keep.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      } else {
+        // the other fields are painted to the board's own shape (docs/prompts/PATA.md)
+        keep.setAttribute('x', bounds.x); keep.setAttribute('y', bounds.y);
+        keep.setAttribute('width', bounds.w); keep.setAttribute('height', bounds.h);
+        keep.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+      }
+      svg.insertBefore(keep, svg.firstChild);
     }
+    if (fadeOut) {
+      fadeOut.setAttribute('class', 'pata-field field-out');
+      svg.insertBefore(fadeOut, keep.nextSibling);
+      AU.play('sky');
+      setTimeout(function () { if (fadeOut.parentNode) fadeOut.parentNode.removeChild(fadeOut); }, 1400);
+    }
+    const lastField = svg.querySelector('image.pata-field.field-out') || keep;
+    const after = lastField ? lastField.nextSibling : null;
     if (parsed) {
-      while (parsed.firstChild) svg.appendChild(parsed.firstChild);
+      while (parsed.firstChild) svg.insertBefore(parsed.firstChild, after);
     }
   }
 
@@ -1637,6 +1782,7 @@
         FX.shake(8);
       }
       if (ev.kind === 'sky') skyEv = ev;
+      noteMoment(st, ev);
       if (ev.kind === 'clash' || ev.kind === 'barrage' || ev.kind === 'scan' || ev.kind === 'breach' || ev.kind === 'astra' || ev.kind === 'core') {
         beats.push(ev);
       }
@@ -2153,6 +2299,9 @@
       if (isAiGame && outcome !== 'draw' && AC.share) {
         actions.push({ label: tr('result.share', 'Share'), cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { AC.share.text(shareLine(st, outcome)); } });
       }
+      if (AC.scroll && g.moments && g.momentsState === st && g.moments.length) {
+        actions.push({ label: 'Sanjaya’s Scroll', cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { openScroll(st, outcome, title); } });
+      }
       actions.push({ label: tr('result.rematch', 'Rematch'), cls: 'btn-primary', onClick: function () { g.start(st.config); } });
     }
 
@@ -2196,7 +2345,33 @@
 
   function wire() {
     const svg = document.getElementById('board');
+    // charcoal notes: hold a hidden enemy (or right-click it) to pencil a guess
+    let press = null;
+    const hiddenUid = function (target) {
+      const t = target.closest && target.closest('.token.hidden-unit');
+      return t ? t.getAttribute('data-uid') : null;
+    };
+    svg.addEventListener('pointerdown', function (e) {
+      const uid = hiddenUid(e.target);
+      if (!uid) return;
+      press = { uid: uid, x: e.clientX, y: e.clientY, timer: setTimeout(function () { press.fired = true; openNote(uid); }, 480) };
+    });
+    const cancelPress = function (e) {
+      if (!press) return;
+      if (e && e.type === 'pointermove' && Math.hypot(e.clientX - press.x, e.clientY - press.y) < 10) return;
+      clearTimeout(press.timer);
+      if (!press.fired) press = null;
+    };
+    ['pointerup', 'pointercancel', 'pointerleave', 'pointermove'].forEach(function (t) { svg.addEventListener(t, cancelPress); });
+    svg.addEventListener('contextmenu', function (e) {
+      const uid = hiddenUid(e.target);
+      if (!uid) return;
+      e.preventDefault();
+      if (press && press.fired) return;
+      openNote(uid);
+    });
     svg.addEventListener('click', function (e) {
+      if (press && press.fired) { press = null; return; }   // the hold opened a note; this is its release
       if (g.skipPace()) return;
       const cell = e.target.closest('[data-id]');
       if (!cell) return;

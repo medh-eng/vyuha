@@ -281,15 +281,18 @@ async function run() {
   ok($$('#intel-panel .intel-chip').length > 0, 'intel ledger has chips');
 
   // Rang preview skins (docs/LOOK.md): Pata draws painted figures, hidden enemies as one sketch; Classic stays the default
-  ok(AC.app.settings.skin === 'bronze' && document.documentElement.getAttribute('data-skin') === 'bronze', 'Classic bronze is the default look');
+  ok(AC.app.settings.skin === 'pata' && document.documentElement.getAttribute('data-skin') === 'pata', 'the painted cloth (Pata) is the default look');
+  AC.ui.patchSettings({ skin: 'bronze' });
+  await sleep(20);
+  ok(document.documentElement.getAttribute('data-skin') === 'bronze', 'Classic bronze applies from Settings');
   AC.ui.patchSettings({ skin: 'pata' });
   await sleep(20);
-  ok(document.documentElement.getAttribute('data-skin') === 'pata', 'the Pata look applies from Settings');
   // the Commander's paintings once they load, the vector stand-ins until then
   const painted = (t) => t.querySelector('.fig, .tok-pata');
   const sketch = (t) => t.querySelector('.fig .sk') || /pieces\/hidden/.test((t.querySelector('.tok-pata') || { getAttribute: () => '' }).getAttribute('href') || '');
   ok($$('#board .token').filter(painted).length === 24 && $$('#board .token.hidden-unit').filter(sketch).length === 12, 'Pata: 24 painted figures, 12 hidden enemies drawn as the bare sketch');
   // (jsdom loads no images: tools/shots.mjs checks the paintings in a real browser)
+
   ok($$('#board .cell-tex').length === 0, 'Pata: no stone texture under the cells');
   AC.ui.patchSettings({ skin: 'bronze' });
   await sleep(20);
@@ -308,6 +311,22 @@ async function run() {
   click(document.querySelector('#action-bar [data-deploy="lock"]'));
   await sleep(60);
   ok(st.phase === 'battle', 'battle begins after locking');
+  // charcoal notes: right-click (or hold) a hidden enemy, pick a rank; the guess shows on the token
+  const hiddenTok = $('#board .token.hidden-unit');
+  const noteUid = hiddenTok.getAttribute('data-uid');
+  hiddenTok.dispatchEvent(new w.MouseEvent('contextmenu', { bubbles: true, cancelable: true }));
+  await sleep(20);
+  ok(!!$('.note-pick[data-note="9"]'), 'charcoal note: the guess picker opens on a hidden enemy');
+  $('.note-pick[data-note="9"]').click();
+  await sleep(20);
+  ok(!!$('#board .token.hidden-unit.noted[data-uid="' + noteUid + '"] .tok-note'), 'charcoal note: the guess is pencilled on that piece');
+
+  // Sanjaya's Scroll: the panels it would paint, and their words
+  const sm = [{ seq: 0, kind: 'clash', outcome: 'att', att: { key: '9', owner: 1 }, def: { key: '6', owner: 2 }, fallen: { key: '6', owner: 2 } },
+    { seq: 1, kind: 'astra', astra: 'agneya', owner: 1 }, { seq: 2, kind: 'breach', att: { key: '2', owner: 1 }, def: { key: 'F', owner: 2 } },
+    { seq: 3, kind: 'clash', outcome: 'att', att: { key: '2', owner: 1 }, def: { key: 'F', owner: 2 }, fallen: { key: 'F', owner: 2 } }];
+  ok(AC.scroll.pick(sm).length === 4 && /took the fort/.test(AC.scroll.caption(sm[3]).line) && /broke the gate/.test(AC.scroll.caption(sm[2]).line),
+    "Sanjaya's Scroll: picks the opening blow, the astra, the gate and the end, in order");
 
   ok(!!game.saveTo('1'), 'manual save writes a slot');
   ok(AC.storage.listSaves().some((s) => s.slot === '1'), 'save listed in storage');

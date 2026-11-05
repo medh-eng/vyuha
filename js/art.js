@@ -367,7 +367,7 @@
      armies, day and night, and every skin. 64-unit grid, figure facing right. */
   const SKINS = ['bronze', 'pata', 'pahari', 'bright'];
   const FIGURE_SKINS = { pata: true, pahari: true };
-  let skin = 'bronze';
+  let skin = 'pata';
   function setSkin(name) {
     skin = SKINS.indexOf(name) === -1 ? 'bronze' : name;
     if (typeof document !== 'undefined') document.documentElement.setAttribute('data-skin', skin);
@@ -492,6 +492,8 @@
     figuresOn: figuresOn,
     figureSvg: figureSvg,
     paintedPiece: paintedPiece,
+    // fields with a painting besides the wheel: add 'padma', 'small', 'large' as their files arrive
+    PATA_FIELDS: [],
     pataArt: pataArt,
     figureInner: figureInner,
     avatar: avatar,

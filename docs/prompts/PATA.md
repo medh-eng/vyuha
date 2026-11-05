@@ -129,8 +129,44 @@ Put files in `incoming/audio/`. WAV, 48 kHz, 24-bit, no reverb, no clipping (lev
 
 A sampled ravanhatta is fine as a stand-in; a live recording is the dream.
 
-## Phase 2 files (after Gate 1 — do not start yet)
+## Phase 2 — the other fields, avatars and astras (start any time)
 
-Padmavyuha (Pattachitra lotus, deep red ground), Sarvatobhadra (Kalamkari indigo and madder,
-rift rivers), Kurukshetra (Pahari green plain, river, hills) — day and night each, plus their
-borders; ten heroes and avatars repainted; four astra stills. Prompts follow after Gate 1.
+Phase 1 is in the game. Same rules as above: attach `surya-senapati.png` as the style image and
+say *"Match this image exactly in style."* Drop files in `incoming/art/pata/` (the sub-folder is in
+the file name). Each field is painted twice, **day** and **night** (night = the same picture
+re-dyed: deep indigo cloth, figures in conch white and silver), and seen **straight from above**,
+with the middle kept calm because the game draws its cells on top.
+
+### Fields — 6 files, `fields/`
+
+| File | Size (the field's own shape) | Prompt (after the style block) |
+|---|---|---|
+| `padma-day.png` / `padma-night.png` | 2048 × 2252 (portrait) | Odisha Pattachitra: a great open **lotus seen from above**, three rings of petals around a round seed-pod centre, on a deep red ground with a dense floral border band; petals cream and saffron with fine red outlines, leaves malachite. Low detail inside the petals. |
+| `small-day.png` / `small-night.png` (Sarvatobhadra) | 2048 × 2668 (portrait) | Andhra Kalamkari: a square battlefield on cream cloth in indigo and madder red, a block-print grid of 6 across and 8 down, crossed by **two rivers** with fish and small boats, a border of hand-drawn vines. The squares themselves plain. |
+| `large-day.png` / `large-night.png` (Kurukshetra) | 2048 × 2524 (portrait) | Pahari miniature: a wide green plain seen from above with a winding river, low hills along the top and bottom edges, **two army camps** with tents and flags at the top and bottom borders, soft and calm in the middle. |
+
+### Avatars — 10 files, `portraits/`
+
+2048 × 2048, transparent, **head and shoulders**, three-quarter view facing right, same face size
+as `sanjaya.png`. One dignified warrior each, no weapon held across the face, no deity marks
+beyond a simple tilak where natural:
+
+`arjuna` (young archer, a bow over the shoulder) · `karna` (golden earrings and armour, calm, proud) ·
+`bhima` (broad, a mace on the shoulder) · `abhimanyu` (a boy-warrior of 16, bright and brave) ·
+`ghatotkach` (huge, wild hair, a gentle giant's smile) · `drona` (old teacher, white beard, a bow) ·
+`bhishma` (very old, white hair and beard, white robe, upright) · `draupadi` (a queen, strong gaze,
+red and gold sari) · `dhrishtadyumna` (a fiery young commander, born of the fire, in saffron) ·
+and Sanjaya is already done.
+
+### Astra stills — 4 files, `astras/`
+
+2048 × 2048, filling the frame, no figures of gods, only the force itself, painted as cloth art:
+
+`vayavya` (indigo wind in swirling brush curls) · `sammohana` (violet trance: concentric soft
+rings and closing lotus petals) · `agneya` (vermilion and saffron flame tongues) · `brahma`
+(a burst of gold light rays from a single point, white at the centre).
+
+### Sounds (optional)
+
+`incoming/audio/sfx/reveal-brush.wav` (one wet brush stroke, ≤ 0.6 s) would make the reveal even
+better than the current ravanhatta sting. Pixabay or Freesound CC0, and keep the link.
