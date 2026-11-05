@@ -1,55 +1,47 @@
 # Handoff — latest status
 
-**5 November 2026 · Director.** Replace this file at the end of each session.
+**5 November 2026, evening · Director.** Replace this file at the end of each session.
 
 ## State
 
-Gate 1 is passed in practice: the Commander chose **Sanjaya's Pata** by making its whole Phase 1
-art set (27 pieces, both Chakravyuha fields, frame, home chamber, lamp, Sanjaya) with Gemini,
-plus 11 sounds. This session wires it in on branch `claude/rang-phase-1-art` (PR open). Classic
-stays the default look until Phase 1 is finished.
+**Rang Phase 1 is complete and Pata is now the default look**, on branch `claude/rang-complete`
+(PR open). Players who never chose a look get the painted cloth; Classic bronze stays in
+Settings → Look. Rules, engine, AI and Daily are unchanged.
 
-| What | Where |
+| New this session | Where |
 |---|---|
-| Masters, untouched | `incoming/art/pata/**`, `masters/audio/supplied-2026-11-05/` (+ `SOURCES.md`) |
-| Shipped copies (WebP pieces 256 px ≈ 20 KB each; fields 1254 px; 2.0 MB music) | `assets/art/pata/**`, `assets/audio/sfx/pata_*.mp3`, `assets/audio/music/sanjaya_ravanhatta.mp3` — rebuild with `python3 tools/prepare-pata.py` |
-| Painted pieces per army, hidden = ink sketch, fort shows the broken gate once breached | `js/art.js` (`paintedPiece`, `probePata`); vector figures stay as the fallback |
-| Painted Chakravyuha under the cells, day and night; red rim set on the outer ring (1.60) | `js/game.js` `renderBoard` (kept `image.pata-field` node) |
-| Home: chamber painting, marching border, one-shot lamp flare; Sanjaya's new portrait | end of `css/app.css`, `PATA_SLOTS` in `js/art.js` |
-| Pata sounds: three pakhawaj clashes in turn, cloth tear on capture, cloth tap, ravanhatta home music | `js/audio.js` (`sampleKey`, `musicKey`, `setLook`) |
-| Screenshot harness now checks 24 painted pieces, 12 hidden sketches and the field | `tools/shots.mjs` |
-
-## Fixed on the way
-
-- In Pata the board frame's 1.2 s background fade repainted the whole painting every frame
-  (idle battle 3 %). The fade is off for the painted frame; idle is back to 1 %.
-- The closed side drawers cast a dark shadow into the screen in the light looks.
-- The old dark scene backdrop showed behind home and battle in the light looks.
+| Every screen in cotton: clash and event cinematics, result, loading screen, scenario-card frames; app colours (theme-color, manifest) | end of `css/app.css`, `index.html`, `manifest.webmanifest` |
+| Reveal: a newly known enemy floods from grey to colour (0.9 s, once) with the ravanhatta sting | `pataMemory`, `tokenSvg` in `js/game.js` |
+| The field remembers: the army's banner stays on the cell where a piece fell | `pataMemory` (view only; a loaded game starts clean) |
+| Sky re-dye: the old painting fades over the new one (1.3 s, once) with the cloth swish | board commit in `renderBoard` |
+| **Sanjaya's Scroll**: result screen → painted strip of up to 5 moments (opening blow, gate, astra, heaviest fall, the end) → Share (Android share sheet) or saved PNG | `js/scroll.js`, `noteMoment`, `openScroll` |
+| **Charcoal notes**: hold (or right-click) a hidden enemy, pick a guess; a faint figure and "9?" show on it until the rank is revealed; one-time tip | `openNote`, `notesFor` |
+| Default look = Pata | `js/storage.js`, `js/art.js`, `index.html` (`data-skin`) |
 
 ## Checks (all passed)
 
-rules 150 · self-play 40, 0 failures · Daily · languages · UI 157 · assets · desktop/phone
-screenshots incl. the new Pata checks · idle < 3 % portrait and landscape for Classic, Pata,
-Pahari, Bright · landscape 115 · Calm budget unchanged (33/46) · robot (see PR) · standalone
-rebuilt · offline cache v27.
+rules 150 · self-play 40, 0 failures · Daily · languages · UI 160 (3 new: notes, Scroll, default
+look) · assets · desktop/phone screenshots incl. painted pieces · idle < 3 % portrait and
+landscape for Pata (default), Classic, Pahari, Bright · landscape 115 · Calm budget unchanged
+(33/46) · audio routing · robot (see PR) · standalone rebuilt · offline cache v28. The Scroll was
+checked by playing a full battle in a real browser and rendering it (5 panels, correct fort states).
 
 ## Open
 
-- **Sound licences:** the ravanhatta and pakhawaj files came from YouTube "copyright-free"
-  uploads. Fill the links in `SOURCES.md`, or replace them before any store launch.
-- Older CSS points at `css/assets/art/opt/ui/home.jpg` and `panel.jpg` (wrong relative path,
-  404, existed before this work) — fix in the Phase 1 screen pass.
-- Not in the Pata look yet: setup, profile, result screens, astra buttons and the clash
-  cinematic still show the dark style. `pata_reveal.mp3` and `pata_sky.mp3` are loaded and
-  waiting for the reveal flood and sky re-dye effects. Banners where pieces fell: not built.
+- **Sound licences:** fill the YouTube links in `masters/audio/supplied-2026-11-05/SOURCES.md`, or
+  replace those sounds, before any store launch.
+- The Scroll's words are English with Hindi titles; Hindi and Marathi lines are for Sarvam.
+- Scenario cards on the setup screen still use the older dark paintings (framed in ink now).
+- Other fields (Padmavyuha, Sarvatobhadra, Kurukshetra) have no painting yet: they show the plain
+  cotton look. Prompts come next (Phase 2).
 - Not done by anyone: physical-phone feel and heat, real-player playtest, native Marathi review.
 
 ## Next
 
-1. **Commander:** merge the PR; open `https://medh-eng.github.io/vyuha/?skin=pata` on the phone
-   and play a battle; fill the sound links.
-2. **Director — Phase 1, rest:** reveal colour-flood + sting, dropped banners where pieces fall,
-   sky re-dye with `pata_sky`, every screen in cotton, then make Pata the default (Classic stays
-   in Settings).
-3. **ChatGPT:** hero-card styling may now start in the Pata style (use the reference pair).
-4. **Sarvam:** Batch 4 and 5 as briefed.
+1. **Commander:** merge the PR; play two battles on the phone (try holding a hidden enemy, and
+   share a Scroll on WhatsApp); fill the sound links.
+2. **Director — Phase 2:** prompt pack for the other three fields (Pattachitra lotus, Kalamkari
+   rifts, Pahari plain), ten avatars and four astra stills in the Pata style; wire them as they
+   arrive. Then Phase 3 rest (festival days, haptics) and Phase 4 (hero cards, banners, campaign scroll).
+3. **ChatGPT:** hero-card styling in Pata (use the reference pair); Batch 4/5 as briefed.
+4. **Sarvam:** Hindi/Marathi for the Scroll captions, the note picker and the new tip.

@@ -206,7 +206,7 @@
   function skinOf(s) {
     let q = null;
     try { q = new URLSearchParams(location.search).get('skin'); } catch (e) { q = null; }
-    return (q && A.SKINS.indexOf(q) !== -1) ? q : (s.skin || 'bronze');
+    return (q && A.SKINS.indexOf(q) !== -1) ? q : (s.skin || 'pata');
   }
 
   function applySettings() {
@@ -958,9 +958,9 @@
               return '<button class="seg-btn' + (L.getLang() === o[0] ? ' on' : '') + '" data-segval="' + o[0] + '">' + o[1] + '</button>';
             }).join('') +
           '</div></div>' +
-        '<div class="slider-row"><label>Look (preview)</label>' +
-          '<div class="seg seg-4" data-seg="skin">' +
-            [['bronze', 'Classic'], ['pata', 'Pata'], ['pahari', 'Pahari'], ['bright', 'Bright']].map(function (o) {
+        '<div class="slider-row"><label>Look</label>' +
+          '<div class="seg" data-seg="skin">' +
+            [['pata', 'Painted cloth'], ['bronze', 'Classic bronze']].map(function (o) {
               return '<button class="seg-btn' + (A.getSkin() === o[0] ? ' on' : '') + '" data-segval="' + o[0] + '">' + o[1] + '</button>';
             }).join('') +
           '</div></div>' +

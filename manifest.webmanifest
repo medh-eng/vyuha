@@ -6,8 +6,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#04060d",
-  "theme_color": "#0b0810",
+  "background_color": "#efe0bd",
+  "theme_color": "#c8341c",
   "categories": ["games", "strategy"],
   "icons": [
     { "src": "assets/art/opt/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },

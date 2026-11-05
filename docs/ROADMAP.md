@@ -44,10 +44,11 @@ Engine and rules untouched; runs beside the hero work.
 - [x] **[C]** Phase 1 art and sound (`PATA.md` §1–6): 35 images + 11 sounds arrived 5 Nov
 - [x] **[D]** Phase 1 wiring: painted pieces, hidden sketch, fort gate states, painted Chakravyuha day/night, home chamber + lamp, Sanjaya portrait, pakhawaj clashes, cloth sounds, ravanhatta home music (`tools/prepare-pata.py`)
 - [ ] **[C]** Source links for the YouTube sounds (`masters/audio/supplied-2026-11-05/SOURCES.md`), or replace them before a store launch
-- [ ] **[D]** Phase 1, rest: reveal colour-flood, field banners where pieces fall, sky re-dye, every screen in cotton (setup, profile, result, astra buttons, clash cinematic), Pata as the default look
+- [x] **[D]** Phase 1, rest: reveal colour-flood + sting, banners where pieces fall, sky re-dye, every screen in cotton, **Pata is the default look** (Classic bronze in Settings)
 - [ ] **[C]** **Gate 2** — beats today's build; 5 people name 8 of 10 pieces at 32 px; idle < 3 %
 - [ ] **[D][C]** Phase 2: other fields, astras, avatars, every screen
-- [ ] **[D]** Phase 3: Sanjaya's Scroll, charcoal notes, festival days, haptics, sound pass
+- [x] **[D]** Phase 3, first part: Sanjaya's Scroll (result screen → painted share image, `js/scroll.js`), charcoal notes (hold or right-click a hidden enemy)
+- [ ] **[D]** Phase 3, rest: festival days, haptics on clashes, sound pass
 - [ ] **[C]** **Gate 3** — five-person playtest + respect review
 - [ ] **[D]** Phase 4: hero cards in the new style, dhvaja banners, folk-art edition, campaign scroll
 - [ ] **[C]** Replace today's paintings that carry a corner watermark before any store launch

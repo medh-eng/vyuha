@@ -508,7 +508,7 @@
      Sanjaya's ravanhatta. Every other look keeps the sounds above. */
   let look = 'bronze';
   let pkTurn = 0;
-  const PATA_SAMPLE = { capture: 'fall', ui: 'cloth', reveal: 'reveal' };
+  const PATA_SAMPLE = { capture: 'fall', ui: 'cloth', reveal: 'reveal', sky: 'sky' };
   // `peek` reads the next clash stroke without using it up (duration() asks first)
   function sampleKey(name, peek) {
     if (look === 'pata') {

@@ -30,6 +30,8 @@ Surya = vermilion + saffron + gold. Chandra = lapis blue + conch white + silver-
 **All 27 piece files arrived on 5 Nov 2026**, plus every file below; all are in the game
 (made small by `tools/prepare-pata.py`).
 
+Phase 2 adds `fields/` padma, small, large (day and night), `portraits/` ten avatars and `astras/` four stills — see `docs/prompts/PATA.md`.
+
 The other folders: `fields/` (chakra-day, chakra-night), `frame/` (border-chakra, cloth-cotton,
 cloth-indigo), `scenes/` (home-chamber, home-lamp), `portraits/` (sanjaya). Sizes in `PATA.md`.
 
