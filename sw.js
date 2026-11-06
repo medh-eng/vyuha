@@ -2,7 +2,7 @@
  * Network-first for navigation so updates land immediately, cache-first for
  * the static shell so the game still boots with no connection.
  */
-const CACHE = 'vyuha-v30';
+const CACHE = 'vyuha-v31';
 const SHELL = [
   './',
   './index.html',
@@ -72,9 +72,11 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
   if (url.origin !== location.origin) return; // let fonts/CDNs go to the network
 
+  // 'no-cache' asks GitHub Pages whether the file changed instead of trusting the
+  // browser's 10-minute copy, so a merged update shows on the next reload.
   if (req.mode === 'navigate') {
     event.respondWith(
-      fetch(req).then((res) => {
+      fetch(req, { cache: 'no-cache' }).then((res) => {
         const copy = res.clone();
         caches.open(CACHE).then((c) => c.put(req, copy));
         return res;
@@ -88,7 +90,7 @@ self.addEventListener('fetch', (event) => {
   const isCode = /\.(js|css|json|webmanifest)$/.test(url.pathname) || url.pathname.endsWith('/');
   if (isCode) {
     event.respondWith(
-      fetch(req).then((res) => {
+      fetch(req, { cache: 'no-cache' }).then((res) => {
         const copy = res.clone();
         caches.open(CACHE).then((c) => c.put(req, copy));
         return res;
