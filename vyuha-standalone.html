@@ -2298,104 +2298,175 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
   letter-spacing: normal; line-height: 1.45;
 }
 
-/* ── Phone landscape battle (Batch 3.3, incoming/text/landscape.md) ──────────
- * Three columns: status rail · battlefield · action rail. Pure CSS, so turning
- * the phone only reflows: selection, clock, voice and cards are untouched.
- * Static surfaces only — no animation is added here. */
+/* ── Phone landscape battle ─────────────────────────────────────────────────
+ * Batch 3.3, rebuilt 6 Nov 2026 for the Commander's phone test:
+ *   · the field's size depends only on the screen and the field's shape — the
+ *     rails never push it (they used to share grid rows, so the board grew and
+ *     shrank with every new line of text);
+ *   · the field takes the full height; whatever width is left goes to the rails;
+ *   · every rail button carries its name.
+ * Left rail: labelled buttons. Right rail: both armies, the order panel (big
+ * piece card, astras with names), Sanjaya at the foot.
+ * The field and the right rail are absolutely placed in their grid areas, so
+ * their content cannot size a track. Static surfaces only — nothing animates. */
 @media (orientation: landscape) and (max-height: 520px) and (min-width: 560px) {
+  /* layout numbers live on the root so toasts (outside the screen) can follow them */
+  html {
+    --pad-t: max(4px, var(--safe-t, 0px));
+    --pad-b: max(4px, var(--safe-b, 0px));
+    --pad-l: max(6px, env(safe-area-inset-left));
+    --pad-r: max(6px, env(safe-area-inset-right));
+    --gap: 8px;
+    --rail-l: clamp(108px, 17vw, 160px);
+    --rail-r-min: 164px;
+    --avail-h: calc(100vh - var(--pad-t) - var(--pad-b));
+    --board-w: min(calc(var(--avail-h) * var(--board-aspect, 1)),
+                   calc(100vw - var(--pad-l) - var(--pad-r) - var(--rail-l) - var(--rail-r-min) - 2 * var(--gap)));
+    --strip-h: 46px;
+    --tip-h: 66px;
+    /* the three columns' left edges; every region is placed from these */
+    --x2: calc(var(--pad-l) + var(--rail-l) + var(--gap));
+    --x3: calc(var(--x2) + var(--board-w) + var(--gap));
+  }
+  @supports (height: 100dvh) {
+    html { --avail-h: calc(100dvh - var(--pad-t) - var(--pad-b)); }
+  }
   #screen-game {
-    --rail-l: clamp(96px, calc(96px + (100vw - 640px) * 0.0784), 112px);
-    --rail-r: clamp(136px, calc(136px + (100vw - 640px) * 0.196), 176px);
-    display: grid;
-    grid-template-columns: var(--rail-l) minmax(0, 1fr) var(--rail-r);
-    grid-template-rows: auto auto auto minmax(0, 1fr);
-    --tip-h: 76px;
+    display: block;
     position: relative;
-    column-gap: 8px;
-    row-gap: 6px;
-    padding: max(6px, var(--safe-t, 0px)) max(8px, env(safe-area-inset-right)) max(6px, var(--safe-b)) max(8px, env(safe-area-inset-left));
+    box-sizing: border-box;
+    height: 100vh;
+    padding: var(--pad-t) var(--pad-r) var(--pad-b) var(--pad-l);
+  }
+  @supports (height: 100dvh) {
+    #screen-game { height: 100dvh; }
   }
   #screen-game .game-body, #screen-game .board-column, #screen-game .hud-right { display: contents; }
 
-  /* left rail: controls in a 2-up grid, then the two armies */
+  /* left rail: labelled buttons, two to a row; it scrolls if text is enlarged */
   #screen-game .game-hud {
-    grid-column: 1; grid-row: 1;
-    display: grid; grid-template-columns: repeat(2, 44px); justify-content: space-between;
-    gap: 4px; padding: 0; border: 0; background: none; backdrop-filter: none;
+    position: absolute; left: var(--pad-l); top: var(--pad-t); bottom: var(--pad-b); width: var(--rail-l); min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start;
+    grid-auto-rows: max-content;
+    gap: 5px; padding: 0 0 2px; border: 0 !important; background: none !important; box-shadow: none !important; backdrop-filter: none;
   }
-  #screen-game .game-hud .icon-btn { width: 44px; height: 44px; border-radius: 12px; }
+  #screen-game .game-hud > *, #screen-game .hud-right > * { min-width: 0; }
+  #screen-game .game-hud :is(.icon-btn, .sky-chip, .vow-chip, .clock) {
+    width: 100%; height: 46px; min-height: 44px; border-radius: 12px; padding: 2px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  }
+  #screen-game .game-hud .icon-btn .ico { width: 20px; height: 20px; }
+  #screen-game .hud-label {
+    display: block; font-size: 10px; font-weight: 700; line-height: 1.1; letter-spacing: 0.02em;
+    color: var(--txt); text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
   #btn-game-menu { order: 1; }
   #btn-hud-settings { order: 2; }
   #screen-game .hud-centre { order: 3; grid-column: 1 / -1; }
-  #hud-sky { order: 4; min-width: 44px; min-height: 44px; padding: 0 4px; justify-content: center; }
-  #hud-vow { order: 4; min-width: 44px; min-height: 44px; padding: 0 4px; justify-content: center; }
-  #hud-clock { order: 5; min-width: 44px; height: 44px; padding: 0 2px; display: grid; place-items: center; font-size: 12px; }
+  #screen-game #hud-sky { display: none !important; }   /* the hour lives in the goal box */
+  #hud-sky { order: 4; flex-direction: row !important; flex-wrap: wrap; column-gap: 4px; row-gap: 0; font-size: 15px; font-weight: 800; }
+  #hud-sky .ico { width: 18px; height: 18px; }
+  #hud-sky .hud-label { flex-basis: 100%; }
+  #hud-vow { order: 5; }
+  #hud-clock { order: 5; font-size: 14px; font-weight: 800; }
   #hud-clock.hidden { display: none; }
   #btn-hud-intel { order: 6; }
   #btn-hud-log { order: 7; }
+  #btn-hud-full { order: 8; }
+  #btn-hud-full[hidden], #hud-sky[hidden], #hud-vow[hidden] { display: none !important; }
   #screen-game .turn-pill {
     white-space: normal; text-align: center; justify-content: center; width: 100%;
-    font-size: 9.5px; line-height: 1.25; letter-spacing: 0.06em; padding: 4px 6px; clip-path: none; border-radius: 8px;
+    font-size: 10px; line-height: 1.25; letter-spacing: 0.06em; padding: 5px 6px; clip-path: none; border-radius: 8px;
   }
   #screen-game .hud-sub { display: none; }
 
-  #strip-top { grid-column: 1; grid-row: 2; }
-  #strip-bottom { grid-column: 1; grid-row: 3; }
-  #screen-game .player-strip {
-    display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 3px; min-height: 0; height: auto; padding: 6px 7px; border-radius: 10px;
+  /* centre: the whole height belongs to the field, and nothing else sizes it */
+  #screen-game .board-shell {
+    position: absolute; left: var(--x2); top: var(--pad-t); bottom: var(--pad-b); width: var(--board-w);
+    height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border-radius: 16px; flex: none;
   }
+  #screen-game .board-svg { position: absolute; inset: 3px; width: calc(100% - 6px); height: calc(100% - 6px); }
+
+  /* right rail: the two armies side by side, the order panel, Sanjaya */
+  #screen-game .player-strip {
+    position: absolute; top: var(--pad-t); height: var(--strip-h); width: calc((100% - var(--x3) - var(--pad-r) - 6px) / 2);
+    display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: 1px;
+    min-height: 0; margin: 0; padding: 4px 7px; border-radius: 10px; box-sizing: border-box; overflow: hidden;
+  }
+  #strip-bottom { left: var(--x3); }
+  #strip-top { left: calc(var(--x3) + (100% - var(--x3) - var(--pad-r) - 6px) / 2 + 6px); }
   #screen-game .player-strip .strip-name {
-    font-size: 9.5px; letter-spacing: 0.04em; white-space: normal;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    font-size: 9.5px; letter-spacing: 0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;
   }
   #screen-game .player-strip .capture-tray { display: none; }
   #screen-game .player-strip .diyas { margin-left: 0; }
-  #screen-game .player-strip .diya, #screen-game .player-strip .diya .ico { width: 11px; height: 11px; }
+  #screen-game .player-strip .diya, #screen-game .player-strip .diya .ico { width: 10px; height: 10px; }
+  #screen-game .player-strip .strip-banner, #screen-game .player-strip .crest { display: none; }
 
-  /* centre: the whole height belongs to the field */
-  #screen-game .board-shell { grid-column: 2; grid-row: 1 / -1; padding: 0; border-radius: 18px; }
-  #screen-game .board-svg { inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); }
+  #screen-game .coach {
+    position: absolute; top: var(--pad-t); left: var(--x3); right: var(--pad-r); max-height: 46%;
+    margin: 0; overflow-y: auto; font-size: 11px; box-sizing: border-box;
+  }
+  #screen-game:has(#coach:not([hidden])) .player-strip { display: none; }
 
-  /* right rail: lesson coach, then the order panel, then Sanjaya */
-  #screen-game .coach { grid-column: 3; grid-row: 1; margin: 0; max-height: 46vh; overflow-y: auto; font-size: 11px; }
   #screen-game .action-bar {
-    grid-column: 3; grid-row: 1 / -1; margin-bottom: calc(var(--tip-h) + 6px);
-    flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 6px;
-    min-height: 0; padding: 8px; border: 1px solid var(--line); border-radius: 12px;
+    position: absolute; left: var(--x3); right: var(--pad-r);
+    top: calc(var(--pad-t) + var(--strip-h) + 6px); bottom: calc(var(--pad-b) + var(--tip-h) + 6px); margin: 0;
+    display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 6px;
+    min-height: 0; padding: 8px; border: 1px solid var(--line); border-radius: 12px; box-sizing: border-box;
     overflow-y: auto; overscroll-behavior: contain;
   }
-  #screen-game:has(#coach:not([hidden])) .action-bar { grid-row: 2 / -1; }
-  #screen-game .action-info { flex: none; align-items: flex-start; }
-  #screen-game .sel-badge { width: 32px; height: 32px; border-radius: 10px; }
-  #screen-game .sel-name { font-size: 11.5px; white-space: normal; }
-  #screen-game .sel-desc { display: -webkit-box; -webkit-line-clamp: 3; font-size: 10px; }
-  #screen-game .action-buttons { flex: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; justify-content: stretch; }
+  #screen-game:has(#coach:not([hidden])) .action-bar { top: calc(var(--pad-t) + 46% + 6px); }
+  #screen-game .action-info { flex: none; align-items: center; gap: 10px; }
+  /* the chosen piece, large: its painting, its rank, what it does */
+  #screen-game .sel-badge { position: relative; flex: none; width: 46px; height: 46px; border-radius: 12px; }
+  #screen-game .sel-badge:has(.sel-rank) { width: 76px; height: 76px; border-radius: 14px; }
+  #screen-game .sel-badge :is(.emblem, img, svg) { width: 86%; height: 86%; }
+  #screen-game .sel-name { font-size: 13.5px; white-space: normal; line-height: 1.25; overflow-wrap: anywhere; }
+  #screen-game .sel-text { min-width: 0; }
+  #screen-game .sel-desc { display: block; -webkit-line-clamp: unset; font-size: 11px; line-height: 1.35; }
+  #screen-game .action-buttons {
+    flex: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; justify-content: stretch;
+  }
   #screen-game .action-buttons > * { min-height: 44px; justify-content: center; white-space: normal; text-align: center; line-height: 1.2; }
-  #screen-game .action-buttons .mode-btn { padding: 4px 6px; font-size: 10.5px; }
+  #screen-game .action-buttons .mode-btn { padding: 4px 6px; font-size: 11px; }
   #screen-game .action-buttons .btn { grid-column: 1 / -1; }
   #screen-game .action-buttons .mode-btn[data-mode="move"],
   #screen-game .action-buttons .mode-btn[data-act="advisor"] { grid-column: 1 / -1; }
   #screen-game .action-buttons .mode-btn[data-act="deselect"]:nth-last-child(2) { grid-column: auto; }
+  /* astras: picture and name; four in a row when the rail is wide enough */
+  #screen-game .action-bar { container-type: inline-size; }
   #screen-game .action-bar .astra-row {
     grid-column: 1 / -1; order: -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; overflow: visible;
+    justify-content: stretch; width: 100%;
   }
-  #screen-game .action-bar .astra-btn { min-height: 44px; width: auto; }
+  @container (min-width: 290px) {
+    #screen-game .action-bar .astra-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  #screen-game .action-bar .astra-btn {
+    width: auto; height: auto; min-height: 58px; padding: 4px 2px 9px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  }
+  #screen-game .action-bar .astra-btn :is(.astra-ico, .astra-art) { width: 30px; height: 30px; border-radius: 6px; }
+  #screen-game .action-bar .astra-name {
+    display: block; max-width: 100%; font-size: 9px; font-weight: 700; line-height: 1.1; text-decoration: inherit;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  #screen-game .action-bar .astra-cost { bottom: 2px; }
 
-  /* Sanjaya: a fixed plate at the foot of the action rail, so the two rails
-   * never share row heights; a long line scrolls inside it. */
+  /* Sanjaya: a fixed plate at the foot of the right rail; a long line scrolls inside it */
   #screen-game .tip-bar {
-    position: absolute; right: max(8px, env(safe-area-inset-right)); bottom: max(6px, var(--safe-b)); width: var(--rail-r);
+    position: absolute; left: var(--x3); right: var(--pad-r); bottom: var(--pad-b); top: auto; width: auto;
     height: var(--tip-h); margin: 0; min-height: 0; overflow-y: auto; box-sizing: border-box;
-    font-size: 10.5px; line-height: 1.35; padding: 6px 8px; text-align: left; justify-content: flex-start; align-items: flex-start;
+    font-size: 11px; line-height: 1.35; padding: 6px 8px; text-align: left; justify-content: flex-start; align-items: flex-start;
   }
 
-  /* toasts sit over the action rail, never over the field's targets */
-  .toast-root { left: auto; right: max(8px, env(safe-area-inset-right)); top: auto; bottom: calc(88px + var(--safe-b)); transform: none; width: min(176px, 30vw); }
+  /* toasts sit over the right rail, never over the field's targets */
+  /* over Sanjaya's plate, never over the field or the order buttons */
+  .toast-root { left: var(--x3); right: var(--pad-r); top: auto; bottom: var(--pad-b); transform: none; width: auto; }
   .toast { border-radius: 10px; font-size: 11px; padding: 7px 10px; }
-  .toast-root .toast:not(:last-child) { display: none; }   /* one at a time over the rail */
+  .toast-root .toast:not(:last-child) { display: none; }
   .rotate-hint { display: none; }
-  /* the rail is too short for banners; side colour and border carry the house */
-  #screen-game .player-strip .strip-banner, #screen-game .player-strip .crest { display: none; }
 }
 
 /* One-time portrait hint: turn sideways for controls beside the board. */
@@ -2857,6 +2928,102 @@ html[data-skin="pata"] .stage-astra-sammohana .st-astra-name .deva { color: #6b3
 html[data-skin="pata"] .stage-astra-vayavya .st-astra-name .deva { color: #2c58a8; }
 html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12; }
 
+/* ── Labels, rank seals, the chosen-piece card (6 Nov 2026) ─────────────────
+ * Rail labels and astra names show beside the board in landscape only. */
+.hud-label, .astra-name { display: none; }
+.sel-badge { position: relative; }
+.sel-rank {
+  position: absolute; right: -5px; bottom: -5px; min-width: 22px; height: 22px; padding: 0 4px; box-sizing: border-box;
+  display: grid; place-items: center; border-radius: 999px; font-family: var(--display); font-weight: 800; font-size: 13px; line-height: 1;
+  background: var(--surya-main, #c8341c); color: #fff8ea; border: 2px solid var(--leaf, #d6a23c);
+}
+.sel-badge.void .sel-rank { background: var(--chandra-main, #2c58a8); }
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 560px) {
+  #screen-game .sel-rank { min-width: 30px; height: 30px; font-size: 17px; right: -6px; bottom: -6px; }
+}
+/* the rank on a token: a solid seal, readable over the painting */
+.token .tok-seal { fill: var(--surya-main, #c8341c); stroke: #f8efd9; stroke-width: 0.012; }
+.token.void .tok-seal { fill: var(--chandra-main, #2c58a8); }
+.token .tok-badge .tok-rank,
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .token .tok-badge .tok-rank {
+  fill: #fff8ea; stroke: none; font-family: var(--display); font-weight: 800;
+}
+/* the chosen order stays legible on cotton */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-btn.on { background: var(--vermilion) !important; border-color: var(--vermilion) !important; color: #fff8ea !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-btn.on .ico { color: #fff8ea !important; }
+
+/* ── Depth and contrast (Commander, 6 Nov 2026) ──────────────────────────────
+ * Three planes: a dark war-tent cloth behind everything, the painted field lifted
+ * on it by one soft shadow, cotton panels on top. Pata idiom only: no brass, no
+ * glass, no glow loops. Every shadow here is static. */
+html[data-skin="pata"] #screen-game {
+  background-color: #3a1d12 !important;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M0 3h6M3 0v6' stroke='%23000' stroke-opacity='.22' stroke-width='1'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 42%, #5a2e1c 0%, #3a1d12 55%, #24120b 100%) !important;
+}
+html[data-skin="pata"] #screen-game .board-shell,
+html[data-skin="pata"] #screen-game .board-shell.has-field {
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6), 0 0 0 3px var(--leaf), inset 0 0 0 2px var(--ink) !important;
+}
+html[data-skin="pata"] #screen-game .board-shell:not(.has-field) {
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6), 0 0 0 3px var(--leaf), inset 0 0 0 12px var(--cotton-2), inset 0 0 0 14px var(--ink) !important;
+}
+html[data-skin="pata"] #screen-game .board-shell.sky-night:not(.has-field) {
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6), 0 0 0 3px #c7cbe0, inset 0 0 0 12px var(--indigo-cloth), inset 0 0 0 14px #c7cbe0 !important;
+}
+html[data-skin="pata"] #screen-game .board-shell.has-field.sky-night {
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6), 0 0 0 3px #c7cbe0, inset 0 0 0 2px #c7cbe0 !important;
+}
+/* panels sit on the dark cloth with a firm edge */
+html[data-skin="pata"] #screen-game :is(.player-strip, .action-bar, .tip-bar, .coach, .icon-btn, .sky-chip, .vow-chip, .clock, .hud-goal) {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.45) !important;
+}
+html[data-skin="pata"] #screen-game .clock { background: var(--cotton-2); color: var(--ink); border: 1.5px solid var(--line-strong); }
+html[data-skin="pata"] #screen-game .turn-pill { border: 1.5px solid var(--leaf); }
+html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700; }
+
+/* tokens: a ground shadow under each, and the unknown carries a '?' seal */
+.token .tok-shadow { fill: rgba(20, 12, 6, 0.42); stroke: none; }
+.token.selected-token .tok-shadow { fill: rgba(20, 12, 6, 0.5); }
+
+/* the goal and the next turn of the field (landscape rail) */
+.hud-goal { display: none; }
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 560px) {
+  #screen-game .hud-goal:not([hidden]) {
+    display: grid; gap: 5px; margin-top: 5px; padding: 6px 7px; border-radius: 10px;
+    background: var(--cotton-2); color: var(--ink); border: 1.5px solid var(--line-strong);
+    font-size: 10px; line-height: 1.25; text-align: left;
+  }
+  #screen-game .goal-turn span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #screen-game .goal-line b { color: var(--vermilion); text-transform: uppercase; letter-spacing: 0.06em; font-size: 9px; margin-right: 2px; }
+  #screen-game .goal-turn { display: grid; gap: 3px; padding-top: 4px; border-top: 1px dashed var(--line-strong); font-weight: 600; }
+  #screen-game .goal-turn .ico { width: 12px; height: 12px; vertical-align: -2px; margin-right: 2px; }
+  #screen-game .goal-turn.sky.mine b { color: var(--vermilion); }
+  #screen-game .goal-turn.sky:not(.mine) b { color: var(--lapis); }
+  #screen-game .goal-turn b { font-size: 12px; color: var(--vermilion); }
+  #screen-game .goal-pips { display: flex; gap: 3px; }
+  #screen-game .goal-pips i { flex: 1; height: 6px; border-radius: 3px; background: rgba(28, 21, 16, 0.14); }
+  #screen-game .goal-pips i.on { background: var(--saffron); }
+  #screen-game .goal-turn.soon { background: #fde3b8; margin: 0 -7px -6px; padding: 5px 7px 6px; border-radius: 0 0 9px 9px; }
+  #screen-game .goal-turn.soon .goal-pips i.on { background: var(--vermilion); }
+  #screen-game .action-bar .astra-shakti {
+    display: block; grid-column: 1 / -1; font-size: 10.5px; font-weight: 700; color: var(--dim); letter-spacing: 0.03em;
+  }
+  #screen-game .action-bar .astra-shakti b { color: var(--vermilion); font-size: 13px; }
+}
+.astra-shakti { display: none; }
+
+/* astras: ready is unmistakable; not-enough-Shakti is grey; spent is struck through */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.ready {
+  background: #fffaf0 !important; border: 2px solid var(--saffron) !important; box-shadow: 0 3px 0 var(--vermilion) !important; color: var(--ink);
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.ready .astra-name { color: var(--vermilion); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.locked { border-style: dashed !important; background: rgba(242, 228, 196, 0.6) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.locked :is(.astra-art, .astra-ico) { filter: grayscale(1); opacity: 0.45; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.locked .astra-name { color: var(--dim); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.spent { opacity: 0.35; }
+
 </style>
 </head>
 <body>
@@ -3068,6 +3235,7 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
       <div class="hud-centre">
         <div class="turn-pill" id="hud-turn">Deployment</div>
         <div class="hud-sub" id="hud-sub">Arrange your army</div>
+        <div class="hud-goal" id="hud-goal" hidden></div>
       </div>
       <div class="hud-right">
         <button class="sky-chip" id="hud-sky" hidden aria-label="The hour"></button>
@@ -3076,6 +3244,7 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
         <button class="icon-btn" id="btn-hud-intel" aria-label="Intel"></button>
         <button class="icon-btn" id="btn-hud-log" aria-label="Battle log"></button>
         <button class="icon-btn" id="btn-hud-settings" aria-label="Settings"></button>
+        <button class="icon-btn" id="btn-hud-full" aria-label="Full screen" hidden></button>
       </div>
     </header>
 
@@ -3938,7 +4107,8 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
           y: r + 0.5,
           shape: 'rect',
           zone: r >= rows - deploy ? 1 : (r < deploy ? 2 : 0),
-          tr: 0.33,
+          // token radius (display only): big enough to read the painting on a phone
+          tr: 0.42,
           points: [[c, r], [c + 1, r], [c + 1, r + 1], [c, r + 1]]
         });
       }
@@ -4002,7 +4172,7 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
 
     cells.push({
       id: 'h', hub: true, ring: 0, sector: 0,
-      x: 0, y: 0, shape: 'hub', zone: 0, tr: 0.22, r: R0 - 0.05
+      x: 0, y: 0, shape: 'hub', zone: 0, tr: 0.25, r: R0 - 0.05
     });
 
     for (let ring = 1; ring <= RINGS; ring++) {
@@ -4025,7 +4195,9 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
           y: Math.sin(mid) * rm,
           shape: 'sector',
           zone: zone,
-          tr: 0.145,
+          // token radius (display only) grows with the ring: the outer cells are
+          // twice as wide as the inner ones, so pieces there can be read at a glance
+          tr: [0, 0.15, 0.19, 0.21][ring],
           path: arcPath(inner, outer, a0, a1),
           inner: inner,
           outer: outer
@@ -4153,7 +4325,7 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
         }
         const cell = {
           id: key(q, r), x: x, y: y, shape: 'poly', zone: zone,
-          ring: ring, angle: Math.atan2(y, x), tr: 0.5,
+          ring: ring, angle: Math.atan2(y, x), tr: 0.64,
           points: pts, q: q, r: r
         };
         cells.push(cell);
@@ -7342,7 +7514,8 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
     noteHinted: false,   // the charcoal-note tip has been shown
     skin: 'pata',        // Rang look: pata (default since 5 Nov 2026) · bronze (Classic); pahari, bright via ?skin=
     tutorialDone: false,
-    landscapeHintDismissed: false
+    landscapeHintDismissed: false,
+    fullscreen: true     // battles on a phone open full screen and sideways
   };
 
   function nowIso() {
@@ -8081,6 +8254,8 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
     refresh: '<path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5" ' + S + '/>',
     chevronDown: '<path d="M6 9l6 6 6-6" ' + S + '/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16" ' + S + '/>',
+    expand: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" ' + S + '/>',
+    shrink: '<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" ' + S + '/>',
     users: '<circle cx="9" cy="8" r="3.2" ' + S + '/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" ' + S + '/><path d="M16 5.5a3.2 3.2 0 0 1 0 6M17 14.8c2.4.6 4 2.5 4 5.2" ' + S + '/>',
     bolt: '<path d="M13 2 L5 13h6l-1 9 8-11h-6z" ' + S + '/>',
     grid: '<rect x="3" y="3" width="7" height="7" rx="1.5" ' + S + '/><rect x="14" y="3" width="7" height="7" rx="1.5" ' + S + '/><rect x="3" y="14" width="7" height="7" rx="1.5" ' + S + '/><rect x="14" y="14" width="7" height="7" rx="1.5" ' + S + '/>',
@@ -8903,6 +9078,7 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
 
   function show(name) {
     if (name !== 'game' && AC.game && AC.game.clearOverlays) AC.game.clearOverlays();
+    if (name !== 'game' && app.screen === 'game' && AC.game && AC.game.leaveFull) AC.game.leaveFull();
     app.screen = name;
     SCREENS.forEach(function (s) {
       const node = document.getElementById('screen-' + s);
@@ -9829,6 +10005,7 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
           toggleRow('Tap twice to strike', 'confirmActions', s.confirmActions !== false) +
           toggleRow('Show intel panel', 'showIntel', s.showIntel !== false) +
           toggleRow('Board coordinates', 'coordinates', s.coordinates !== false) +
+          toggleRow('Full screen, sideways, in battle (phones)', 'fullscreen', s.fullscreen !== false) +
           toggleRow('Battery saver (cooler phone)', 'batterySaver', liteOn(s)) +
           toggleRow('Reduced motion', 'reducedMotion', !!s.reducedMotion) +
           toggleRow('Colour-blind palette', 'colorblind', !!s.colorblind) +
@@ -9899,6 +10076,7 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
       else if (key === 'vows') patch.vows = app.settings.vows === false;
       else if (key === 'showIntel') patch.showIntel = !(app.settings.showIntel !== false);
       else if (key === 'coordinates') patch.coordinates = !(app.settings.coordinates !== false);
+      else if (key === 'fullscreen') patch.fullscreen = app.settings.fullscreen === false;
       else if (key === 'reducedMotion') patch.reducedMotion = !app.settings.reducedMotion;
       else if (key === 'batterySaver') patch.batterySaver = !liteOn(app.settings);
       else if (key === 'colorblind') patch.colorblind = !app.settings.colorblind;
@@ -10759,7 +10937,11 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
     const st = g.state;
     const sc = L.scenario(st.scenario) || U.SCENARIOS.duel;
     const legend = LEGEND[st.scenario] || LEGEND.duel;
-    if (settings().stories === false || !L.scenario(st.scenario)) { if (done) done(); return; }
+    // The button and the modal's close both end the card; the opening line must play once.
+    const finish = done;
+    let finished = false;
+    done = function () { if (finished) return; finished = true; if (finish) finish(); };
+    if (settings().stories === false || !L.scenario(st.scenario)) { done(); return; }
     const art = A.artFor('card:' + st.scenario);
     const m = AC.ui.modal({
       kicker: sc.label + (sc.deva ? ' · ' + sc.deva : ''),
@@ -10924,7 +11106,10 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
     if (g.state.phase === 'battle' && isAi() && g.state.owner === 2) scheduleAi();
   };
 
-  g.onShow = function () { render(); };
+  g.onShow = function () {
+    if (settings().fullscreen !== false) enterFull();
+    render();
+  };
   g.isActive = function () { return !!g.state; };
   g.canSave = function () { return !!g.state && g.state.phase !== 'over' && !modeHook('noSave'); };
   g.onSettingsChange = function () { render(); };
@@ -11040,7 +11225,79 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
     el.hidden = !(touch && idle && !settings().landscapeHintDismissed && !landscapeNow());
   }
 
+  /* Battles on a phone open full screen and sideways (Commander, 6 Nov 2026):
+   * the browser's own bars cost the field a fifth of its height. Needs the tap
+   * that started the battle; if the browser refuses, nothing else changes. */
+  function canFull() {
+    const d = typeof document !== 'undefined' ? document : null;
+    return !!(d && d.fullscreenEnabled && d.documentElement.requestFullscreen &&
+      typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches);
+  }
+  function lockSideways() {
+    try {
+      if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () {});
+    } catch (e) { /* not supported */ }
+  }
+  function enterFull() {
+    if (!canFull() || document.fullscreenElement) { if (document.fullscreenElement) lockSideways(); return; }
+    try {
+      const p = document.documentElement.requestFullscreen({ navigationUI: 'hide' });
+      if (p && p.then) p.then(function () { lockSideways(); renderHud(); }, function () {});
+    } catch (e) { /* refused without a tap */ }
+  }
+  function leaveFull() {
+    try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) { /* ignore */ }
+    if (typeof document !== 'undefined' && document.fullscreenElement && document.exitFullscreen) {
+      const p = document.exitFullscreen();
+      if (p && p.catch) p.catch(function () {});
+    }
+  }
+  g.leaveFull = leaveFull;
+
   function skyIcon(hour) { return A.icon(hour === 'day' ? 'sun' : 'moon'); }
+
+  /* The objective and the next turn of the field, always in view (landscape rail).
+   * Uses the engine's own counters; nothing new is timed here. */
+  function objectiveText(st) {
+    if (st.phase === 'deploy1' || st.phase === 'deploy2') return tr('goal.deploy', 'Arrange your army, then lock it.');
+    const viewer = viewerOf(st);
+    let broken = false;
+    E.forEachUnit(st, function (u) { if (u.key === 'F' && u.owner !== viewer && u.breached) broken = true; });
+    let text = !E.rules(st).gates ? tr('goal.take', 'Take the enemy fort.')
+      : broken ? tr('goal.broken', 'Their gate is broken. Take the fort!')
+        : tr('goal.gate', 'Break their gate, then take their fort.');
+    if (st.turnLimit) text += ' ' + tr('goal.by', 'By round') + ' ' + st.turnLimit + '.';
+    return text;
+  }
+  function renderGoal(st) {
+    const el = $('#hud-goal');
+    if (!el) return;
+    if (st.phase === 'over') { el.hidden = true; return; }
+    el.hidden = false;
+    let html = '<div class="goal-line"><b>' + esc(tr('goal.title', 'Goal')) + '</b> ' + esc(objectiveText(st)) + '</div>';
+    if (st.phase === 'battle') {
+      const b = board();
+      // the hour: whose strikes land at +1, and how long it lasts
+      const hour = E.hourOf(st);
+      if (hour) {
+        const mine = E.hourOwner(st) === viewerOf(st);
+        const hl = E.roundsUntilHourTurns(st);
+        html += '<div class="goal-turn sky' + (mine ? ' mine' : '') + '"><span>' + skyIcon(hour) +
+          esc(hour === 'day' ? 'Surya' : 'Chandra') + ' <b>+1</b> ' + esc(tr('goal.for', 'for')) + ' <b>' + hl + '</b> ' +
+          esc(hl === 1 ? tr('goal.round', 'round') : tr('goal.rounds', 'rounds')) + '</span></div>';
+      }
+      if (E.hasRotation(st)) {
+        const left = E.turnsUntilRotation(st);
+        const total = Math.max(left, b.rotateEvery || 5);
+        let pips = '';
+        for (let i = 0; i < total; i++) pips += '<i' + (i < total - left ? ' class="on"' : '') + '></i>';
+        html += '<div class="goal-turn chakra' + (left <= 1 ? ' soon' : '') + '">' +
+          '<span>' + esc(b.kind === 'hex' ? tr('goal.lotus', 'Lotus turns in') : tr('goal.chakra', 'Chakra turns in')) + ' <b>' + left + '</b></span>' +
+          '<span class="goal-pips">' + pips + '</span></div>';
+      }
+    }
+    el.innerHTML = html;
+  }
 
   function renderHud() {
     const st = g.state;
@@ -11048,10 +11305,19 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
     const sub = $('#hud-sub');
     const clock = $('#hud-clock');
     const skyEl = $('#hud-sky');
-    $('#btn-game-menu').innerHTML = A.icon('menu');
-    $('#btn-hud-intel').innerHTML = A.icon('eye');
-    $('#btn-hud-log').innerHTML = A.icon('book');
-    $('#btn-hud-settings').innerHTML = A.icon('settings');
+    // every rail button carries its name (shown beside the board in landscape)
+    const lab = function (key, text) { return '<span class="hud-label">' + esc(tr(key, text)) + '</span>'; };
+    $('#btn-game-menu').innerHTML = A.icon('menu') + lab('hud.menu', 'Menu');
+    $('#btn-hud-intel').innerHTML = A.icon('eye') + lab('hud.intel', 'Intel');
+    $('#btn-hud-log').innerHTML = A.icon('book') + lab('hud.log', 'Log');
+    $('#btn-hud-settings').innerHTML = A.icon('settings') + lab('hud.settings', 'Settings');
+    const full = $('#btn-hud-full');
+    if (full) {
+      full.hidden = !canFull();
+      const on = !!document.fullscreenElement;
+      full.innerHTML = A.icon(on ? 'shrink' : 'expand') + lab(on ? 'hud.exit_full' : 'hud.full', on ? 'Exit full' : 'Full screen');
+      full.setAttribute('aria-label', on ? 'Leave full screen' : 'Full screen');
+    }
     $('#btn-log-close').innerHTML = A.icon('close');
 
     const hour = E.hourOf(st);
@@ -11061,7 +11327,8 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
         const mine = E.hourOwner(st) === viewerOf(st);
         skyEl.hidden = false;
         skyEl.className = 'sky-chip ' + hour + (mine ? ' mine' : '');
-        skyEl.innerHTML = skyIcon(hour) + '<span>' + left + '</span>';
+        skyEl.innerHTML = skyIcon(hour) + '<span>' + left + '</span>' +
+          '<span class="hud-label">' + esc(hour === 'day' ? 'Surya' : 'Chandra') + '</span>';
         skyEl.title = tr('sky.' + hour, hour === 'day' ? 'Dinman — the hour of Surya' : 'Ratri — the hour of Chandra') +
           '. The sky turns in ' + left + ' round' + (left === 1 ? '' : 's') + '.';
       } else {
@@ -11079,6 +11346,7 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
       }
     }
 
+    renderGoal(st);
     pill.className = 'turn-pill';
     if (st.phase === 'deploy1' || st.phase === 'deploy2') {
       const owner = st.phase === 'deploy1' ? 1 : 2;
@@ -11309,6 +11577,31 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
     });
   }
 
+  /* The rank on a token: a solid seal on the lower right, large enough to read
+   * on a phone without the painting underneath fighting it. */
+  function rankBadge(text, R) {
+    const r = R * 0.4;
+    const cx = R * 0.66;
+    const cy = R * 0.66;
+    const t = String(text);
+    return '<g class="tok-badge">' +
+      '<circle class="tok-seal" cx="' + cx + '" cy="' + cy + '" r="' + r + '"/>' +
+      '<text class="tok-rank" x="' + cx + '" y="' + (cy + r * 0.38) + '" font-size="' + (r * (t.length > 1 ? 1.0 : 1.18)) +
+      '" text-anchor="middle">' + esc(t) + '</text></g>';
+  }
+
+  /* Under every token: a soft ground shadow (a plain circle — no SVG filter, so
+   * it costs nothing to paint). The rim is drawn in proportion to the token, so
+   * the army reads at any size: rays for Surya, a solid ring for Chandra. */
+  function tokenBase(R, owner, lifted) {
+    const painted = A.getSkin() === 'pata' || A.getSkin() === 'pahari';
+    const rim = painted
+      ? ' style="stroke-width:' + (R * 0.2).toFixed(4) + (owner === 1 ? ';stroke-dasharray:' + (R * 0.34).toFixed(4) + ' ' + (R * 0.16).toFixed(4) : '') + '"'
+      : '';
+    return '<circle class="tok-shadow" cx="' + (R * 0.05) + '" cy="' + (R * (lifted ? 0.34 : 0.13)) + '" r="' + (R * (lifted ? 1.06 : 1.02)) + '"/>' +
+      '<circle class="tok-disc" r="' + R + '"' + rim + '/>';
+  }
+
   function tokenSvg(u, cell, isSel) {
     const R = cell.tr;
     const cls = u.owner === 1 ? 'solar' : 'void';
@@ -11320,8 +11613,7 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
       const face = A.figuresOn() ? A.tokenInner('?', R, u.owner) : back
         ? '<image class="tok-crest" href="' + back + '" x="' + (-R * 0.74) + '" y="' + (-R * 0.74) + '" width="' + (R * 1.48) +
           '" height="' + (R * 1.48) + '" opacity="0.95" preserveAspectRatio="xMidYMid meet"/>' +
-          '<text class="tok-rank" x="' + (R * 0.46) + '" y="' + (R * 0.74) + '" font-size="' + (R * 0.52) +
-          '" text-anchor="middle">?</text>'
+rankBadge('?', R)
         : '<text class="tok-q" y="' + (R * 0.33) + '" font-size="' + (R * 0.92) + '" text-anchor="middle">?</text>';
       const guess = g.notes && g.notes.state === g.state && g.notes.by[viewerOf(g.state)] ? g.notes.by[viewerOf(g.state)][u.id] : null;
       const note = guess
@@ -11331,7 +11623,7 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
           '<text class="tok-note-rank" x="' + (-R * 0.5) + '" y="' + (R * 0.78) + '" font-size="' + (R * 0.5) + '" text-anchor="middle">' + esc((L.unit(guess).badge || guess)) + '?</text></g>'
         : '';
       return '<g class="token hidden-unit ' + cls + extra + (guess ? ' noted' : '') + '" data-uid="' + u.id + '" transform="translate(' + cell.x + ',' + cell.y + ')">' +
-        '<circle class="tok-disc" r="' + R + '"/>' + face + note + moved + statusMarks(u, R) + '</g>';
+        tokenBase(R, u.owner, false) + face + (A.figuresOn() && !guess ? rankBadge('?', R) : '') + note + moved + statusMarks(u, R) + '</g>';
     }
     const sel = isSel ? '<circle class="sel-ring" r="' + (R * 1.14) + '"/>' : '';
     const revealT = g.pataMem && g.pataMem.at[u.id] ? Date.now() - g.pataMem.at[u.id] : Infinity;
@@ -11339,12 +11631,13 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
     const eye = (u.revealed && u.owner === g.state.viewer && g.state.phase !== 'over')
       ? '<circle class="tok-eye" cx="' + (R * 0.6) + '" cy="' + (-R * 0.6) + '" r="' + (R * 0.15) + '"/>' : '';
     return '<g class="token ' + cls + extra + (isSel ? ' selected-token' : '') + (u.shieldBroken ? ' shield-broken' : '') + flood +
-      '" data-uid="' + u.id + '" transform="translate(' + cell.x + ',' + cell.y + ')">' +
-      '<circle class="tok-disc" r="' + R + '"/>' +
+      '" data-uid="' + u.id + '" transform="translate(' + cell.x + ',' + cell.y + ')' +
+      // the chosen piece rises off the cloth (static: no animation)
+      (isSel ? ' translate(0,' + (-R * 0.14).toFixed(4) + ') scale(1.12)' : '') + '">' +
+      tokenBase(R, u.owner, isSel) +
       sel +
       A.tokenInner(u.key, R, u.owner, u.breached) +
-      '<text class="tok-rank" x="' + (R * 0.46) + '" y="' + (R * 0.74) + '" font-size="' + (R * 0.52) + '" text-anchor="middle">' +
-      esc(u.badge) + '</text>' +
+      rankBadge(u.badge, R) +
       moved + eye + statusMarks(u, R) + '</g>';
   }
 
@@ -11397,6 +11690,8 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
     const bounds = b.bounds;
     svg.setAttribute('viewBox', bounds.x + ' ' + bounds.y + ' ' + bounds.w + ' ' + bounds.h);
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    // the landscape layout sizes the field from this alone, never from the rails' content
+    document.documentElement.style.setProperty('--board-aspect', (bounds.w / bounds.h).toFixed(4));
 
     // the field takes the colour of the hour
     const shell = $('#board-shell');
@@ -11613,7 +11908,8 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
   function astraButtons(owner) {
     const st = g.state;
     if (!E.rules(st).astras) return '';
-    return '<span class="astra-row">' + E.ASTRA_ORDER.map(function (key) {
+    return '<span class="astra-row"><span class="astra-shakti">' + esc(tr('astra.shakti', 'Shakti')) + ' <b>' + st.shakti[owner] + '</b>/5</span>' +
+      E.ASTRA_ORDER.map(function (key) {
       const def = L.astra(key);
       const used = st.astrasUsed[owner] && st.astrasUsed[owner][key];
       const ready = E.astraReady(st, owner, key);
@@ -11623,7 +11919,7 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
       return '<button class="astra-btn ' + cls + ' el-' + def.element + '" data-astra="' + key + '"' +
         ' title="' + esc(def.name + ' — ' + def.one + ' Costs ' + def.cost + ' Shakti' + (used ? ' (used)' : '')) + '"' +
         ' aria-label="' + esc(def.name) + '"' + (used ? ' disabled' : '') + '>' +
-        A.astraMark(key) + '<span class="astra-cost">' + pips + '</span></button>';
+        A.astraMark(key) + '<span class="astra-name">' + esc(def.name) + '</span><span class="astra-cost">' + pips + '</span></button>';
     }).join('') + '</span>';
   }
 
@@ -11683,7 +11979,8 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
     if (selUnit) {
       const def = L.unit(selUnit.key);
       const trance = selUnit.stun > 0 ? ' Entranced for ' + selUnit.stun + ' more turn' + (selUnit.stun === 1 ? '' : 's') + '.' : '';
-      info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key, '', selUnit.owner) + '</span>' +
+      info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key, '', selUnit.owner) +
+          '<span class="sel-rank">' + esc(selUnit.badge) + '</span></span>' +
         '<span class="sel-text"><span class="sel-name">' + esc(selUnit.name) + ' · rank ' + esc(selUnit.badge) + '</span>' +
         '<span class="sel-desc">' + esc(g.armed ? tr('battle.tap_again', 'Tap the target again to strike.') : def.desc + trance) + '</span></span>';
     } else {
@@ -13084,6 +13381,12 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
 
     document.getElementById('btn-game-menu').addEventListener('click', function () { sfx('ui'); AC.ui.openPause(); });
     document.getElementById('btn-hud-settings').addEventListener('click', function () { sfx('ui'); AC.ui.openSettings(); });
+    const fullBtn = document.getElementById('btn-hud-full');
+    if (fullBtn) fullBtn.addEventListener('click', function () {
+      sfx('ui');
+      if (document.fullscreenElement) leaveFull(); else enterFull();
+    });
+    document.addEventListener('fullscreenchange', function () { if (g.state) renderHud(); });
     document.getElementById('btn-hud-intel').addEventListener('click', function () {
       sfx('ui');
       const panel = document.getElementById('intel-panel');

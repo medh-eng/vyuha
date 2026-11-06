@@ -55,6 +55,7 @@
 
   function show(name) {
     if (name !== 'game' && AC.game && AC.game.clearOverlays) AC.game.clearOverlays();
+    if (name !== 'game' && app.screen === 'game' && AC.game && AC.game.leaveFull) AC.game.leaveFull();
     app.screen = name;
     SCREENS.forEach(function (s) {
       const node = document.getElementById('screen-' + s);
@@ -981,6 +982,7 @@
           toggleRow('Tap twice to strike', 'confirmActions', s.confirmActions !== false) +
           toggleRow('Show intel panel', 'showIntel', s.showIntel !== false) +
           toggleRow('Board coordinates', 'coordinates', s.coordinates !== false) +
+          toggleRow('Full screen, sideways, in battle (phones)', 'fullscreen', s.fullscreen !== false) +
           toggleRow('Battery saver (cooler phone)', 'batterySaver', liteOn(s)) +
           toggleRow('Reduced motion', 'reducedMotion', !!s.reducedMotion) +
           toggleRow('Colour-blind palette', 'colorblind', !!s.colorblind) +
@@ -1051,6 +1053,7 @@
       else if (key === 'vows') patch.vows = app.settings.vows === false;
       else if (key === 'showIntel') patch.showIntel = !(app.settings.showIntel !== false);
       else if (key === 'coordinates') patch.coordinates = !(app.settings.coordinates !== false);
+      else if (key === 'fullscreen') patch.fullscreen = app.settings.fullscreen === false;
       else if (key === 'reducedMotion') patch.reducedMotion = !app.settings.reducedMotion;
       else if (key === 'batterySaver') patch.batterySaver = !liteOn(app.settings);
       else if (key === 'colorblind') patch.colorblind = !app.settings.colorblind;

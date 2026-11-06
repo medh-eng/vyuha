@@ -39,7 +39,8 @@
     noteHinted: false,   // the charcoal-note tip has been shown
     skin: 'pata',        // Rang look: pata (default since 5 Nov 2026) · bronze (Classic); pahari, bright via ?skin=
     tutorialDone: false,
-    landscapeHintDismissed: false
+    landscapeHintDismissed: false,
+    fullscreen: true     // battles on a phone open full screen and sideways
   };
 
   function nowIso() {

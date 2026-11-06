@@ -67,7 +67,8 @@
           y: r + 0.5,
           shape: 'rect',
           zone: r >= rows - deploy ? 1 : (r < deploy ? 2 : 0),
-          tr: 0.33,
+          // token radius (display only): big enough to read the painting on a phone
+          tr: 0.42,
           points: [[c, r], [c + 1, r], [c + 1, r + 1], [c, r + 1]]
         });
       }
@@ -131,7 +132,7 @@
 
     cells.push({
       id: 'h', hub: true, ring: 0, sector: 0,
-      x: 0, y: 0, shape: 'hub', zone: 0, tr: 0.22, r: R0 - 0.05
+      x: 0, y: 0, shape: 'hub', zone: 0, tr: 0.25, r: R0 - 0.05
     });
 
     for (let ring = 1; ring <= RINGS; ring++) {
@@ -154,7 +155,9 @@
           y: Math.sin(mid) * rm,
           shape: 'sector',
           zone: zone,
-          tr: 0.145,
+          // token radius (display only) grows with the ring: the outer cells are
+          // twice as wide as the inner ones, so pieces there can be read at a glance
+          tr: [0, 0.15, 0.19, 0.21][ring],
           path: arcPath(inner, outer, a0, a1),
           inner: inner,
           outer: outer
@@ -282,7 +285,7 @@
         }
         const cell = {
           id: key(q, r), x: x, y: y, shape: 'poly', zone: zone,
-          ring: ring, angle: Math.atan2(y, x), tr: 0.5,
+          ring: ring, angle: Math.atan2(y, x), tr: 0.64,
           points: pts, q: q, r: r
         };
         cells.push(cell);
