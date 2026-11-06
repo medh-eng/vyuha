@@ -1,50 +1,42 @@
 # Handoff — latest status
 
-**6 November 2026 · Director.** Replace this file at the end of each session.
+**6 November 2026 (evening) · Director.** Replace this file at the end of each session.
 
 ## State
 
-**Rang Phase 2 art is in the game, and the repository is tidy**, on branch
-`claude/pata-phase-2-tidy` (PR open). Rules, engine, AI and Daily are unchanged.
+PR #18 (Pata Phase 2 + tidy) is merged. New branch **`claude/landscape-big-board`** (PR open)
+answers the Commander's phone test of the Pata wheel in landscape. Rules, engine, AI and Daily
+are unchanged.
 
-| New this session | Where |
-|---|---|
-| Padmavyuha, Sarvatobhadra, Kurukshetra painted under the cells, day and night (sky re-dye works on all four fields) | `A.PATA_FIELDS`, `A.PATA_FIELD_BOX` in `js/art.js`; placement in `renderBoard` (`js/game.js`) |
-| Sarvatobhadra: the painted 6 × 8 grid lines up with the cells (stretched 8 % — its squares are painted taller than wide) · Kurukshetra: camps under each army's deploy rows · Padma: seed pod on the hub | measured on the shipped pixels; re-measure if a master is replaced |
-| Night fields: corner star covered, cloth re-dyed toward indigo (40 %) | `unstar`, `night_dye` in `tools/prepare-pata.py` |
-| Nine painted avatars (profile picker, home header) and four astra stills (action bar, invocation card, codex) in the Pata look; Classic keeps its own | `PATA_SLOTS` in `js/art.js`; CSS at the end of `css/app.css` |
-| Invocation card in Pata: no dark loop behind it, the still at 140 px, readable words on cotton | `js/stage.js`, `css/app.css` |
-| Reveal sound = one wet brush stroke (0.7 s) instead of the ravanhatta sting | `assets/audio/sfx/pata_reveal.mp3` |
-| Fix: profile hub repaints when a Pata portrait lands | `artLanded` in `js/ui.js` |
-| Repo 240 MB → 33 MB: `masters/`, Pata PNG masters, `assets/3d/`, `rang.html` out of the tree; originals in four zips | `docs/MASTERS.md`; provenance in `docs/SOURCES.md` |
-| `perf-idle` can measure any field: `BOARD=padma|small|large` | `tools/perf-idle.mjs` |
+| Commander's report | What changed | Where |
+|---|---|---|
+| Sanjaya's "Abhimanyu knew how to break in…" plays twice | The story card ran its callback from both "Take the field" and the modal's close; now once | `showStory` in `js/game.js` |
+| Board changes size on clicks/turns | The landscape field is placed by position, sized only from the screen and `--board-aspect`; rails scroll inside themselves and cannot push it. Measured constant over 14 turns on wheel, padma, large. (Could not reproduce the old jitter in headless Chrome: likely the address bar or enlarged phone text; both are now irrelevant.) | landscape layer in `css/app.css` (rebuilt); `renderBoard` sets `--board-aspect` |
+| Landscape default, board as big as possible | On a phone, entering a battle requests full screen + landscape lock (setting "Full screen, sideways, in battle", default on). Leaving the battle unlocks and exits. A "Full screen / Exit full" rail button. Wheel at 830×318 grows 306 → 310 px; in full screen the address bar's ~60 px also goes to the field | `canFull/enterFull/leaveFull` in `js/game.js`; `show()` in `js/ui.js`; `fullscreen` in `js/storage.js` |
+| New player can't find the buttons | Every left-rail button has its name (Menu, Settings, Intel, Log, Full screen; hour chip says Surya/Chandra); astras show their names in landscape | `.hud-label`, `.astra-name` |
+| Pieces too small, power not visible | Token radius per cell: wheel rings 0.15/0.19/0.21 (was 0.145), squares 0.42 (0.33), lotus 0.64 (0.5), hub 0.25; rank on a solid army-coloured seal; chosen piece shown as a 76 px painting with a rank seal and its full description in the rail | `tr` in `js/geometry.js` (display only); `rankBadge` in `js/game.js` |
+| (found) "Move / Strike" text invisible when on, in Pata | vermilion fill, cotton text | end of `css/app.css` |
 
 ## Checks (all passed)
 
-rules 150 · self-play 40, 0 failures · Daily · languages · UI 160 · assets (now checks every Pata
-file and the Classic fallback) · desktop/phone screenshots · landscape 115 · idle < 3 % on the
-wheel and on padma/small/large, portrait and landscape · Calm budget unchanged (33/46) · audio
-routing · robot "no problems" · standalone rebuilt · offline cache v29. The three new fields,
-the avatar picker and two invocation cards were also checked by screenshot in headless Chrome.
+rules 150 · self-play 40, 0 failures · Daily · languages · UI 160 · assets · desktop/phone
+screenshots · landscape 115 (harness now detects the layout by the rail's position, not grid) ·
+idle < 3 % portrait, 844×390 and 830×318 · Calm budget unchanged (33/46) · robot "no problems" ·
+standalone rebuilt · offline cache v30. Extra: board box measured across turns and selections.
 
 ## Open
 
-- **Masters zips:** the Commander keeps them on his computer and, ideally, attaches them to a
-  GitHub Release `masters-2026-11-06` (steps in `docs/MASTERS.md`; Claude sessions cannot create releases).
-- **Night fields:** the masters carry Gemini's star; regenerate `padma-night`, `small-night`,
-  `large-night` without it before a store launch. Supplied "night" paintings were lit like day;
-  the 40 % indigo dye is the Director's call — change `night_dye(amount)` if the Commander prefers.
-- **Sound licences:** links in `docs/SOURCES.md` (YouTube pack, Pixabay pages, the brush stroke).
-- Scenario cards on the setup screen still use the older dark paintings.
-- Hero cards (ChatGPT) can now use the Pata avatars in `assets/art/pata/portraits/`.
-- Not done by anyone: physical-phone feel and heat, real-player playtest, native Marathi review,
-  listening to the brush stroke on a phone speaker.
+- **Not phone-tested.** Full screen and orientation lock work only after a tap and only in
+  browsers that allow them (Android Chrome yes; iPhone Safari no — there the layout still fits).
+- Square fields stay taller than wide in landscape (own army at the bottom). Turning them sideways
+  would make their cells ~20 % larger; needs the Commander's call (painted camps would lie sideways).
+- New strings (`hud.*`) are English only: Sarvam to add Hindi/Marathi.
+- Unchanged from before: night-field regenerations, sound licence links, masters release,
+  scenario cards in Pata, hero work, five-person playtest.
 
 ## Next
 
-1. **Commander:** merge the PR; play one battle on each field on the phone (check the painted
-   grid on Sarvatobhadra, the night dye, the reveal brush); save the four zips; fill sound links.
-2. **Director:** Phase 2 rest — scenario cards and remaining dark screens in Pata; then Phase 3
-   rest (festival days, haptics) and Phase 4 (hero cards, banners, campaign scroll).
-3. **ChatGPT:** hero-card styling in Pata with the new avatars; Batch 4/5 as briefed.
-4. **Sarvam:** Hindi/Marathi for the Scroll captions, the note picker and the tip.
+1. **Commander:** merge; on the phone, start a battle (should go full screen and sideways), check
+   piece size, the labels, and that the board no longer resizes; Settings has the toggle to turn it off.
+2. **Director:** Phase 2 rest (scenario cards, dark screens in Pata), Phase 3 rest, Phase 4.
+3. **Sarvam:** Hindi/Marathi for `hud.menu/settings/intel/log/full/exit_full`.

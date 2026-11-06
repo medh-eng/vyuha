@@ -77,7 +77,8 @@ async function audit(page, label) {
     const bar = rect(document.querySelector('#action-bar'));
     const overlap = bar.left < shell.right - 1;
     return {
-      landscape: getComputedStyle(document.querySelector('#screen-game')).display === 'grid',
+      // the rebuilt layer (6 Nov 2026) places the rails beside the field by position, not grid
+      landscape: getComputedStyle(document.querySelector('#screen-game .game-hud')).position === 'absolute',
       fieldInside: cells[0] >= shell.left - 1 && cells[1] >= shell.top - 1 && cells[2] <= shell.right + 1 && cells[3] <= shell.bottom + 1 && cells[3] <= vh,
       shell: [Math.round(shell.width), Math.round(shell.height)], small, railOut, overlap,
       overflow: document.documentElement.scrollWidth > vw + 1 || document.documentElement.scrollHeight > vh + 1
@@ -139,7 +140,7 @@ try {
     assert.ok(after.clock <= before.clock && after.clock >= before.clock - 2, 'rotation keeps the running clock');
     assert.ok(after.selected, 'selection still drawn after rotation');
     await page.setViewport(view(360, 640)); await wait(400);
-    const back = await page.evaluate(() => ({ grid: getComputedStyle(document.querySelector('#screen-game')).display, sel: AC.game.sel, actions: AC.game.state.stats.actions }));
+    const back = await page.evaluate(() => ({ grid: getComputedStyle(document.querySelector('#screen-game .game-hud')).position === 'absolute' ? 'grid' : 'stack', sel: AC.game.sel, actions: AC.game.state.stats.actions }));
     assert.notEqual(back.grid, 'grid', 'portrait returns to the stacked layout');
     assert.equal(back.sel, before.sel, 'rotating back keeps the selection');
     assert.equal(back.actions, before.actions, 'rotating back spends no action');

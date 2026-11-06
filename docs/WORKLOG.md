@@ -5,6 +5,15 @@ this file and not ticked in `docs/prompts/ART.md`, it did not happen.
 
 ---
 
+## 6 Nov 2026 (Director) — Commander's phone test: landscape battle rebuilt
+
+- Sanjaya's opening line no longer plays twice (the story card's button and its close both ran it).
+- Landscape: field sized only from the screen and the field's shape; labelled rail buttons;
+  both armies, a large chosen-piece card and named astras on the right; Sanjaya at the foot.
+- Battles on a phone open full screen and sideways (Settings toggle); a Full screen button returns to it.
+- Pieces ~40 % larger on the wheel, ~27 % on squares and lotus; rank on a solid seal.
+- PR `claude/landscape-big-board`. Not phone-tested.
+
 ## 1 Nov 2026 — ChatGPT review proposals (not merged)
 
 - PR #4: first-use Astra film and reduced-motion fixes; 125 UI assertions,

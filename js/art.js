@@ -268,6 +268,8 @@
     refresh: '<path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5" ' + S + '/>',
     chevronDown: '<path d="M6 9l6 6 6-6" ' + S + '/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16" ' + S + '/>',
+    expand: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" ' + S + '/>',
+    shrink: '<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" ' + S + '/>',
     users: '<circle cx="9" cy="8" r="3.2" ' + S + '/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5" ' + S + '/><path d="M16 5.5a3.2 3.2 0 0 1 0 6M17 14.8c2.4.6 4 2.5 4 5.2" ' + S + '/>',
     bolt: '<path d="M13 2 L5 13h6l-1 9 8-11h-6z" ' + S + '/>',
     grid: '<rect x="3" y="3" width="7" height="7" rx="1.5" ' + S + '/><rect x="14" y="3" width="7" height="7" rx="1.5" ' + S + '/><rect x="3" y="14" width="7" height="7" rx="1.5" ' + S + '/><rect x="14" y="14" width="7" height="7" rx="1.5" ' + S + '/>',

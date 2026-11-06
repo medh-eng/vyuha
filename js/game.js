@@ -139,7 +139,11 @@
     const st = g.state;
     const sc = L.scenario(st.scenario) || U.SCENARIOS.duel;
     const legend = LEGEND[st.scenario] || LEGEND.duel;
-    if (settings().stories === false || !L.scenario(st.scenario)) { if (done) done(); return; }
+    // The button and the modal's close both end the card; the opening line must play once.
+    const finish = done;
+    let finished = false;
+    done = function () { if (finished) return; finished = true; if (finish) finish(); };
+    if (settings().stories === false || !L.scenario(st.scenario)) { done(); return; }
     const art = A.artFor('card:' + st.scenario);
     const m = AC.ui.modal({
       kicker: sc.label + (sc.deva ? ' · ' + sc.deva : ''),
@@ -304,7 +308,10 @@
     if (g.state.phase === 'battle' && isAi() && g.state.owner === 2) scheduleAi();
   };
 
-  g.onShow = function () { render(); };
+  g.onShow = function () {
+    if (settings().fullscreen !== false) enterFull();
+    render();
+  };
   g.isActive = function () { return !!g.state; };
   g.canSave = function () { return !!g.state && g.state.phase !== 'over' && !modeHook('noSave'); };
   g.onSettingsChange = function () { render(); };
@@ -420,6 +427,35 @@
     el.hidden = !(touch && idle && !settings().landscapeHintDismissed && !landscapeNow());
   }
 
+  /* Battles on a phone open full screen and sideways (Commander, 6 Nov 2026):
+   * the browser's own bars cost the field a fifth of its height. Needs the tap
+   * that started the battle; if the browser refuses, nothing else changes. */
+  function canFull() {
+    const d = typeof document !== 'undefined' ? document : null;
+    return !!(d && d.fullscreenEnabled && d.documentElement.requestFullscreen &&
+      typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches);
+  }
+  function lockSideways() {
+    try {
+      if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () {});
+    } catch (e) { /* not supported */ }
+  }
+  function enterFull() {
+    if (!canFull() || document.fullscreenElement) { if (document.fullscreenElement) lockSideways(); return; }
+    try {
+      const p = document.documentElement.requestFullscreen({ navigationUI: 'hide' });
+      if (p && p.then) p.then(function () { lockSideways(); renderHud(); }, function () {});
+    } catch (e) { /* refused without a tap */ }
+  }
+  function leaveFull() {
+    try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) { /* ignore */ }
+    if (typeof document !== 'undefined' && document.fullscreenElement && document.exitFullscreen) {
+      const p = document.exitFullscreen();
+      if (p && p.catch) p.catch(function () {});
+    }
+  }
+  g.leaveFull = leaveFull;
+
   function skyIcon(hour) { return A.icon(hour === 'day' ? 'sun' : 'moon'); }
 
   function renderHud() {
@@ -428,10 +464,19 @@
     const sub = $('#hud-sub');
     const clock = $('#hud-clock');
     const skyEl = $('#hud-sky');
-    $('#btn-game-menu').innerHTML = A.icon('menu');
-    $('#btn-hud-intel').innerHTML = A.icon('eye');
-    $('#btn-hud-log').innerHTML = A.icon('book');
-    $('#btn-hud-settings').innerHTML = A.icon('settings');
+    // every rail button carries its name (shown beside the board in landscape)
+    const lab = function (key, text) { return '<span class="hud-label">' + esc(tr(key, text)) + '</span>'; };
+    $('#btn-game-menu').innerHTML = A.icon('menu') + lab('hud.menu', 'Menu');
+    $('#btn-hud-intel').innerHTML = A.icon('eye') + lab('hud.intel', 'Intel');
+    $('#btn-hud-log').innerHTML = A.icon('book') + lab('hud.log', 'Log');
+    $('#btn-hud-settings').innerHTML = A.icon('settings') + lab('hud.settings', 'Settings');
+    const full = $('#btn-hud-full');
+    if (full) {
+      full.hidden = !canFull();
+      const on = !!document.fullscreenElement;
+      full.innerHTML = A.icon(on ? 'shrink' : 'expand') + lab(on ? 'hud.exit_full' : 'hud.full', on ? 'Exit full' : 'Full screen');
+      full.setAttribute('aria-label', on ? 'Leave full screen' : 'Full screen');
+    }
     $('#btn-log-close').innerHTML = A.icon('close');
 
     const hour = E.hourOf(st);
@@ -441,7 +486,8 @@
         const mine = E.hourOwner(st) === viewerOf(st);
         skyEl.hidden = false;
         skyEl.className = 'sky-chip ' + hour + (mine ? ' mine' : '');
-        skyEl.innerHTML = skyIcon(hour) + '<span>' + left + '</span>';
+        skyEl.innerHTML = skyIcon(hour) + '<span>' + left + '</span>' +
+          '<span class="hud-label">' + esc(hour === 'day' ? 'Surya' : 'Chandra') + '</span>';
         skyEl.title = tr('sky.' + hour, hour === 'day' ? 'Dinman — the hour of Surya' : 'Ratri — the hour of Chandra') +
           '. The sky turns in ' + left + ' round' + (left === 1 ? '' : 's') + '.';
       } else {
@@ -689,6 +735,19 @@
     });
   }
 
+  /* The rank on a token: a solid seal on the lower right, large enough to read
+   * on a phone without the painting underneath fighting it. */
+  function rankBadge(text, R) {
+    const r = R * 0.4;
+    const cx = R * 0.66;
+    const cy = R * 0.66;
+    const t = String(text);
+    return '<g class="tok-badge">' +
+      '<circle class="tok-seal" cx="' + cx + '" cy="' + cy + '" r="' + r + '"/>' +
+      '<text class="tok-rank" x="' + cx + '" y="' + (cy + r * 0.38) + '" font-size="' + (r * (t.length > 1 ? 1.0 : 1.18)) +
+      '" text-anchor="middle">' + esc(t) + '</text></g>';
+  }
+
   function tokenSvg(u, cell, isSel) {
     const R = cell.tr;
     const cls = u.owner === 1 ? 'solar' : 'void';
@@ -700,8 +759,7 @@
       const face = A.figuresOn() ? A.tokenInner('?', R, u.owner) : back
         ? '<image class="tok-crest" href="' + back + '" x="' + (-R * 0.74) + '" y="' + (-R * 0.74) + '" width="' + (R * 1.48) +
           '" height="' + (R * 1.48) + '" opacity="0.95" preserveAspectRatio="xMidYMid meet"/>' +
-          '<text class="tok-rank" x="' + (R * 0.46) + '" y="' + (R * 0.74) + '" font-size="' + (R * 0.52) +
-          '" text-anchor="middle">?</text>'
+rankBadge('?', R)
         : '<text class="tok-q" y="' + (R * 0.33) + '" font-size="' + (R * 0.92) + '" text-anchor="middle">?</text>';
       const guess = g.notes && g.notes.state === g.state && g.notes.by[viewerOf(g.state)] ? g.notes.by[viewerOf(g.state)][u.id] : null;
       const note = guess
@@ -723,8 +781,7 @@
       '<circle class="tok-disc" r="' + R + '"/>' +
       sel +
       A.tokenInner(u.key, R, u.owner, u.breached) +
-      '<text class="tok-rank" x="' + (R * 0.46) + '" y="' + (R * 0.74) + '" font-size="' + (R * 0.52) + '" text-anchor="middle">' +
-      esc(u.badge) + '</text>' +
+      rankBadge(u.badge, R) +
       moved + eye + statusMarks(u, R) + '</g>';
   }
 
@@ -777,6 +834,8 @@
     const bounds = b.bounds;
     svg.setAttribute('viewBox', bounds.x + ' ' + bounds.y + ' ' + bounds.w + ' ' + bounds.h);
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    // the landscape layout sizes the field from this alone, never from the rails' content
+    document.documentElement.style.setProperty('--board-aspect', (bounds.w / bounds.h).toFixed(4));
 
     // the field takes the colour of the hour
     const shell = $('#board-shell');
@@ -1003,7 +1062,7 @@
       return '<button class="astra-btn ' + cls + ' el-' + def.element + '" data-astra="' + key + '"' +
         ' title="' + esc(def.name + ' — ' + def.one + ' Costs ' + def.cost + ' Shakti' + (used ? ' (used)' : '')) + '"' +
         ' aria-label="' + esc(def.name) + '"' + (used ? ' disabled' : '') + '>' +
-        A.astraMark(key) + '<span class="astra-cost">' + pips + '</span></button>';
+        A.astraMark(key) + '<span class="astra-name">' + esc(def.name) + '</span><span class="astra-cost">' + pips + '</span></button>';
     }).join('') + '</span>';
   }
 
@@ -1063,7 +1122,8 @@
     if (selUnit) {
       const def = L.unit(selUnit.key);
       const trance = selUnit.stun > 0 ? ' Entranced for ' + selUnit.stun + ' more turn' + (selUnit.stun === 1 ? '' : 's') + '.' : '';
-      info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key, '', selUnit.owner) + '</span>' +
+      info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key, '', selUnit.owner) +
+          '<span class="sel-rank">' + esc(selUnit.badge) + '</span></span>' +
         '<span class="sel-text"><span class="sel-name">' + esc(selUnit.name) + ' · rank ' + esc(selUnit.badge) + '</span>' +
         '<span class="sel-desc">' + esc(g.armed ? tr('battle.tap_again', 'Tap the target again to strike.') : def.desc + trance) + '</span></span>';
     } else {
@@ -2464,6 +2524,12 @@
 
     document.getElementById('btn-game-menu').addEventListener('click', function () { sfx('ui'); AC.ui.openPause(); });
     document.getElementById('btn-hud-settings').addEventListener('click', function () { sfx('ui'); AC.ui.openSettings(); });
+    const fullBtn = document.getElementById('btn-hud-full');
+    if (fullBtn) fullBtn.addEventListener('click', function () {
+      sfx('ui');
+      if (document.fullscreenElement) leaveFull(); else enterFull();
+    });
+    document.addEventListener('fullscreenchange', function () { if (g.state) renderHud(); });
     document.getElementById('btn-hud-intel').addEventListener('click', function () {
       sfx('ui');
       const panel = document.getElementById('intel-panel');

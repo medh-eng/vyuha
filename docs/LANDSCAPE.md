@@ -74,3 +74,12 @@ Then run the required regression, screenshot, idle (<3%) and robot suites, plus
 physical-phone reach/heat checks. These checks are proposed, not completed here.
 
 Built 1 Nov 2026: CSS layer at the end of `css/app.css`; acceptance `node tools/landscape.mjs`. The original sketch is in git history (PR #10).
+
+**Rebuilt 6 Nov 2026 (Commander's phone test).** The field and the right rail are now placed by
+position from `--x2/--x3/--board-w` (CSS variables on `html`), so rail content can never size
+the field; `--board-aspect` comes from `renderBoard`. Left rail = labelled buttons only; right
+rail = the two armies side by side, the order panel (76 px piece card with rank seal, astras with
+names), Sanjaya's plate; toasts sit over Sanjaya's plate. On phones a battle enters full screen
+and locks landscape (`fullscreen` setting); leaving the battle unlocks and exits. The earlier
+"own army always at the bottom; never rotate the field" rule still holds — the square fields are
+therefore taller than wide in landscape; turning them sideways is a Commander decision.
