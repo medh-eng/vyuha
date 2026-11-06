@@ -15,6 +15,9 @@ are unchanged.
 | Landscape default, board as big as possible | On a phone, entering a battle requests full screen + landscape lock (setting "Full screen, sideways, in battle", default on). Leaving the battle unlocks and exits. A "Full screen / Exit full" rail button. Wheel at 830×318 grows 306 → 310 px; in full screen the address bar's ~60 px also goes to the field | `canFull/enterFull/leaveFull` in `js/game.js`; `show()` in `js/ui.js`; `fullscreen` in `js/storage.js` |
 | New player can't find the buttons | Every left-rail button has its name (Menu, Settings, Intel, Log, Full screen; hour chip says Surya/Chandra); astras show their names in landscape | `.hud-label`, `.astra-name` |
 | Pieces too small, power not visible | Token radius per cell: wheel rings 0.15/0.19/0.21 (was 0.145), squares 0.42 (0.33), lotus 0.64 (0.5), hub 0.25; rank on a solid army-coloured seal; chosen piece shown as a 76 px painting with a rank seal and its full description in the rail | `tr` in `js/geometry.js` (display only); `rankBadge` in `js/game.js` |
+| Step 1 after the Gemini/ChatGPT reviews: goal always in view | Landscape left rail: GOAL line (gate state aware, "by round N"), whose hour (+1, rounds left), "Chakra/Lotus turns in N" with pips (vermilion when 1). Uses the engine's own counters — no new timer. The sky chip moves into this box in landscape | `objectiveText`, `renderGoal` in `js/game.js`; `#hud-goal` in `index.html` |
+| Better visuals, contrast, shadow | Pata battle screen sits on a dark war-tent cloth; the field has one soft drop shadow and a gold rim; panels a firm shadow. Tokens: ground shadow, rim drawn in proportion (rays Surya, solid Chandra), chosen piece lifted 12 %, unknown enemies carry a "?" seal. All static, no filters on tokens | end of `css/app.css`; `tokenBase` in `js/game.js` |
+| Astras looked washed out | Ready = cotton + saffron border + vermilion underline; not enough Shakti = grey, dashed; spent = faded. "Shakti N/5" above them in landscape; four in a row when the rail is ≥ 290 px | end of `css/app.css`; `astraButtons` |
 | (found) "Move / Strike" text invisible when on, in Pata | vermilion fill, cotton text | end of `css/app.css` |
 
 ## Checks (all passed)
@@ -30,7 +33,10 @@ standalone rebuilt · offline cache v30. Extra: board box measured across turns 
   browsers that allow them (Android Chrome yes; iPhone Safari no — there the layout still fits).
 - Square fields stay taller than wide in landscape (own army at the bottom). Turning them sideways
   would make their cells ~20 % larger; needs the Commander's call (painted camps would lie sideways).
-- New strings (`hud.*`) are English only: Sarvam to add Hindi/Marathi.
+- New strings (`hud.*`, `goal.*`, `astra.shakti`) are English only: Sarvam to add Hindi/Marathi.
+- Home line "Abhimanyu got in. Can you get out?" kept by the Commander as the promise of a future escape mode.
+- Board render cost rose ~10 % (two circles per token); idle still < 3 %.
+- Next from the review plan: four short wheel lessons (P0-01), plain-language odds + Confirm strike (P0-05), ghost preview of the next ring turn (P1-01).
 - Unchanged from before: night-field regenerations, sound licence links, masters release,
   scenario cards in Pata, hero work, five-person playtest.
 

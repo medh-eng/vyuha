@@ -458,6 +458,49 @@
 
   function skyIcon(hour) { return A.icon(hour === 'day' ? 'sun' : 'moon'); }
 
+  /* The objective and the next turn of the field, always in view (landscape rail).
+   * Uses the engine's own counters; nothing new is timed here. */
+  function objectiveText(st) {
+    if (st.phase === 'deploy1' || st.phase === 'deploy2') return tr('goal.deploy', 'Arrange your army, then lock it.');
+    const viewer = viewerOf(st);
+    let broken = false;
+    E.forEachUnit(st, function (u) { if (u.key === 'F' && u.owner !== viewer && u.breached) broken = true; });
+    let text = !E.rules(st).gates ? tr('goal.take', 'Take the enemy fort.')
+      : broken ? tr('goal.broken', 'Their gate is broken. Take the fort!')
+        : tr('goal.gate', 'Break their gate, then take their fort.');
+    if (st.turnLimit) text += ' ' + tr('goal.by', 'By round') + ' ' + st.turnLimit + '.';
+    return text;
+  }
+  function renderGoal(st) {
+    const el = $('#hud-goal');
+    if (!el) return;
+    if (st.phase === 'over') { el.hidden = true; return; }
+    el.hidden = false;
+    let html = '<div class="goal-line"><b>' + esc(tr('goal.title', 'Goal')) + '</b> ' + esc(objectiveText(st)) + '</div>';
+    if (st.phase === 'battle') {
+      const b = board();
+      // the hour: whose strikes land at +1, and how long it lasts
+      const hour = E.hourOf(st);
+      if (hour) {
+        const mine = E.hourOwner(st) === viewerOf(st);
+        const hl = E.roundsUntilHourTurns(st);
+        html += '<div class="goal-turn sky' + (mine ? ' mine' : '') + '"><span>' + skyIcon(hour) +
+          esc(hour === 'day' ? 'Surya' : 'Chandra') + ' <b>+1</b> ' + esc(tr('goal.for', 'for')) + ' <b>' + hl + '</b> ' +
+          esc(hl === 1 ? tr('goal.round', 'round') : tr('goal.rounds', 'rounds')) + '</span></div>';
+      }
+      if (E.hasRotation(st)) {
+        const left = E.turnsUntilRotation(st);
+        const total = Math.max(left, b.rotateEvery || 5);
+        let pips = '';
+        for (let i = 0; i < total; i++) pips += '<i' + (i < total - left ? ' class="on"' : '') + '></i>';
+        html += '<div class="goal-turn chakra' + (left <= 1 ? ' soon' : '') + '">' +
+          '<span>' + esc(b.kind === 'hex' ? tr('goal.lotus', 'Lotus turns in') : tr('goal.chakra', 'Chakra turns in')) + ' <b>' + left + '</b></span>' +
+          '<span class="goal-pips">' + pips + '</span></div>';
+      }
+    }
+    el.innerHTML = html;
+  }
+
   function renderHud() {
     const st = g.state;
     const pill = $('#hud-turn');
@@ -505,6 +548,7 @@
       }
     }
 
+    renderGoal(st);
     pill.className = 'turn-pill';
     if (st.phase === 'deploy1' || st.phase === 'deploy2') {
       const owner = st.phase === 'deploy1' ? 1 : 2;
@@ -748,6 +792,18 @@
       '" text-anchor="middle">' + esc(t) + '</text></g>';
   }
 
+  /* Under every token: a soft ground shadow (a plain circle — no SVG filter, so
+   * it costs nothing to paint). The rim is drawn in proportion to the token, so
+   * the army reads at any size: rays for Surya, a solid ring for Chandra. */
+  function tokenBase(R, owner, lifted) {
+    const painted = A.getSkin() === 'pata' || A.getSkin() === 'pahari';
+    const rim = painted
+      ? ' style="stroke-width:' + (R * 0.2).toFixed(4) + (owner === 1 ? ';stroke-dasharray:' + (R * 0.34).toFixed(4) + ' ' + (R * 0.16).toFixed(4) : '') + '"'
+      : '';
+    return '<circle class="tok-shadow" cx="' + (R * 0.05) + '" cy="' + (R * (lifted ? 0.34 : 0.13)) + '" r="' + (R * (lifted ? 1.06 : 1.02)) + '"/>' +
+      '<circle class="tok-disc" r="' + R + '"' + rim + '/>';
+  }
+
   function tokenSvg(u, cell, isSel) {
     const R = cell.tr;
     const cls = u.owner === 1 ? 'solar' : 'void';
@@ -769,7 +825,7 @@ rankBadge('?', R)
           '<text class="tok-note-rank" x="' + (-R * 0.5) + '" y="' + (R * 0.78) + '" font-size="' + (R * 0.5) + '" text-anchor="middle">' + esc((L.unit(guess).badge || guess)) + '?</text></g>'
         : '';
       return '<g class="token hidden-unit ' + cls + extra + (guess ? ' noted' : '') + '" data-uid="' + u.id + '" transform="translate(' + cell.x + ',' + cell.y + ')">' +
-        '<circle class="tok-disc" r="' + R + '"/>' + face + note + moved + statusMarks(u, R) + '</g>';
+        tokenBase(R, u.owner, false) + face + (A.figuresOn() && !guess ? rankBadge('?', R) : '') + note + moved + statusMarks(u, R) + '</g>';
     }
     const sel = isSel ? '<circle class="sel-ring" r="' + (R * 1.14) + '"/>' : '';
     const revealT = g.pataMem && g.pataMem.at[u.id] ? Date.now() - g.pataMem.at[u.id] : Infinity;
@@ -777,8 +833,10 @@ rankBadge('?', R)
     const eye = (u.revealed && u.owner === g.state.viewer && g.state.phase !== 'over')
       ? '<circle class="tok-eye" cx="' + (R * 0.6) + '" cy="' + (-R * 0.6) + '" r="' + (R * 0.15) + '"/>' : '';
     return '<g class="token ' + cls + extra + (isSel ? ' selected-token' : '') + (u.shieldBroken ? ' shield-broken' : '') + flood +
-      '" data-uid="' + u.id + '" transform="translate(' + cell.x + ',' + cell.y + ')">' +
-      '<circle class="tok-disc" r="' + R + '"/>' +
+      '" data-uid="' + u.id + '" transform="translate(' + cell.x + ',' + cell.y + ')' +
+      // the chosen piece rises off the cloth (static: no animation)
+      (isSel ? ' translate(0,' + (-R * 0.14).toFixed(4) + ') scale(1.12)' : '') + '">' +
+      tokenBase(R, u.owner, isSel) +
       sel +
       A.tokenInner(u.key, R, u.owner, u.breached) +
       rankBadge(u.badge, R) +
@@ -1052,7 +1110,8 @@ rankBadge('?', R)
   function astraButtons(owner) {
     const st = g.state;
     if (!E.rules(st).astras) return '';
-    return '<span class="astra-row">' + E.ASTRA_ORDER.map(function (key) {
+    return '<span class="astra-row"><span class="astra-shakti">' + esc(tr('astra.shakti', 'Shakti')) + ' <b>' + st.shakti[owner] + '</b>/5</span>' +
+      E.ASTRA_ORDER.map(function (key) {
       const def = L.astra(key);
       const used = st.astrasUsed[owner] && st.astrasUsed[owner][key];
       const ready = E.astraReady(st, owner, key);

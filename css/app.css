@@ -2294,7 +2294,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
     --pad-l: max(6px, env(safe-area-inset-left));
     --pad-r: max(6px, env(safe-area-inset-right));
     --gap: 8px;
-    --rail-l: clamp(104px, 15vw, 150px);
+    --rail-l: clamp(108px, 17vw, 160px);
     --rail-r-min: 164px;
     --avail-h: calc(100vh - var(--pad-t) - var(--pad-b));
     --board-w: min(calc(var(--avail-h) * var(--board-aspect, 1)),
@@ -2324,11 +2324,12 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
   #screen-game .game-hud {
     position: absolute; left: var(--pad-l); top: var(--pad-t); bottom: var(--pad-b); width: var(--rail-l); min-height: 0; overflow-y: auto; overscroll-behavior: contain;
     display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start;
-    gap: 5px; padding: 0; border: 0 !important; background: none !important; box-shadow: none !important; backdrop-filter: none;
+    grid-auto-rows: max-content;
+    gap: 5px; padding: 0 0 2px; border: 0 !important; background: none !important; box-shadow: none !important; backdrop-filter: none;
   }
   #screen-game .game-hud > *, #screen-game .hud-right > * { min-width: 0; }
   #screen-game .game-hud :is(.icon-btn, .sky-chip, .vow-chip, .clock) {
-    width: 100%; height: 52px; min-height: 44px; border-radius: 12px; padding: 4px 2px;
+    width: 100%; height: 46px; min-height: 44px; border-radius: 12px; padding: 2px;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
   }
   #screen-game .game-hud .icon-btn .ico { width: 20px; height: 20px; }
@@ -2339,6 +2340,7 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
   #btn-game-menu { order: 1; }
   #btn-hud-settings { order: 2; }
   #screen-game .hud-centre { order: 3; grid-column: 1 / -1; }
+  #screen-game #hud-sky { display: none !important; }   /* the hour lives in the goal box */
   #hud-sky { order: 4; flex-direction: row !important; flex-wrap: wrap; column-gap: 4px; row-gap: 0; font-size: 15px; font-weight: 800; }
   #hud-sky .ico { width: 18px; height: 18px; }
   #hud-sky .hud-label { flex-basis: 100%; }
@@ -2410,15 +2412,23 @@ html[lang="hi"] .seg-btn, html[lang="mr"] .seg-btn {
   #screen-game .action-buttons .mode-btn[data-act="advisor"] { grid-column: 1 / -1; }
   #screen-game .action-buttons .mode-btn[data-act="deselect"]:nth-last-child(2) { grid-column: auto; }
   /* astras: picture and name; four in a row when the rail is wide enough */
+  #screen-game .action-bar { container-type: inline-size; }
   #screen-game .action-bar .astra-row {
-    grid-column: 1 / -1; order: -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(62px, 1fr)); gap: 5px; overflow: visible;
+    grid-column: 1 / -1; order: -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; overflow: visible;
+    justify-content: stretch; width: 100%;
+  }
+  @container (min-width: 290px) {
+    #screen-game .action-bar .astra-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
   #screen-game .action-bar .astra-btn {
     width: auto; height: auto; min-height: 58px; padding: 4px 2px 9px;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
   }
   #screen-game .action-bar .astra-btn :is(.astra-ico, .astra-art) { width: 30px; height: 30px; border-radius: 6px; }
-  #screen-game .action-bar .astra-name { display: block; font-size: 9.5px; font-weight: 700; line-height: 1.1; text-decoration: inherit; }
+  #screen-game .action-bar .astra-name {
+    display: block; max-width: 100%; font-size: 9px; font-weight: 700; line-height: 1.1; text-decoration: inherit;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
   #screen-game .action-bar .astra-cost { bottom: 2px; }
 
   /* Sanjaya: a fixed plate at the foot of the right rail; a long line scrolls inside it */
@@ -2911,7 +2921,6 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
 /* the rank on a token: a solid seal, readable over the painting */
 .token .tok-seal { fill: var(--surya-main, #c8341c); stroke: #f8efd9; stroke-width: 0.012; }
 .token.void .tok-seal { fill: var(--chandra-main, #2c58a8); }
-.token.hidden-unit .tok-seal { fill: #3a3128; }
 .token .tok-badge .tok-rank,
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .token .tok-badge .tok-rank {
   fill: #fff8ea; stroke: none; font-family: var(--display); font-weight: 800;
@@ -2919,3 +2928,75 @@ html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12
 /* the chosen order stays legible on cotton */
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-btn.on { background: var(--vermilion) !important; border-color: var(--vermilion) !important; color: #fff8ea !important; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-btn.on .ico { color: #fff8ea !important; }
+
+/* ── Depth and contrast (Commander, 6 Nov 2026) ──────────────────────────────
+ * Three planes: a dark war-tent cloth behind everything, the painted field lifted
+ * on it by one soft shadow, cotton panels on top. Pata idiom only: no brass, no
+ * glass, no glow loops. Every shadow here is static. */
+html[data-skin="pata"] #screen-game {
+  background-color: #3a1d12 !important;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M0 3h6M3 0v6' stroke='%23000' stroke-opacity='.22' stroke-width='1'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 42%, #5a2e1c 0%, #3a1d12 55%, #24120b 100%) !important;
+}
+html[data-skin="pata"] #screen-game .board-shell,
+html[data-skin="pata"] #screen-game .board-shell.has-field {
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6), 0 0 0 3px var(--leaf), inset 0 0 0 2px var(--ink) !important;
+}
+html[data-skin="pata"] #screen-game .board-shell:not(.has-field) {
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6), 0 0 0 3px var(--leaf), inset 0 0 0 12px var(--cotton-2), inset 0 0 0 14px var(--ink) !important;
+}
+html[data-skin="pata"] #screen-game .board-shell.sky-night:not(.has-field) {
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6), 0 0 0 3px #c7cbe0, inset 0 0 0 12px var(--indigo-cloth), inset 0 0 0 14px #c7cbe0 !important;
+}
+html[data-skin="pata"] #screen-game .board-shell.has-field.sky-night {
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6), 0 0 0 3px #c7cbe0, inset 0 0 0 2px #c7cbe0 !important;
+}
+/* panels sit on the dark cloth with a firm edge */
+html[data-skin="pata"] #screen-game :is(.player-strip, .action-bar, .tip-bar, .coach, .icon-btn, .sky-chip, .vow-chip, .clock, .hud-goal) {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.45) !important;
+}
+html[data-skin="pata"] #screen-game .clock { background: var(--cotton-2); color: var(--ink); border: 1.5px solid var(--line-strong); }
+html[data-skin="pata"] #screen-game .turn-pill { border: 1.5px solid var(--leaf); }
+html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700; }
+
+/* tokens: a ground shadow under each, and the unknown carries a '?' seal */
+.token .tok-shadow { fill: rgba(20, 12, 6, 0.42); stroke: none; }
+.token.selected-token .tok-shadow { fill: rgba(20, 12, 6, 0.5); }
+
+/* the goal and the next turn of the field (landscape rail) */
+.hud-goal { display: none; }
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 560px) {
+  #screen-game .hud-goal:not([hidden]) {
+    display: grid; gap: 5px; margin-top: 5px; padding: 6px 7px; border-radius: 10px;
+    background: var(--cotton-2); color: var(--ink); border: 1.5px solid var(--line-strong);
+    font-size: 10px; line-height: 1.25; text-align: left;
+  }
+  #screen-game .goal-turn span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #screen-game .goal-line b { color: var(--vermilion); text-transform: uppercase; letter-spacing: 0.06em; font-size: 9px; margin-right: 2px; }
+  #screen-game .goal-turn { display: grid; gap: 3px; padding-top: 4px; border-top: 1px dashed var(--line-strong); font-weight: 600; }
+  #screen-game .goal-turn .ico { width: 12px; height: 12px; vertical-align: -2px; margin-right: 2px; }
+  #screen-game .goal-turn.sky.mine b { color: var(--vermilion); }
+  #screen-game .goal-turn.sky:not(.mine) b { color: var(--lapis); }
+  #screen-game .goal-turn b { font-size: 12px; color: var(--vermilion); }
+  #screen-game .goal-pips { display: flex; gap: 3px; }
+  #screen-game .goal-pips i { flex: 1; height: 6px; border-radius: 3px; background: rgba(28, 21, 16, 0.14); }
+  #screen-game .goal-pips i.on { background: var(--saffron); }
+  #screen-game .goal-turn.soon { background: #fde3b8; margin: 0 -7px -6px; padding: 5px 7px 6px; border-radius: 0 0 9px 9px; }
+  #screen-game .goal-turn.soon .goal-pips i.on { background: var(--vermilion); }
+  #screen-game .action-bar .astra-shakti {
+    display: block; grid-column: 1 / -1; font-size: 10.5px; font-weight: 700; color: var(--dim); letter-spacing: 0.03em;
+  }
+  #screen-game .action-bar .astra-shakti b { color: var(--vermilion); font-size: 13px; }
+}
+.astra-shakti { display: none; }
+
+/* astras: ready is unmistakable; not-enough-Shakti is grey; spent is struck through */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.ready {
+  background: #fffaf0 !important; border: 2px solid var(--saffron) !important; box-shadow: 0 3px 0 var(--vermilion) !important; color: var(--ink);
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.ready .astra-name { color: var(--vermilion); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.locked { border-style: dashed !important; background: rgba(242, 228, 196, 0.6) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.locked :is(.astra-art, .astra-ico) { filter: grayscale(1); opacity: 0.45; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.locked .astra-name { color: var(--dim); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.spent { opacity: 0.35; }
