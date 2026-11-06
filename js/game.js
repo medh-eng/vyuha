@@ -966,10 +966,12 @@
         keep.setAttribute('width', 2 * FH); keep.setAttribute('height', 2 * FH);
         keep.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       } else {
-        // the other fields are painted to the board's own shape (docs/prompts/PATA.md)
-        keep.setAttribute('x', bounds.x); keep.setAttribute('y', bounds.y);
-        keep.setAttribute('width', bounds.w); keep.setAttribute('height', bounds.h);
-        keep.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        // the other fields are painted to the board's own shape (docs/prompts/PATA.md);
+        // A.PATA_FIELD_BOX lines each painting up with its cells
+        const box = (A.PATA_FIELD_BOX && A.PATA_FIELD_BOX[st.boardKey]) || null;
+        keep.setAttribute('x', box ? box.x : bounds.x); keep.setAttribute('y', box ? box.y : bounds.y);
+        keep.setAttribute('width', box ? box.w : bounds.w); keep.setAttribute('height', box ? box.h : bounds.h);
+        keep.setAttribute('preserveAspectRatio', box ? (box.stretch ? 'none' : 'xMidYMid meet') : 'xMidYMid slice');
       }
       svg.insertBefore(keep, svg.firstChild);
     }

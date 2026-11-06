@@ -2842,6 +2842,21 @@ html:not([data-skin="pata"]):not([data-skin="pahari"]) .token .tok-note-rank { f
 /* Sanjaya's Scroll preview */
 .scroll-preview { display: block; width: 100%; max-height: 62vh; object-fit: contain; border-radius: 10px; border: 2px solid var(--line-strong); background: #efe0bd; }
 
+/* ══ Rang Phase 2 (6 Nov 2026): painted avatars and astra stills ══ */
+/* the avatars are head and shoulders on transparent cloth: a cotton disc behind them */
+html[data-skin="pata"] .av { background: radial-gradient(circle at 50% 35%, #fbf3df, #ead7ae); }
+html[data-skin="pata"] .av .av-img { object-position: 50% 0; }
+/* astra stills: no dark-loop backdrop in this look, so the painting itself is the card's centre */
+html[data-skin="pata"] .st-astra-mark { width: 148px; height: 148px; }
+html[data-skin="pata"] .st-astra-mark .astra-art { width: 140px; height: 140px; object-fit: contain; }
+html[data-skin="pata"] :is(.astra-btn, .sel-badge, .unit-emblem) .astra-art { object-fit: contain; }
+/* the invocation card's words, readable on cotton */
+html[data-skin="pata"] .stage-astra .st-astra-by { color: rgba(28, 21, 16, 0.6); }
+html[data-skin="pata"] .stage-astra-agneya .st-astra-name .deva { color: #b8301a; }
+html[data-skin="pata"] .stage-astra-sammohana .st-astra-name .deva { color: #6b3fa0; }
+html[data-skin="pata"] .stage-astra-vayavya .st-astra-name .deva { color: #2c58a8; }
+html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12; }
+
 </style>
 </head>
 <body>
@@ -7914,6 +7929,26 @@ html:not([data-skin="pata"]):not([data-skin="pahari"]) .token .tok-note-rank { f
   };
   // In the Pata look these slots show the new paintings instead of today's
   const PATA_SLOTS = { 'portrait:sanjaya': 'pata:portraits/sanjaya' };
+  // Phase 2 (6 Nov 2026): the nine avatars and the four astra stills
+  ['arjuna', 'karna', 'bhima', 'abhimanyu', 'ghatotkach', 'drona', 'bhishma', 'draupadi', 'dhrishtadyumna'].forEach(function (k) {
+    PATA_SLOTS['hero:' + k] = 'pata:portraits/' + k;
+  });
+  ['vayavya', 'sammohana', 'agneya', 'brahma'].forEach(function (k) { PATA_SLOTS['astra:' + k] = 'pata:astras/' + k; });
+
+  /* Where each Phase 2 field painting sits, in board units (x, y, width,
+   * height), measured on the shipped pixels by tools/prepare-pata.py:
+   * - small (Sarvatobhadra): the painted 6 × 8 grid (px 218.5–976.5 across,
+   *   258–1195 down of 1196 × 1315) lies on the cells exactly. The painted
+   *   squares are 8 % taller than wide, so this one is stretched to fit.
+   * - large (Kurukshetra): the plain inside the border (px 104–1207 down)
+   *   spans the 10 rows, so each camp lies under its army's three deploy rows.
+   * - padma: the seed pod (px 621, 682) on the hub; the petals (radius ≈ 470 px)
+   *   reach the third ring. */
+  const PATA_FIELD_BOX = {
+    small: { x: -1.7296, y: -2.2028, w: 9.4670, h: 11.2273, stretch: true },
+    large: { x: -1.4352, y: -0.9429, w: 10.8523, h: 11.9220 },
+    padma: { x: -6.4742, y: -7.1102, w: 12.4689, h: 13.7096 }
+  };
 
   function slotPath(slot) {
     const i = slot.indexOf(':');
@@ -8185,6 +8220,8 @@ html:not([data-skin="pata"]):not([data-skin="pahari"]) .token .tok-note-rank { f
     // the wheel's two paintings too, so the first battle does not redraw as they land
     probe('pata:fields/chakra-day', slotPath('pata:fields/chakra-day'));
     probe('pata:fields/chakra-night', slotPath('pata:fields/chakra-night'));
+    // the astra stills sit on the action bar in every battle and on the invocation card
+    ['vayavya', 'sammohana', 'agneya', 'brahma'].forEach(function (k) { probe('pata:astras/' + k, slotPath('pata:astras/' + k)); });
   }
   function paintedPiece(key, owner, breached) {
     if (skin !== 'pata') return null;
@@ -8290,8 +8327,9 @@ html:not([data-skin="pata"]):not([data-skin="pahari"]) .token .tok-note-rank { f
     figuresOn: figuresOn,
     figureSvg: figureSvg,
     paintedPiece: paintedPiece,
-    // fields with a painting besides the wheel: add 'padma', 'small', 'large' as their files arrive
-    PATA_FIELDS: [],
+    // fields with a painting besides the wheel (Phase 2, 6 Nov 2026), placed by PATA_FIELD_BOX
+    PATA_FIELDS: ['padma', 'small', 'large'],
+    PATA_FIELD_BOX: PATA_FIELD_BOX,
     pataArt: pataArt,
     figureInner: figureInner,
     avatar: avatar,
@@ -9926,7 +9964,7 @@ html:not([data-skin="pata"]):not([data-skin="pahari"]) .token .tok-note-rank { f
 
   let hubPaint = null, hubTimer = null;
   function artLanded(slot) {
-    if (!hubPaint || !/^(hero|portrait):/.test(slot)) return;
+    if (!hubPaint || !/^(hero|portrait):|^pata:portraits\//.test(slot)) return;
     clearTimeout(hubTimer);
     hubTimer = setTimeout(function () { if (hubPaint) hubPaint(); }, 60);
   }
@@ -10537,7 +10575,8 @@ html:not([data-skin="pata"]):not([data-skin="pahari"]) .token .tok-note-rank { f
     const def = (U.ASTRA_DEFS || {})[ev.astra] || { name: ev.astra, deva: '' };
     const ours = ev.owner === viewer;
     const systemReduced = root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const anim = !reduced() && !systemReduced && !document.documentElement.classList.contains('lite')
+    // the painted cloth look shows the astra's still large instead of the old dark loop
+    const anim = !reduced() && !systemReduced && !document.documentElement.classList.contains('lite') && A.getSkin() !== 'pata'
       ? A.pathFor('astra:' + ev.astra + '-anim') : null;
     const html =
       '<div class="st-astra-mark">' + A.astraMark(ev.astra) + '</div>' +
@@ -11547,10 +11586,12 @@ html:not([data-skin="pata"]):not([data-skin="pahari"]) .token .tok-note-rank { f
         keep.setAttribute('width', 2 * FH); keep.setAttribute('height', 2 * FH);
         keep.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       } else {
-        // the other fields are painted to the board's own shape (docs/prompts/PATA.md)
-        keep.setAttribute('x', bounds.x); keep.setAttribute('y', bounds.y);
-        keep.setAttribute('width', bounds.w); keep.setAttribute('height', bounds.h);
-        keep.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        // the other fields are painted to the board's own shape (docs/prompts/PATA.md);
+        // A.PATA_FIELD_BOX lines each painting up with its cells
+        const box = (A.PATA_FIELD_BOX && A.PATA_FIELD_BOX[st.boardKey]) || null;
+        keep.setAttribute('x', box ? box.x : bounds.x); keep.setAttribute('y', box ? box.y : bounds.y);
+        keep.setAttribute('width', box ? box.w : bounds.w); keep.setAttribute('height', box ? box.h : bounds.h);
+        keep.setAttribute('preserveAspectRatio', box ? (box.stretch ? 'none' : 'xMidYMid meet') : 'xMidYMid slice');
       }
       svg.insertBefore(keep, svg.firstChild);
     }

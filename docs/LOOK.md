@@ -39,7 +39,7 @@ board plus the one effects canvas, one-shot effects only, idle < 3 % on every sc
 
 | Phase | Sessions | Work | Gate after |
 |---|---|---|---|
-| 0 Direction ✅ | 1–2 | Prompt pack (`docs/prompts/PATA.md`), 32 px legibility sheet (`tools/legibility.mjs`), three looks to try on a phone (`rang.html`: A Pata, B Pahari, C Bright), skin system | **Gate 1:** Commander picks the look on his phone |
+| 0 Direction ✅ | 1–2 | Prompt pack (`docs/prompts/PATA.md`), 32 px legibility sheet (`tools/legibility.mjs`), three looks to try on a phone (`rang.html`: A Pata, B Pahari, C Bright — removed 6 Nov, in git history), skin system | **Gate 1:** Commander picks the look on his phone |
 | 1 One field ✅ | 4–5 | Chakravyuha day/night, 20 pieces + hidden sketch + fort states + banners, reveal/clash/fall/sky effects, cotton & lacquer UI kit, Sanjaya's chamber home, ravanhatta theme | **Gate 2:** beats today's build side by side; 5 people name 8 of 10 pieces at 32 px; idle < 3 % |
 | 2 Fields | 3–4 | Other three fields, astra films and ten avatars repainted, every screen, hi/mr strings | — |
 | 3 New feel | 3–4 | Sanjaya's Scroll, charcoal notes, festival days, phone buzz, sound pass | **Gate 3:** five-person playtest + respect review |
@@ -49,7 +49,7 @@ board plus the one effects canvas, one-shot effects only, idle < 3 % on every sc
 
 - `html[data-skin]` = `bronze` (Classic, the default) · `pata` · `pahari` · `bright`. Chosen in
   Settings → *Look (preview)*, or for a quick look with `index.html?skin=pata` (the link wins).
-  Landing page for Gate 1: `rang.html`.
+  Landing page for Gate 1: `rang.html` (removed after Gate 1; in git history).
 - Pata and Pahari draw every piece as a stand-in vector figure (`FIGURES` in `js/art.js`, 64-unit
   grid, colours from CSS classes so one drawing serves both armies and every skin). Hidden enemies
   are the same ink sketch (`SKETCH`). The painted files from `PATA.md` replace the figures later.

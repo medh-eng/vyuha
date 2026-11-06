@@ -21,7 +21,7 @@ const context = {
   Image: FakeImage,
   console,
   document: {
-    documentElement: { style: { setProperty() {} } },
+    documentElement: { style: { setProperty() {} }, setAttribute() {} },
     body: { classList: { add() {} } },
   },
 };
@@ -33,13 +33,32 @@ for (const [slot, expected] of [
   ['sky:night', 'assets/art/opt/ui/night.jpg'],
   ['ui:breach', 'assets/art/opt/ui/breach.jpg'],
   ['portrait:sanjaya-anim', 'assets/art/opt/portraits/sanjaya-anim.webp'],
-  ['hero:arjuna', 'assets/art/opt/heroes/arjuna.webp'],
+  // the Painted cloth look (default) swaps in the Phase 2 avatars and astra stills
+  ['hero:arjuna', 'assets/art/pata/portraits/arjuna.webp'],
+  ['astra:vayavya', 'assets/art/pata/astras/vayavya.webp'],
   ['astra:agneya-anim', 'assets/art/opt/astras/agneya-anim.webp'],
+  ['pata:fields/padma-night', 'assets/art/pata/fields/padma-night.webp'],
 ]) {
   const resolved = art.artFor(slot);
   assert.equal(loaded.at(-1), expected, `${slot} must request the shipped asset path`);
   assert.equal(resolved, expected, `${slot} must resolve to an existing asset`);
 }
+// Classic keeps its own paintings
+art.setSkin('bronze');
+for (const [slot, expected] of [
+  ['hero:karna', 'assets/art/opt/heroes/karna.webp'],
+  ['astra:brahma', 'assets/art/opt/astras/brahma.webp'],
+]) {
+  assert.equal(art.artFor(slot), expected, `${slot} (Classic) must resolve to its own painting`);
+}
+art.setSkin('pata');
+// every Pata file the game can ask for exists
+const pataFiles = [];
+for (const f of ['chakra', 'padma', 'small', 'large']) for (const h of ['day', 'night']) pataFiles.push(`fields/${f}-${h}`);
+for (const k of ['sanjaya', 'arjuna', 'karna', 'bhima', 'abhimanyu', 'ghatotkach', 'drona', 'bhishma', 'draupadi', 'dhrishtadyumna']) pataFiles.push('portraits/' + k);
+for (const k of ['vayavya', 'sammohana', 'agneya', 'brahma']) pataFiles.push('astras/' + k);
+for (const f of pataFiles) assert.ok(existsSync(join(root, 'assets/art/pata', f + '.webp')), 'missing Pata art: ' + f);
+for (const k of art.PATA_FIELDS) assert.ok(art.PATA_FIELD_BOX[k], 'field painting without a placement box: ' + k);
 
 const html = readFileSync(join(root, 'index.html'), 'utf8');
 const og = html.match(/<meta property="og:image" content="([^"]+)"/);
@@ -57,4 +76,4 @@ for (const language of ['hi', 'en']) {
   }
 }
 
-console.log(`Asset paths: 6 resolved; OG preview: valid; narration: ${voiceIds.length * 2} files found.`);
+console.log(`Asset paths: 8 resolved, 2 Classic, ${pataFiles.length} Pata files; OG preview: valid; narration: ${voiceIds.length * 2} files found.`);

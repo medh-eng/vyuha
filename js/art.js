@@ -116,6 +116,26 @@
   };
   // In the Pata look these slots show the new paintings instead of today's
   const PATA_SLOTS = { 'portrait:sanjaya': 'pata:portraits/sanjaya' };
+  // Phase 2 (6 Nov 2026): the nine avatars and the four astra stills
+  ['arjuna', 'karna', 'bhima', 'abhimanyu', 'ghatotkach', 'drona', 'bhishma', 'draupadi', 'dhrishtadyumna'].forEach(function (k) {
+    PATA_SLOTS['hero:' + k] = 'pata:portraits/' + k;
+  });
+  ['vayavya', 'sammohana', 'agneya', 'brahma'].forEach(function (k) { PATA_SLOTS['astra:' + k] = 'pata:astras/' + k; });
+
+  /* Where each Phase 2 field painting sits, in board units (x, y, width,
+   * height), measured on the shipped pixels by tools/prepare-pata.py:
+   * - small (Sarvatobhadra): the painted 6 × 8 grid (px 218.5–976.5 across,
+   *   258–1195 down of 1196 × 1315) lies on the cells exactly. The painted
+   *   squares are 8 % taller than wide, so this one is stretched to fit.
+   * - large (Kurukshetra): the plain inside the border (px 104–1207 down)
+   *   spans the 10 rows, so each camp lies under its army's three deploy rows.
+   * - padma: the seed pod (px 621, 682) on the hub; the petals (radius ≈ 470 px)
+   *   reach the third ring. */
+  const PATA_FIELD_BOX = {
+    small: { x: -1.7296, y: -2.2028, w: 9.4670, h: 11.2273, stretch: true },
+    large: { x: -1.4352, y: -0.9429, w: 10.8523, h: 11.9220 },
+    padma: { x: -6.4742, y: -7.1102, w: 12.4689, h: 13.7096 }
+  };
 
   function slotPath(slot) {
     const i = slot.indexOf(':');
@@ -387,6 +407,8 @@
     // the wheel's two paintings too, so the first battle does not redraw as they land
     probe('pata:fields/chakra-day', slotPath('pata:fields/chakra-day'));
     probe('pata:fields/chakra-night', slotPath('pata:fields/chakra-night'));
+    // the astra stills sit on the action bar in every battle and on the invocation card
+    ['vayavya', 'sammohana', 'agneya', 'brahma'].forEach(function (k) { probe('pata:astras/' + k, slotPath('pata:astras/' + k)); });
   }
   function paintedPiece(key, owner, breached) {
     if (skin !== 'pata') return null;
@@ -492,8 +514,9 @@
     figuresOn: figuresOn,
     figureSvg: figureSvg,
     paintedPiece: paintedPiece,
-    // fields with a painting besides the wheel: add 'padma', 'small', 'large' as their files arrive
-    PATA_FIELDS: [],
+    // fields with a painting besides the wheel (Phase 2, 6 Nov 2026), placed by PATA_FIELD_BOX
+    PATA_FIELDS: ['padma', 'small', 'large'],
+    PATA_FIELD_BOX: PATA_FIELD_BOX,
     pataArt: pataArt,
     figureInner: figureInner,
     avatar: avatar,

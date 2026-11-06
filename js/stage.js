@@ -197,7 +197,8 @@
     const def = (U.ASTRA_DEFS || {})[ev.astra] || { name: ev.astra, deva: '' };
     const ours = ev.owner === viewer;
     const systemReduced = root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const anim = !reduced() && !systemReduced && !document.documentElement.classList.contains('lite')
+    // the painted cloth look shows the astra's still large instead of the old dark loop
+    const anim = !reduced() && !systemReduced && !document.documentElement.classList.contains('lite') && A.getSkin() !== 'pata'
       ? A.pathFor('astra:' + ev.astra + '-anim') : null;
     const html =
       '<div class="st-astra-mark">' + A.astraMark(ev.astra) + '</div>' +
