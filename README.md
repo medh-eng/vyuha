@@ -81,11 +81,11 @@ js/modes.js                 Pehla Yuddh, Daily Chakravyuha (catalogues I–III),
 js/languages.js             interface strings: English, Hindi, Marathi (built from docs/i18n/)
 js/ui.js                    home, setup, codex, settings, saves, profiles
 js/audio.js · js/fx.js · js/art.js · js/storage.js · js/main.js
-assets/                    what the game loads: art/opt, audio, voice, 3D pieces
-masters/                    originals as made (never shipped in an app build)
+assets/                     what the game loads: art/opt (Classic), art/pata (Painted cloth), audio, voice
+masters/                    (not in git) originals as made — zips described in docs/MASTERS.md
 assets/audio/               music and one-shots
-assets/3d/                  starter 3D pieces: GLB for renders, STL for printing
-docs/                       DIRECTOR, ROADMAP, HANDOFF, PACING, LANDSCAPE; balance/, i18n/, prompts/, agents/, voice/
+                            3D pieces (GLB, STL) are in the masters zips too
+docs/                       DIRECTOR, ROADMAP, HANDOFF, PACING, LANDSCAPE, LOOK, MASTERS, SOURCES; balance/, i18n/, prompts/, agents/, voice/
 incoming/                   drop zone; text/ holds drafts for the next chapter
 tests/                      rules, self-play, Daily, languages, assets, DOM
 tools/                      standalone build, phone harnesses (shots, idle heat, robot, landscape, media),

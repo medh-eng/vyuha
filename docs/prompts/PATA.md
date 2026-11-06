@@ -129,7 +129,9 @@ Put files in `incoming/audio/`. WAV, 48 kHz, 24-bit, no reverb, no clipping (lev
 
 A sampled ravanhatta is fine as a stand-in; a live recording is the dream.
 
-## Phase 2 — the other fields, avatars and astras (start any time)
+## Phase 2 — the other fields, avatars and astras (✅ arrived and in the game, 6 Nov 2026)
+
+Still wanted: the three night fields again without Gemini's corner star.
 
 Phase 1 is in the game. Same rules as above: attach `surya-senapati.png` as the style image and
 say *"Match this image exactly in style."* Drop files in `incoming/art/pata/` (the sub-folder is in

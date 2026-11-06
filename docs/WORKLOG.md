@@ -223,3 +223,10 @@ tuning.
 - **Hero engine** for Bhima, Karna, Ghatotkacha, Dhrishtadyumna behind `config.heroes`; not in any UI. First screen (`tools/hero-sim.mjs`, 200 games, wheel/veteran): Karna (9) 60.5 %, others in noise.
 - Robot player now takes the offered vow (it was stuck behind the offer from battle 2 on).
 - Briefs: ChatGPT Batch 5 (hero screening, AI hero awareness, hero-card design), Sarvam Batch 5 (vow strings, Chapter IV lines, respect read), Commander art (vow stamps).
+
+## 6 Nov 2026 — Director: Rang Phase 2 art in the game; repository tidy
+
+- **Phase 2 art wired** (Commander's 19 paintings + brush sound): Padmavyuha, Sarvatobhadra and Kurukshetra each painted day and night under the cells, lined up by `A.PATA_FIELD_BOX` (the painted 6 × 8 grid sits exactly on Sarvatobhadra's cells; the two camps lie under the deploy rows on Kurukshetra; the lotus pod on the Padma hub). Nine avatars and four astra stills replace the Classic paintings in the Pata look; the invocation card shows the still large on cotton. The reveal now plays one wet brush stroke.
+- Night fields: Gemini's corner star covered (mirrored corner tile) and the cloth re-dyed toward indigo so the Chandra hour reads.
+- Fix: the profile hub did not repaint when a Pata portrait finished loading.
+- **Repository tidy:** masters (`masters/`, the Pata PNGs in `incoming/`), the 3D starter pieces and `rang.html` removed from the tree — 240 MB → 33 MB. Originals in four zips (`docs/MASTERS.md`), sent to the Commander; still in git history. `masters/` and `assets/3d/` git-ignored; `tools/prepare-pata.py` finds masters in `incoming/` or an unzipped `masters/`, skips missing ones. Sound/art provenance in one file, `docs/SOURCES.md`.

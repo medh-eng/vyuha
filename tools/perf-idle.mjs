@@ -77,12 +77,15 @@ rows.push(await measure('home'));
 await page.evaluate(() => AC.app.modals && AC.app.modals.slice().forEach((m) => m.close()));
 await page.click('#btn-new-match');
 await page.waitForSelector('#screen-setup:not([hidden])');
+// BOARD=padma|small|large measures another field (default: the wheel)
+if (process.env.BOARD) await page.evaluate((b) => { AC.app.setup.board = b; AC.ui.renderSetup(); }, process.env.BOARD);
 await page.click('#btn-start-match');
 await page.evaluate(() => AC.app.modals.slice().forEach((m) => m.close()));
 await page.click('#action-bar [data-deploy="lock"]');
 await page.waitForFunction(() => AC.game.state && AC.game.state.phase === 'battle');
 await page.evaluate(() => AC.app.modals.slice().forEach((m) => m.close()));
 await page.waitForFunction(() => !AC.game.busy && !AC.game.thinking && AC.game.state.turn === 1, null, { timeout: 30000 }).catch(() => {});
+if (process.env.BOARD) console.log('board', await page.evaluate(() => AC.game.state.boardKey));
 rows.push(await measure('battle-idle'));
 // select a piece to arm odds/pulses
 await page.evaluate(() => {

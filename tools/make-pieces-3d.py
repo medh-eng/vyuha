@@ -8,6 +8,8 @@ Writes, for each of the ten pieces:
     assets/3d/glb/<slug>_chandra.glb   silver-indigo
     assets/3d/stl/<slug>.stl           for 3D printing a physical prototype (millimetres)
 and a contact sheet at assets/3d/preview.png.
+The output is not kept in git since 6 Nov 2026: the last build is in
+vyuha-3d-pieces.zip (docs/MASTERS.md). assets/3d/ is git-ignored.
 
 Every piece stands on the same 28 mm base (a standard miniature base) and has its own
 silhouette on top, so the set reads at a glance on a real table. These are deliberately

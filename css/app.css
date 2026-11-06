@@ -2818,3 +2818,18 @@ html:not([data-skin="pata"]):not([data-skin="pahari"]) .token .tok-note-rank { f
 
 /* Sanjaya's Scroll preview */
 .scroll-preview { display: block; width: 100%; max-height: 62vh; object-fit: contain; border-radius: 10px; border: 2px solid var(--line-strong); background: #efe0bd; }
+
+/* ══ Rang Phase 2 (6 Nov 2026): painted avatars and astra stills ══ */
+/* the avatars are head and shoulders on transparent cloth: a cotton disc behind them */
+html[data-skin="pata"] .av { background: radial-gradient(circle at 50% 35%, #fbf3df, #ead7ae); }
+html[data-skin="pata"] .av .av-img { object-position: 50% 0; }
+/* astra stills: no dark-loop backdrop in this look, so the painting itself is the card's centre */
+html[data-skin="pata"] .st-astra-mark { width: 148px; height: 148px; }
+html[data-skin="pata"] .st-astra-mark .astra-art { width: 140px; height: 140px; object-fit: contain; }
+html[data-skin="pata"] :is(.astra-btn, .sel-badge, .unit-emblem) .astra-art { object-fit: contain; }
+/* the invocation card's words, readable on cotton */
+html[data-skin="pata"] .stage-astra .st-astra-by { color: rgba(28, 21, 16, 0.6); }
+html[data-skin="pata"] .stage-astra-agneya .st-astra-name .deva { color: #b8301a; }
+html[data-skin="pata"] .stage-astra-sammohana .st-astra-name .deva { color: #6b3fa0; }
+html[data-skin="pata"] .stage-astra-vayavya .st-astra-name .deva { color: #2c58a8; }
+html[data-skin="pata"] .stage-astra-brahma .st-astra-name .deva { color: #9a6a12; }

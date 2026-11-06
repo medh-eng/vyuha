@@ -1,5 +1,8 @@
 """Rebuild the Commander's October audio pack with FFmpeg (masters untouched).
 
+The masters are outside git: unzip vyuha-masters-audio.zip at the repository
+root first (docs/MASTERS.md).
+
 python3 tools/prepare-audio-pack.py
 Intermediate PCM files are separated before crossfading so trimming a shared
 input cannot terminate a late tail when the early head reaches EOF.

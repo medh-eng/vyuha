@@ -1116,7 +1116,7 @@
 
   let hubPaint = null, hubTimer = null;
   function artLanded(slot) {
-    if (!hubPaint || !/^(hero|portrait):/.test(slot)) return;
+    if (!hubPaint || !/^(hero|portrait):|^pata:portraits\//.test(slot)) return;
     clearTimeout(hubTimer);
     hubTimer = setTimeout(function () { if (hubPaint) hubPaint(); }, 60);
   }

@@ -1,8 +1,9 @@
 # incoming/ — the drop zone
 
-Put new files here and the Director (Claude) takes it from there: keeps your master, makes the
-optimised copy for the game, wires it in, tests it on desktop and phone, and moves it into
-`assets/`.
+Put new files here and the Director (Claude) takes it from there: makes the optimised copy for
+the game, wires it in, tests it on desktop and phone, moves it into `assets/`, and moves your big
+original out of the repository into the masters archive (`docs/MASTERS.md`). So this folder is
+usually almost empty — that means nothing is waiting.
 
 **How to upload on GitHub:** open this folder on github.com → **Add file** → **Upload files** →
 drag the files in → write one line saying what they are → **Commit changes**. You can also just

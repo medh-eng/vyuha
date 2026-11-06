@@ -39,14 +39,17 @@ Engine and rules untouched; runs beside the hero work.
 
 - [x] **[D]** Plan and prompt pack `docs/prompts/PATA.md`
 - [ ] **[C]** Seven decisions in `docs/LOOK.md` (confirm or change)
-- [x] **[D]** Phase 0: skin system (Settings → Look (preview), `?skin=`), "Classic bronze" default, three looks to try on a phone at `rang.html`, stand-in painted figures, 32 px sheet (`tools/legibility.mjs`)
+- [x] **[D]** Phase 0: skin system (Settings → Look (preview), `?skin=`), "Classic bronze" default, three looks to try on a phone (`rang.html`, removed 6 Nov — in git history), stand-in painted figures, 32 px sheet (`tools/legibility.mjs`)
 - [x] **[C]** **Gate 1** — Pata chosen: the Commander made its full Phase 1 art set (5 Nov)
 - [x] **[C]** Phase 1 art and sound (`PATA.md` §1–6): 35 images + 11 sounds arrived 5 Nov
 - [x] **[D]** Phase 1 wiring: painted pieces, hidden sketch, fort gate states, painted Chakravyuha day/night, home chamber + lamp, Sanjaya portrait, pakhawaj clashes, cloth sounds, ravanhatta home music (`tools/prepare-pata.py`)
-- [ ] **[C]** Source links for the YouTube sounds (`masters/audio/supplied-2026-11-05/SOURCES.md`), or replace them before a store launch
+- [ ] **[C]** Source links for the YouTube sounds and the 6 Nov brush (`docs/SOURCES.md`), or replace them before a store launch
 - [x] **[D]** Phase 1, rest: reveal colour-flood + sting, banners where pieces fall, sky re-dye, every screen in cotton, **Pata is the default look** (Classic bronze in Settings)
 - [ ] **[C]** **Gate 2** — beats today's build; 5 people name 8 of 10 pieces at 32 px; idle < 3 %
-- [ ] **[D][C]** Phase 2: other fields, astras, avatars, every screen
+- [x] **[C]** Phase 2 art: Padmavyuha, Sarvatobhadra, Kurukshetra day/night, nine avatars, four astra stills, reveal brush (6 Nov)
+- [x] **[D]** Phase 2 wiring: each field lined up with its cells, avatars and astra stills in the Pata look, brush stroke on reveal, night fields re-dyed and the corner star covered (6 Nov)
+- [ ] **[C]** Regenerate the three night fields without the corner star (masters still carry it)
+- [ ] **[D]** Phase 2, rest: scenario cards and remaining dark screens in Pata
 - [x] **[D]** Phase 3, first part: Sanjaya's Scroll (result screen → painted share image, `js/scroll.js`), charcoal notes (hold or right-click a hidden enemy)
 - [ ] **[D]** Phase 3, rest: festival days, haptics on clashes, sound pass
 - [ ] **[C]** **Gate 3** — five-person playtest + respect review
@@ -76,7 +79,7 @@ Engine and rules untouched; runs beside the hero work.
 
 ## Launch
 
-- [ ] **[D]** Android build with Capacitor; ship only `assets/` (≈25 MB), never `masters/`
+- [ ] **[D]** Android build with Capacitor; ship only `assets/` (≈30 MB); masters are outside git (`docs/MASTERS.md`)
 - [ ] **[C]** Play Store listing (`incoming/text/store-listing.md`), icon, feature graphic, screenshots, trailer
 - [ ] **[C]** Name/trademark search for "VYUHA"; IP review of the rules before going commercial (not legal advice)
 - [ ] **[C]** Launch week — Makar Sankranti is the natural moment
