@@ -12,6 +12,7 @@ Last updated: 7 Nov 2026 (agent review, hub tap fix, cleanup).
 | ID | Owner | Task | Done when |
 |---|---|---|---|
 | T-19 | C | Merge the pull request: ChatGPT robot (4.1), centre-cell tap fix, cleanup, Pata scenario cards (T-09) | merged, live |
+| T-23 | C | Tidy GitHub: repository → **Branches** → delete the 26 old branches marked *Merged* (every commit is in `main`); then **Settings → General → Automatically delete head branches** on, so merged PR branches go by themselves. Claude sessions cannot delete branches | only `main` + open PR branches left |
 | T-20 | C | Paint two scenario cards: `scenes/card-duel.png`, `scenes/card-abhimanyu.png` (2400 × 1350, prompts in `docs/prompts/PATA.md` §5b); upload to `incoming/art/pata/scenes/` | files supplied |
 | T-02 | C | On the phone: play a Quick battle on Sarvatobhadra and Kurukshetra sideways; say whether the turned field helps | a yes/no and any trouble |
 | T-03 | C | On the phone: play Quick to round 5 on the wheel; do the dashed landing rings help or clutter? | a yes/no |
@@ -48,7 +49,7 @@ Last updated: 7 Nov 2026 (agent review, hub tap fix, cleanup).
 
 - [x] T-09 Scenario cards, story cards (painting band; the story paintings had never loaded in either look — url() inside a CSS variable resolved against `css/`) and the pass-and-play curtain in Pata; sweep harness `tools/pata-sweep.mjs` (7 Nov)
 - [x] T-18 ChatGPT Batch 4.1: robot in landscape (844×390, 640×360), all four fields, drill and Daily, real taps only, seeded; CI workflow on every PR (7 Nov). It found the centre-cell tap bug — fixed
-- [x] Cleanup: `masters/audio/` (36 MB) out of git (in `vyuha-masters-audio.zip`); superseded 1 Nov evidence folders removed; 26 merged branches deleted (7 Nov)
+- [x] Cleanup: `masters/audio/` (36 MB) out of git (in `vyuha-masters-audio.zip`); superseded 1 Nov evidence folders removed (7 Nov)
 - [x] T-15 PR #24 merged (7 Nov)
 - [x] T-04 Review plan step 4: battle log from your side (You/Enemy, cell names, your pieces by name, hidden enemy pieces hidden, tap to mark cells) and audio priority table + checks (`tests/audio.mjs`, `tests/log.mjs`, `tools/battle-log.mjs`, 7 Nov)
 - [x] T-01 PR #23 merged (7 Nov)
