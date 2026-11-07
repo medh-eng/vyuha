@@ -109,7 +109,9 @@
     if (!SJ || settings().narrator === false) return;
     keys = keys.filter(Boolean);
     if (!keys.length) return;
-    sayQueue = sayQueue.concat(keys).slice(0, 3);
+    // the three most important waiting lines, newest moments not crowded out by older ones
+    sayQueue = SJ.rank(sayQueue.concat(keys)).slice(0, 3);
+    markSaid(sayQueue);
     const pump = function () {
       if (!sayQueue.length) { sayTimer = null; return; }
       const k = sayQueue.shift();
@@ -120,8 +122,12 @@
   }
   function speakOnce(key) {
     if (g.said[key]) return;
-    g.said[key] = true;
     speak([key]);
+  }
+  // once-a-battle lines count as said only when they were actually chosen to be spoken
+  const ONCE = ['shakti_full', 'last_rounds', 'sunset_near'];
+  function markSaid(keys) {
+    keys.forEach(function (k) { if (ONCE.indexOf(k) !== -1) g.said[k] = true; });
   }
 
   /* ── the legend that opens a match ── */
@@ -1168,6 +1174,7 @@ rankBadge('?', R)
       if (isSel) cls += ' selected';
       if (isFocus && !isSel) cls += ' hint';
       if (isLast) cls += ' last-move';
+      if (g.logMark && g.logMark.indexOf(id) !== -1) cls += ' log-mark';
       if (target) cls += ' target-' + target;
       if (target === 'astra' || target === 'pick') cls += ' astra-' + g.astra;
       if (g.armed === id) cls += ' armed';
@@ -1188,7 +1195,7 @@ rankBadge('?', R)
         }
       }
       const markerType = target === 'pick' ? 'astra' : target;
-      const markup = '<g class="' + cls + '" data-id="' + id + '" tabindex="0" role="gridcell" aria-label="' + esc(label) + '">' +
+      const markup = '<g class="' + cls + '" data-id="' + id + '" tabindex="0" role="gridcell" aria-label="' + esc(cellText(id) + ', ' + label) + '">' +
         shapeSvg(cell, !!tex) + hubArt +
         (memo && memo.mem.fallen[id] && bannerArt[memo.mem.fallen[id]]
           ? '<image class="pata-banner" href="' + bannerArt[memo.mem.fallen[id]] + '" x="' + (cell.x - cell.tr * 1.25) + '" y="' + (cell.y - cell.tr * 1.25) +
@@ -1587,18 +1594,69 @@ rankBadge('?', R)
     }).join(' · ');
   }
 
+  /* ── battle log (review plan step 4) ──
+   * Each entry is written from the viewer's side: "You" or "Enemy", the cells by name, your own
+   * piece by name, an enemy piece only if it was visible when it acted. Entries with cells are
+   * buttons: tapping one marks those cells on the field for a moment (no animation). */
+  function cellText(id) {
+    const n = id && G.cellName ? G.cellName(g.state.boardKey, id) : null;
+    if (!n) return '';
+    if (n.kind === 'square') return n.text;
+    if (n.kind === 'hub') return board().kind === 'hex' ? tr('log.centre', 'centre') : tr('log.hub', 'hub');
+    return tr('log.ring' + n.ring, ['', 'inner', 'middle', 'outer'][n.ring] || '') + ' ' + n.clock;
+  }
+  g.cellText = cellText;
+  function pieceText(key) {
+    const d = L.unit(key) || U.UNIT_DEFS[key];
+    if (!d) return '';
+    return d.name + (d.badge && /^\d+$/.test(d.badge) ? ' ' + d.badge : '');
+  }
+  function logLine(l, viewer) {
+    const route = function (from, to) {
+      const a = cellText(from), b = cellText(to);
+      return a && b && a !== b ? a + ' → ' + b : (b || a);
+    };
+    const mine = l.who === viewer;
+    let who = '', body = esc(l.text), where = '';
+    if (l.who === 1 || l.who === 2) who = mine ? tr('log.you', 'You') : tr('log.enemy', 'Enemy');
+    if (l.kind === 'move' && l.who) {
+      const piece = mine || l.seen ? pieceText(l.piece) : tr('log.hidden', 'hidden piece');
+      body = '<b>' + esc(piece) + '</b> ' + esc(route(l.from, l.at));
+    } else if ((l.kind === 'clash' || l.kind === 'barrage' || l.kind === 'scan' || (l.kind === 'core' && l.from)) && l.who) {
+      where = route(l.from, l.at);
+    } else if (l.at || l.from) {
+      where = l.from && l.from !== l.at ? cellText(l.from) + ' ↔ ' + cellText(l.at) : cellText(l.at);
+    }
+    const cells = [l.from, l.at].filter(Boolean).join(' ');
+    const side = who ? (mine ? ' side-mine' : ' side-theirs') : '';
+    return '<' + (cells ? 'button type="button"' : 'div') + ' class="log-entry kind-' + esc(l.kind) + side + '"' +
+      (cells ? ' data-cells="' + esc(cells) + '"' : '') + '>' +
+      '<span class="log-turn">R' + l.turn + '</span>' +
+      (who ? '<span class="log-who">' + esc(who) + '</span>' : '') +
+      (where ? '<span class="log-where">' + esc(where) + '</span>' : '') +
+      '<span class="log-text">' + body + '</span>' +
+      '</' + (cells ? 'button' : 'div') + '>';
+  }
   function renderLog() {
     const host = $('#battle-log');
     if (!host) return;
     const st = g.state;
     if (!st.log.length) {
-      host.innerHTML = '<div class="log-entry empty">No actions yet.</div>';
+      host.innerHTML = '<div class="log-entry empty">' + esc(tr('log.empty', 'No actions yet.')) + '</div>';
       return;
     }
-    host.innerHTML = st.log.slice(-60).reverse().map(function (l) {
-      return '<div class="log-entry kind-' + esc(l.kind) + '"><span class="log-turn">R' + l.turn + '</span>' + esc(l.text) + '</div>';
-    }).join('');
+    // in pass-and-play the log is hidden while the device changes hands
+    if (st.viewer === 0) { host.innerHTML = ''; return; }
+    const viewer = viewerOf(st);
+    host.innerHTML = st.log.slice(-60).reverse().map(function (l) { return logLine(l, viewer); }).join('');
   }
+  function markCells(ids) {
+    clearTimeout(g.logMarkTimer);
+    g.logMark = ids;
+    render();
+    g.logMarkTimer = setTimeout(function () { g.logMark = null; if (g.state) render(); }, 2400);
+  }
+  g.markCells = markCells;
 
   /* ══ interaction ═══════════════════════════════════════════════ */
 
@@ -1837,16 +1895,14 @@ rankBadge('?', R)
       }
     });
     if (st.shakti && st.shakti[me] >= 5 && !g.said.shakti_full && E.rules(st).astras && !(st.astrasUsed[me] || {}).brahma) {
-      g.said.shakti_full = true;
       keys.push('shakti_full');
     }
     if (st.phase === 'battle') {
-      const warning = st.turnLimit && st.turnLimit - st.turn === 4 ? 'last_rounds'
-        : !st.turnLimit && capOf(st) - st.turn === 3 ? 'sunset_near' : null;
-      if (warning && !g.said[warning]) {
-        if (g.calmActive) { g.said[warning] = true; keys.push(warning); }
-        else speakOnce(warning);
-      }
+      // from four rounds (or three before sunset) to the end, until it has been spoken once
+      const left = st.turnLimit ? st.turnLimit - st.turn : capOf(st) - st.turn;
+      const warning = st.turnLimit && left <= 4 && left >= 1 ? 'last_rounds'
+        : !st.turnLimit && left <= 3 && left >= 1 ? 'sunset_near' : null;
+      if (warning && !g.said[warning]) keys.push(warning);
     }
     return keys;
   }
@@ -2017,9 +2073,12 @@ rankBadge('?', R)
       if (ev.kind === 'clash' && (major || hasAstra)) return false;
       return ['clash', 'barrage', 'scan', 'breach', 'astra', 'core', 'sky', 'rotate'].indexOf(ev.kind) !== -1;
     });
-    const keys = narrate(events, me, st).sort(function (a, b) { return SJ.priority(b) - SJ.priority(a); });
-    if (st.phase === 'over' && !keys.length) keys.push(st.winner === 0 ? 'draw' : st.winner === me ? 'victory' : 'defeat');
+    const moments = narrate(events, me, st);
+    // the battle's result outranks the blow that ended it (a fort taken outranks both)
+    if (st.phase === 'over') moments.push(st.winner === 0 ? 'draw' : st.winner === me ? 'victory' : 'defeat');
+    const keys = SJ ? SJ.rank(moments) : moments;
     const voiced = !!(keys.length && SJ && settings().narrator !== false);
+    if (voiced) markSaid(keys.slice(0, 1));
     let tail = null;
     for (let i = 0; i < beats.length; i++) {
       const ev = beats[i];
@@ -2821,6 +2880,17 @@ rankBadge('?', R)
       const scrim = document.getElementById('scrim');
       const open = panel.classList.toggle('open');
       if (scrim) scrim.classList.toggle('on', open);
+    });
+    document.getElementById('battle-log').addEventListener('click', function (e) {
+      const entry = e.target.closest('[data-cells]');
+      if (!entry || !g.state) return;
+      sfx('ui');
+      // where the drawer covers the field, step it aside so the marked cells can be seen
+      if (window.matchMedia && window.matchMedia('(max-width: 1080px)').matches) {
+        document.getElementById('log-panel').classList.remove('open');
+        document.getElementById('scrim').classList.remove('on');
+      }
+      markCells(entry.getAttribute('data-cells').split(' '));
     });
     document.getElementById('btn-log-close').addEventListener('click', function () {
       sfx('ui');

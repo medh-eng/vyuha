@@ -65,7 +65,7 @@ Engine and rules untouched; runs beside the hero work.
 - [x] **[D]** Step 2: four wheel lessons before the first battle; odds in words (Likely win / Uncertain / Likely loss, Certain once ranks are known); Confirm strike / Cancel (7 Nov, PR #21)
 - [ ] **[S]** Hindi/Marathi for the 65 step-2 strings (`docs/i18n/pending-first-session.en.json`)
 - [x] **[D]** Step 3: dashed landing rings one round before the turn, warning, gold cells for exposed enemy ranks after (7 Nov, PR open)
-- [ ] **[D]** Step 4: a more useful battle log (cell names, own pieces), audio priority checks
+- [x] **[D]** Step 4: battle log from your side — You/Enemy, cell names, your pieces by name, tap to mark cells; Sanjaya's priority table with checks (7 Nov, PR open)
 - [ ] **[C]** 5–10 real first-session playtests (lessons → first battle), then puzzles, seven-vyuha campaign, Abhimanyu Escape
 
 ## Chapter IV — depth and heroes (next)

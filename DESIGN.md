@@ -72,6 +72,13 @@ stays in Settings and as the fallback.
   turn, for that round only: enemy ranks it exposed on solid gold, your own exposed pieces with a
   thin dashed gold ring.
 - Gold dot = a move. Ring = a strike. Vermilion = urgent (the countdown, a warning).
+- **The battle log speaks from your side** (step 4): each action shows **You** or **Enemy**, the
+  cells by name and, for a move, the piece — yours always by name, an enemy piece only if it could
+  be seen when it moved (otherwise "hidden piece"). Square fields use their printed coordinates
+  (A1 top-left, the same names when the field is turned sideways); the wheel and the lotus name a
+  cell by ring and clock position on screen (`outer 5:30`, `hub`, `centre`). Tapping an entry marks
+  its cells on the field for 2.4 s with a still saffron ring (no animation); on phones the drawer
+  steps aside first. Cell names also lead each cell's screen-reader label.
 - The four wheel lessons teach one idea each, from controlled starting positions, then point to
   Daily and Quick Battle. No long rules screen.
 
@@ -85,6 +92,12 @@ stays in Settings and as the fallback.
   six overlap rules are in `docs/PACING.md`; follow them for any sound, voice, card or animation.
 - Sound is quiet by default: music about −17 LUFS, one-shots about −14, true peak below −1.5 dB.
   One voice at a time; never two loud effects. Every shipped sound is registered in `data/sounds.json`.
+- **Which line speaks** when several moments fall in one turn: one table, `PRIORITY` in
+  `js/sanjaya.js` — 9 fort falls · 8 the result · 7 a gate breaks · 6 an astra · 5 the clock running
+  out · 4 a piece falls or a formation acts · 3 a trap · 2 the sky or the rings turn · 1 routine.
+  Equal tiers keep the order they happened in. Once-a-battle lines (Shakti full, last rounds, sunset
+  near) count as said only when they actually speak. Every line key needs a tier
+  (`node tests/audio.mjs`).
 - Reduced-motion, colour-blind and high-contrast settings must keep working for anything new.
 
 ## 6. Words

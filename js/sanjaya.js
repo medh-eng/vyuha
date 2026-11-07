@@ -176,14 +176,31 @@
   let active = null;
   let idleWaiters = [];
 
-  function priority(key) {
-    if (/^fort_/.test(key)) return 7;
-    if (/^breach_/.test(key)) return 6;
-    if (/^astra_/.test(key)) return 5;
-    if (/capture|assassinate|both_fell|volley|makara|padma|shield_break/.test(key)) return 4;
-    if (/^trap_/.test(key)) return 3;
-    if (/dawn|dusk|rotate/.test(key)) return 2;
-    return 1;
+  /* Who speaks when several moments fall in one turn (review plan step 4, 7 Nov 2026).
+   * Every line key has an explicit tier; tests/audio.mjs fails if a key is missing.
+   *   9 the fort falls · 8 the battle's result · 7 a gate breaks · 6 an astra
+   *   5 the clock is running out · 4 a piece falls or a formation acts · 3 a trap
+   *   2 the sky or the rings turn · 1 routine colour (openings, a scan, Shakti full, a lost turn) */
+  const PRIORITY = {
+    fort_won: 9, fort_lost: 9,
+    victory: 8, defeat: 8, draw: 8,
+    breach_enemy: 7, breach_own: 7,
+    astra_vayavya: 6, astra_vayavya_enemy: 6, astra_sammohana: 6, astra_sammohana_enemy: 6,
+    astra_agneya: 6, astra_agneya_enemy: 6, astra_brahma: 6, astra_brahma_enemy: 6,
+    last_rounds: 5, sunset_near: 5,
+    win_capture: 4, lose_capture: 4, both_fell: 4, assassinate: 4, volley_kill: 4, volley_turned: 4,
+    makara: 4, padma: 4, shield_break: 4,
+    trap_hit: 3, trap_defused: 3,
+    rotate: 2, rotate_padma: 2, dawn: 2, dawn_enemy: 2, dusk: 2, dusk_enemy: 2,
+    start_duel: 1, start_abhimanyu: 1, start_daily: 1, start_tutorial: 1,
+    scan: 1, shakti_full: 1, entranced_pass: 1
+  };
+  function priority(key) { return PRIORITY[key] || 1; }
+  // Highest tier first; equal tiers keep the order the moments happened in.
+  function rank(keys) {
+    return keys.map(function (k, i) { return { k: k, i: i }; })
+      .sort(function (a, b) { return priority(b.k) - priority(a.k) || a.i - b.i; })
+      .map(function (x) { return x.k; });
   }
 
   function playVoice(line, opts) {
@@ -293,6 +310,8 @@
     LANGS: LANGS,
     say: say,
     priority: priority,
+    PRIORITY: PRIORITY,
+    rank: rank,
     idle: idle,
     stop: stopAll,
     skip: function () { if (active && active.cue) active.cue.stop(); },
