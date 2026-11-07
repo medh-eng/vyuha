@@ -48,7 +48,7 @@ stays in Settings and as the fallback.
 - Turning is view only (`turnBoard` in `js/game.js`): cell ids, rules and the AI never change. The
   painting turns with the cells; coordinates and tokens stay upright.
 - Under 700 px wide the turned field is width-limited and gains nothing, so it stays upright.
-- Wheel and lotus never turn. Own army is at the bottom (square, portrait) or on the left (square, sideways).
+- Wheel and lotus never turn. Own army is at the bottom (square, portrait, you play bottom to top) or on the left (square, sideways, you play left to right).
 
 ## 3. Layout
 
