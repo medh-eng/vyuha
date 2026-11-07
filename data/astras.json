@@ -1,0 +1,37 @@
+{
+  "_about": "Generated from js/units.js by tools/export-data.mjs. Do not edit by hand.",
+  "astras": [
+    {
+      "key": "vayavya",
+      "cost": 1,
+      "name": "Vayavyastra",
+      "deva": "वायव्यास्त्र",
+      "element": "wind",
+      "one": "Swap any two of your own pieces."
+    },
+    {
+      "key": "sammohana",
+      "cost": 2,
+      "name": "Sammohanastra",
+      "deva": "सम्मोहनास्त्र",
+      "element": "trance",
+      "one": "Entrance an enemy piece for two turns."
+    },
+    {
+      "key": "agneya",
+      "cost": 3,
+      "name": "Agneyastra",
+      "deva": "आग्नेयास्त्र",
+      "element": "fire",
+      "one": "Burn a piece of rank 4 or less."
+    },
+    {
+      "key": "brahma",
+      "cost": 5,
+      "name": "Brahmastra",
+      "deva": "ब्रह्मास्त्र",
+      "element": "light",
+      "one": "Destroy any one enemy piece."
+    }
+  ]
+}

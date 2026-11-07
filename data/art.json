@@ -1,0 +1,89 @@
+{
+  "_about": "Register of the shipped paintings, by folder. Hand-maintained; tests/data.mjs checks every folder and file named here exists.",
+  "source_statement": {
+    "by": "Commander",
+    "date": "2026-11-06",
+    "text": "Made with Gemini; its terms allow commercial use."
+  },
+  "sets": [
+    {
+      "path": "assets/art/pata/pieces",
+      "what": "painted pieces, hidden sketch, fort states, banners",
+      "made_with": "Gemini (Commander)",
+      "supplied": "2026-11-05",
+      "corner_star": false
+    },
+    {
+      "path": "assets/art/pata/fields",
+      "files": [
+        "chakra-day.webp",
+        "chakra-night.webp"
+      ],
+      "what": "Chakravyuha day and night",
+      "made_with": "Gemini (Commander)",
+      "supplied": "2026-11-05",
+      "corner_star": false,
+      "note": "chakra-night is still the earlier, day-lit painting recoloured"
+    },
+    {
+      "path": "assets/art/pata/fields",
+      "files": [
+        "padma-day.webp",
+        "small-day.webp",
+        "large-day.webp"
+      ],
+      "what": "lotus and both square fields, day",
+      "made_with": "Gemini (Commander)",
+      "supplied": "2026-11-06",
+      "corner_star": false
+    },
+    {
+      "path": "assets/art/pata/fields",
+      "files": [
+        "padma-night.webp",
+        "small-night.webp",
+        "large-night.webp"
+      ],
+      "what": "lotus and both square fields, night, true indigo",
+      "made_with": "Gemini (Commander)",
+      "supplied": "2026-11-07",
+      "corner_star": false,
+      "note": "replaced the 6 Nov night fields; shipped as supplied"
+    },
+    {
+      "path": "assets/art/pata/frame",
+      "what": "cotton and indigo cloth, chakra border",
+      "made_with": "Gemini (Commander)",
+      "supplied": "2026-11-05",
+      "corner_star": false
+    },
+    {
+      "path": "assets/art/pata/scenes",
+      "what": "Sanjaya's chamber and lamp (home)",
+      "made_with": "Gemini (Commander)",
+      "supplied": "2026-11-05",
+      "corner_star": false
+    },
+    {
+      "path": "assets/art/pata/portraits",
+      "what": "Sanjaya and nine hero avatars",
+      "made_with": "Gemini (Commander)",
+      "supplied": "2026-11-05/06",
+      "corner_star": false
+    },
+    {
+      "path": "assets/art/pata/astras",
+      "what": "four astra stills",
+      "made_with": "Gemini (Commander)",
+      "supplied": "2026-11-06",
+      "corner_star": false
+    },
+    {
+      "path": "assets/art/opt",
+      "what": "Classic (bronze) look paintings",
+      "made_with": "not recorded",
+      "supplied": "2026-10",
+      "corner_star": "many carry a small corner star; replace before any store launch"
+    }
+  ]
+}

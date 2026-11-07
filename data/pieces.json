@@ -1,0 +1,99 @@
+{
+  "_about": "Generated from js/units.js by tools/export-data.mjs. Do not edit by hand.",
+  "deployOrder": [
+    "10",
+    "9",
+    "7",
+    "6",
+    "5",
+    "3",
+    "3",
+    "2",
+    "2",
+    "1",
+    "B",
+    "F"
+  ],
+  "pieces": [
+    {
+      "key": "10",
+      "rank": 10,
+      "count": 1,
+      "name": "Senapati",
+      "deva": "सेनापति",
+      "one": "Strongest piece on the field. Keep it hidden, then commit it."
+    },
+    {
+      "key": "9",
+      "rank": 9,
+      "count": 1,
+      "name": "Maharathi",
+      "deva": "महारथी",
+      "one": "Second strongest — beats everything except the Senapati."
+    },
+    {
+      "key": "7",
+      "rank": 7,
+      "count": 1,
+      "name": "Ashvarohi",
+      "deva": "अश्वारोही",
+      "one": "Fast flanker. Rushes two cells and strikes at the end."
+    },
+    {
+      "key": "6",
+      "rank": 6,
+      "count": 1,
+      "name": "Dhanurdhar",
+      "deva": "धनुर्धर",
+      "one": "Shoots two cells away without moving. Your safe probe."
+    },
+    {
+      "key": "5",
+      "rank": 5,
+      "count": 1,
+      "name": "Divyadrishti",
+      "deva": "दिव्यदृष्टि",
+      "one": "Reveals an enemy within two cells without a fight."
+    },
+    {
+      "key": "3",
+      "rank": 3,
+      "count": 2,
+      "name": "Yantrik",
+      "deva": "यंत्रिक",
+      "one": "The only piece that can clear a trap. Do not waste it."
+    },
+    {
+      "key": "2",
+      "rank": 2,
+      "count": 2,
+      "name": "Rath",
+      "deva": "रथ",
+      "one": "Slides across open lanes and can strike in the same turn."
+    },
+    {
+      "key": "1",
+      "rank": 1,
+      "count": 1,
+      "name": "Chara",
+      "deva": "चर",
+      "one": "Kills the Senapati and the Maharathi — but only if it strikes first."
+    },
+    {
+      "key": "B",
+      "rank": 0,
+      "count": 1,
+      "name": "Shataghni",
+      "deva": "शतघ्नी",
+      "one": "Immovable trap. Kills anything that hits it, except the engineer."
+    },
+    {
+      "key": "F",
+      "rank": -1,
+      "count": 1,
+      "name": "Durg",
+      "deva": "दुर्ग",
+      "one": "Your fort. Its gate breaks on the first blow; the second blow takes it."
+    }
+  ]
+}

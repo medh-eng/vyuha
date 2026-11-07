@@ -110,6 +110,40 @@ try {
     await page.close();
   }
 
+  // 1b. Square fields turn sideways (7 Nov 2026): your army on the left, cells larger than portrait,
+  //     and turning the phone back restores the upright field and the same cell ids
+  {
+    const page = await open(844, 390);
+    for (const board of ['small', 'large']) {
+      await battle(page, board);
+      const side = await page.evaluate(() => {
+        const mid = (id) => { const q = document.querySelector('#board .cell[data-id="' + id + '"]').getBoundingClientRect(); return [q.left + q.width / 2, q.top + q.height / 2, q.width]; };
+        const st = AC.game.state, mine = Object.keys(st.board).find((c) => st.board[c] && st.board[c].owner === 1), theirs = Object.keys(st.board).find((c) => st.board[c] && st.board[c].owner === 2);
+        let b = [Infinity, Infinity, -Infinity, -Infinity];
+        document.querySelectorAll('#board .cell').forEach((c) => { const q = c.getBoundingClientRect(); b = [Math.min(b[0], q.left), Math.min(b[1], q.top), Math.max(b[2], q.right), Math.max(b[3], q.bottom)]; });
+        return { mine: mid(mine), theirs: mid(theirs), wide: b[2] - b[0] > b[3] - b[1], field: !!document.querySelector('#board image.pata-field[transform]') || !document.querySelector('#board image.pata-field') };
+      });
+      assert.ok(side.mine[0] < side.theirs[0], board + ': your army is on the left when sideways');
+      assert.ok(side.wide, board + ': the sideways field is wider than tall');
+      assert.ok(side.field, board + ': the painting turns with the cells');
+      checks += 3;
+      if (board === 'small') {
+        await page.setViewport(view(360, 640)); await wait(400);
+        const up = await page.evaluate(() => {
+          const st = AC.game.state, mine = Object.keys(st.board).find((c) => st.board[c] && st.board[c].owner === 1), theirs = Object.keys(st.board).find((c) => st.board[c] && st.board[c].owner === 2);
+          const y = (id) => document.querySelector('#board .cell[data-id="' + id + '"]').getBoundingClientRect().top;
+          let b = [Infinity, Infinity, -Infinity, -Infinity];
+          document.querySelectorAll('#board .cell').forEach((c) => { const q = c.getBoundingClientRect(); b = [Math.min(b[0], q.left), Math.min(b[1], q.top), Math.max(b[2], q.right), Math.max(b[3], q.bottom)]; });
+          return { mineBelow: y(mine) > y(theirs), tall: b[3] - b[1] > b[2] - b[0] };
+        });
+        assert.ok(up.mineBelow && up.tall, 'portrait: the field is upright again, your army at the bottom');
+        checks += 1;
+        await page.setViewport(view(844, 390)); await wait(400);
+      }
+    }
+    await page.close();
+  }
+
   // 2. Hindi and Marathi wrap inside the rails without shrinking controls
   for (const lang of ['hi', 'mr']) {
     for (const [w, h] of [[640, 360], [844, 390]]) {
