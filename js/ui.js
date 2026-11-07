@@ -476,6 +476,13 @@
     return 'Shubh ratri';
   }
 
+  function quickBattle() {
+    sfx('lock');
+    if (AC.modes) AC.modes.clear();
+    app.setup = quickSetup();
+    AC.game.start(app.setup);
+  }
+
   function quickSetup() {
     const last = app.settings.lastSetup;
     return Object.assign({ mode: 'ai', board: 'wheel', tie: 'attacker', difficulty: 'veteran', timer: 0, scenario: 'duel', ruleset: 'vyuha' },
@@ -521,7 +528,11 @@
     }
     const tutDone = !!app.settings.tutorialDone;
     document.getElementById('btn-tutorial').classList.toggle('card-pulse', !tutDone);
-    document.getElementById('tutorial-sub').textContent = tutDone ? 'Replay the two-minute lesson' : tr('home.lesson.sub', 'Learn the field in two minutes');
+    const lessonsDone = (app.settings.wheelLessons || []).length;
+    document.getElementById('tutorial-sub').textContent = tutDone
+      ? tr('wheel.home_done', 'Replay a wheel lesson')
+      : lessonsDone ? tr('wheel.home_some', 'Wheel lessons') + ' · ' + lessonsDone + ' / 4'
+        : tr('wheel.home_sub', 'Four one-minute lessons on the wheel');
 
     const auto = S.listSaves().filter(function (s) { return s.slot === 'auto'; })[0];
     const saves = S.listSaves().filter(function (s) { return s.slot !== 'auto'; });
@@ -629,10 +640,24 @@
   function wireHome() {
     document.getElementById('btn-new-match').addEventListener('click', function () { sfx('select'); show('setup'); });
     document.getElementById('btn-quick').addEventListener('click', function () {
-      sfx('lock');
-      if (AC.modes) AC.modes.clear();
-      app.setup = quickSetup();
-      AC.game.start(app.setup);
+      // A brand-new player is offered the four wheel lessons once, before any full battle.
+      const st = (app.profile && app.profile.stats) || {};
+      const fresh = !app.settings.tutorialDone && !app.settings.lessonOffered && !(app.settings.wheelLessons || []).length && !st.matches;
+      if (fresh && AC.modes && AC.modes.startWheelLesson) {
+        sfx('select');
+        patchSettings({ lessonOffered: true });
+        modal({
+          kicker: tr('wheel.offer_kicker', 'First time on the wheel?'),
+          title: tr('wheel.offer_title', 'Four short lessons first'),
+          body: '<p class="daily-lede">' + esc(tr('wheel.offer_body', 'About a minute each: a first strike, the turning wheel, a hidden rank and one astra. Then your first battle.')) + '</p>',
+          actions: [
+            { label: tr('wheel.offer_yes', 'Start the lessons'), cls: 'btn-primary', onClick: function () { AC.modes.startWheelLesson(0); } },
+            { label: tr('wheel.offer_no', 'Fight now'), cls: 'btn-ghost', onClick: quickBattle }
+          ]
+        });
+        return;
+      }
+      quickBattle();
     });
     document.getElementById('btn-daily').addEventListener('click', function () {
       sfx('select');
@@ -642,7 +667,7 @@
     document.getElementById('home-sigil').addEventListener('click', function () { sfx('ui'); openProfile(); });
     document.getElementById('btn-tutorial').addEventListener('click', function () {
       sfx('select');
-      if (AC.modes) AC.modes.startTutorial();
+      if (AC.modes) AC.modes.openLessons();
     });
     document.getElementById('btn-resume').addEventListener('click', function () {
       const auto = S.listSaves().filter(function (s) { return s.slot === 'auto'; })[0];
@@ -1471,7 +1496,8 @@
       const h = (root.location && root.location.hash) || '';
       if (!AC.modes) return;
       if (/^#daily/.test(h)) AC.modes.startDaily();
-      else if (/^#learn/.test(h)) AC.modes.startTutorial();
+      else if (/^#learn/.test(h)) AC.modes.startWheelLesson(0);
+      else if (/^#drill/.test(h)) AC.modes.startTutorial();
     };
 
     setTimeout(function () {
@@ -1517,6 +1543,7 @@
     renderSetup: renderSetup,
     applySettings: applySettings,
     patchSettings: patchSettings,
+    quickBattle: quickBattle,
     boot: boot,
     openProfile: openProfile,
     artLanded: artLanded,

@@ -2,7 +2,8 @@
  * Renders any cell graph as SVG, so the square arenas, the Chakravyuha wheel
  * and the Padmavyuha lotus share one renderer, one input path and one set of
  * animations. Chapter III adds the sky, Shakti and astras, formation links,
- * odds on the board, tap-twice strikes, the stage beats and Sanjaya.
+ * odds on the board in plain words, a Confirm strike step, the stage beats
+ * and Sanjaya.
  */
 (function (root) {
   'use strict';
@@ -55,7 +56,7 @@
   const TIPS = [
     'A piece that has never moved can still be the fort or a trap. Probe with something cheap.',
     'The archer kills from two cells away — keep your fort out of a clear lane.',
-    'Select a piece and every target shows your odds. Tap a target twice to strike.',
+    'Select a piece and every target says Likely win, Uncertain or Likely loss. Tap it, then Confirm strike.',
     'Every fifth round the sky turns. In your hour your blows land at +1.',
     'Two of your pieces touching one enemy make Makara — the jaws. +1 to the strike.',
     'A piece with two friends beside it is Padma — the petals. It defends at +1.',
@@ -850,20 +851,55 @@ rankBadge('?', R)
       '<text class="target-glyph" y="' + (R * 0.34) + '" font-size="' + (R * 1.05) + '" text-anchor="middle">' + glyph + '</text>';
   }
 
-  /* A small odds tag above a strike target: the chance this blow succeeds. */
+  /* Odds in plain words (first-session clarity, 7 Nov 2026). The board says
+   * the verdict; the percentage stays as detail in the rail and in Intel. */
+  const VERDICT = {
+    likely_win: 'Likely win', uncertain: 'Uncertain', likely_loss: 'Likely loss',
+    sure_win: 'Certain win', sure_loss: 'Certain loss', both: 'Both fall',
+    core: 'Takes the fort', breach: 'Breaks the gate', noop: 'No effect'
+  };
+  function verdictWord(v) { return tr('odds.' + v.key, VERDICT[v.key]); }
+  function verdictNote(v, revealed) {
+    if (!v.certain) return tr('odds.note_hidden', 'Based on enemy ranks you can’t see yet.');
+    return revealed
+      ? tr('odds.note_known', 'Both ranks are known, so the result is certain.')
+      : tr('odds.note_any', 'Whatever its hidden rank, this is the result.');
+  }
+
+  /* A small tag above a strike target: the verdict for this blow. */
   function oddsTag(cell, odds, armed) {
-    if (!odds) return '';
-    const good = odds.win + odds.core + odds.breach;
-    const pct = Math.round(good * 100);
-    const tone = pct >= 60 ? 'good' : pct >= 35 ? 'even' : 'bad';
+    const v = E.strikeVerdict(odds);
+    if (!v) return '';
     const R = cell.tr;
-    const w = R * (armed ? 2.6 : 1.7);
-    const h = R * 0.62;
-    const y = cell.y - R * 1.55;
-    const label = armed ? pct + '% · tap again' : pct + '%';
-    return '<g class="odds-tag ' + tone + (armed ? ' armed' : '') + '" transform="translate(' + cell.x + ',' + y + ')">' +
+    const label = verdictWord(v);
+    const h = R * (armed ? 0.74 : 0.62);
+    const fs = h * 0.56;
+    const w = Math.max(R * 1.7, label.length * fs * 0.56 + h * 0.9);
+    const y = cell.y - R * 1.6;
+    return '<g class="odds-tag ' + v.tone + (armed ? ' armed' : '') + '" transform="translate(' + cell.x + ',' + y + ')">' +
       '<rect x="' + (-w / 2) + '" y="' + (-h / 2) + '" width="' + w + '" height="' + h + '" rx="' + (h / 2) + '"/>' +
-      '<text y="' + (h * 0.18) + '" font-size="' + (h * 0.56) + '" text-anchor="middle">' + label + '</text></g>';
+      '<text y="' + (h * 0.18) + '" font-size="' + fs + '" text-anchor="middle">' + esc(label) + '</text></g>';
+  }
+
+  /* The confirm step: what will happen, in words, with Confirm and Cancel. */
+  function strikeCard(st, selUnit) {
+    const target = st.board[g.armed];
+    if (!target) return null;
+    const viewer = viewerOf(st);
+    const isBarrage = g.mode === 'special' && L.unit(selUnit.key).hasRanged;
+    const odds = E.strikeOdds(st, viewer, g.sel, g.armed, isBarrage);
+    const v = E.strikeVerdict(odds);
+    if (!v) return null;
+    const who = target.revealed ? target.name + ' · ' + target.badge : tr('odds.unknown', 'hidden enemy');
+    const detail = v.certain ? '' : ' · ' + tr('odds.chance', 'chance to win') + ' ' + v.pct + '%';
+    const info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key, '', selUnit.owner) +
+        '<span class="sel-rank">' + esc(selUnit.badge) + '</span></span>' +
+      '<span class="sel-text"><span class="sel-name">' + esc((isBarrage ? tr('confirm.volley_on', 'Volley on') : tr('confirm.strike_on', 'Strike')) + ' ' + who) + '</span>' +
+      '<span class="verdict ' + v.tone + '">' + esc(verdictWord(v)) + '</span>' +
+      '<span class="sel-desc">' + esc(verdictNote(v, target.revealed) + detail) + '</span></span>';
+    const buttons = '<button class="btn btn-primary confirm-btn" data-act="confirm">' + A.icon('sword') + esc(isBarrage ? tr('confirm.volley', 'Confirm volley') : tr('confirm.strike', 'Confirm strike')) + '</button>' +
+      '<button class="mode-btn" data-act="cancel-strike">' + A.icon('close') + esc(tr('confirm.cancel', 'Cancel')) + '</button>';
+    return { info: info, buttons: buttons };
   }
 
   function currentTargets() {
@@ -1025,7 +1061,7 @@ rankBadge('?', R)
         const R = cell.tr;
         tags += '<g class="odds-tag even armed" transform="translate(' + cell.x + ',' + (cell.y - R * 1.55) + ')">' +
           '<rect x="' + (-R * 1.6) + '" y="' + (-R * 0.31) + '" width="' + (R * 3.2) + '" height="' + (R * 0.62) + '" rx="' + (R * 0.31) + '"/>' +
-          '<text y="' + (R * 0.11) + '" font-size="' + (R * 0.35) + '" text-anchor="middle">tap again to invoke</text></g>';
+          '<text y="' + (R * 0.11) + '" font-size="' + (R * 0.35) + '" text-anchor="middle">' + esc(tr('confirm.target', 'Target')) + '</text></g>';
       }
     });
     // the inner rings live in their own groups so the wheel can turn
@@ -1168,13 +1204,21 @@ rankBadge('?', R)
     if (isHumanTurn && g.mode === 'astra' && g.astra) {
       const def = L.astra(g.astra);
       const hint = g.astra === 'vayavya'
-        ? (g.astraFirst ? 'Now tap the second piece to trade places with.' : 'Tap the first of your pieces to move.')
-        : (g.armed ? 'Tap the target again to invoke.' : 'Tap a glowing target within two cells of your army.');
+        ? (g.armed ? 'These two pieces trade places.' : g.astraFirst ? 'Now tap the second piece to trade places with.' : 'Tap the first of your pieces to move.')
+        : (g.armed ? def.one : 'Tap a glowing target within two cells of your army.');
       info = '<span class="sel-badge astra el-' + def.element + '">' + A.astraMark(g.astra) + '</span>' +
         '<span class="sel-text"><span class="sel-name">' + esc(def.name) + ' <span class="deva">' + esc(def.deva) + '</span></span>' +
         '<span class="sel-desc">' + esc(hint) + '</span></span>';
-      buttons = '<button class="mode-btn" data-act="cancel-astra">' + A.icon('close') + 'Cancel</button>';
-      bar.innerHTML = '<div class="action-info">' + info + '</div><div class="action-buttons">' + buttons + '</div>';
+      buttons = (g.armed ? '<button class="btn btn-primary confirm-btn" data-act="confirm">' + A.astraMark(g.astra) + esc(tr('confirm.astra', 'Invoke') + ' ' + def.name) + '</button>' : '') +
+        '<button class="mode-btn" data-act="cancel-astra">' + A.icon('close') + esc(tr('confirm.cancel', 'Cancel')) + '</button>';
+      bar.innerHTML = '<div class="action-info' + (g.armed ? ' confirm-info' : '') + '">' + info + '</div>' +
+        '<div class="action-buttons' + (g.armed ? ' confirm-buttons' : '') + '">' + buttons + '</div>';
+      return;
+    }
+
+    const card = isHumanTurn && selUnit && g.armed ? strikeCard(st, selUnit) : null;
+    if (card) {
+      bar.innerHTML = '<div class="action-info confirm-info">' + card.info + '</div><div class="action-buttons confirm-buttons">' + card.buttons + '</div>';
       return;
     }
 
@@ -1360,8 +1404,11 @@ rankBadge('?', R)
       if (o.noop > 0.001) rows.push(['No effect', o.noop, 'var(--dim)']);
       const parts = (o.ctx.attParts || []).map(function (p) { return '+' + p.v + ' ' + p.key; })
         .concat((o.ctx.defParts || []).map(function (p) { return 'them +' + p.v + ' ' + p.key; }));
+      const v = E.strikeVerdict(o);
       return '<div class="intel-section"><div class="intel-label">' + (isBarrage ? 'Volley odds' : 'Strike odds') +
-        ' · ' + esc(selUnit.short) + ' → ' + (focus.revealed ? esc(focus.name) : 'unknown') + '</div><div class="intel-odds">' +
+        ' · ' + esc(selUnit.short) + ' → ' + (focus.revealed ? esc(focus.name) : 'unknown') + '</div>' +
+        '<div class="intel-verdict"><span class="verdict ' + v.tone + '">' + esc(verdictWord(v)) + '</span> ' +
+        esc(verdictNote(v, focus.revealed)) + '</div><div class="intel-odds">' +
         rows.map(function (r) {
           return '<div class="odds-row"><span style="color:' + r[2] + '">' + r[0] + '</span>' +
             '<span class="odds-bar"><span style="width:' + Math.round(r[1] * 100) + '%"></span></span>' +
@@ -1442,6 +1489,8 @@ rankBadge('?', R)
     if (g.thinking) return;
     const humanTurn = isPass() || st.owner === 1;
     if (!humanTurn) return;
+    // a lesson may ask the player to tap a cell as an answer (the wheel turns)
+    if (modeHook('onCellTap', id)) { render(); return; }
 
     /* astra targeting */
     if (g.mode === 'astra' && g.astra) {
@@ -1493,7 +1542,7 @@ rankBadge('?', R)
       buzz(8);
       if (!g.hinted) {
         g.hinted = true;
-        FX.toast('Gold dot = move. Ring = strike, with your odds above it.', 'info');
+        FX.toast('Gold dot = move. Ring = strike, with your chances above it.', 'info');
       }
       render();
       return;
@@ -1510,6 +1559,7 @@ rankBadge('?', R)
   function commitAction(from, to, type) {
     const st = g.state;
     const target = st.board[to];
+    if (modeHook('allowAction', { from: from, to: to, type: type }) === false) { sfx('error'); return; }
     const risky = (type === 'attack' || type === 'barrage') && target && settings().confirmActions !== false;
     if (risky && g.armed !== to) {
       g.armed = to;
@@ -1523,6 +1573,17 @@ rankBadge('?', R)
     performAction({ from: from, to: to, type: type });
   }
 
+  /* Confirm strike / Invoke: the same as tapping the armed target again. */
+  function confirmArmed() {
+    const st = g.state;
+    if (!st || !g.armed || g.busy || g.thinking) return;
+    if (g.mode === 'astra' && g.astra) { onAstraCell(g.armed); return; }
+    if (!g.sel) return;
+    const hit = E.computeValidTargets(st, g.sel, g.mode).filter(function (t) { return t.id === g.armed; })[0];
+    if (!hit) { g.armed = null; render(); return; }
+    commitAction(g.sel, g.armed, hit.type);
+  }
+
   function enterAstra(key) {
     const st = g.state;
     if (!st || st.phase !== 'battle' || g.thinking || g.busy) return;
@@ -1533,6 +1594,7 @@ rankBadge('?', R)
       sfx('error');
       return;
     }
+    if (modeHook('allowAction', { type: 'astra', astra: key }) === false) { sfx('error'); return; }
     if (!E.astraTargets(st, st.owner, key).length) {
       FX.toast('No target in reach — astras strike within two cells of your army.', 'warn');
       sfx('error');
@@ -2304,7 +2366,7 @@ rankBadge('?', R)
     const cards = [
       ['व्यूह रचना', 'Deploy', 'Twelve pieces in your own ground. Tap one, then another, to swap them. Presets are only a starting point.'],
       ['चाल', 'Move', 'Tap your piece, then a glowing cell. One step, two for the cavalry, a whole lane for the chariot.'],
-      ['संघर्ष', 'Strike', 'Tap a ringed enemy to see your odds, tap again to strike. Ranks stay hidden until the blow lands.'],
+      ['संघर्ष', 'Strike', 'Tap a ringed enemy: it says Likely win, Uncertain or Likely loss, based on ranks you can’t see yet. Then Confirm strike.'],
       ['दुर्ग', 'The fort', 'The first blow breaks its gate and reveals it. The second blow takes it — and the match.'],
       ['पहर', 'The hours', 'Every fifth round the sky turns. Suryavansh strikes at +1 by day, Chandravansh at +1 by night.'],
       ['व्यूह', 'Formations', 'Makara: strike a piece another of yours touches, +1. Padma: a piece with two friends beside it defends at +1.'],
@@ -2370,6 +2432,8 @@ rankBadge('?', R)
       AC.app.profile = S.getProfile(AC.app.profile.id);
     }
     S.deleteSave('auto');
+    // a lesson that ends in a win tells its own outcome, not "the field is conceded"
+    if (modeHook('customResult', { outcome: outcome })) return;
 
     // Pratigya: judge the vow once, record it, show it under the result
     let vowHtml = '';
@@ -2569,6 +2633,8 @@ rankBadge('?', R)
         const what = act.getAttribute('data-act');
         if (what === 'deselect') { resetSelection(); sfx('deselect'); render(); }
         if (what === 'cancel-astra') cancelAstra();
+        if (what === 'confirm') confirmArmed();
+        if (what === 'cancel-strike') { g.armed = null; sfx('deselect'); render(); }
         if (what === 'advisor') { sfx('ui'); openAdvisor(); }
         return;
       }

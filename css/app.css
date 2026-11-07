@@ -2174,7 +2174,7 @@ html.reduce-motion .st-astra-anim { display: none; }
  * A phone heats when the browser repaints sixty times a second for nothing.
  * Every glow below is kept, but held still, or played a few times and then
  * stopped. Nothing here loops forever except a pulse the player is waiting
- * on (an armed strike, the last seconds of the clock). Measured with
+ * on (the last seconds of the clock; the armed strike stops after three, 7 Nov). Measured with
  * tools/perf-idle.mjs: idle main-thread time fell from ~40% to ~1%.     */
 .app::before, .app::after, .board-shell::before { animation: none !important; }
 .app::before { opacity: 0.5; }
@@ -3000,3 +3000,61 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.locked :is(.astra-art, .astra-ico) { filter: grayscale(1); opacity: 0.45; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.locked .astra-name { color: var(--dim); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.spent { opacity: 0.35; }
+
+/* ── First-session clarity (7 Nov 2026): odds in words, the Confirm strike step,
+   the wheel lessons. All static: no animation, nothing loops. ── */
+.verdict {
+  display: inline-block; align-self: flex-start; margin: 3px 0 2px; padding: 2px 10px; border-radius: 999px;
+  border: 1.5px solid currentColor; font-size: 13px; font-weight: 800; line-height: 1.35; letter-spacing: 0.01em;
+}
+.verdict.good { color: #a7f3d0; background: rgba(52, 211, 153, 0.12); }
+.verdict.even { color: #fde9c0; background: rgba(242, 207, 139, 0.12); }
+.verdict.bad { color: #fecdd3; background: rgba(251, 113, 133, 0.12); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .verdict.good { color: #1d6b43; background: #e3f2df; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .verdict.even { color: #7a4b05; background: #fbecc8; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .verdict.bad { color: #a3230f; background: #fbe0d6; }
+.confirm-info .sel-text { display: flex; flex-direction: column; align-items: flex-start; }
+.confirm-info .sel-name { white-space: normal; }
+.confirm-info .sel-desc { display: block !important; -webkit-line-clamp: unset; }
+.confirm-buttons .confirm-btn { min-height: 44px; font-size: 14px; padding: 8px 16px; }
+.confirm-buttons .confirm-btn :is(.ico, .astra-ico, .astra-art) { width: 18px; height: 18px; }
+.confirm-buttons .mode-btn { min-height: 44px; }
+#screen-game .action-buttons.confirm-buttons { grid-template-columns: minmax(0, 1fr) auto; }
+#screen-game .action-buttons.confirm-buttons > * { grid-column: auto; }
+#screen-game .action-buttons.confirm-buttons .mode-btn { padding: 4px 14px; }
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 560px) {
+  #screen-game .confirm-info .sel-badge:has(.sel-rank) { width: 54px; height: 54px; border-radius: 12px; }
+  #screen-game .confirm-info .sel-rank { transform: scale(0.8); transform-origin: bottom right; }
+  /* the confirm step must show its buttons without scrolling, lesson coach or not */
+  #screen-game:has(#coach:not([hidden])):has(.confirm-info) .coach { max-height: 30%; }
+  #screen-game:has(#coach:not([hidden])):has(.confirm-info) .action-bar { top: calc(var(--pad-t) + 30% + 6px); }
+  #screen-game .confirm-info .sel-name { font-size: 12.5px; }
+  #screen-game .confirm-info .verdict { margin: 2px 0 1px; }
+}
+.intel-verdict { margin: 4px 0 6px; font-size: 11px; color: var(--dim); line-height: 1.4; }
+.intel-verdict .verdict { margin: 0 6px 0 0; font-size: 12px; }
+
+/* The armed strike no longer pulses forever: the Confirm card says what is
+   chosen, so the pulse plays three times and then holds still (phone heat). */
+.cell.armed .cell-fill { animation-iteration-count: 3; }
+
+/* the wheel lessons */
+.coach .coach-check { display: block; margin-top: 4px; font-style: normal; font-weight: 700; color: var(--solar-2); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .coach .coach-check { color: var(--vermilion); }
+.cell.coach-guess .cell-fill { stroke: var(--vermilion, #f2cf8b) !important; stroke-width: 0.05 !important; stroke-dasharray: 0.06 0.035; }
+.astra-btn.coach-hint { outline: 3px solid var(--vermilion, #e0a94a); outline-offset: 2px; }
+.lesson-list { display: grid; gap: 8px; }
+.lesson-row {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; column-gap: 10px; min-height: 52px;
+  padding: 8px 12px; border-radius: var(--r-sm); text-align: left; color: inherit;
+  border: 1px solid var(--line-strong); background: rgba(255, 255, 255, 0.03);
+}
+.lesson-row .deva { font-size: 18px; color: var(--solar-2); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .lesson-row .deva { color: var(--vermilion); }
+.lesson-row b { display: block; font-size: 13.5px; }
+.lesson-row small { display: block; font-size: 11px; color: var(--dim); line-height: 1.35; }
+.lesson-row .lesson-tick { font-size: 12px; font-weight: 800; color: var(--dim); }
+.lesson-row.done .lesson-tick { color: #2f8f5d; }
+.lesson-row.next { border-width: 2px; border-color: var(--solar, #e0a94a); }
+.lesson-drill { margin-top: 10px; font-size: 11.5px; color: var(--dim); }
+.lesson-drill button { color: inherit; text-decoration: underline; padding: 6px 2px; min-height: 44px; }

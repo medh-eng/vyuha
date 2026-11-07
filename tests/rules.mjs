@@ -774,5 +774,25 @@ console.log('Chapter IV — Pratigya vows');
   ok(P.titleFor(2) === null && P.titleFor(3).key === 'vrati' && P.titleFor(30).key === 'satyavrata' && P.nextTitle(4).key === 'dridhavrata', 'vow titles by stars');
 }
 
+// ── odds in plain words (7 Nov 2026) ──
+{
+  const V = E.strikeVerdict;
+  const o = (x) => Object.assign({ win: 0, lose: 0, both: 0, core: 0, breach: 0, noop: 0 }, x);
+  ok(V(o({ win: 1 })).key === 'sure_win' && V(o({ win: 1 })).certain, 'a single winning outcome is certain');
+  ok(V(o({ lose: 1 })).key === 'sure_loss' && V(o({ both: 1 })).key === 'both' && V(o({ core: 1 })).key === 'core', 'other certain outcomes are named');
+  ok(V(o({ win: 0.6, lose: 0.4 })).key === 'likely_win' && !V(o({ win: 0.6, lose: 0.4 })).certain, '60 % reads as likely win');
+  ok(V(o({ win: 0.59, lose: 0.41 })).key === 'uncertain' && V(o({ win: 0.35, lose: 0.65 })).key === 'uncertain', '35–59 % reads as uncertain');
+  ok(V(o({ win: 0.34, lose: 0.66 })).key === 'likely_loss', 'under 35 % reads as likely loss');
+  ok(V(o({ win: 0.5, breach: 0.5 })).key === 'sure_win' && V(o({ win: 0.5, breach: 0.5 })).pct === 100, 'any mix of winning outcomes is a certain win');
+  // a revealed defender always gives a certain verdict
+  const s = blank();
+  s.board['3,2'] = E.createArmy(1, ['9'])[0];
+  const foe = E.createArmy(2, ['5'])[0];
+  s.board['2,2'] = foe;
+  ok(!V(E.strikeOdds(s, 1, '3,2', '2,2')).certain || Object.keys(E.beliefFor(s, 1, '2,2') || {}).length === 1, 'a hidden defender with several possible ranks is not certain');
+  foe.revealed = true;
+  ok(V(E.strikeOdds(s, 1, '3,2', '2,2')).certain, 'a revealed defender gives a certain result');
+}
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 if (fail) process.exitCode = 1;

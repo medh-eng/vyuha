@@ -1,48 +1,50 @@
 # Handoff — latest status
 
-**6 November 2026 (evening) · Director.** Replace this file at the end of each session.
+**7 November 2026 · Director.** Replace this file at the end of each session.
 
 ## State
 
-PR #18 (Pata Phase 2 + tidy) is merged. New branch **`claude/landscape-big-board`** (PR open)
-answers the Commander's phone test of the Pata wheel in landscape. Rules, engine, AI and Daily
-are unchanged.
+PR #19 (landscape rebuild) and PR #20 (fresh-code cache) are merged and live. New branch
+**`claude/first-session-clarity`** (PR open) does step 2 of the review plan: first-session
+clarity. Rules, engine outcomes, AI and Daily are unchanged; the engine only gains a
+presentation helper (`E.strikeVerdict`).
 
-| Commander's report | What changed | Where |
+| Commander's brief | What changed | Where |
 |---|---|---|
-| Sanjaya's "Abhimanyu knew how to break in…" plays twice | The story card ran its callback from both "Take the field" and the modal's close; now once | `showStory` in `js/game.js` |
-| Board changes size on clicks/turns | The landscape field is placed by position, sized only from the screen and `--board-aspect`; rails scroll inside themselves and cannot push it. Measured constant over 14 turns on wheel, padma, large. (Could not reproduce the old jitter in headless Chrome: likely the address bar or enlarged phone text; both are now irrelevant.) | landscape layer in `css/app.css` (rebuilt); `renderBoard` sets `--board-aspect` |
-| Landscape default, board as big as possible | On a phone, entering a battle requests full screen + landscape lock (setting "Full screen, sideways, in battle", default on). Leaving the battle unlocks and exits. A "Full screen / Exit full" rail button. Wheel at 830×318 grows 306 → 310 px; in full screen the address bar's ~60 px also goes to the field | `canFull/enterFull/leaveFull` in `js/game.js`; `show()` in `js/ui.js`; `fullscreen` in `js/storage.js` |
-| New player can't find the buttons | Every left-rail button has its name (Menu, Settings, Intel, Log, Full screen; hour chip says Surya/Chandra); astras show their names in landscape | `.hud-label`, `.astra-name` |
-| Pieces too small, power not visible | Token radius per cell: wheel rings 0.15/0.19/0.21 (was 0.145), squares 0.42 (0.33), lotus 0.64 (0.5), hub 0.25; rank on a solid army-coloured seal; chosen piece shown as a 76 px painting with a rank seal and its full description in the rail | `tr` in `js/geometry.js` (display only); `rankBadge` in `js/game.js` |
-| Step 1 after the Gemini/ChatGPT reviews: goal always in view | Landscape left rail: GOAL line (gate state aware, "by round N"), whose hour (+1, rounds left), "Chakra/Lotus turns in N" with pips (vermilion when 1). Uses the engine's own counters — no new timer. The sky chip moves into this box in landscape | `objectiveText`, `renderGoal` in `js/game.js`; `#hud-goal` in `index.html` |
-| Better visuals, contrast, shadow | Pata battle screen sits on a dark war-tent cloth; the field has one soft drop shadow and a gold rim; panels a firm shadow. Tokens: ground shadow, rim drawn in proportion (rays Surya, solid Chandra), chosen piece lifted 12 %, unknown enemies carry a "?" seal. All static, no filters on tokens | end of `css/app.css`; `tokenBase` in `js/game.js` |
-| Astras looked washed out | Ready = cotton + saffron border + vermilion underline; not enough Shakti = grey, dashed; spent = faded. "Shakti N/5" above them in landscape; four in a row when the rail is ≥ 290 px | end of `css/app.css`; `astraButtons` |
-| (found) "Move / Strike" text invisible when on, in Pata | vermilion fill, cotton text | end of `css/app.css` |
+| Four short lessons on the wheel before any full battle | **Chakra Shiksha**, four lessons on the Chakravyuha, one idea each, controlled positions, enemy held still: (1) *First move, first strike* — your Maharathi and a revealed Rath, step in then strike; (2) *The wheel turns* — round 4, tap the cell where your Rath on ring 2 will be carried (wrong taps explain; after two misses the answer glows), then end the round and watch it land there; (3) *The hidden warrior* — strike a "?" enemy that reads Likely win (75 %), it was a Divyadrishti; (4) *One astra* — 3 Shakti, Agneyastra on a hidden Yantrik (other astras refused in this lesson). Each ends with one line and **Next lesson**; the last ends with **Daily Chakravyuha** and **Quick battle**. No rules screen; the coach in the rail carries one instruction at a time | `WHEEL_LESSONS`, `startWheelLesson`, `openLessons` in `js/modes.js`; hooks `onCellTap`, `allowAction`, `customResult` in `js/game.js` |
+| …before any full battle | Home "Pehla Yuddh" card now opens the lessons (straight into lesson 1 the first time, a 4-row list after). A brand-new player who taps **Yuddh karo** is offered the lessons **once** ("Start the lessons" / "Fight now"). Progress in `settings.wheelLessons`; all four sets `tutorialDone`. `#learn` opens lesson 1. The old six-step square drill (look, volley, trap, fort) stays as "Field drill" in the list and at `#drill` | `js/ui.js`, `js/storage.js` |
+| Odds in plain words | Board tags say **Likely win / Uncertain / Likely loss** (≥ 60 % / 35–59 % / < 35 %), and when only one outcome is possible **Certain win / Certain loss / Both fall / Breaks the gate / Takes the fort**. Note under the verdict: "Based on enemy ranks you can't see yet." or "Both ranks are known, so the result is certain." The % stays as detail ("chance to win 58 %") in the rail and in Intel | `E.strikeVerdict` in `js/engine.js` (8 rules tests); `oddsTag`, `strikeCard`, `oddsBlock` in `js/game.js` |
+| Confirm strike / Cancel instead of only tap twice | First tap on a target arms it; the rail shows the target, the verdict, the note and **Confirm strike** + **Cancel** (Confirm volley for archers; **Invoke ‹astra›** + Cancel for astras). Tapping the target again still works. At 830×318 the lesson coach shrinks to 30 % while confirming so both buttons are in view without scrolling | `confirmArmed`, action bar in `js/game.js`; end of `css/app.css` |
+| Phone heat | The armed-cell pulse used to loop forever; with the Confirm card it now plays 3 times and holds still. Idle probe gains two screens (battle-confirm, lesson-confirm) | `css/app.css`; `tools/perf-idle.mjs` |
 
-## Checks (all passed)
+## Checks (all passed, 7 Nov)
 
-rules 150 · self-play 40, 0 failures · Daily · languages · UI 160 · assets · desktop/phone
-screenshots · landscape 115 (harness now detects the layout by the rail's position, not grid) ·
-idle < 3 % portrait, 844×390 and 830×318 · Calm budget unchanged (33/46) · robot "no problems" ·
-standalone rebuilt · offline cache v30. Extra: board box measured across turns and selections.
+rules 158 · self-play 40, 0 failures · Daily · languages (149 keys) · UI 180 (confirm/cancel,
+verdict words, all four lessons) · assets · desktop/phone screenshots · landscape 115 · idle
+< 3 % at 390×844, 844×390 and 830×318 (battle-confirm 0.4–0.6 %, lesson-confirm 1.2–1.8 %,
+measured after the finite pulses stop) · Calm budget unchanged (33/46) · robot "no problems"
+· **new `tools/first-session.mjs`**: four lessons in Calm at 914×411 and 830×318, Confirm
+visible without scrolling, 32 checks · standalone rebuilt · offline cache v32.
+
+Before/after screenshots at 914×411 and 830×318 were sent to the Commander in chat (not in git).
 
 ## Open
 
-- **Not phone-tested.** Full screen and orientation lock work only after a tap and only in
-  browsers that allow them (Android Chrome yes; iPhone Safari no — there the layout still fits).
-- Square fields stay taller than wide in landscape (own army at the bottom). Turning them sideways
-  would make their cells ~20 % larger; needs the Commander's call (painted camps would lie sideways).
-- New strings (`hud.*`, `goal.*`, `astra.shakti`) are English only: Sarvam to add Hindi/Marathi.
-- Home line "Abhimanyu got in. Can you get out?" kept by the Commander as the promise of a future escape mode.
-- Board render cost rose ~10 % (two circles per token); idle still < 3 %.
-- Next from the review plan: four short wheel lessons (P0-01), plain-language odds + Confirm strike (P0-05), ghost preview of the next ring turn (P1-01).
-- Unchanged from before: night-field regenerations, sound licence links, masters release,
-  scenario cards in Pata, hero work, five-person playtest.
+- **Not phone-tested, no real-person playtest.** The lessons are the funnel for the
+  first-session playtest (5–10 people) that the review plan asks for next.
+- **Translations:** 65 new strings are English-only (Hindi/Marathi fall back to English):
+  `docs/i18n/pending-first-session.en.json` → Sarvam, plus the 5 short "allow" hints in
+  `WHEEL_LESSONS` (`wheel.<lesson>.<step>.allow`). Old `lesson.strike.text` still says
+  "tap again" (still true; the drill only).
+- Lesson pieces held still show the trance mark, as in the old drill.
+- The rail says "Your move · Tap a piece…" under the prediction question in lesson 2 (harmless; could be hidden).
+- Unchanged: square-field sideways decision, night-field regenerations, sound licence links,
+  masters release, scenario cards in Pata, hero screening, Batch 4/5 for ChatGPT and Sarvam.
 
 ## Next
 
-1. **Commander:** merge; on the phone, start a battle (should go full screen and sideways), check
-   piece size, the labels, and that the board no longer resizes; Settings has the toggle to turn it off.
-2. **Director:** Phase 2 rest (scenario cards, dark screens in Pata), Phase 3 rest, Phase 4.
-3. **Sarvam:** Hindi/Marathi for `hud.menu/settings/intel/log/full/exit_full`.
+1. **Commander:** merge; on the phone: Home → Pehla Yuddh, play the four lessons in Calm; check
+   the Confirm strike card in a Quick battle; say if any lesson line is too long.
+2. **Director:** review plan step 3 — ghost preview of the next ring turn, warning one turn before,
+   exposure highlight after (lesson 2 is the natural place to show it first).
+3. **Sarvam:** Hindi/Marathi for `docs/i18n/pending-first-session.en.json` and the `hud.*`, `goal.*`, `astra.shakti` strings.
