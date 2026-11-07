@@ -39,6 +39,8 @@
     noteHinted: false,   // the charcoal-note tip has been shown
     skin: 'pata',        // Rang look: pata (default since 5 Nov 2026) · bronze (Classic); pahari, bright via ?skin=
     tutorialDone: false,
+    wheelLessons: [],    // keys of the four wheel lessons finished (7 Nov 2026)
+    lessonOffered: false, // the first Quick battle offered the lessons once
     landscapeHintDismissed: false,
     fullscreen: true     // battles on a phone open full screen and sideways
   };

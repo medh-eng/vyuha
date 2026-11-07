@@ -106,6 +106,25 @@ await page.evaluate(() => {
 });
 await page.waitForTimeout(4500);
 rows.push(await measure('battle-mid'));
+// first-session clarity (7 Nov 2026): the Confirm strike step and a wheel lesson
+// are screens a new player sits on while deciding
+await page.evaluate(() => {
+  const st = AC.game.state; st.shakti = { 1: 0, 2: 0 }; AC.app.modals.slice().forEach((m) => m.close());
+  const a = AC.engine.allLegalActions(st, 1).find((x) => x.type === 'move');
+  const foe = Object.keys(st.board).find((c) => st.board[c] && st.board[c].owner === 2 && AC.engine.isMovable(st.board[c]));
+  st.board[a.to] = st.board[foe]; st.board[foe] = null;
+  AC.game.sel = null; AC.game.armed = null; AC.game.render();
+  const tap = (id) => document.querySelector('#board [data-id="' + id + '"]').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  tap(a.from); tap(a.to);
+});
+// the armed pulse plays three times (≈2.7 s) and then holds still
+await page.waitForTimeout(3500);
+rows.push(await measure('battle-confirm'));
+await page.evaluate(() => { AC.app.modals.slice().forEach((m) => m.close()); AC.modes.startWheelLesson(2); });
+await page.waitForTimeout(2500);
+await page.evaluate(() => { const tap = (id) => document.querySelector('#board [data-id="' + id + '"]').dispatchEvent(new MouseEvent('click', { bubbles: true })); tap('r2s0'); tap('r1s0'); });
+await page.waitForTimeout(6500);   // the lesson's hint pulses six times, then holds
+rows.push(await measure('lesson-confirm'));
 const renderMs = await page.evaluate(() => { const t = performance.now(); for (let i = 0; i < 10; i++) { AC.game.render(); document.body.offsetHeight; } return (performance.now() - t) / 10; });
 console.log(JSON.stringify({ renderMsPerCall_4xThrottle: +renderMs.toFixed(1) }));
 if (errors.length) console.log('errors:', errors);

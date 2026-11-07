@@ -202,6 +202,292 @@
     if (cell) cell.classList.add('coach-hint');
   }
 
+  /* ══ Chakra Shiksha — four short lessons on the wheel ════════════
+   * First-session clarity (review plan step 2, 7 Nov 2026). One idea per
+   * lesson, a controlled position, no rules screen: (a) first move and a
+   * strike, (b) the wheel turns, (c) the hidden warrior, (d) one astra.
+   * The enemy is held still (a long trance), so nothing surprises the player.
+   * Strings are English with tr() keys; Hindi/Marathi go to Sarvam. */
+
+  const STILL = { stun: 999 };
+  function heldStill(extra) { return Object.assign({}, STILL, extra || {}); }
+  function cellOfKey(st, owner, key) {
+    return E.findUnit(st, function (u) { return u.owner === owner && u.key === key; });
+  }
+
+  const WHEEL_LESSONS = [
+    {
+      key: 'first', deva: 'पहली चाल', title: 'First move, first strike',
+      blurb: 'Two pieces. Step in, then strike.',
+      rosters: { 1: ['9'], 2: ['2'] },
+      build: function (st) {
+        place(st, 'r3s0', 1, '9');
+        place(st, 'r1s0', 2, '2', heldStill({ revealed: true }));
+      },
+      steps: [
+        { key: 'move', text: 'Tap your Maharathi (9) at the foot of the wheel, then the gold dot one cell inward.',
+          hint: function (st, sel) { return sel ? 'r2s0' : 'r3s0'; },
+          allow: function (st, a) { return a.type === 'move' && a.to === 'r2s0' ? true : 'Step one cell inward, along the spoke — the glowing cell.'; },
+          test: function (ev, actor) { return actor === 1 && ev.kind === 'move'; } },
+        { key: 'strike', text: 'The enemy Rath (2) shows its rank. Tap it: the tag says Certain win, because both ranks are known. Then press Confirm strike.',
+          hint: function (st, sel) { return sel ? 'r1s0' : cellOfKey(st, 1, '9'); },
+          test: function (ev, actor) { return actor === 1 && ev.kind === 'clash' && ev.outcome === 'att'; } }
+      ],
+      done: 'Move, then strike. When both ranks are known, the result is certain.'
+    },
+    {
+      key: 'wheel', deva: 'चक्र', title: 'The wheel turns',
+      blurb: 'Predict where a piece will be carried.',
+      rosters: { 1: ['9', '2'], 2: ['3'] },
+      build: function (st) {
+        place(st, 'r2s0', 1, '2');
+        place(st, 'r3s11', 1, '9');
+        place(st, 'r3s6', 2, '3', heldStill());
+      },
+      after: function (st) { st.turn = 4; },    // the rings turn at the end of this round
+      steps: [
+        { key: 'predict', answer: 'r2s1',
+          text: 'Every 5th round the two inner rings turn one cell clockwise and carry what stands on them. They turn after this round. Where will your Rath (2) be? Tap that cell.',
+          hint: function (st, sel, m) { return m.misses >= 2 ? 'r2s1' : 'r2s0'; },
+          wrong: 'Not there. Only the two inner rings turn, one cell clockwise: at the foot of the wheel that is to the left.' },
+        { key: 'turn', text: 'You marked it. Now end the round: move your Maharathi (9) one cell, and watch the wheel turn.',
+          hint: function (st, sel) { return sel ? null : cellOfKey(st, 1, '9'); },
+          allow: function (st, a) { return a.from === cellOfKey(st, 1, '9') ? true : 'Leave the Rath where it is — move the Maharathi (9).'; },
+          test: function (ev, actor) { return ev.kind === 'rotate'; } }
+      ],
+      done: 'The Rath was carried to the cell you marked, and riding the wheel revealed it. In battle, “Chakra turns in” on the left counts down to the next turn.'
+    },
+    {
+      key: 'hidden', deva: 'गुप्त योद्धा', title: 'The hidden warrior',
+      blurb: 'Strike a rank you cannot see.',
+      rosters: { 1: ['9'], 2: ['10', '5', '3', '2'] },
+      build: function (st) {
+        place(st, 'r2s0', 1, '9');
+        place(st, 'r1s0', 2, '5', heldStill());
+        place(st, 'r3s5', 2, '3', heldStill());
+        place(st, 'r3s6', 2, '10', heldStill());
+        place(st, 'r3s7', 2, '2', heldStill());
+      },
+      steps: [
+        { key: 'strike', text: 'A “?” means a hidden rank. Tap your Maharathi (9), then the hidden enemy beside it. It says Likely win: it could be any rank they still have — even the Senapati (10), who beats you. Decide, then Confirm strike.',
+          hint: function (st, sel) { return sel ? 'r1s0' : cellOfKey(st, 1, '9'); },
+          allow: function (st, a) { return a.type === 'attack' ? true : 'Strike the hidden enemy beside your Maharathi.'; },
+          test: function (ev, actor) { return actor === 1 && ev.kind === 'clash'; } }
+      ],
+      done: 'It was a Divyadrishti (5), and your 9 won. “Likely” is based on enemy ranks you can’t see yet; once a rank is known, the result is certain.'
+    },
+    {
+      key: 'astra', deva: 'अस्त्र', title: 'One astra',
+      blurb: 'Spend Shakti on Agneyastra.',
+      rosters: { 1: ['9', '2'], 2: ['3', '10'] },
+      astras: true,
+      build: function (st) {
+        place(st, 'r3s0', 1, '9');
+        place(st, 'r3s1', 1, '2');
+        place(st, 'r1s0', 2, '3', heldStill());
+        place(st, 'r3s6', 2, '10', heldStill());
+      },
+      after: function (st) { st.shakti[1] = 3; },
+      steps: [
+        { key: 'invoke', text: 'Every piece you take lights a lamp of Shakti; astras spend it. You have 3. Tap Agneyastra (it costs 3), then the hidden enemy two cells inward, then Invoke.',
+          astra: 'agneya',
+          hint: function (st) { return AC.game.astra === 'agneya' ? 'r1s0' : null; },
+          allow: function (st, a) { return a.type !== 'astra' || a.astra === 'agneya' ? true : 'This lesson is about Agneyastra — the fire, three lamps.'; },
+          test: function (ev, actor) { return actor === 1 && ev.kind === 'astra'; } }
+      ],
+      done: 'Agneyastra burns a piece of rank 4 or lower and reveals anything stronger. Each astra works once per battle; Brahmastra needs all five lamps.'
+    }
+  ];
+
+  function wheelText(lesson, field, value) { return tr('wheel.' + lesson.key + '.' + field, value); }
+  function stepText(lesson, step, field) { return tr('wheel.' + lesson.key + '.' + step.key + '.' + field, step[field]); }
+
+  function lessonsDone() {
+    const s = (AC.app && AC.app.settings) || {};
+    return Array.isArray(s.wheelLessons) ? s.wheelLessons.slice() : [];
+  }
+  function markLessonDone(key) {
+    const done = lessonsDone();
+    if (done.indexOf(key) === -1) done.push(key);
+    const all = WHEEL_LESSONS.every(function (l) { return done.indexOf(l.key) !== -1; });
+    try { AC.ui.patchSettings(all ? { wheelLessons: done, tutorialDone: true } : { wheelLessons: done }); } catch (e) { /* ignore */ }
+  }
+  function nextLessonIndex() {
+    const done = lessonsDone();
+    for (let i = 0; i < WHEEL_LESSONS.length; i++) if (done.indexOf(WHEEL_LESSONS[i].key) === -1) return i;
+    return -1;
+  }
+
+  function buildWheelLesson(i) {
+    const lesson = WHEEL_LESSONS[i];
+    const st = E.newState({
+      mode: 'ai', board: 'wheel', scenario: 'duel', difficulty: 'recruit', tie: 'attacker',
+      rules: { gates: false, hours: false, vyuha: false, astras: !!lesson.astras }
+    });
+    st.scenario = 'shiksha-wheel';
+    st.board = {};
+    st.rosters = { 1: lesson.rosters[1].slice(), 2: lesson.rosters[2].slice() };
+    lesson.build(st);
+    E.beginBattle(st);
+    if (lesson.after) lesson.after(st);
+    return st;
+  }
+
+  function startWheelLesson(i) {
+    if (i == null || i < 0) i = Math.max(0, nextLessonIndex());
+    const lesson = WHEEL_LESSONS[i];
+    const st = buildWheelLesson(i);
+    active = {
+      kind: 'wheel', state: st, lesson: i, step: 0, misses: 0, guess: null, finished: false,
+      noSave: true, noRecord: true, noRematch: true
+    };
+    AC.game.startPrepared(st, {
+      bannerTitle: wheelText(lesson, 'title', lesson.title),
+      bannerSub: tr('wheel.banner', 'Lesson') + ' ' + (i + 1) + ' / ' + WHEEL_LESSONS.length + ' · ' + lesson.deva,
+      save: false
+    });
+    renderWheelCoach();
+  }
+
+  /* The first time: straight into the next lesson. Afterwards: a short list. */
+  function openLessons() {
+    const done = lessonsDone();
+    if (!done.length) { startWheelLesson(0); return; }
+    const next = nextLessonIndex();
+    const m = AC.ui.modal({
+      kicker: tr('wheel.kicker', 'Chakra Shiksha · four short lessons'),
+      title: next === -1 ? tr('wheel.again', 'Play a lesson again') : tr('wheel.continue', 'Continue learning the wheel'),
+      body: '<div class="lesson-list">' + WHEEL_LESSONS.map(function (l, i) {
+        const isDone = done.indexOf(l.key) !== -1;
+        return '<button class="lesson-row' + (isDone ? ' done' : '') + (i === next ? ' next' : '') + '" data-lesson="' + i + '">' +
+          '<span class="deva">' + esc(l.deva) + '</span><span><b>' + (i + 1) + '. ' + esc(wheelText(l, 'title', l.title)) + '</b>' +
+          '<small>' + esc(wheelText(l, 'blurb', l.blurb)) + '</small></span>' +
+          '<span class="lesson-tick">' + (isDone ? '✓' : i === next ? tr('wheel.start', 'Start') : '') + '</span></button>';
+      }).join('') + '</div>' +
+        '<div class="lesson-drill">' + esc(tr('wheel.drill_lede', 'Also:')) + ' <button data-drill="1">' +
+        esc(tr('wheel.drill', 'Field drill — look, volley, trap and fort (six steps)')) + '</button></div>',
+      actions: [{ label: tr('wheel.close', 'Close'), cls: 'btn-ghost' }]
+    });
+    m.el.addEventListener('click', function (e) {
+      const row = e.target.closest('[data-lesson]');
+      if (row) { m.close(); startWheelLesson(+row.getAttribute('data-lesson')); return; }
+      if (e.target.closest('[data-drill]')) { m.close(); startTutorial(); }
+    });
+  }
+
+  function currentStep(m) {
+    const lesson = WHEEL_LESSONS[m.lesson];
+    return m.step < lesson.steps.length ? lesson.steps[m.step] : null;
+  }
+
+  function renderWheelCoach() {
+    const el = document.getElementById('coach');
+    if (!el) return;
+    const m = active && active.kind === 'wheel' ? active : null;
+    if (!m || !AC.game.state || AC.game.state !== m.state) return;
+    const lesson = WHEEL_LESSONS[m.lesson];
+    const step = currentStep(m);
+    const done = lessonsDone();
+    el.hidden = false;
+    el.innerHTML =
+      '<div class="coach-steps">' + WHEEL_LESSONS.map(function (l, i) {
+        return '<i class="' + (i === m.lesson ? 'on' : done.indexOf(l.key) !== -1 ? 'done' : '') + '"></i>';
+      }).join('') + '</div>' +
+      '<div class="coach-body"><span class="coach-deva deva">' + esc(lesson.deva) + '</span>' +
+      '<b>' + esc(tr('wheel.banner', 'Lesson') + ' ' + (m.lesson + 1) + ' / ' + WHEEL_LESSONS.length + ' · ' + wheelText(lesson, 'title', lesson.title)) + '</b>' +
+      '<span>' + esc(step ? stepText(lesson, step, 'text') : wheelText(lesson, 'done', lesson.done)) +
+      (m.finished ? '<em class="coach-check">✓ ' + esc(tr('wheel.learned', 'Learned')) + '</em>' : '') + '</span></div>';
+  }
+
+  function wheelHint() {
+    const m = active && active.kind === 'wheel' ? active : null;
+    document.querySelectorAll('.coach-hint, .coach-guess').forEach(function (n) { n.classList.remove('coach-hint', 'coach-guess'); });
+    if (!m) return;
+    if (m.guess) {
+      const g = document.querySelector('#board .cell[data-id="' + m.guess + '"]');
+      if (g && !m.finished) g.classList.add('coach-guess');
+    }
+    const step = currentStep(m);
+    if (!step || m.finished) return;
+    if (step.astra && AC.game.astra !== step.astra) {
+      const b = document.querySelector('#action-bar [data-astra="' + step.astra + '"]');
+      if (b) b.classList.add('coach-hint');
+    }
+    const id = step.hint ? step.hint(m.state, AC.game.sel, m) : null;
+    const cell = id ? document.querySelector('#board .cell[data-id="' + id + '"]') : null;
+    if (cell) cell.classList.add('coach-hint');
+  }
+
+  function advanceWheel(m) {
+    const lesson = WHEEL_LESSONS[m.lesson];
+    m.step++;
+    m.misses = 0;
+    if (m.step < lesson.steps.length) {
+      AC.audio.play('unlock');
+      renderWheelCoach();
+      return;
+    }
+    m.finished = true;
+    markLessonDone(lesson.key);
+    AC.audio.play('unlock');
+    renderWheelCoach();
+    // a lesson that ended the battle is told by the result screen
+    if (m.state.phase !== 'over') whenIdle(m, function () { lessonDoneModal(m); });
+  }
+
+  /* Wait until the clash, the wheel turn and Sanjaya have finished. */
+  function whenIdle(m, fn) {
+    let tries = 0;
+    const check = function () {
+      if (!active || active !== m || AC.game.state !== m.state) return;
+      const stage = document.querySelector('.stage');
+      if ((AC.game.busy || stage || AC.app.modals.length) && tries++ < 60) { setTimeout(check, 250); return; }
+      fn();
+    };
+    setTimeout(check, 350);
+  }
+
+  function lessonOutro(m) {
+    const lesson = WHEEL_LESSONS[m.lesson];
+    const next = nextLessonIndex();
+    const nextLesson = next === -1 ? null : WHEEL_LESSONS[next];
+    const html = '<p class="daily-lede">' + esc(wheelText(lesson, 'done', lesson.done)) + '</p>' +
+      (nextLesson ? '' : '<p class="daily-lede">' + esc(tr('wheel.all_done', 'That is the wheel. Now fight on it: the Daily Chakravyuha is the same wheel for everyone today, and Quick battle starts a full match.')) + '</p>');
+    const actions = nextLesson
+      ? [{ label: tr('wheel.next', 'Next lesson') + ': ' + wheelText(nextLesson, 'title', nextLesson.title), cls: 'btn-primary', onClick: function () { startWheelLesson(next); } }]
+      : [
+          { label: tr('home.daily', 'Daily Chakravyuha'), cls: 'btn-primary', icon: 'calendar', onClick: function () { active = null; startDaily(); } },
+          { label: tr('home.quick.sub', 'Quick battle'), cls: 'btn-primary', icon: 'sword', onClick: function () { active = null; AC.ui.quickBattle(); } }
+        ];
+    return { html: html, actions: actions, title: nextLesson ? tr('wheel.learned_title', 'Lesson learned') : tr('wheel.ready', 'You know the wheel') };
+  }
+
+  function lessonDoneModal(m) {
+    const o = lessonOutro(m);
+    AC.ui.modal({
+      kicker: tr('wheel.banner', 'Lesson') + ' ' + (m.lesson + 1) + ' / ' + WHEEL_LESSONS.length,
+      title: o.title,
+      body: o.html,
+      actions: o.actions.concat([{ label: 'Home', cls: 'btn-ghost', onClick: function () { active = null; AC.game.state = null; AC.ui.show('home'); } }])
+    });
+  }
+
+  function wheelTap(m, id) {
+    const step = currentStep(m);
+    if (!step || !step.answer || m.finished) return false;
+    if (id === step.answer) {
+      m.guess = id;
+      AC.audio.play('select');
+      FX.toast(tr('wheel.right', 'Yes — one cell clockwise.'), 'success');
+      advanceWheel(m);
+    } else {
+      m.misses++;
+      AC.audio.play('error');
+      FX.toast(stepText(WHEEL_LESSONS[m.lesson], step, 'wrong'), 'warn');
+    }
+    return true;
+  }
+
   /* ══ Daily Chakravyuha ══════════════════════════════════════════ */
 
   // Keep the existing five-day catalogue until the candidate pack is approved.
@@ -464,7 +750,29 @@
   /* ══ hooks the battle screen calls ══════════════════════════════ */
 
   const hooks = {
-    wantsCoach: function (state) { const m = currentMode(state); return !!(m && m.kind === 'tutorial'); },
+    wantsCoach: function (state) { const m = currentMode(state); return !!(m && (m.kind === 'tutorial' || m.kind === 'wheel')); },
+    onCellTap: function (state, id) {
+      const m = currentMode(state);
+      if (!m || m.kind !== 'wheel') return false;
+      return wheelTap(m, id);
+    },
+    customResult: function (state) {
+      const m = currentMode(state);
+      if (!m || m.kind !== 'wheel' || !m.finished || state.winner !== 1) return false;
+      lessonDoneModal(m);
+      return true;
+    },
+    allowAction: function (state, action) {
+      const m = currentMode(state);
+      if (!m || m.kind !== 'wheel' || m.finished) return true;
+      const step = currentStep(m);
+      if (!step) return true;
+      if (step.answer) { FX.toast(tr('wheel.tap_first', 'First tap the cell where the Rath will land.'), 'warn'); return false; }
+      const ok = step.allow ? step.allow(state, action) : true;
+      if (ok === true) return true;
+      FX.toast(tr('wheel.' + WHEEL_LESSONS[m.lesson].key + '.' + step.key + '.allow', ok), 'warn');
+      return false;
+    },
     noSave: function (state) { const m = currentMode(state); return !!(m && m.noSave); },
     noRecord: function (state) { const m = currentMode(state); return !!(m && m.noRecord); },
     noRematch: function (state) { const m = currentMode(state); return !!(m && m.noRematch); },
@@ -472,6 +780,7 @@
     afterRender: function (state) {
       const m = currentMode(state);
       const coach = document.getElementById('coach');
+      if (m && m.kind === 'wheel') { renderWheelCoach(); wheelHint(); return; }
       if (!m || m.kind !== 'tutorial') { if (coach) coach.hidden = true; return; }
       renderCoach();
       coachHint();
@@ -490,6 +799,11 @@
         });
         renderCoach();
       }
+      if (m.kind === 'wheel' && !m.finished) {
+        const step = currentStep(m);
+        if (step && step.test && arg.events.some(function (ev) { return step.test(ev, arg.actor); })) advanceWheel(m);
+        renderWheelCoach();
+      }
       if (m.kind === 'daily' && state.phase === 'over') finishDaily(m);
     },
     resultExtras: function (state) {
@@ -505,6 +819,14 @@
             AC.game.start(AC.app.setup);
           } }]
         };
+      }
+      if (m.kind === 'wheel') {
+        if (!m.finished || state.winner !== 1) {
+          return { html: '<p class="daily-lede">' + esc(tr('wheel.retry', 'Try the lesson again.')) + '</p>',
+            actions: [{ label: tr('wheel.again_btn', 'Try again'), cls: 'btn-primary', onClick: function () { startWheelLesson(m.lesson); } }] };
+        }
+        const o = lessonOutro(m);
+        return { html: o.html, actions: o.actions };
       }
       if (m.kind === 'daily') {
         if (!m.result) finishDaily(m);
@@ -539,6 +861,11 @@
   AC.modes = Object.assign(hooks, {
     resume: resume,
     startTutorial: startTutorial,
+    startWheelLesson: startWheelLesson,
+    openLessons: openLessons,
+    buildWheelLesson: buildWheelLesson,
+    lessonsDone: lessonsDone,
+    WHEEL_LESSONS: WHEEL_LESSONS,
     startDaily: startDaily,
     dailyInfo: dailyInfo,
     dailyStatus: dailyStatus,

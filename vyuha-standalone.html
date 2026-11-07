@@ -2197,7 +2197,7 @@ html.reduce-motion .st-astra-anim { display: none; }
  * A phone heats when the browser repaints sixty times a second for nothing.
  * Every glow below is kept, but held still, or played a few times and then
  * stopped. Nothing here loops forever except a pulse the player is waiting
- * on (an armed strike, the last seconds of the clock). Measured with
+ * on (the last seconds of the clock; the armed strike stops after three, 7 Nov). Measured with
  * tools/perf-idle.mjs: idle main-thread time fell from ~40% to ~1%.     */
 .app::before, .app::after, .board-shell::before { animation: none !important; }
 .app::before { opacity: 0.5; }
@@ -3023,6 +3023,64 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.locked :is(.astra-art, .astra-ico) { filter: grayscale(1); opacity: 0.45; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.locked .astra-name { color: var(--dim); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .astra-btn.spent { opacity: 0.35; }
+
+/* ── First-session clarity (7 Nov 2026): odds in words, the Confirm strike step,
+   the wheel lessons. All static: no animation, nothing loops. ── */
+.verdict {
+  display: inline-block; align-self: flex-start; margin: 3px 0 2px; padding: 2px 10px; border-radius: 999px;
+  border: 1.5px solid currentColor; font-size: 13px; font-weight: 800; line-height: 1.35; letter-spacing: 0.01em;
+}
+.verdict.good { color: #a7f3d0; background: rgba(52, 211, 153, 0.12); }
+.verdict.even { color: #fde9c0; background: rgba(242, 207, 139, 0.12); }
+.verdict.bad { color: #fecdd3; background: rgba(251, 113, 133, 0.12); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .verdict.good { color: #1d6b43; background: #e3f2df; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .verdict.even { color: #7a4b05; background: #fbecc8; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .verdict.bad { color: #a3230f; background: #fbe0d6; }
+.confirm-info .sel-text { display: flex; flex-direction: column; align-items: flex-start; }
+.confirm-info .sel-name { white-space: normal; }
+.confirm-info .sel-desc { display: block !important; -webkit-line-clamp: unset; }
+.confirm-buttons .confirm-btn { min-height: 44px; font-size: 14px; padding: 8px 16px; }
+.confirm-buttons .confirm-btn :is(.ico, .astra-ico, .astra-art) { width: 18px; height: 18px; }
+.confirm-buttons .mode-btn { min-height: 44px; }
+#screen-game .action-buttons.confirm-buttons { grid-template-columns: minmax(0, 1fr) auto; }
+#screen-game .action-buttons.confirm-buttons > * { grid-column: auto; }
+#screen-game .action-buttons.confirm-buttons .mode-btn { padding: 4px 14px; }
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 560px) {
+  #screen-game .confirm-info .sel-badge:has(.sel-rank) { width: 54px; height: 54px; border-radius: 12px; }
+  #screen-game .confirm-info .sel-rank { transform: scale(0.8); transform-origin: bottom right; }
+  /* the confirm step must show its buttons without scrolling, lesson coach or not */
+  #screen-game:has(#coach:not([hidden])):has(.confirm-info) .coach { max-height: 30%; }
+  #screen-game:has(#coach:not([hidden])):has(.confirm-info) .action-bar { top: calc(var(--pad-t) + 30% + 6px); }
+  #screen-game .confirm-info .sel-name { font-size: 12.5px; }
+  #screen-game .confirm-info .verdict { margin: 2px 0 1px; }
+}
+.intel-verdict { margin: 4px 0 6px; font-size: 11px; color: var(--dim); line-height: 1.4; }
+.intel-verdict .verdict { margin: 0 6px 0 0; font-size: 12px; }
+
+/* The armed strike no longer pulses forever: the Confirm card says what is
+   chosen, so the pulse plays three times and then holds still (phone heat). */
+.cell.armed .cell-fill { animation-iteration-count: 3; }
+
+/* the wheel lessons */
+.coach .coach-check { display: block; margin-top: 4px; font-style: normal; font-weight: 700; color: var(--solar-2); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .coach .coach-check { color: var(--vermilion); }
+.cell.coach-guess .cell-fill { stroke: var(--vermilion, #f2cf8b) !important; stroke-width: 0.05 !important; stroke-dasharray: 0.06 0.035; }
+.astra-btn.coach-hint { outline: 3px solid var(--vermilion, #e0a94a); outline-offset: 2px; }
+.lesson-list { display: grid; gap: 8px; }
+.lesson-row {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; column-gap: 10px; min-height: 52px;
+  padding: 8px 12px; border-radius: var(--r-sm); text-align: left; color: inherit;
+  border: 1px solid var(--line-strong); background: rgba(255, 255, 255, 0.03);
+}
+.lesson-row .deva { font-size: 18px; color: var(--solar-2); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .lesson-row .deva { color: var(--vermilion); }
+.lesson-row b { display: block; font-size: 13.5px; }
+.lesson-row small { display: block; font-size: 11px; color: var(--dim); line-height: 1.35; }
+.lesson-row .lesson-tick { font-size: 12px; font-weight: 800; color: var(--dim); }
+.lesson-row.done .lesson-tick { color: #2f8f5d; }
+.lesson-row.next { border-width: 2px; border-color: var(--solar, #e0a94a); }
+.lesson-drill { margin-top: 10px; font-size: 11.5px; color: var(--dim); }
+.lesson-drill button { color: inherit; text-decoration: underline; padding: 6px 2px; min-height: 44px; }
 
 </style>
 </head>
@@ -5845,6 +5903,29 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
     return out;
   }
 
+  /* Odds in plain words (first-session clarity, 7 Nov 2026). Combat is
+   * deterministic once both ranks are known, so a single possible outcome is
+   * "certain"; otherwise the verdict reads the chance this blow succeeds:
+   * likely win at 60 % or more, likely loss under 35 %, uncertain between.
+   * Presentation only: the AI and the rules never read it. */
+  function strikeVerdict(odds) {
+    if (!odds) return null;
+    const good = odds.win + odds.core + odds.breach;
+    const one = function (p) { return p >= 0.9995; };
+    let key;
+    if (one(odds.core)) key = 'core';
+    else if (one(odds.breach)) key = 'breach';
+    else if (one(good)) key = 'sure_win';
+    else if (one(odds.lose)) key = 'sure_loss';
+    else if (one(odds.both)) key = 'both';
+    else if (one(odds.noop)) key = 'noop';
+    else key = good >= 0.6 ? 'likely_win' : good < 0.35 ? 'likely_loss' : 'uncertain';
+    const certain = key.indexOf('likely') === -1 && key !== 'uncertain';
+    const tone = key === 'core' || key === 'breach' || key === 'sure_win' || key === 'likely_win' ? 'good'
+      : key === 'sure_loss' || key === 'likely_loss' ? 'bad' : 'even';
+    return { key: key, certain: certain, tone: tone, good: good, pct: Math.round(good * 100) };
+  }
+
   function drawCountdown(state) {
     const limit = state.config.drawAfter || 100;
     return Math.max(0, limit - (state.stats.actions - (state.stats.lastCapturePly || 0)));
@@ -5950,6 +6031,7 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
     combatContext: combatContext,
     predict: predict,
     strikeOdds: strikeOdds,
+    strikeVerdict: strikeVerdict,
     rules: rules,
     astraReady: astraReady,
     astraTargets: astraTargets,
@@ -7514,6 +7596,8 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
     noteHinted: false,   // the charcoal-note tip has been shown
     skin: 'pata',        // Rang look: pata (default since 5 Nov 2026) · bronze (Classic); pahari, bright via ?skin=
     tutorialDone: false,
+    wheelLessons: [],    // keys of the four wheel lessons finished (7 Nov 2026)
+    lessonOffered: false, // the first Quick battle offered the lessons once
     landscapeHintDismissed: false,
     fullscreen: true     // battles on a phone open full screen and sideways
   };
@@ -9499,6 +9583,13 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
     return 'Shubh ratri';
   }
 
+  function quickBattle() {
+    sfx('lock');
+    if (AC.modes) AC.modes.clear();
+    app.setup = quickSetup();
+    AC.game.start(app.setup);
+  }
+
   function quickSetup() {
     const last = app.settings.lastSetup;
     return Object.assign({ mode: 'ai', board: 'wheel', tie: 'attacker', difficulty: 'veteran', timer: 0, scenario: 'duel', ruleset: 'vyuha' },
@@ -9544,7 +9635,11 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
     }
     const tutDone = !!app.settings.tutorialDone;
     document.getElementById('btn-tutorial').classList.toggle('card-pulse', !tutDone);
-    document.getElementById('tutorial-sub').textContent = tutDone ? 'Replay the two-minute lesson' : tr('home.lesson.sub', 'Learn the field in two minutes');
+    const lessonsDone = (app.settings.wheelLessons || []).length;
+    document.getElementById('tutorial-sub').textContent = tutDone
+      ? tr('wheel.home_done', 'Replay a wheel lesson')
+      : lessonsDone ? tr('wheel.home_some', 'Wheel lessons') + ' · ' + lessonsDone + ' / 4'
+        : tr('wheel.home_sub', 'Four one-minute lessons on the wheel');
 
     const auto = S.listSaves().filter(function (s) { return s.slot === 'auto'; })[0];
     const saves = S.listSaves().filter(function (s) { return s.slot !== 'auto'; });
@@ -9652,10 +9747,24 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
   function wireHome() {
     document.getElementById('btn-new-match').addEventListener('click', function () { sfx('select'); show('setup'); });
     document.getElementById('btn-quick').addEventListener('click', function () {
-      sfx('lock');
-      if (AC.modes) AC.modes.clear();
-      app.setup = quickSetup();
-      AC.game.start(app.setup);
+      // A brand-new player is offered the four wheel lessons once, before any full battle.
+      const st = (app.profile && app.profile.stats) || {};
+      const fresh = !app.settings.tutorialDone && !app.settings.lessonOffered && !(app.settings.wheelLessons || []).length && !st.matches;
+      if (fresh && AC.modes && AC.modes.startWheelLesson) {
+        sfx('select');
+        patchSettings({ lessonOffered: true });
+        modal({
+          kicker: tr('wheel.offer_kicker', 'First time on the wheel?'),
+          title: tr('wheel.offer_title', 'Four short lessons first'),
+          body: '<p class="daily-lede">' + esc(tr('wheel.offer_body', 'About a minute each: a first strike, the turning wheel, a hidden rank and one astra. Then your first battle.')) + '</p>',
+          actions: [
+            { label: tr('wheel.offer_yes', 'Start the lessons'), cls: 'btn-primary', onClick: function () { AC.modes.startWheelLesson(0); } },
+            { label: tr('wheel.offer_no', 'Fight now'), cls: 'btn-ghost', onClick: quickBattle }
+          ]
+        });
+        return;
+      }
+      quickBattle();
     });
     document.getElementById('btn-daily').addEventListener('click', function () {
       sfx('select');
@@ -9665,7 +9774,7 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
     document.getElementById('home-sigil').addEventListener('click', function () { sfx('ui'); openProfile(); });
     document.getElementById('btn-tutorial').addEventListener('click', function () {
       sfx('select');
-      if (AC.modes) AC.modes.startTutorial();
+      if (AC.modes) AC.modes.openLessons();
     });
     document.getElementById('btn-resume').addEventListener('click', function () {
       const auto = S.listSaves().filter(function (s) { return s.slot === 'auto'; })[0];
@@ -10494,7 +10603,8 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
       const h = (root.location && root.location.hash) || '';
       if (!AC.modes) return;
       if (/^#daily/.test(h)) AC.modes.startDaily();
-      else if (/^#learn/.test(h)) AC.modes.startTutorial();
+      else if (/^#learn/.test(h)) AC.modes.startWheelLesson(0);
+      else if (/^#drill/.test(h)) AC.modes.startTutorial();
     };
 
     setTimeout(function () {
@@ -10540,6 +10650,7 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
     renderSetup: renderSetup,
     applySettings: applySettings,
     patchSettings: patchSettings,
+    quickBattle: quickBattle,
     boot: boot,
     openProfile: openProfile,
     artLanded: artLanded,
@@ -10800,7 +10911,8 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
  * Renders any cell graph as SVG, so the square arenas, the Chakravyuha wheel
  * and the Padmavyuha lotus share one renderer, one input path and one set of
  * animations. Chapter III adds the sky, Shakti and astras, formation links,
- * odds on the board, tap-twice strikes, the stage beats and Sanjaya.
+ * odds on the board in plain words, a Confirm strike step, the stage beats
+ * and Sanjaya.
  */
 (function (root) {
   'use strict';
@@ -10853,7 +10965,7 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
   const TIPS = [
     'A piece that has never moved can still be the fort or a trap. Probe with something cheap.',
     'The archer kills from two cells away — keep your fort out of a clear lane.',
-    'Select a piece and every target shows your odds. Tap a target twice to strike.',
+    'Select a piece and every target says Likely win, Uncertain or Likely loss. Tap it, then Confirm strike.',
     'Every fifth round the sky turns. In your hour your blows land at +1.',
     'Two of your pieces touching one enemy make Makara — the jaws. +1 to the strike.',
     'A piece with two friends beside it is Padma — the petals. It defends at +1.',
@@ -11648,20 +11760,55 @@ rankBadge('?', R)
       '<text class="target-glyph" y="' + (R * 0.34) + '" font-size="' + (R * 1.05) + '" text-anchor="middle">' + glyph + '</text>';
   }
 
-  /* A small odds tag above a strike target: the chance this blow succeeds. */
+  /* Odds in plain words (first-session clarity, 7 Nov 2026). The board says
+   * the verdict; the percentage stays as detail in the rail and in Intel. */
+  const VERDICT = {
+    likely_win: 'Likely win', uncertain: 'Uncertain', likely_loss: 'Likely loss',
+    sure_win: 'Certain win', sure_loss: 'Certain loss', both: 'Both fall',
+    core: 'Takes the fort', breach: 'Breaks the gate', noop: 'No effect'
+  };
+  function verdictWord(v) { return tr('odds.' + v.key, VERDICT[v.key]); }
+  function verdictNote(v, revealed) {
+    if (!v.certain) return tr('odds.note_hidden', 'Based on enemy ranks you can’t see yet.');
+    return revealed
+      ? tr('odds.note_known', 'Both ranks are known, so the result is certain.')
+      : tr('odds.note_any', 'Whatever its hidden rank, this is the result.');
+  }
+
+  /* A small tag above a strike target: the verdict for this blow. */
   function oddsTag(cell, odds, armed) {
-    if (!odds) return '';
-    const good = odds.win + odds.core + odds.breach;
-    const pct = Math.round(good * 100);
-    const tone = pct >= 60 ? 'good' : pct >= 35 ? 'even' : 'bad';
+    const v = E.strikeVerdict(odds);
+    if (!v) return '';
     const R = cell.tr;
-    const w = R * (armed ? 2.6 : 1.7);
-    const h = R * 0.62;
-    const y = cell.y - R * 1.55;
-    const label = armed ? pct + '% · tap again' : pct + '%';
-    return '<g class="odds-tag ' + tone + (armed ? ' armed' : '') + '" transform="translate(' + cell.x + ',' + y + ')">' +
+    const label = verdictWord(v);
+    const h = R * (armed ? 0.74 : 0.62);
+    const fs = h * 0.56;
+    const w = Math.max(R * 1.7, label.length * fs * 0.56 + h * 0.9);
+    const y = cell.y - R * 1.6;
+    return '<g class="odds-tag ' + v.tone + (armed ? ' armed' : '') + '" transform="translate(' + cell.x + ',' + y + ')">' +
       '<rect x="' + (-w / 2) + '" y="' + (-h / 2) + '" width="' + w + '" height="' + h + '" rx="' + (h / 2) + '"/>' +
-      '<text y="' + (h * 0.18) + '" font-size="' + (h * 0.56) + '" text-anchor="middle">' + label + '</text></g>';
+      '<text y="' + (h * 0.18) + '" font-size="' + fs + '" text-anchor="middle">' + esc(label) + '</text></g>';
+  }
+
+  /* The confirm step: what will happen, in words, with Confirm and Cancel. */
+  function strikeCard(st, selUnit) {
+    const target = st.board[g.armed];
+    if (!target) return null;
+    const viewer = viewerOf(st);
+    const isBarrage = g.mode === 'special' && L.unit(selUnit.key).hasRanged;
+    const odds = E.strikeOdds(st, viewer, g.sel, g.armed, isBarrage);
+    const v = E.strikeVerdict(odds);
+    if (!v) return null;
+    const who = target.revealed ? target.name + ' · ' + target.badge : tr('odds.unknown', 'hidden enemy');
+    const detail = v.certain ? '' : ' · ' + tr('odds.chance', 'chance to win') + ' ' + v.pct + '%';
+    const info = '<span class="sel-badge ' + (selUnit.owner === 1 ? 'solar' : 'void') + '">' + A.emblem(selUnit.key, '', selUnit.owner) +
+        '<span class="sel-rank">' + esc(selUnit.badge) + '</span></span>' +
+      '<span class="sel-text"><span class="sel-name">' + esc((isBarrage ? tr('confirm.volley_on', 'Volley on') : tr('confirm.strike_on', 'Strike')) + ' ' + who) + '</span>' +
+      '<span class="verdict ' + v.tone + '">' + esc(verdictWord(v)) + '</span>' +
+      '<span class="sel-desc">' + esc(verdictNote(v, target.revealed) + detail) + '</span></span>';
+    const buttons = '<button class="btn btn-primary confirm-btn" data-act="confirm">' + A.icon('sword') + esc(isBarrage ? tr('confirm.volley', 'Confirm volley') : tr('confirm.strike', 'Confirm strike')) + '</button>' +
+      '<button class="mode-btn" data-act="cancel-strike">' + A.icon('close') + esc(tr('confirm.cancel', 'Cancel')) + '</button>';
+    return { info: info, buttons: buttons };
   }
 
   function currentTargets() {
@@ -11823,7 +11970,7 @@ rankBadge('?', R)
         const R = cell.tr;
         tags += '<g class="odds-tag even armed" transform="translate(' + cell.x + ',' + (cell.y - R * 1.55) + ')">' +
           '<rect x="' + (-R * 1.6) + '" y="' + (-R * 0.31) + '" width="' + (R * 3.2) + '" height="' + (R * 0.62) + '" rx="' + (R * 0.31) + '"/>' +
-          '<text y="' + (R * 0.11) + '" font-size="' + (R * 0.35) + '" text-anchor="middle">tap again to invoke</text></g>';
+          '<text y="' + (R * 0.11) + '" font-size="' + (R * 0.35) + '" text-anchor="middle">' + esc(tr('confirm.target', 'Target')) + '</text></g>';
       }
     });
     // the inner rings live in their own groups so the wheel can turn
@@ -11966,13 +12113,21 @@ rankBadge('?', R)
     if (isHumanTurn && g.mode === 'astra' && g.astra) {
       const def = L.astra(g.astra);
       const hint = g.astra === 'vayavya'
-        ? (g.astraFirst ? 'Now tap the second piece to trade places with.' : 'Tap the first of your pieces to move.')
-        : (g.armed ? 'Tap the target again to invoke.' : 'Tap a glowing target within two cells of your army.');
+        ? (g.armed ? 'These two pieces trade places.' : g.astraFirst ? 'Now tap the second piece to trade places with.' : 'Tap the first of your pieces to move.')
+        : (g.armed ? def.one : 'Tap a glowing target within two cells of your army.');
       info = '<span class="sel-badge astra el-' + def.element + '">' + A.astraMark(g.astra) + '</span>' +
         '<span class="sel-text"><span class="sel-name">' + esc(def.name) + ' <span class="deva">' + esc(def.deva) + '</span></span>' +
         '<span class="sel-desc">' + esc(hint) + '</span></span>';
-      buttons = '<button class="mode-btn" data-act="cancel-astra">' + A.icon('close') + 'Cancel</button>';
-      bar.innerHTML = '<div class="action-info">' + info + '</div><div class="action-buttons">' + buttons + '</div>';
+      buttons = (g.armed ? '<button class="btn btn-primary confirm-btn" data-act="confirm">' + A.astraMark(g.astra) + esc(tr('confirm.astra', 'Invoke') + ' ' + def.name) + '</button>' : '') +
+        '<button class="mode-btn" data-act="cancel-astra">' + A.icon('close') + esc(tr('confirm.cancel', 'Cancel')) + '</button>';
+      bar.innerHTML = '<div class="action-info' + (g.armed ? ' confirm-info' : '') + '">' + info + '</div>' +
+        '<div class="action-buttons' + (g.armed ? ' confirm-buttons' : '') + '">' + buttons + '</div>';
+      return;
+    }
+
+    const card = isHumanTurn && selUnit && g.armed ? strikeCard(st, selUnit) : null;
+    if (card) {
+      bar.innerHTML = '<div class="action-info confirm-info">' + card.info + '</div><div class="action-buttons confirm-buttons">' + card.buttons + '</div>';
       return;
     }
 
@@ -12158,8 +12313,11 @@ rankBadge('?', R)
       if (o.noop > 0.001) rows.push(['No effect', o.noop, 'var(--dim)']);
       const parts = (o.ctx.attParts || []).map(function (p) { return '+' + p.v + ' ' + p.key; })
         .concat((o.ctx.defParts || []).map(function (p) { return 'them +' + p.v + ' ' + p.key; }));
+      const v = E.strikeVerdict(o);
       return '<div class="intel-section"><div class="intel-label">' + (isBarrage ? 'Volley odds' : 'Strike odds') +
-        ' · ' + esc(selUnit.short) + ' → ' + (focus.revealed ? esc(focus.name) : 'unknown') + '</div><div class="intel-odds">' +
+        ' · ' + esc(selUnit.short) + ' → ' + (focus.revealed ? esc(focus.name) : 'unknown') + '</div>' +
+        '<div class="intel-verdict"><span class="verdict ' + v.tone + '">' + esc(verdictWord(v)) + '</span> ' +
+        esc(verdictNote(v, focus.revealed)) + '</div><div class="intel-odds">' +
         rows.map(function (r) {
           return '<div class="odds-row"><span style="color:' + r[2] + '">' + r[0] + '</span>' +
             '<span class="odds-bar"><span style="width:' + Math.round(r[1] * 100) + '%"></span></span>' +
@@ -12240,6 +12398,8 @@ rankBadge('?', R)
     if (g.thinking) return;
     const humanTurn = isPass() || st.owner === 1;
     if (!humanTurn) return;
+    // a lesson may ask the player to tap a cell as an answer (the wheel turns)
+    if (modeHook('onCellTap', id)) { render(); return; }
 
     /* astra targeting */
     if (g.mode === 'astra' && g.astra) {
@@ -12291,7 +12451,7 @@ rankBadge('?', R)
       buzz(8);
       if (!g.hinted) {
         g.hinted = true;
-        FX.toast('Gold dot = move. Ring = strike, with your odds above it.', 'info');
+        FX.toast('Gold dot = move. Ring = strike, with your chances above it.', 'info');
       }
       render();
       return;
@@ -12308,6 +12468,7 @@ rankBadge('?', R)
   function commitAction(from, to, type) {
     const st = g.state;
     const target = st.board[to];
+    if (modeHook('allowAction', { from: from, to: to, type: type }) === false) { sfx('error'); return; }
     const risky = (type === 'attack' || type === 'barrage') && target && settings().confirmActions !== false;
     if (risky && g.armed !== to) {
       g.armed = to;
@@ -12321,6 +12482,17 @@ rankBadge('?', R)
     performAction({ from: from, to: to, type: type });
   }
 
+  /* Confirm strike / Invoke: the same as tapping the armed target again. */
+  function confirmArmed() {
+    const st = g.state;
+    if (!st || !g.armed || g.busy || g.thinking) return;
+    if (g.mode === 'astra' && g.astra) { onAstraCell(g.armed); return; }
+    if (!g.sel) return;
+    const hit = E.computeValidTargets(st, g.sel, g.mode).filter(function (t) { return t.id === g.armed; })[0];
+    if (!hit) { g.armed = null; render(); return; }
+    commitAction(g.sel, g.armed, hit.type);
+  }
+
   function enterAstra(key) {
     const st = g.state;
     if (!st || st.phase !== 'battle' || g.thinking || g.busy) return;
@@ -12331,6 +12503,7 @@ rankBadge('?', R)
       sfx('error');
       return;
     }
+    if (modeHook('allowAction', { type: 'astra', astra: key }) === false) { sfx('error'); return; }
     if (!E.astraTargets(st, st.owner, key).length) {
       FX.toast('No target in reach — astras strike within two cells of your army.', 'warn');
       sfx('error');
@@ -13102,7 +13275,7 @@ rankBadge('?', R)
     const cards = [
       ['व्यूह रचना', 'Deploy', 'Twelve pieces in your own ground. Tap one, then another, to swap them. Presets are only a starting point.'],
       ['चाल', 'Move', 'Tap your piece, then a glowing cell. One step, two for the cavalry, a whole lane for the chariot.'],
-      ['संघर्ष', 'Strike', 'Tap a ringed enemy to see your odds, tap again to strike. Ranks stay hidden until the blow lands.'],
+      ['संघर्ष', 'Strike', 'Tap a ringed enemy: it says Likely win, Uncertain or Likely loss, based on ranks you can’t see yet. Then Confirm strike.'],
       ['दुर्ग', 'The fort', 'The first blow breaks its gate and reveals it. The second blow takes it — and the match.'],
       ['पहर', 'The hours', 'Every fifth round the sky turns. Suryavansh strikes at +1 by day, Chandravansh at +1 by night.'],
       ['व्यूह', 'Formations', 'Makara: strike a piece another of yours touches, +1. Padma: a piece with two friends beside it defends at +1.'],
@@ -13168,6 +13341,8 @@ rankBadge('?', R)
       AC.app.profile = S.getProfile(AC.app.profile.id);
     }
     S.deleteSave('auto');
+    // a lesson that ends in a win tells its own outcome, not "the field is conceded"
+    if (modeHook('customResult', { outcome: outcome })) return;
 
     // Pratigya: judge the vow once, record it, show it under the result
     let vowHtml = '';
@@ -13367,6 +13542,8 @@ rankBadge('?', R)
         const what = act.getAttribute('data-act');
         if (what === 'deselect') { resetSelection(); sfx('deselect'); render(); }
         if (what === 'cancel-astra') cancelAstra();
+        if (what === 'confirm') confirmArmed();
+        if (what === 'cancel-strike') { g.armed = null; sfx('deselect'); render(); }
         if (what === 'advisor') { sfx('ui'); openAdvisor(); }
         return;
       }
@@ -13635,6 +13812,292 @@ rankBadge('?', R)
     if (cell) cell.classList.add('coach-hint');
   }
 
+  /* ══ Chakra Shiksha — four short lessons on the wheel ════════════
+   * First-session clarity (review plan step 2, 7 Nov 2026). One idea per
+   * lesson, a controlled position, no rules screen: (a) first move and a
+   * strike, (b) the wheel turns, (c) the hidden warrior, (d) one astra.
+   * The enemy is held still (a long trance), so nothing surprises the player.
+   * Strings are English with tr() keys; Hindi/Marathi go to Sarvam. */
+
+  const STILL = { stun: 999 };
+  function heldStill(extra) { return Object.assign({}, STILL, extra || {}); }
+  function cellOfKey(st, owner, key) {
+    return E.findUnit(st, function (u) { return u.owner === owner && u.key === key; });
+  }
+
+  const WHEEL_LESSONS = [
+    {
+      key: 'first', deva: 'पहली चाल', title: 'First move, first strike',
+      blurb: 'Two pieces. Step in, then strike.',
+      rosters: { 1: ['9'], 2: ['2'] },
+      build: function (st) {
+        place(st, 'r3s0', 1, '9');
+        place(st, 'r1s0', 2, '2', heldStill({ revealed: true }));
+      },
+      steps: [
+        { key: 'move', text: 'Tap your Maharathi (9) at the foot of the wheel, then the gold dot one cell inward.',
+          hint: function (st, sel) { return sel ? 'r2s0' : 'r3s0'; },
+          allow: function (st, a) { return a.type === 'move' && a.to === 'r2s0' ? true : 'Step one cell inward, along the spoke — the glowing cell.'; },
+          test: function (ev, actor) { return actor === 1 && ev.kind === 'move'; } },
+        { key: 'strike', text: 'The enemy Rath (2) shows its rank. Tap it: the tag says Certain win, because both ranks are known. Then press Confirm strike.',
+          hint: function (st, sel) { return sel ? 'r1s0' : cellOfKey(st, 1, '9'); },
+          test: function (ev, actor) { return actor === 1 && ev.kind === 'clash' && ev.outcome === 'att'; } }
+      ],
+      done: 'Move, then strike. When both ranks are known, the result is certain.'
+    },
+    {
+      key: 'wheel', deva: 'चक्र', title: 'The wheel turns',
+      blurb: 'Predict where a piece will be carried.',
+      rosters: { 1: ['9', '2'], 2: ['3'] },
+      build: function (st) {
+        place(st, 'r2s0', 1, '2');
+        place(st, 'r3s11', 1, '9');
+        place(st, 'r3s6', 2, '3', heldStill());
+      },
+      after: function (st) { st.turn = 4; },    // the rings turn at the end of this round
+      steps: [
+        { key: 'predict', answer: 'r2s1',
+          text: 'Every 5th round the two inner rings turn one cell clockwise and carry what stands on them. They turn after this round. Where will your Rath (2) be? Tap that cell.',
+          hint: function (st, sel, m) { return m.misses >= 2 ? 'r2s1' : 'r2s0'; },
+          wrong: 'Not there. Only the two inner rings turn, one cell clockwise: at the foot of the wheel that is to the left.' },
+        { key: 'turn', text: 'You marked it. Now end the round: move your Maharathi (9) one cell, and watch the wheel turn.',
+          hint: function (st, sel) { return sel ? null : cellOfKey(st, 1, '9'); },
+          allow: function (st, a) { return a.from === cellOfKey(st, 1, '9') ? true : 'Leave the Rath where it is — move the Maharathi (9).'; },
+          test: function (ev, actor) { return ev.kind === 'rotate'; } }
+      ],
+      done: 'The Rath was carried to the cell you marked, and riding the wheel revealed it. In battle, “Chakra turns in” on the left counts down to the next turn.'
+    },
+    {
+      key: 'hidden', deva: 'गुप्त योद्धा', title: 'The hidden warrior',
+      blurb: 'Strike a rank you cannot see.',
+      rosters: { 1: ['9'], 2: ['10', '5', '3', '2'] },
+      build: function (st) {
+        place(st, 'r2s0', 1, '9');
+        place(st, 'r1s0', 2, '5', heldStill());
+        place(st, 'r3s5', 2, '3', heldStill());
+        place(st, 'r3s6', 2, '10', heldStill());
+        place(st, 'r3s7', 2, '2', heldStill());
+      },
+      steps: [
+        { key: 'strike', text: 'A “?” means a hidden rank. Tap your Maharathi (9), then the hidden enemy beside it. It says Likely win: it could be any rank they still have — even the Senapati (10), who beats you. Decide, then Confirm strike.',
+          hint: function (st, sel) { return sel ? 'r1s0' : cellOfKey(st, 1, '9'); },
+          allow: function (st, a) { return a.type === 'attack' ? true : 'Strike the hidden enemy beside your Maharathi.'; },
+          test: function (ev, actor) { return actor === 1 && ev.kind === 'clash'; } }
+      ],
+      done: 'It was a Divyadrishti (5), and your 9 won. “Likely” is based on enemy ranks you can’t see yet; once a rank is known, the result is certain.'
+    },
+    {
+      key: 'astra', deva: 'अस्त्र', title: 'One astra',
+      blurb: 'Spend Shakti on Agneyastra.',
+      rosters: { 1: ['9', '2'], 2: ['3', '10'] },
+      astras: true,
+      build: function (st) {
+        place(st, 'r3s0', 1, '9');
+        place(st, 'r3s1', 1, '2');
+        place(st, 'r1s0', 2, '3', heldStill());
+        place(st, 'r3s6', 2, '10', heldStill());
+      },
+      after: function (st) { st.shakti[1] = 3; },
+      steps: [
+        { key: 'invoke', text: 'Every piece you take lights a lamp of Shakti; astras spend it. You have 3. Tap Agneyastra (it costs 3), then the hidden enemy two cells inward, then Invoke.',
+          astra: 'agneya',
+          hint: function (st) { return AC.game.astra === 'agneya' ? 'r1s0' : null; },
+          allow: function (st, a) { return a.type !== 'astra' || a.astra === 'agneya' ? true : 'This lesson is about Agneyastra — the fire, three lamps.'; },
+          test: function (ev, actor) { return actor === 1 && ev.kind === 'astra'; } }
+      ],
+      done: 'Agneyastra burns a piece of rank 4 or lower and reveals anything stronger. Each astra works once per battle; Brahmastra needs all five lamps.'
+    }
+  ];
+
+  function wheelText(lesson, field, value) { return tr('wheel.' + lesson.key + '.' + field, value); }
+  function stepText(lesson, step, field) { return tr('wheel.' + lesson.key + '.' + step.key + '.' + field, step[field]); }
+
+  function lessonsDone() {
+    const s = (AC.app && AC.app.settings) || {};
+    return Array.isArray(s.wheelLessons) ? s.wheelLessons.slice() : [];
+  }
+  function markLessonDone(key) {
+    const done = lessonsDone();
+    if (done.indexOf(key) === -1) done.push(key);
+    const all = WHEEL_LESSONS.every(function (l) { return done.indexOf(l.key) !== -1; });
+    try { AC.ui.patchSettings(all ? { wheelLessons: done, tutorialDone: true } : { wheelLessons: done }); } catch (e) { /* ignore */ }
+  }
+  function nextLessonIndex() {
+    const done = lessonsDone();
+    for (let i = 0; i < WHEEL_LESSONS.length; i++) if (done.indexOf(WHEEL_LESSONS[i].key) === -1) return i;
+    return -1;
+  }
+
+  function buildWheelLesson(i) {
+    const lesson = WHEEL_LESSONS[i];
+    const st = E.newState({
+      mode: 'ai', board: 'wheel', scenario: 'duel', difficulty: 'recruit', tie: 'attacker',
+      rules: { gates: false, hours: false, vyuha: false, astras: !!lesson.astras }
+    });
+    st.scenario = 'shiksha-wheel';
+    st.board = {};
+    st.rosters = { 1: lesson.rosters[1].slice(), 2: lesson.rosters[2].slice() };
+    lesson.build(st);
+    E.beginBattle(st);
+    if (lesson.after) lesson.after(st);
+    return st;
+  }
+
+  function startWheelLesson(i) {
+    if (i == null || i < 0) i = Math.max(0, nextLessonIndex());
+    const lesson = WHEEL_LESSONS[i];
+    const st = buildWheelLesson(i);
+    active = {
+      kind: 'wheel', state: st, lesson: i, step: 0, misses: 0, guess: null, finished: false,
+      noSave: true, noRecord: true, noRematch: true
+    };
+    AC.game.startPrepared(st, {
+      bannerTitle: wheelText(lesson, 'title', lesson.title),
+      bannerSub: tr('wheel.banner', 'Lesson') + ' ' + (i + 1) + ' / ' + WHEEL_LESSONS.length + ' · ' + lesson.deva,
+      save: false
+    });
+    renderWheelCoach();
+  }
+
+  /* The first time: straight into the next lesson. Afterwards: a short list. */
+  function openLessons() {
+    const done = lessonsDone();
+    if (!done.length) { startWheelLesson(0); return; }
+    const next = nextLessonIndex();
+    const m = AC.ui.modal({
+      kicker: tr('wheel.kicker', 'Chakra Shiksha · four short lessons'),
+      title: next === -1 ? tr('wheel.again', 'Play a lesson again') : tr('wheel.continue', 'Continue learning the wheel'),
+      body: '<div class="lesson-list">' + WHEEL_LESSONS.map(function (l, i) {
+        const isDone = done.indexOf(l.key) !== -1;
+        return '<button class="lesson-row' + (isDone ? ' done' : '') + (i === next ? ' next' : '') + '" data-lesson="' + i + '">' +
+          '<span class="deva">' + esc(l.deva) + '</span><span><b>' + (i + 1) + '. ' + esc(wheelText(l, 'title', l.title)) + '</b>' +
+          '<small>' + esc(wheelText(l, 'blurb', l.blurb)) + '</small></span>' +
+          '<span class="lesson-tick">' + (isDone ? '✓' : i === next ? tr('wheel.start', 'Start') : '') + '</span></button>';
+      }).join('') + '</div>' +
+        '<div class="lesson-drill">' + esc(tr('wheel.drill_lede', 'Also:')) + ' <button data-drill="1">' +
+        esc(tr('wheel.drill', 'Field drill — look, volley, trap and fort (six steps)')) + '</button></div>',
+      actions: [{ label: tr('wheel.close', 'Close'), cls: 'btn-ghost' }]
+    });
+    m.el.addEventListener('click', function (e) {
+      const row = e.target.closest('[data-lesson]');
+      if (row) { m.close(); startWheelLesson(+row.getAttribute('data-lesson')); return; }
+      if (e.target.closest('[data-drill]')) { m.close(); startTutorial(); }
+    });
+  }
+
+  function currentStep(m) {
+    const lesson = WHEEL_LESSONS[m.lesson];
+    return m.step < lesson.steps.length ? lesson.steps[m.step] : null;
+  }
+
+  function renderWheelCoach() {
+    const el = document.getElementById('coach');
+    if (!el) return;
+    const m = active && active.kind === 'wheel' ? active : null;
+    if (!m || !AC.game.state || AC.game.state !== m.state) return;
+    const lesson = WHEEL_LESSONS[m.lesson];
+    const step = currentStep(m);
+    const done = lessonsDone();
+    el.hidden = false;
+    el.innerHTML =
+      '<div class="coach-steps">' + WHEEL_LESSONS.map(function (l, i) {
+        return '<i class="' + (i === m.lesson ? 'on' : done.indexOf(l.key) !== -1 ? 'done' : '') + '"></i>';
+      }).join('') + '</div>' +
+      '<div class="coach-body"><span class="coach-deva deva">' + esc(lesson.deva) + '</span>' +
+      '<b>' + esc(tr('wheel.banner', 'Lesson') + ' ' + (m.lesson + 1) + ' / ' + WHEEL_LESSONS.length + ' · ' + wheelText(lesson, 'title', lesson.title)) + '</b>' +
+      '<span>' + esc(step ? stepText(lesson, step, 'text') : wheelText(lesson, 'done', lesson.done)) +
+      (m.finished ? '<em class="coach-check">✓ ' + esc(tr('wheel.learned', 'Learned')) + '</em>' : '') + '</span></div>';
+  }
+
+  function wheelHint() {
+    const m = active && active.kind === 'wheel' ? active : null;
+    document.querySelectorAll('.coach-hint, .coach-guess').forEach(function (n) { n.classList.remove('coach-hint', 'coach-guess'); });
+    if (!m) return;
+    if (m.guess) {
+      const g = document.querySelector('#board .cell[data-id="' + m.guess + '"]');
+      if (g && !m.finished) g.classList.add('coach-guess');
+    }
+    const step = currentStep(m);
+    if (!step || m.finished) return;
+    if (step.astra && AC.game.astra !== step.astra) {
+      const b = document.querySelector('#action-bar [data-astra="' + step.astra + '"]');
+      if (b) b.classList.add('coach-hint');
+    }
+    const id = step.hint ? step.hint(m.state, AC.game.sel, m) : null;
+    const cell = id ? document.querySelector('#board .cell[data-id="' + id + '"]') : null;
+    if (cell) cell.classList.add('coach-hint');
+  }
+
+  function advanceWheel(m) {
+    const lesson = WHEEL_LESSONS[m.lesson];
+    m.step++;
+    m.misses = 0;
+    if (m.step < lesson.steps.length) {
+      AC.audio.play('unlock');
+      renderWheelCoach();
+      return;
+    }
+    m.finished = true;
+    markLessonDone(lesson.key);
+    AC.audio.play('unlock');
+    renderWheelCoach();
+    // a lesson that ended the battle is told by the result screen
+    if (m.state.phase !== 'over') whenIdle(m, function () { lessonDoneModal(m); });
+  }
+
+  /* Wait until the clash, the wheel turn and Sanjaya have finished. */
+  function whenIdle(m, fn) {
+    let tries = 0;
+    const check = function () {
+      if (!active || active !== m || AC.game.state !== m.state) return;
+      const stage = document.querySelector('.stage');
+      if ((AC.game.busy || stage || AC.app.modals.length) && tries++ < 60) { setTimeout(check, 250); return; }
+      fn();
+    };
+    setTimeout(check, 350);
+  }
+
+  function lessonOutro(m) {
+    const lesson = WHEEL_LESSONS[m.lesson];
+    const next = nextLessonIndex();
+    const nextLesson = next === -1 ? null : WHEEL_LESSONS[next];
+    const html = '<p class="daily-lede">' + esc(wheelText(lesson, 'done', lesson.done)) + '</p>' +
+      (nextLesson ? '' : '<p class="daily-lede">' + esc(tr('wheel.all_done', 'That is the wheel. Now fight on it: the Daily Chakravyuha is the same wheel for everyone today, and Quick battle starts a full match.')) + '</p>');
+    const actions = nextLesson
+      ? [{ label: tr('wheel.next', 'Next lesson') + ': ' + wheelText(nextLesson, 'title', nextLesson.title), cls: 'btn-primary', onClick: function () { startWheelLesson(next); } }]
+      : [
+          { label: tr('home.daily', 'Daily Chakravyuha'), cls: 'btn-primary', icon: 'calendar', onClick: function () { active = null; startDaily(); } },
+          { label: tr('home.quick.sub', 'Quick battle'), cls: 'btn-primary', icon: 'sword', onClick: function () { active = null; AC.ui.quickBattle(); } }
+        ];
+    return { html: html, actions: actions, title: nextLesson ? tr('wheel.learned_title', 'Lesson learned') : tr('wheel.ready', 'You know the wheel') };
+  }
+
+  function lessonDoneModal(m) {
+    const o = lessonOutro(m);
+    AC.ui.modal({
+      kicker: tr('wheel.banner', 'Lesson') + ' ' + (m.lesson + 1) + ' / ' + WHEEL_LESSONS.length,
+      title: o.title,
+      body: o.html,
+      actions: o.actions.concat([{ label: 'Home', cls: 'btn-ghost', onClick: function () { active = null; AC.game.state = null; AC.ui.show('home'); } }])
+    });
+  }
+
+  function wheelTap(m, id) {
+    const step = currentStep(m);
+    if (!step || !step.answer || m.finished) return false;
+    if (id === step.answer) {
+      m.guess = id;
+      AC.audio.play('select');
+      FX.toast(tr('wheel.right', 'Yes — one cell clockwise.'), 'success');
+      advanceWheel(m);
+    } else {
+      m.misses++;
+      AC.audio.play('error');
+      FX.toast(stepText(WHEEL_LESSONS[m.lesson], step, 'wrong'), 'warn');
+    }
+    return true;
+  }
+
   /* ══ Daily Chakravyuha ══════════════════════════════════════════ */
 
   // Keep the existing five-day catalogue until the candidate pack is approved.
@@ -13897,7 +14360,29 @@ rankBadge('?', R)
   /* ══ hooks the battle screen calls ══════════════════════════════ */
 
   const hooks = {
-    wantsCoach: function (state) { const m = currentMode(state); return !!(m && m.kind === 'tutorial'); },
+    wantsCoach: function (state) { const m = currentMode(state); return !!(m && (m.kind === 'tutorial' || m.kind === 'wheel')); },
+    onCellTap: function (state, id) {
+      const m = currentMode(state);
+      if (!m || m.kind !== 'wheel') return false;
+      return wheelTap(m, id);
+    },
+    customResult: function (state) {
+      const m = currentMode(state);
+      if (!m || m.kind !== 'wheel' || !m.finished || state.winner !== 1) return false;
+      lessonDoneModal(m);
+      return true;
+    },
+    allowAction: function (state, action) {
+      const m = currentMode(state);
+      if (!m || m.kind !== 'wheel' || m.finished) return true;
+      const step = currentStep(m);
+      if (!step) return true;
+      if (step.answer) { FX.toast(tr('wheel.tap_first', 'First tap the cell where the Rath will land.'), 'warn'); return false; }
+      const ok = step.allow ? step.allow(state, action) : true;
+      if (ok === true) return true;
+      FX.toast(tr('wheel.' + WHEEL_LESSONS[m.lesson].key + '.' + step.key + '.allow', ok), 'warn');
+      return false;
+    },
     noSave: function (state) { const m = currentMode(state); return !!(m && m.noSave); },
     noRecord: function (state) { const m = currentMode(state); return !!(m && m.noRecord); },
     noRematch: function (state) { const m = currentMode(state); return !!(m && m.noRematch); },
@@ -13905,6 +14390,7 @@ rankBadge('?', R)
     afterRender: function (state) {
       const m = currentMode(state);
       const coach = document.getElementById('coach');
+      if (m && m.kind === 'wheel') { renderWheelCoach(); wheelHint(); return; }
       if (!m || m.kind !== 'tutorial') { if (coach) coach.hidden = true; return; }
       renderCoach();
       coachHint();
@@ -13923,6 +14409,11 @@ rankBadge('?', R)
         });
         renderCoach();
       }
+      if (m.kind === 'wheel' && !m.finished) {
+        const step = currentStep(m);
+        if (step && step.test && arg.events.some(function (ev) { return step.test(ev, arg.actor); })) advanceWheel(m);
+        renderWheelCoach();
+      }
       if (m.kind === 'daily' && state.phase === 'over') finishDaily(m);
     },
     resultExtras: function (state) {
@@ -13938,6 +14429,14 @@ rankBadge('?', R)
             AC.game.start(AC.app.setup);
           } }]
         };
+      }
+      if (m.kind === 'wheel') {
+        if (!m.finished || state.winner !== 1) {
+          return { html: '<p class="daily-lede">' + esc(tr('wheel.retry', 'Try the lesson again.')) + '</p>',
+            actions: [{ label: tr('wheel.again_btn', 'Try again'), cls: 'btn-primary', onClick: function () { startWheelLesson(m.lesson); } }] };
+        }
+        const o = lessonOutro(m);
+        return { html: o.html, actions: o.actions };
       }
       if (m.kind === 'daily') {
         if (!m.result) finishDaily(m);
@@ -13972,6 +14471,11 @@ rankBadge('?', R)
   AC.modes = Object.assign(hooks, {
     resume: resume,
     startTutorial: startTutorial,
+    startWheelLesson: startWheelLesson,
+    openLessons: openLessons,
+    buildWheelLesson: buildWheelLesson,
+    lessonsDone: lessonsDone,
+    WHEEL_LESSONS: WHEEL_LESSONS,
     startDaily: startDaily,
     dailyInfo: dailyInfo,
     dailyStatus: dailyStatus,

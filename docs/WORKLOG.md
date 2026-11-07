@@ -239,3 +239,10 @@ tuning.
 - Night fields: Gemini's corner star covered (mirrored corner tile) and the cloth re-dyed toward indigo so the Chandra hour reads.
 - Fix: the profile hub did not repaint when a Pata portrait finished loading.
 - **Repository tidy:** masters (`masters/`, the Pata PNGs in `incoming/`), the 3D starter pieces and `rang.html` removed from the tree — 240 MB → 33 MB. Originals in four zips (`docs/MASTERS.md`), sent to the Commander; still in git history. `masters/` and `assets/3d/` git-ignored; `tools/prepare-pata.py` finds masters in `incoming/` or an unzipped `masters/`, skips missing ones. Sound/art provenance in one file, `docs/SOURCES.md`.
+
+## 7 Nov 2026 — Director: first-session clarity (review plan step 2)
+
+- **Chakra Shiksha**: four one-idea lessons on the wheel (first strike, the turning wheel with a tap-to-predict question, a hidden rank, one astra), enemy held still, coach in the rail, Next lesson after each, Daily / Quick battle at the end. Home card opens them; a new player's first Yuddh karo offers them once. The six-step square lesson stays as "Field drill".
+- **Odds in words** on the board and in the rail/Intel (`E.strikeVerdict`): Likely win ≥ 60 %, Uncertain 35–59 %, Likely loss < 35 %; Certain … when only one outcome is possible; % kept as detail.
+- **Confirm strike / Cancel** (and Invoke / Cancel for astras) in the rail; tap-again still works. Armed pulse now finite (3×).
+- New harness `tools/first-session.mjs`; idle probe measures the confirm and lesson screens.

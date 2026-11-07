@@ -1408,6 +1408,29 @@
     return out;
   }
 
+  /* Odds in plain words (first-session clarity, 7 Nov 2026). Combat is
+   * deterministic once both ranks are known, so a single possible outcome is
+   * "certain"; otherwise the verdict reads the chance this blow succeeds:
+   * likely win at 60 % or more, likely loss under 35 %, uncertain between.
+   * Presentation only: the AI and the rules never read it. */
+  function strikeVerdict(odds) {
+    if (!odds) return null;
+    const good = odds.win + odds.core + odds.breach;
+    const one = function (p) { return p >= 0.9995; };
+    let key;
+    if (one(odds.core)) key = 'core';
+    else if (one(odds.breach)) key = 'breach';
+    else if (one(good)) key = 'sure_win';
+    else if (one(odds.lose)) key = 'sure_loss';
+    else if (one(odds.both)) key = 'both';
+    else if (one(odds.noop)) key = 'noop';
+    else key = good >= 0.6 ? 'likely_win' : good < 0.35 ? 'likely_loss' : 'uncertain';
+    const certain = key.indexOf('likely') === -1 && key !== 'uncertain';
+    const tone = key === 'core' || key === 'breach' || key === 'sure_win' || key === 'likely_win' ? 'good'
+      : key === 'sure_loss' || key === 'likely_loss' ? 'bad' : 'even';
+    return { key: key, certain: certain, tone: tone, good: good, pct: Math.round(good * 100) };
+  }
+
   function drawCountdown(state) {
     const limit = state.config.drawAfter || 100;
     return Math.max(0, limit - (state.stats.actions - (state.stats.lastCapturePly || 0)));
@@ -1513,6 +1536,7 @@
     combatContext: combatContext,
     predict: predict,
     strikeOdds: strikeOdds,
+    strikeVerdict: strikeVerdict,
     rules: rules,
     astraReady: astraReady,
     astraTargets: astraTargets,

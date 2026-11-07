@@ -429,9 +429,16 @@ async function run() {
   clickCell(from);
   ok(!!document.querySelector('.cell.selected'), 'own piece selects');
   ok(!!document.querySelector('#board .odds-tag'), 'strike targets show odds on the board');
+  ok(/^(Likely win|Uncertain|Likely loss|Certain win|Certain loss|Both fall)$/.test(document.querySelector('#board .odds-tag text').textContent),
+    'the board says the odds in words, not a bare percentage');
   clickCell(to);
   ok(!!document.querySelector('.cell.armed') && st3.board[from], 'the first tap arms the strike, nothing happens yet');
+  ok(!!$('#action-bar [data-act="confirm"]') && !!$('#action-bar [data-act="cancel-strike"]') && !!$('#action-bar .verdict'),
+    'the armed strike shows Confirm strike, Cancel and a verdict');
+  click($('#action-bar [data-act="cancel-strike"]'));
+  ok(!document.querySelector('.cell.armed') && !!st3.board[from] && game.armed === null, 'Cancel disarms and nothing happens');
   clickCell(to);
+  click($('#action-bar [data-act="confirm"]'));
   ok(!!document.querySelector('.stage'), 'the clash plays on the stage');
   document.querySelectorAll('.stage').forEach((n) => n.click());
   await sleep(10);
@@ -572,6 +579,58 @@ async function run() {
   await sleep(20);
   document.querySelectorAll('.stage').forEach((n) => n.click());
   ok(/3 \/ 6/.test($('#coach').textContent), 'a legal scan still reveals the enemy and advances the lesson');
+
+  // ── Chakra Shiksha: four wheel lessons (7 Nov 2026) ──
+  AC.app.modals.slice().forEach((m) => m.close());
+  AC.stage.close(false);
+  ok(AC.modes.WHEEL_LESSONS.length === 4, 'four wheel lessons');
+  for (let i = 0; i < 4; i++) {
+    const ls = AC.modes.buildWheelLesson(i);
+    ok(ls.boardKey === 'wheel' && ls.phase === 'battle' && ls.owner === 1, 'lesson ' + (i + 1) + ' opens on the wheel, the player to move');
+  }
+  AC.ui.patchSettings({ wheelLessons: [], tutorialDone: false });
+  AC.modes.startWheelLesson(0);
+  await sleep(30);
+  ok(game.state.scenario === 'shiksha-wheel' && !$('#coach').hidden && /1 \/ 4/.test($('#coach').textContent), 'lesson 1 starts with its coach');
+  clickCell('r3s0'); clickCell('r3s1');
+  ok(!!game.state.board['r3s0'], 'a move the lesson does not teach is refused');
+  clickCell('r2s0');
+  await sleep(20); document.querySelectorAll('.stage').forEach((n) => n.click());
+  ok(/Confirm strike/.test($('#coach').textContent), 'the step-in completes step one');
+  clickCell('r2s0'); clickCell('r1s0');
+  ok(/Certain win/.test($('#action-bar').textContent), 'a revealed enemy reads Certain win');
+  click($('#action-bar [data-act="confirm"]'));
+  await sleep(20); document.querySelectorAll('.stage').forEach((n) => n.click());
+  await sleep(450);
+  ok(AC.modes.lessonsDone().indexOf('first') !== -1 && /Next lesson/.test(document.body.textContent), 'lesson 1 done, the next lesson offered');
+  AC.app.modals.slice().forEach((m) => m.close());
+  AC.modes.startWheelLesson(1);
+  await sleep(30);
+  ok(AC.engine.turnsUntilRotation(game.state) === 1, 'lesson 2: the wheel turns after this round');
+  clickCell('r2s11');
+  ok(/1 \/ 4|2 \/ 4/.test($('#coach').textContent) && /Tap that cell/.test($('#coach').textContent), 'a wrong prediction keeps the question');
+  clickCell('r2s1');
+  ok(/watch the wheel turn/.test($('#coach').textContent), 'the right prediction moves on');
+  clickCell('r3s11'); clickCell('r3s10');
+  await sleep(20); document.querySelectorAll('.stage').forEach((n) => n.click());
+  ok(game.state.board['r2s1'] && game.state.board['r2s1'].key === '2', 'the Rath was carried to the predicted cell');
+  AC.app.modals.slice().forEach((m) => m.close());
+  AC.modes.startWheelLesson(2);
+  await sleep(30);
+  clickCell('r2s0'); clickCell('r1s0');
+  ok(/Likely win/.test($('#action-bar').textContent) && /can’t see yet/.test($('#action-bar').textContent) && /75%/.test($('#action-bar').textContent),
+    'lesson 3: a hidden rank reads Likely win, based on ranks you can’t see, % as detail');
+  AC.app.modals.slice().forEach((m) => m.close());
+  AC.modes.startWheelLesson(3);
+  await sleep(30);
+  click($('#action-bar [data-astra="sammohana"]'));
+  ok(game.mode !== 'astra', 'lesson 4 keeps to Agneyastra');
+  click($('#action-bar [data-astra="agneya"]'));
+  clickCell('r1s0');
+  ok(/Invoke Agneyastra/.test($('#action-bar').textContent), 'the astra has an Invoke / Cancel step');
+  AC.app.modals.slice().forEach((m) => m.close());
+  AC.modes.clear();
+  AC.ui.patchSettings({ wheelLessons: [], tutorialDone: false });
 
   // ── Daily Chakravyuha ──
   AC.modes.startDaily();
