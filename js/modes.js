@@ -250,12 +250,12 @@
           text: 'Every 5th round the two inner rings turn one cell clockwise and carry what stands on them. They turn after this round. Where will your Rath (2) be? Tap that cell.',
           hint: function (st, sel, m) { return m.misses >= 2 ? 'r2s1' : 'r2s0'; },
           wrong: 'Not there. Only the two inner rings turn, one cell clockwise: at the foot of the wheel that is to the left.' },
-        { key: 'turn', text: 'You marked it. Now end the round: move your Maharathi (9) one cell, and watch the wheel turn.',
+        { key: 'turn', text: 'You marked it — the dashed ring agrees. Now end the round: move your Maharathi (9) one cell, and watch the wheel turn.',
           hint: function (st, sel) { return sel ? null : cellOfKey(st, 1, '9'); },
           allow: function (st, a) { return a.from === cellOfKey(st, 1, '9') ? true : 'Leave the Rath where it is — move the Maharathi (9).'; },
           test: function (ev, actor) { return ev.kind === 'rotate'; } }
       ],
-      done: 'The Rath was carried to the cell you marked, and riding the wheel revealed it. In battle, “Chakra turns in” on the left counts down to the next turn.'
+      done: 'The Rath was carried to the cell you marked, and riding the wheel revealed it. In battle, one round before the turn, dashed rings show where each piece will land; after it, gold rings show what was exposed.'
     },
     {
       key: 'hidden', deva: 'गुप्त योद्धा', title: 'The hidden warrior',
@@ -755,6 +755,13 @@
       const m = currentMode(state);
       if (!m || m.kind !== 'wheel') return false;
       return wheelTap(m, id);
+    },
+    noGhost: function (state) {
+      // lesson 2 asks the player to predict the turn: no preview until they answer
+      const m = currentMode(state);
+      if (!m || m.kind !== 'wheel') return false;
+      const step = currentStep(m);
+      return !!(step && step.answer && !m.finished);
     },
     customResult: function (state) {
       const m = currentMode(state);

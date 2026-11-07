@@ -920,6 +920,100 @@ rankBadge('?', R)
     return out;
   }
 
+  /* ── the wheel turn, made visible (review plan step 3, 7 Nov 2026) ──
+   * One round before the inner rings turn, every piece they will carry gets a
+   * dashed ring where it will land and a short arrow along the ring. After the
+   * turn, what it carried keeps a gold ring for that round, solid where a
+   * hidden rank was exposed. All static: no animation, nothing loops. */
+  function turnSoon(st) {
+    return st.phase === 'battle' && E.hasRotation(st) && E.turnsUntilRotation(st) === 1 && !modeHook('noGhost');
+  }
+  function ringName() { return board().kind === 'hex' ? 'lotus' : 'chakra'; }
+
+  function ghostLayer(st, b) {
+    if (!turnSoon(st)) return '';
+    const viewer = viewerOf(st);
+    let out = '<g class="turn-ghosts" aria-hidden="true">';
+    E.rotationPreview(st).forEach(function (p) {
+      const a = b.byId[p.from], c = b.byId[p.to];
+      if (!a || !c) return;
+      const side = p.owner === viewer ? 'mine' : 'theirs';
+      const R = c.tr;
+      let path;
+      if (b.kind === 'wheel') {
+        // along the ring, from the edge of the piece to the edge of its landing ring
+        const r = Math.hypot(a.x, a.y);
+        const a0 = Math.atan2(a.y, a.x), a1raw = Math.atan2(c.y, c.x);
+        let d = a1raw - a0;
+        while (d <= 0) d += Math.PI * 2;
+        const trim = (a.tr * 1.05) / r, trim1 = (R * 1.2) / r;
+        const s0 = a0 + trim, s1 = a0 + d - trim1;
+        if (s1 > s0) {
+          path = 'M' + (Math.cos(s0) * r).toFixed(3) + ' ' + (Math.sin(s0) * r).toFixed(3) +
+            ' A' + r.toFixed(3) + ' ' + r.toFixed(3) + ' 0 0 1 ' + (Math.cos(s1) * r).toFixed(3) + ' ' + (Math.sin(s1) * r).toFixed(3);
+        }
+      } else {
+        const dx = c.x - a.x, dy = c.y - a.y, L = Math.hypot(dx, dy) || 1;
+        const f0 = (a.tr * 1.05) / L, f1 = 1 - (R * 1.2) / L;
+        if (f1 > f0) path = 'M' + (a.x + dx * f0).toFixed(3) + ' ' + (a.y + dy * f0).toFixed(3) + ' L' + (a.x + dx * f1).toFixed(3) + ' ' + (a.y + dy * f1).toFixed(3);
+      }
+      out += '<g class="turn-ghost ' + side + '">' +
+        '<circle class="ghost-land" cx="' + c.x + '" cy="' + c.y + '" r="' + (R * 1.12).toFixed(3) + '" stroke-width="' + (R * 0.12).toFixed(3) + '"/>' +
+        (path ? '<path class="ghost-arrow" d="' + path + '" stroke-width="' + (R * 0.14).toFixed(3) + '" marker-end="url(#ghost-head-' + side + ')"/>' : '') +
+        '</g>';
+    });
+    return out + '</g>';
+  }
+  function ghostDefs() {
+    const head = function (side) {
+      return '<marker id="ghost-head-' + side + '" class="ghost-head ' + side + '" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto-start-reverse">' +
+        '<path d="M0 0 L10 5 L0 10 z"/></marker>';
+    };
+    return '<defs>' + head('mine') + head('theirs') + '</defs>';
+  }
+
+  /* After the turn: which pieces it carried, and which ranks it exposed. */
+  function noteRotation(st, events) {
+    const ev = (events || []).filter(function (e) { return e.kind === 'rotate'; })[0];
+    if (!ev) return;
+    const ids = {}, fresh = {};
+    (ev.carried || []).forEach(function (id) { const u = st.board[id]; if (u) ids[u.id] = true; });
+    (ev.exposed || []).forEach(function (id) { const u = st.board[id]; if (u) fresh[u.id] = true; });
+    g.exposed = { ids: ids, fresh: fresh, count: st.rotation.count, turn: st.turn };
+  }
+  function exposedNow(st) {
+    const x = g.exposed;
+    return x && st.phase === 'battle' && st.rotation && st.rotation.count === x.count && st.turn === x.turn ? x : null;
+  }
+  function exposedSummary(st) {
+    const x = exposedNow(st);
+    if (!x) return null;
+    const viewer = viewerOf(st);
+    let theirs = 0, mine = 0;
+    E.forEachUnit(st, function (u) {
+      if (!x.fresh[u.id]) return;
+      if (u.owner === viewer) mine++; else theirs++;
+    });
+    return { theirs: theirs, mine: mine };
+  }
+
+  function turnRailText(st) {
+    const x = exposedSummary(st);
+    if (x && (x.theirs || x.mine)) {
+      return esc(tr('turn.exposed', 'The ' + ringName() + ' turned. Gold cells: enemy ranks it exposed.') + ' ' +
+        (x.theirs ? x.theirs + ' ' + tr('turn.exposed_theirs', 'enemy rank' + (x.theirs === 1 ? '' : 's') + ' now showing.') : '') +
+        (x.mine ? ' ' + x.mine + ' ' + tr('turn.exposed_mine', 'of yours exposed (dashed).') : ''));
+    }
+    if (turnSoon(st)) return esc(tr('turn.soon', 'The ' + ringName() + ' turns after this round: dashed rings show where each piece will be carried.'));
+    return tr('battle.tap_hint', 'Tap a piece, then a glowing cell. Or invoke an astra.');
+  }
+
+  function warnTurn(st) {
+    if (!turnSoon(st) || g.warnedAt === st.turn) return;
+    g.warnedAt = st.turn;
+    FX.toast(tr('turn.warn', 'The ' + ringName() + ' turns after this round. Dashed rings show where it will carry each piece.'), 'warn');
+  }
+
   function renderBoard() {
     const st = g.state;
     const svg = $('#board');
@@ -1029,6 +1123,9 @@ rankBadge('?', R)
       if (target) cls += ' target-' + target;
       if (target === 'astra' || target === 'pick') cls += ' astra-' + g.astra;
       if (g.armed === id) cls += ' armed';
+      const exp = u ? exposedNow(st) : null;
+      // enemy ranks the turn just exposed: solid gold; your own exposed pieces: a thin dashed ring
+      if (exp && exp.fresh[u.id]) cls += u.owner === viewer ? ' exposed' : ' exposed exposed-new';
 
       const label = rift ? 'rift'
         : u ? (visibleToViewer(u) ? u.name + ', rank ' + u.badge : 'unknown enemy piece')
@@ -1067,6 +1164,8 @@ rankBadge('?', R)
     // the inner rings live in their own groups so the wheel can turn
     if (rings[2]) out += '<g class="ring ring-2">' + rings[2] + '</g>';
     if (rings[1]) out += '<g class="ring ring-1">' + rings[1] + '</g>';
+    const ghosts = ghostLayer(st, b);
+    if (ghosts) out += ghostDefs() + ghosts;
 
     // formation links from the last clash: the jaws, the petals
     if (g.links && Date.now() < g.links.until) {
@@ -1233,7 +1332,7 @@ rankBadge('?', R)
       info = '<span class="sel-badge">' + A.icon('sword') + '</span>' +
         '<span class="sel-text"><span class="sel-name">' + (isHumanTurn ? tr('battle.your_move', 'Your move') : g.calmActive && g.busy && !g.thinking ? 'Watching the move' : 'Waiting') + '</span>' +
         '<span class="sel-desc">' + (isHumanTurn
-          ? tr('battle.tap_hint', 'Tap a piece, then a glowing cell. Or invoke an astra.')
+          ? turnRailText(st)
           : g.calmActive && g.busy && !g.thinking ? 'Tap the board to continue.' : oppName(st) + ' is choosing a move.') + '</span></span>';
     }
 
@@ -1859,6 +1958,7 @@ rankBadge('?', R)
     await seeMove(run, action, isAi() && actor === 2);
     if (!alive(run)) return;
     const res = E.applyAction(st, action);
+    noteRotation(st, res.events);
     render();
     updateTension();
     const events = res.events;
@@ -1912,6 +2012,7 @@ rankBadge('?', R)
       if (!alive(run)) return;
       cancelPace(); g.busy = false; g.thinking = false;
       render();
+      warnTurn(st);
       if (isPass()) showCurtain(st.owner, 'battle');
       startClockIfNeeded();
     }
@@ -1949,6 +2050,7 @@ rankBadge('?', R)
     }
     resetSelection();
     stopClock();
+    noteRotation(st, res.events);
 
     const me = isAi() ? 1 : actor;
     const at = action.to ? cellCenter(action.to) : FX.centerOf($('#board'));
@@ -2010,10 +2112,7 @@ rankBadge('?', R)
       if (isAi() && st.owner === 2) scheduleAi();
       else if (isPass()) showCurtain(st.owner, 'battle');
       else banner('Your turn', U.FACTIONS[st.owner].deva + ' · round ' + st.turn, st.owner === 1 ? 'solar' : 'void');
-      if (E.hasRotation(st) && st.phase === 'battle' && E.turnsUntilRotation(st) === 1 && g.warnedAt !== st.turn) {
-        g.warnedAt = st.turn;
-        FX.toast('The ' + (board().kind === 'hex' ? 'lotus' : 'chakra') + ' turns next round — the inner rings will shift and expose what they carry.', 'warn');
-      }
+      if (st.phase === 'battle' && (!isAi() || st.owner === 1)) warnTurn(st);
       startClockIfNeeded();
     };
 

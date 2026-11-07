@@ -607,13 +607,17 @@ async function run() {
   AC.modes.startWheelLesson(1);
   await sleep(30);
   ok(AC.engine.turnsUntilRotation(game.state) === 1, 'lesson 2: the wheel turns after this round');
+  ok(!document.querySelector('#board .turn-ghost'), 'lesson 2 hides the turn preview while the player predicts');
   clickCell('r2s11');
   ok(/1 \/ 4|2 \/ 4/.test($('#coach').textContent) && /Tap that cell/.test($('#coach').textContent), 'a wrong prediction keeps the question');
   clickCell('r2s1');
   ok(/watch the wheel turn/.test($('#coach').textContent), 'the right prediction moves on');
+  ok(document.querySelectorAll('#board .turn-ghost').length === 1, 'after the answer, the dashed ring shows the Rath’s landing cell');
   clickCell('r3s11'); clickCell('r3s10');
   await sleep(20); document.querySelectorAll('.stage').forEach((n) => n.click());
   ok(game.state.board['r2s1'] && game.state.board['r2s1'].key === '2', 'the Rath was carried to the predicted cell');
+  ok(!document.querySelector('#board .turn-ghost'), 'after the turn the preview is gone');
+  ok(!!document.querySelector('#board .cell.exposed'), 'the carried, now-exposed piece is marked for this round');
   AC.app.modals.slice().forEach((m) => m.close());
   AC.modes.startWheelLesson(2);
   await sleep(30);

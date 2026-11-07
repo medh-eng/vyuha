@@ -794,5 +794,26 @@ console.log('Chapter IV — Pratigya vows');
   ok(V(E.strikeOdds(s, 1, '3,2', '2,2')).certain, 'a revealed defender gives a certain result');
 }
 
+// ── the wheel-turn preview (7 Nov 2026) ──
+{
+  for (const bk of ['wheel', 'padma']) {
+    const s = E.newState({ board: bk, mode: 'ai', rules: CLASSIC });
+    s.board = {}; s.phase = 'battle'; s.owner = 1; s.turn = 4;
+    const map = E.rotationMap(s);
+    const froms = Object.keys(map);
+    ok(froms.length > 0 && new Set(Object.values(map)).size === froms.length, bk + ': the turn moves every ring cell to a distinct cell');
+    const [a, b2] = froms;
+    s.board[a] = E.createArmy(1, ['9'])[0];
+    s.board[b2] = E.createArmy(2, ['5'])[0];
+    const prev = E.rotationPreview(s);
+    ok(prev.length === 2 && prev.find((p) => p.from === b2).hidden, bk + ': the preview lists the carried pieces and which are hidden');
+    const events = [];
+    E.rotate(s, events);
+    ok(s.board[map[a]] && s.board[map[a]].key === '9' && s.board[map[b2]].key === '5', bk + ': the turn lands exactly where the preview said');
+    const ev = events.find((e) => e.kind === 'rotate');
+    ok(ev && ev.carried.length === 2 && ev.exposed.length === 2 && ev.exposed.indexOf(map[b2]) !== -1, bk + ': the turn reports carried and newly exposed cells');
+  }
+}
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 if (fail) process.exitCode = 1;
