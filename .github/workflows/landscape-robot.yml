@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   browser-checks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +26,7 @@ jobs:
         with:
           node-version: '22'
       - name: Install test dependencies and browser
+        id: dependencies
         run: |
           npm install --ignore-scripts --no-audit --no-fund
           npm install --no-save --ignore-scripts playwright@1.56.1
@@ -41,22 +42,22 @@ jobs:
           node tests/data.mjs
           node tools/pace-budget.mjs
       - name: Desktop and phone screenshots
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: node tools/shots.mjs .playtest/shots
       - name: Landscape acceptance
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: node tools/landscape.mjs .playtest/landscape
       - name: Four wheel lessons
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: node tools/first-session.mjs .playtest/first-session
       - name: Portrait idle heat
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: node tools/perf-idle.mjs
       - name: Landscape idle heat
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: VW=844 VH=390 node tools/perf-idle.mjs
       - name: Complete robot coverage
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: node tools/playtest-bot.mjs .playtest/robot
       - name: Save screenshots and robot report
         if: ${{ always() }}
@@ -64,4 +65,5 @@ jobs:
         with:
           name: landscape-robot-evidence
           path: .playtest/
+          include-hidden-files: true
           retention-days: 14
