@@ -3101,6 +3101,27 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
 .cell.exposed-new .cell-fill { stroke: #f2b84b !important; stroke-width: 0.06 !important; stroke-dasharray: none; fill: rgba(242, 184, 75, 0.1) !important; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.exposed-new .cell-fill { stroke: var(--saffron, #e8901c) !important; fill: rgba(232, 144, 28, 0.12) !important; }
 
+/* ── battle log, step 4 (7 Nov 2026): who acted, the cells by name, tap to mark them ── */
+button.log-entry { display: block; width: 100%; text-align: left; font: inherit; font-size: 11px; cursor: pointer; border-top: 0; border-right: 0; border-bottom: 0; }
+button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.log-entry .log-who {
+  display: inline-block; font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0 5px; margin-right: 5px; border-radius: 5px; background: rgba(255, 255, 255, 0.06); color: var(--txt);
+}
+.log-entry.side-mine .log-who { background: rgba(34, 211, 238, 0.16); }
+.log-entry.side-theirs .log-who { background: rgba(244, 63, 94, 0.16); }
+.log-entry .log-where { font-weight: 700; font-variant-numeric: tabular-nums; margin-right: 5px; white-space: nowrap; color: var(--txt); }
+.log-entry .log-where::after { content: ' ·'; font-weight: 400; color: var(--faint); }
+.log-entry .log-text b { color: var(--txt); }
+/* a cell picked from the log: a still ring, cleared after 2.4 s (no animation, keeps the phone cool) */
+.cell.log-mark .cell-fill { animation: none !important; stroke: #fde68a !important; stroke-width: 0.08 !important; stroke-dasharray: none !important; fill: rgba(253, 230, 138, 0.22) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry .log-who { background: rgba(60, 40, 10, 0.08); color: var(--ink, #1c1510); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry.side-mine .log-who { background: rgba(224, 169, 74, 0.28); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry.side-theirs .log-who { background: rgba(80, 90, 200, 0.18); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry :is(.log-where, .log-text b) { color: var(--ink, #1c1510); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.log-mark .cell-fill { stroke: #ffb347 !important; stroke-width: 0.1 !important; fill: rgba(255, 179, 71, 0.3) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry:is(.kind-core, .kind-end) { color: var(--txt); }
+
 </style>
 </head>
 <body>
@@ -4500,8 +4521,38 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
     return dist;
   }
 
+  /* A name for every cell, for the battle log and screen readers. Square fields use their
+   * printed coordinates (column letter, row number: A1 is top-left). The wheel and the lotus
+   * print none, so a cell is its ring and its clock position on screen (12 at the top), to
+   * the half hour: every cell gets a different name. Cell ids, so names never change when a
+   * square field is drawn sideways. */
+  const nameCache = {};
+  function cellName(boardKey, id) {
+    const k = boardKey + '|' + id;
+    if (nameCache[k]) return nameCache[k];
+    const b = build(boardKey);
+    const c = b.byId[id];
+    let out = null;
+    if (!c) out = null;
+    else if (b.kind === 'square') {
+      const rc = id.split(',');
+      out = { kind: 'square', text: String.fromCharCode(65 + Number(rc[1])) + (Number(rc[0]) + 1) };
+    } else if (c.shape === 'hub' || c.ring === 0) {
+      out = { kind: 'hub', ring: 0 };
+    } else {
+      let h = (3 + Math.atan2(c.y, c.x) * 180 / Math.PI / 30 + 24) % 12;
+      h = Math.round(h * 2) / 2;
+      if (h >= 12) h -= 12;
+      const whole = Math.floor(h);
+      out = { kind: 'ring', ring: c.ring, clock: (whole === 0 ? 12 : whole) + ':' + (h > whole ? '30' : '00') };
+    }
+    nameCache[k] = out;
+    return out;
+  }
+
   AC.geometry = {
     META: META,
+    cellName: cellName,
     padma: padmaBoard,
     build: build,
     distances: distances,
@@ -5071,8 +5122,13 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
 
   /* ── log / replay ────────────────────────────────────────────── */
 
-  function log(state, kind, text, at) {
-    state.log.push({ turn: state.turn, kind: kind, text: text, at: at || null, t: Date.now() });
+  /* `extra` carries who acted, the cells and the piece, so the screen can write the entry
+   * from the viewer's side (your piece by name, a hidden enemy piece as hidden). The
+   * English `text` stays for saves, tests and tools. */
+  function log(state, kind, text, at, extra) {
+    const entry = { turn: state.turn, kind: kind, text: text, at: at || null, t: Date.now() };
+    if (extra) Object.keys(extra).forEach(function (k) { if (extra[k] != null) entry[k] = extra[k]; });
+    state.log.push(entry);
     if (state.log.length > 400) state.log.shift();
   }
 
@@ -5529,7 +5585,7 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
       state.lastMove = { from: id, to: id, type: 'astra' };
     }
     events.push(ev);
-    log(state, 'astra', ev.text, ev.at || null);
+    log(state, 'astra', ev.text, ev.at || null, { who: owner, astra: key, from: ev.from && ev.from !== ev.at ? ev.from : null });
     snapshot(state, 'astra');
     finishTurn(state, events);
     return { ok: true, type: 'astra', events: events };
@@ -5547,9 +5603,10 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
     if (hero && hero.key === 'dhrishtadyumna' && !hero.used) {
       hero.used = true;
       gainShakti(state, by.owner, 1);
-      log(state, 'hero', 'Dhrishtadyumna opened the gate: his army gains one Shakti.', at);
+      log(state, 'hero', 'Dhrishtadyumna opened the gate: his army gains one Shakti.', at, { who: by.owner });
     }
-    log(state, 'breach', 'The ' + faction(fort.owner) + ' fort gate is broken.', at);
+    log(state, 'breach', 'The ' + faction(fort.owner) + ' fort gate is broken.', at,
+      by ? { who: by.owner, piece: by.key, seen: 1, foe: 'F' } : { foe: 'F' });
     events.push({ kind: 'breach', sfx: 'breach', at: at, unit: by, target: fort, text: 'The gate of the ' + faction(fort.owner) + ' fort is broken. One more blow takes it.' });
   }
 
@@ -5601,7 +5658,8 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
         events.push({ kind: 'reveal', text: 'Standing on the hub of the chakra exposes a piece to every spoke.' });
       }
       events.push({ kind: 'move', sfx: 'move', from: from, to: to, unit: unit });
-      log(state, 'move', faction(unit.owner) + ' advanced a ' + (unit.revealed ? unit.name : 'unit') + '.', to);
+      log(state, 'move', faction(unit.owner) + ' advanced a ' + (unit.revealed ? unit.name : 'unit') + '.', to,
+        { who: unit.owner, from: from, piece: unit.key, seen: unit.revealed ? 1 : 0 });
       snapshot(state, 'advance');
       finishTurn(state, events);
       return { ok: true, type: type, events: events };
@@ -5617,7 +5675,8 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
         kind: 'scan', sfx: 'scan', at: to, unit: unit, target: target,
         text: 'Divya-drishti: ' + target.name + ' [' + target.badge + '] revealed at no cost.'
       });
-      log(state, 'scan', 'The Divyadrishti scanned the ' + target.name + ' [' + target.badge + '].', to);
+      log(state, 'scan', 'The Divyadrishti scanned the ' + target.name + ' [' + target.badge + '].', to,
+        { who: unit.owner, from: from, piece: unit.key, seen: 1, foe: target.key });
       snapshot(state, 'scan');
       finishTurn(state, events);
       return { ok: true, type: type, events: events };
@@ -5625,6 +5684,7 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
 
     /* ── rain of arrows ── */
     if (type === 'barrage') {
+      const volleyBy = { who: unit.owner, from: from, piece: unit.key, seen: 1, foe: target.key };
       unit.revealed = true;
       target.revealed = true;
       state.stats.attacks++;
@@ -5642,7 +5702,7 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
           kind: 'core', sfx: 'core', at: to, unit: unit, target: target, win: true,
           text: 'Shara-varsha punched through the fort from two cells out. The enemy objective is gone.'
         });
-        log(state, 'core', faction(unit.owner) + ' took the enemy fort with a volley!', to);
+        log(state, 'core', faction(unit.owner) + ' took the enemy fort with a volley!', to, volleyBy);
         chron(state, unit.owner).tookFort = true;
         snapshot(state, 'barrage-core');
         endGame(state, unit.owner, faction(unit.owner) + ' took the enemy fort with a volley on turn ' + state.turn + '.', events);
@@ -5653,7 +5713,7 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
           kind: 'barrage', sfx: 'mine', at: to, unit: unit, target: target, noKill: true,
           text: 'The volley washed over a Shataghni — its iron shrugged off the arrows. Trap revealed, nothing lost.'
         });
-        log(state, 'barrage', 'The volley splashed off a Shataghni (no damage).', to);
+        log(state, 'barrage', 'The volley splashed off a Shataghni (no damage).', to, volleyBy);
       } else if (target.rank >= 0 && target.rank <= 5) {
         state.board[to] = null;
         recordCapture(state, unit.owner, target);
@@ -5662,13 +5722,13 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
           kind: 'barrage', sfx: 'laser', at: to, unit: unit, target: target, kill: true,
           text: 'The volley cut down the ' + target.name + ' [' + target.badge + '] at range. The archer never left its cell.'
         });
-        log(state, 'barrage', 'The volley cut down the ' + target.name + ' [' + target.badge + '].', to);
+        log(state, 'barrage', 'The volley cut down the ' + target.name + ' [' + target.badge + '].', to, volleyBy);
       } else {
         events.push({
           kind: 'barrage', sfx: 'clash', at: to, unit: unit, target: target, deflect: true,
           text: 'Heavy rank ' + target.badge + ' armour turned the volley. Both pieces are now revealed.'
         });
-        log(state, 'barrage', 'The volley was turned by the ' + target.name + ' [' + target.badge + '].', to);
+        log(state, 'barrage', 'The volley was turned by the ' + target.name + ' [' + target.badge + '].', to, volleyBy);
       }
       snapshot(state, 'barrage');
       finishTurn(state, events);
@@ -5764,7 +5824,8 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
       petals: ctx.petals,
       text: res.text
     });
-    log(state, 'clash', res.text, to);
+    log(state, 'clash', res.text, to,
+      { who: unit.owner, from: from, piece: unit.key, seen: 1, foe: target.key, outcome: res.winner });
     snapshot(state, 'clash');
 
     if (res.core) {
@@ -5863,7 +5924,7 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
       }
       if (hasAnyLegalMoves(state, next, true)) {
         // every piece that could act is entranced: the turn passes
-        log(state, 'pass', faction(next) + ' stands entranced and loses the turn.');
+        log(state, 'pass', faction(next) + ' stands entranced and loses the turn.', null, { who: next });
         if (events) events.push({ kind: 'pass', owner: next, text: faction(next) + ' is entranced and loses the turn.' });
         tickTrance(state, next);
         continue;
@@ -9021,14 +9082,31 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
   let active = null;
   let idleWaiters = [];
 
-  function priority(key) {
-    if (/^fort_/.test(key)) return 7;
-    if (/^breach_/.test(key)) return 6;
-    if (/^astra_/.test(key)) return 5;
-    if (/capture|assassinate|both_fell|volley|makara|padma|shield_break/.test(key)) return 4;
-    if (/^trap_/.test(key)) return 3;
-    if (/dawn|dusk|rotate/.test(key)) return 2;
-    return 1;
+  /* Who speaks when several moments fall in one turn (review plan step 4, 7 Nov 2026).
+   * Every line key has an explicit tier; tests/audio.mjs fails if a key is missing.
+   *   9 the fort falls · 8 the battle's result · 7 a gate breaks · 6 an astra
+   *   5 the clock is running out · 4 a piece falls or a formation acts · 3 a trap
+   *   2 the sky or the rings turn · 1 routine colour (openings, a scan, Shakti full, a lost turn) */
+  const PRIORITY = {
+    fort_won: 9, fort_lost: 9,
+    victory: 8, defeat: 8, draw: 8,
+    breach_enemy: 7, breach_own: 7,
+    astra_vayavya: 6, astra_vayavya_enemy: 6, astra_sammohana: 6, astra_sammohana_enemy: 6,
+    astra_agneya: 6, astra_agneya_enemy: 6, astra_brahma: 6, astra_brahma_enemy: 6,
+    last_rounds: 5, sunset_near: 5,
+    win_capture: 4, lose_capture: 4, both_fell: 4, assassinate: 4, volley_kill: 4, volley_turned: 4,
+    makara: 4, padma: 4, shield_break: 4,
+    trap_hit: 3, trap_defused: 3,
+    rotate: 2, rotate_padma: 2, dawn: 2, dawn_enemy: 2, dusk: 2, dusk_enemy: 2,
+    start_duel: 1, start_abhimanyu: 1, start_daily: 1, start_tutorial: 1,
+    scan: 1, shakti_full: 1, entranced_pass: 1
+  };
+  function priority(key) { return PRIORITY[key] || 1; }
+  // Highest tier first; equal tiers keep the order the moments happened in.
+  function rank(keys) {
+    return keys.map(function (k, i) { return { k: k, i: i }; })
+      .sort(function (a, b) { return priority(b.k) - priority(a.k) || a.i - b.i; })
+      .map(function (x) { return x.k; });
   }
 
   function playVoice(line, opts) {
@@ -9138,6 +9216,8 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
     LANGS: LANGS,
     say: say,
     priority: priority,
+    PRIORITY: PRIORITY,
+    rank: rank,
     idle: idle,
     stop: stopAll,
     skip: function () { if (active && active.cue) active.cue.stop(); },
@@ -11066,7 +11146,9 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
     if (!SJ || settings().narrator === false) return;
     keys = keys.filter(Boolean);
     if (!keys.length) return;
-    sayQueue = sayQueue.concat(keys).slice(0, 3);
+    // the three most important waiting lines, newest moments not crowded out by older ones
+    sayQueue = SJ.rank(sayQueue.concat(keys)).slice(0, 3);
+    markSaid(sayQueue);
     const pump = function () {
       if (!sayQueue.length) { sayTimer = null; return; }
       const k = sayQueue.shift();
@@ -11077,8 +11159,12 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
   }
   function speakOnce(key) {
     if (g.said[key]) return;
-    g.said[key] = true;
     speak([key]);
+  }
+  // once-a-battle lines count as said only when they were actually chosen to be spoken
+  const ONCE = ['shakti_full', 'last_rounds', 'sunset_near'];
+  function markSaid(keys) {
+    keys.forEach(function (k) { if (ONCE.indexOf(k) !== -1) g.said[k] = true; });
   }
 
   /* ── the legend that opens a match ── */
@@ -12125,6 +12211,7 @@ rankBadge('?', R)
       if (isSel) cls += ' selected';
       if (isFocus && !isSel) cls += ' hint';
       if (isLast) cls += ' last-move';
+      if (g.logMark && g.logMark.indexOf(id) !== -1) cls += ' log-mark';
       if (target) cls += ' target-' + target;
       if (target === 'astra' || target === 'pick') cls += ' astra-' + g.astra;
       if (g.armed === id) cls += ' armed';
@@ -12145,7 +12232,7 @@ rankBadge('?', R)
         }
       }
       const markerType = target === 'pick' ? 'astra' : target;
-      const markup = '<g class="' + cls + '" data-id="' + id + '" tabindex="0" role="gridcell" aria-label="' + esc(label) + '">' +
+      const markup = '<g class="' + cls + '" data-id="' + id + '" tabindex="0" role="gridcell" aria-label="' + esc(cellText(id) + ', ' + label) + '">' +
         shapeSvg(cell, !!tex) + hubArt +
         (memo && memo.mem.fallen[id] && bannerArt[memo.mem.fallen[id]]
           ? '<image class="pata-banner" href="' + bannerArt[memo.mem.fallen[id]] + '" x="' + (cell.x - cell.tr * 1.25) + '" y="' + (cell.y - cell.tr * 1.25) +
@@ -12544,18 +12631,69 @@ rankBadge('?', R)
     }).join(' · ');
   }
 
+  /* ── battle log (review plan step 4) ──
+   * Each entry is written from the viewer's side: "You" or "Enemy", the cells by name, your own
+   * piece by name, an enemy piece only if it was visible when it acted. Entries with cells are
+   * buttons: tapping one marks those cells on the field for a moment (no animation). */
+  function cellText(id) {
+    const n = id && G.cellName ? G.cellName(g.state.boardKey, id) : null;
+    if (!n) return '';
+    if (n.kind === 'square') return n.text;
+    if (n.kind === 'hub') return board().kind === 'hex' ? tr('log.centre', 'centre') : tr('log.hub', 'hub');
+    return tr('log.ring' + n.ring, ['', 'inner', 'middle', 'outer'][n.ring] || '') + ' ' + n.clock;
+  }
+  g.cellText = cellText;
+  function pieceText(key) {
+    const d = L.unit(key) || U.UNIT_DEFS[key];
+    if (!d) return '';
+    return d.name + (d.badge && /^\d+$/.test(d.badge) ? ' ' + d.badge : '');
+  }
+  function logLine(l, viewer) {
+    const route = function (from, to) {
+      const a = cellText(from), b = cellText(to);
+      return a && b && a !== b ? a + ' → ' + b : (b || a);
+    };
+    const mine = l.who === viewer;
+    let who = '', body = esc(l.text), where = '';
+    if (l.who === 1 || l.who === 2) who = mine ? tr('log.you', 'You') : tr('log.enemy', 'Enemy');
+    if (l.kind === 'move' && l.who) {
+      const piece = mine || l.seen ? pieceText(l.piece) : tr('log.hidden', 'hidden piece');
+      body = '<b>' + esc(piece) + '</b> ' + esc(route(l.from, l.at));
+    } else if ((l.kind === 'clash' || l.kind === 'barrage' || l.kind === 'scan' || (l.kind === 'core' && l.from)) && l.who) {
+      where = route(l.from, l.at);
+    } else if (l.at || l.from) {
+      where = l.from && l.from !== l.at ? cellText(l.from) + ' ↔ ' + cellText(l.at) : cellText(l.at);
+    }
+    const cells = [l.from, l.at].filter(Boolean).join(' ');
+    const side = who ? (mine ? ' side-mine' : ' side-theirs') : '';
+    return '<' + (cells ? 'button type="button"' : 'div') + ' class="log-entry kind-' + esc(l.kind) + side + '"' +
+      (cells ? ' data-cells="' + esc(cells) + '"' : '') + '>' +
+      '<span class="log-turn">R' + l.turn + '</span>' +
+      (who ? '<span class="log-who">' + esc(who) + '</span>' : '') +
+      (where ? '<span class="log-where">' + esc(where) + '</span>' : '') +
+      '<span class="log-text">' + body + '</span>' +
+      '</' + (cells ? 'button' : 'div') + '>';
+  }
   function renderLog() {
     const host = $('#battle-log');
     if (!host) return;
     const st = g.state;
     if (!st.log.length) {
-      host.innerHTML = '<div class="log-entry empty">No actions yet.</div>';
+      host.innerHTML = '<div class="log-entry empty">' + esc(tr('log.empty', 'No actions yet.')) + '</div>';
       return;
     }
-    host.innerHTML = st.log.slice(-60).reverse().map(function (l) {
-      return '<div class="log-entry kind-' + esc(l.kind) + '"><span class="log-turn">R' + l.turn + '</span>' + esc(l.text) + '</div>';
-    }).join('');
+    // in pass-and-play the log is hidden while the device changes hands
+    if (st.viewer === 0) { host.innerHTML = ''; return; }
+    const viewer = viewerOf(st);
+    host.innerHTML = st.log.slice(-60).reverse().map(function (l) { return logLine(l, viewer); }).join('');
   }
+  function markCells(ids) {
+    clearTimeout(g.logMarkTimer);
+    g.logMark = ids;
+    render();
+    g.logMarkTimer = setTimeout(function () { g.logMark = null; if (g.state) render(); }, 2400);
+  }
+  g.markCells = markCells;
 
   /* ══ interaction ═══════════════════════════════════════════════ */
 
@@ -12794,16 +12932,14 @@ rankBadge('?', R)
       }
     });
     if (st.shakti && st.shakti[me] >= 5 && !g.said.shakti_full && E.rules(st).astras && !(st.astrasUsed[me] || {}).brahma) {
-      g.said.shakti_full = true;
       keys.push('shakti_full');
     }
     if (st.phase === 'battle') {
-      const warning = st.turnLimit && st.turnLimit - st.turn === 4 ? 'last_rounds'
-        : !st.turnLimit && capOf(st) - st.turn === 3 ? 'sunset_near' : null;
-      if (warning && !g.said[warning]) {
-        if (g.calmActive) { g.said[warning] = true; keys.push(warning); }
-        else speakOnce(warning);
-      }
+      // from four rounds (or three before sunset) to the end, until it has been spoken once
+      const left = st.turnLimit ? st.turnLimit - st.turn : capOf(st) - st.turn;
+      const warning = st.turnLimit && left <= 4 && left >= 1 ? 'last_rounds'
+        : !st.turnLimit && left <= 3 && left >= 1 ? 'sunset_near' : null;
+      if (warning && !g.said[warning]) keys.push(warning);
     }
     return keys;
   }
@@ -12974,9 +13110,12 @@ rankBadge('?', R)
       if (ev.kind === 'clash' && (major || hasAstra)) return false;
       return ['clash', 'barrage', 'scan', 'breach', 'astra', 'core', 'sky', 'rotate'].indexOf(ev.kind) !== -1;
     });
-    const keys = narrate(events, me, st).sort(function (a, b) { return SJ.priority(b) - SJ.priority(a); });
-    if (st.phase === 'over' && !keys.length) keys.push(st.winner === 0 ? 'draw' : st.winner === me ? 'victory' : 'defeat');
+    const moments = narrate(events, me, st);
+    // the battle's result outranks the blow that ended it (a fort taken outranks both)
+    if (st.phase === 'over') moments.push(st.winner === 0 ? 'draw' : st.winner === me ? 'victory' : 'defeat');
+    const keys = SJ ? SJ.rank(moments) : moments;
     const voiced = !!(keys.length && SJ && settings().narrator !== false);
+    if (voiced) markSaid(keys.slice(0, 1));
     let tail = null;
     for (let i = 0; i < beats.length; i++) {
       const ev = beats[i];
@@ -13778,6 +13917,17 @@ rankBadge('?', R)
       const scrim = document.getElementById('scrim');
       const open = panel.classList.toggle('open');
       if (scrim) scrim.classList.toggle('on', open);
+    });
+    document.getElementById('battle-log').addEventListener('click', function (e) {
+      const entry = e.target.closest('[data-cells]');
+      if (!entry || !g.state) return;
+      sfx('ui');
+      // where the drawer covers the field, step it aside so the marked cells can be seen
+      if (window.matchMedia && window.matchMedia('(max-width: 1080px)').matches) {
+        document.getElementById('log-panel').classList.remove('open');
+        document.getElementById('scrim').classList.remove('on');
+      }
+      markCells(entry.getAttribute('data-cells').split(' '));
     });
     document.getElementById('btn-log-close').addEventListener('click', function () {
       sfx('ui');

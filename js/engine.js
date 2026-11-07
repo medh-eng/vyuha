@@ -557,8 +557,13 @@
 
   /* ── log / replay ────────────────────────────────────────────── */
 
-  function log(state, kind, text, at) {
-    state.log.push({ turn: state.turn, kind: kind, text: text, at: at || null, t: Date.now() });
+  /* `extra` carries who acted, the cells and the piece, so the screen can write the entry
+   * from the viewer's side (your piece by name, a hidden enemy piece as hidden). The
+   * English `text` stays for saves, tests and tools. */
+  function log(state, kind, text, at, extra) {
+    const entry = { turn: state.turn, kind: kind, text: text, at: at || null, t: Date.now() };
+    if (extra) Object.keys(extra).forEach(function (k) { if (extra[k] != null) entry[k] = extra[k]; });
+    state.log.push(entry);
     if (state.log.length > 400) state.log.shift();
   }
 
@@ -1015,7 +1020,7 @@
       state.lastMove = { from: id, to: id, type: 'astra' };
     }
     events.push(ev);
-    log(state, 'astra', ev.text, ev.at || null);
+    log(state, 'astra', ev.text, ev.at || null, { who: owner, astra: key, from: ev.from && ev.from !== ev.at ? ev.from : null });
     snapshot(state, 'astra');
     finishTurn(state, events);
     return { ok: true, type: 'astra', events: events };
@@ -1033,9 +1038,10 @@
     if (hero && hero.key === 'dhrishtadyumna' && !hero.used) {
       hero.used = true;
       gainShakti(state, by.owner, 1);
-      log(state, 'hero', 'Dhrishtadyumna opened the gate: his army gains one Shakti.', at);
+      log(state, 'hero', 'Dhrishtadyumna opened the gate: his army gains one Shakti.', at, { who: by.owner });
     }
-    log(state, 'breach', 'The ' + faction(fort.owner) + ' fort gate is broken.', at);
+    log(state, 'breach', 'The ' + faction(fort.owner) + ' fort gate is broken.', at,
+      by ? { who: by.owner, piece: by.key, seen: 1, foe: 'F' } : { foe: 'F' });
     events.push({ kind: 'breach', sfx: 'breach', at: at, unit: by, target: fort, text: 'The gate of the ' + faction(fort.owner) + ' fort is broken. One more blow takes it.' });
   }
 
@@ -1087,7 +1093,8 @@
         events.push({ kind: 'reveal', text: 'Standing on the hub of the chakra exposes a piece to every spoke.' });
       }
       events.push({ kind: 'move', sfx: 'move', from: from, to: to, unit: unit });
-      log(state, 'move', faction(unit.owner) + ' advanced a ' + (unit.revealed ? unit.name : 'unit') + '.', to);
+      log(state, 'move', faction(unit.owner) + ' advanced a ' + (unit.revealed ? unit.name : 'unit') + '.', to,
+        { who: unit.owner, from: from, piece: unit.key, seen: unit.revealed ? 1 : 0 });
       snapshot(state, 'advance');
       finishTurn(state, events);
       return { ok: true, type: type, events: events };
@@ -1103,7 +1110,8 @@
         kind: 'scan', sfx: 'scan', at: to, unit: unit, target: target,
         text: 'Divya-drishti: ' + target.name + ' [' + target.badge + '] revealed at no cost.'
       });
-      log(state, 'scan', 'The Divyadrishti scanned the ' + target.name + ' [' + target.badge + '].', to);
+      log(state, 'scan', 'The Divyadrishti scanned the ' + target.name + ' [' + target.badge + '].', to,
+        { who: unit.owner, from: from, piece: unit.key, seen: 1, foe: target.key });
       snapshot(state, 'scan');
       finishTurn(state, events);
       return { ok: true, type: type, events: events };
@@ -1111,6 +1119,7 @@
 
     /* ── rain of arrows ── */
     if (type === 'barrage') {
+      const volleyBy = { who: unit.owner, from: from, piece: unit.key, seen: 1, foe: target.key };
       unit.revealed = true;
       target.revealed = true;
       state.stats.attacks++;
@@ -1128,7 +1137,7 @@
           kind: 'core', sfx: 'core', at: to, unit: unit, target: target, win: true,
           text: 'Shara-varsha punched through the fort from two cells out. The enemy objective is gone.'
         });
-        log(state, 'core', faction(unit.owner) + ' took the enemy fort with a volley!', to);
+        log(state, 'core', faction(unit.owner) + ' took the enemy fort with a volley!', to, volleyBy);
         chron(state, unit.owner).tookFort = true;
         snapshot(state, 'barrage-core');
         endGame(state, unit.owner, faction(unit.owner) + ' took the enemy fort with a volley on turn ' + state.turn + '.', events);
@@ -1139,7 +1148,7 @@
           kind: 'barrage', sfx: 'mine', at: to, unit: unit, target: target, noKill: true,
           text: 'The volley washed over a Shataghni — its iron shrugged off the arrows. Trap revealed, nothing lost.'
         });
-        log(state, 'barrage', 'The volley splashed off a Shataghni (no damage).', to);
+        log(state, 'barrage', 'The volley splashed off a Shataghni (no damage).', to, volleyBy);
       } else if (target.rank >= 0 && target.rank <= 5) {
         state.board[to] = null;
         recordCapture(state, unit.owner, target);
@@ -1148,13 +1157,13 @@
           kind: 'barrage', sfx: 'laser', at: to, unit: unit, target: target, kill: true,
           text: 'The volley cut down the ' + target.name + ' [' + target.badge + '] at range. The archer never left its cell.'
         });
-        log(state, 'barrage', 'The volley cut down the ' + target.name + ' [' + target.badge + '].', to);
+        log(state, 'barrage', 'The volley cut down the ' + target.name + ' [' + target.badge + '].', to, volleyBy);
       } else {
         events.push({
           kind: 'barrage', sfx: 'clash', at: to, unit: unit, target: target, deflect: true,
           text: 'Heavy rank ' + target.badge + ' armour turned the volley. Both pieces are now revealed.'
         });
-        log(state, 'barrage', 'The volley was turned by the ' + target.name + ' [' + target.badge + '].', to);
+        log(state, 'barrage', 'The volley was turned by the ' + target.name + ' [' + target.badge + '].', to, volleyBy);
       }
       snapshot(state, 'barrage');
       finishTurn(state, events);
@@ -1250,7 +1259,8 @@
       petals: ctx.petals,
       text: res.text
     });
-    log(state, 'clash', res.text, to);
+    log(state, 'clash', res.text, to,
+      { who: unit.owner, from: from, piece: unit.key, seen: 1, foe: target.key, outcome: res.winner });
     snapshot(state, 'clash');
 
     if (res.core) {
@@ -1349,7 +1359,7 @@
       }
       if (hasAnyLegalMoves(state, next, true)) {
         // every piece that could act is entranced: the turn passes
-        log(state, 'pass', faction(next) + ' stands entranced and loses the turn.');
+        log(state, 'pass', faction(next) + ' stands entranced and loses the turn.', null, { who: next });
         if (events) events.push({ kind: 'pass', owner: next, text: faction(next) + ' is entranced and loses the turn.' });
         tickTrance(state, next);
         continue;

@@ -3077,3 +3077,24 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
 .cell.exposed .cell-fill { stroke: #e0a94a !important; stroke-width: 0.03 !important; stroke-dasharray: 0.05 0.035; }
 .cell.exposed-new .cell-fill { stroke: #f2b84b !important; stroke-width: 0.06 !important; stroke-dasharray: none; fill: rgba(242, 184, 75, 0.1) !important; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.exposed-new .cell-fill { stroke: var(--saffron, #e8901c) !important; fill: rgba(232, 144, 28, 0.12) !important; }
+
+/* ── battle log, step 4 (7 Nov 2026): who acted, the cells by name, tap to mark them ── */
+button.log-entry { display: block; width: 100%; text-align: left; font: inherit; font-size: 11px; cursor: pointer; border-top: 0; border-right: 0; border-bottom: 0; }
+button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.log-entry .log-who {
+  display: inline-block; font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0 5px; margin-right: 5px; border-radius: 5px; background: rgba(255, 255, 255, 0.06); color: var(--txt);
+}
+.log-entry.side-mine .log-who { background: rgba(34, 211, 238, 0.16); }
+.log-entry.side-theirs .log-who { background: rgba(244, 63, 94, 0.16); }
+.log-entry .log-where { font-weight: 700; font-variant-numeric: tabular-nums; margin-right: 5px; white-space: nowrap; color: var(--txt); }
+.log-entry .log-where::after { content: ' ·'; font-weight: 400; color: var(--faint); }
+.log-entry .log-text b { color: var(--txt); }
+/* a cell picked from the log: a still ring, cleared after 2.4 s (no animation, keeps the phone cool) */
+.cell.log-mark .cell-fill { animation: none !important; stroke: #fde68a !important; stroke-width: 0.08 !important; stroke-dasharray: none !important; fill: rgba(253, 230, 138, 0.22) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry .log-who { background: rgba(60, 40, 10, 0.08); color: var(--ink, #1c1510); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry.side-mine .log-who { background: rgba(224, 169, 74, 0.28); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry.side-theirs .log-who { background: rgba(80, 90, 200, 0.18); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry :is(.log-where, .log-text b) { color: var(--ink, #1c1510); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.log-mark .cell-fill { stroke: #ffb347 !important; stroke-width: 0.1 !important; fill: rgba(255, 179, 71, 0.3) !important; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry:is(.kind-core, .kind-end) { color: var(--txt); }

@@ -383,8 +383,38 @@
     return dist;
   }
 
+  /* A name for every cell, for the battle log and screen readers. Square fields use their
+   * printed coordinates (column letter, row number: A1 is top-left). The wheel and the lotus
+   * print none, so a cell is its ring and its clock position on screen (12 at the top), to
+   * the half hour: every cell gets a different name. Cell ids, so names never change when a
+   * square field is drawn sideways. */
+  const nameCache = {};
+  function cellName(boardKey, id) {
+    const k = boardKey + '|' + id;
+    if (nameCache[k]) return nameCache[k];
+    const b = build(boardKey);
+    const c = b.byId[id];
+    let out = null;
+    if (!c) out = null;
+    else if (b.kind === 'square') {
+      const rc = id.split(',');
+      out = { kind: 'square', text: String.fromCharCode(65 + Number(rc[1])) + (Number(rc[0]) + 1) };
+    } else if (c.shape === 'hub' || c.ring === 0) {
+      out = { kind: 'hub', ring: 0 };
+    } else {
+      let h = (3 + Math.atan2(c.y, c.x) * 180 / Math.PI / 30 + 24) % 12;
+      h = Math.round(h * 2) / 2;
+      if (h >= 12) h -= 12;
+      const whole = Math.floor(h);
+      out = { kind: 'ring', ring: c.ring, clock: (whole === 0 ? 12 : whole) + ':' + (h > whole ? '30' : '00') };
+    }
+    nameCache[k] = out;
+    return out;
+  }
+
   AC.geometry = {
     META: META,
+    cellName: cellName,
     padma: padmaBoard,
     build: build,
     distances: distances,
