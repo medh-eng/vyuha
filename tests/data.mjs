@@ -29,8 +29,9 @@ for (const dir of ['music', 'sfx']) {
 }
 for (const s of sounds.sounds) {
   ok(fs.existsSync(path.join(root, s.file)), 'registered sound exists: ' + s.file);
-  ok(['gemini', 'pixabay', 'gemini-or-pixabay', 'other'].includes(s.origin), 'sound origin is a known value: ' + s.file);
-  if (s.verified) ok(s.link || s.origin === 'gemini', 'a verified sound names its source page: ' + s.file);
+  ok(['commander-recorded', 'gemini', 'pixabay'].includes(s.origin), 'sound origin is a known value: ' + s.file);
+  if (s.file.includes('/music/')) ok(s.origin !== 'pixabay', 'music is Gemini or recorded: ' + s.file);
+  else ok(s.origin !== 'gemini', 'effects are Pixabay or recorded: ' + s.file);
 }
 
 const art = read('data/art.json');

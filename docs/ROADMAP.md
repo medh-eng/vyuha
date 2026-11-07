@@ -46,7 +46,7 @@ Engine and rules untouched; runs beside the hero work.
 - [x] **[C]** **Gate 1** — Pata chosen: the Commander made its full Phase 1 art set (5 Nov)
 - [x] **[C]** Phase 1 art and sound (`PATA.md` §1–6): 35 images + 11 sounds arrived 5 Nov
 - [x] **[D]** Phase 1 wiring: painted pieces, hidden sketch, fort gate states, painted Chakravyuha day/night, home chamber + lamp, Sanjaya portrait, pakhawaj clashes, cloth sounds, ravanhatta home music (`tools/prepare-pata.py`)
-- [x] **[C]** Sound source stated 7 Nov: Gemini or Pixabay, commercial use (`docs/SOURCES.md`, `data/sounds.json`); per-file links still welcome
+- [x] **[C]** Sound sources settled 7 Nov: ravanhatta and pakhawaj recorded by the Commander, long music Gemini, effects Pixabay (`docs/SOURCES.md`, `data/sounds.json`)
 - [x] **[D]** Phase 1, rest: reveal colour-flood + sting, banners where pieces fall, sky re-dye, every screen in cotton, **Pata is the default look** (Classic bronze in Settings)
 - [ ] **[C]** **Gate 2** — beats today's build; 5 people name 8 of 10 pieces at 32 px; idle < 3 %
 - [x] **[C]** Phase 2 art: Padmavyuha, Sarvatobhadra, Kurukshetra day/night, nine avatars, four astra stills, reveal brush (6 Nov)

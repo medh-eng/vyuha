@@ -1,285 +1,213 @@
 {
-  "_about": "Register of every shipped sound (not the Sanjaya voice lines, which are made from docs/voice/). Hand-maintained; tests/data.mjs fails if a file in assets/audio/music or sfx is missing here. Source wording is the Commander's own and is not checked against the web.",
+  "_about": "Register of every shipped sound (not the Sanjaya voice lines, which are made from docs/voice/). Hand-maintained; tests/data.mjs fails if a file in assets/audio/music or sfx is missing here.",
   "source_statement": {
     "by": "Commander",
     "date": "2026-11-07",
-    "text": "All sounds are from Gemini or Pixabay; both allow commercial use."
+    "text": "Settled. The ravanhatta and pakhawaj were recorded and uploaded by the Commander. The long music files are from Gemini. The sound effects are from Pixabay."
   },
-  "fields": {
-    "plays": "where it plays",
-    "batch": "when it was supplied",
-    "origin": "gemini | pixabay | gemini-or-pixabay (not yet told apart) | other",
-    "link": "Pixabay page URL, or null",
-    "verified": "true only when the origin and link have been checked against the source page"
+  "origins": {
+    "commander-recorded": "recorded by the Commander",
+    "gemini": "made with Gemini by the Commander",
+    "pixabay": "Pixabay Content License"
   },
   "sounds": [
     {
       "file": "assets/audio/music/abhimanyu.mp3",
       "plays": "Abhimanyu scenario music",
       "batch": "2026-10-30",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "gemini"
     },
     {
       "file": "assets/audio/music/battle.mp3",
       "plays": "battle music (day)",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "gemini"
     },
     {
       "file": "assets/audio/music/battle_night.mp3",
       "plays": "battle music (night)",
       "batch": "2026-10-30",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "gemini"
     },
     {
       "file": "assets/audio/music/daily_theme.mp3",
       "plays": "Daily Chakravyuha music",
       "batch": "2026-10-30",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "gemini"
     },
     {
       "file": "assets/audio/music/defeat.mp3",
       "plays": "defeat sting",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "gemini"
     },
     {
       "file": "assets/audio/music/lesson.mp3",
       "plays": "Pehla Yuddh and lessons music",
       "batch": "2026-10-30",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "gemini"
     },
     {
       "file": "assets/audio/music/menu.mp3",
       "plays": "menu music",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "gemini"
     },
     {
       "file": "assets/audio/music/sanjaya_ravanhatta.mp3",
       "plays": "home music in the Pata look (ravanhatta)",
       "batch": "2026-11-05",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false,
-      "note": "The 5 Nov note said YouTube; the Commander says (7 Nov) Gemini or Pixabay. Confirm which."
+      "origin": "commander-recorded"
     },
     {
       "file": "assets/audio/music/tabla.mp3",
       "plays": "setup and deployment music",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "gemini"
     },
     {
       "file": "assets/audio/music/victory.mp3",
       "plays": "victory sting",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "gemini"
     },
     {
       "file": "assets/audio/music/victory_big.mp3",
       "plays": "big victory sting",
       "batch": "2026-10-30",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "gemini"
     },
     {
       "file": "assets/audio/sfx/astra_agneya.mp3",
       "plays": "Agneyastra",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/astra_brahma.mp3",
       "plays": "Brahmastra",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/astra_sammohana.mp3",
       "plays": "Sammohanastra",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/astra_vayavya.mp3",
       "plays": "Vayavyastra",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/chakra_turn.mp3",
       "plays": "the wheel turns",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/clash.mp3",
       "plays": "clash (Classic)",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/dawn.mp3",
       "plays": "sky turns to day",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/divya_drishti.mp3",
       "plays": "Divyadrishti scan",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/dusk.mp3",
       "plays": "sky turns to night",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/gate_breach.mp3",
       "plays": "fort gate breaks",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/pata_clash_1.mp3",
       "plays": "clash, Pata look (pakhawaj 1)",
       "batch": "2026-11-05",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false,
-      "note": "The 5 Nov note said YouTube; the Commander says (7 Nov) Gemini or Pixabay. Confirm which."
+      "origin": "commander-recorded"
     },
     {
       "file": "assets/audio/sfx/pata_clash_2.mp3",
       "plays": "clash, Pata look (pakhawaj 2)",
       "batch": "2026-11-05",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false,
-      "note": "The 5 Nov note said YouTube; the Commander says (7 Nov) Gemini or Pixabay. Confirm which."
+      "origin": "commander-recorded"
     },
     {
       "file": "assets/audio/sfx/pata_clash_3.mp3",
       "plays": "clash, Pata look (pakhawaj 3)",
       "batch": "2026-11-05",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false,
-      "note": "The 5 Nov note said YouTube; the Commander says (7 Nov) Gemini or Pixabay. Confirm which."
+      "origin": "commander-recorded"
     },
     {
       "file": "assets/audio/sfx/pata_fall.mp3",
       "plays": "a piece falls (cloth tear)",
       "batch": "2026-11-05",
-      "origin": "pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/pata_reveal.mp3",
       "plays": "a hidden rank is revealed (brush stroke)",
       "batch": "2026-11-06",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/pata_sky.mp3",
       "plays": "the sky turns (cloth rustle)",
       "batch": "2026-11-05",
-      "origin": "pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/pata_ui.mp3",
       "plays": "interface tap (cloth)",
       "batch": "2026-11-05",
-      "origin": "pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/piece_place.mp3",
       "plays": "piece placed",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/shakti_diya.mp3",
       "plays": "a Shakti lamp lights",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/shankh.mp3",
       "plays": "conch: battle start, fort falls, victory",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/trap.mp3",
       "plays": "a trap is struck",
       "batch": "2026-10-30",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     },
     {
       "file": "assets/audio/sfx/volley.mp3",
       "plays": "volley",
       "batch": "earlier-core-pack",
-      "origin": "gemini-or-pixabay",
-      "link": null,
-      "verified": false
+      "origin": "pixabay"
     }
   ]
 }

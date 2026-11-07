@@ -4,55 +4,23 @@ The store listing and any legal review will ask for this. One file for every sup
 (moved here on 6 Nov 2026 from `masters/audio/…/SOURCES.md` and `incoming/audio/SOURCES.md`).
 The original files are in the masters archive — see [`MASTERS.md`](MASTERS.md).
 
-## Sound — source statement (Commander, 7 Nov 2026)
+## Sound — where it came from (Commander, 7 Nov 2026 — settled)
 
-The Commander states that **all sound in the game comes from Gemini (generated) or Pixabay**, and that
-both allow commercial use without payment. This replaces the earlier "YouTube, described as copyright-free"
-wording in the tables below for the 5 Nov pack; if any of the pakhawaj or ravanhatta files did in fact
-come from a YouTube upload, tell the Director so the row is corrected — that is the one case where the
-statement would not hold. The register still does not name which file came from which of the two
-sources, and no page links were captured. Pixabay's own licence (no payment, no attribution needed;
-the sound may not be resold unchanged or registered with a Content ID system) is the one to cite for
-those files; the generator's terms are the one to cite for the Gemini files.
+| Kind | Source | Files |
+|---|---|---|
+| The ravanhatta and the pakhawaj | **Recorded and uploaded by the Commander himself** — his own recordings | `music/sanjaya_ravanhatta.mp3`; `sfx/pata_clash_1.mp3`, `pata_clash_2.mp3`, `pata_clash_3.mp3` (masters `sanjaya-ravanhatta.mp3`, `pakhawaj-1…5`, `pakhawaj-vaidya-long`, `pakhawaj-sample-long`) |
+| The long music files | **Gemini** (made by the Commander) | every other file in `assets/audio/music/` |
+| The sound effects | **Pixabay** (Pixabay Content License: free for commercial use, no attribution needed; not to be resold unchanged) | every other file in `assets/audio/sfx/` |
 
-Still useful before a store launch (not a blocker for play): per file, "Gemini" or the Pixabay page
-link, filled into the tables below. Keep the page title and date for each Pixabay file.
+This is final. No page links are needed or kept. The per-file list is `data/sounds.json`.
 
-## Sound — 30 Oct 2026 (Commander)
+Processing: `tools/prepare-audio-pack.py` and `tools/prepare-pata.py` (FFmpeg: trims, loop crossfades, end
+fades, loudness; runtime copies are MP3, 44.1 kHz). Originals are in the masters archive —
+see [`MASTERS.md`](MASTERS.md): `masters/audio/supplied-2026-10-30/`, `supplied-2026-11-05/`,
+`supplied-2026-11-06/`.
 
-`trap.mp3`, `battle_night.mp3`, `daily_theme.mp3`, `lesson.mp3`, `abhimanyu.mp3`, `victory_big.mp3`,
-received in the VYUHA conversation. Originals: `masters/audio/supplied-2026-10-30/`.
-The generation tool, prompt, creator and licence terms were not supplied; this register does not
-assert rights or invent a source.
-
-Processing: `tools/prepare-audio-pack.py` (FFmpeg). Four music tracks use one-second loop
-crossfades; victory and trap use short end fades. Runtime copies are MP3, 44.1 kHz, 96 kbps,
-stereo except mono trap.
-
-## Sound — 5 Nov 2026 (Commander's Pata pack)
-
-Originals: `masters/audio/supplied-2026-11-05/`. The "Source (reported)" column is the 5 Nov note;
-the 7 Nov statement above says Gemini or Pixabay. Fill in the per-file link or "Gemini".
-
-| Master file | Shipped as | Source (reported) | Link and licence |
-|---|---|---|---|
-| `sanjaya-ravanhatta.mp3` | `music/sanjaya_ravanhatta.mp3` (home music, Pata) | YouTube, described as copyright-free | **TODO: video link + licence wording** |
-| `pakhawaj-1.mp3` | `sfx/pata_clash_1.mp3` | YouTube, described as copyright-free | **TODO** |
-| `pakhawaj-2.mp3` | `sfx/pata_clash_2.mp3` | YouTube, described as copyright-free | **TODO** |
-| `pakhawaj-4.mp3` | `sfx/pata_clash_3.mp3` | YouTube, described as copyright-free | **TODO** |
-| `pakhawaj-3.mp3` | not used (very quiet, kept) | YouTube | **TODO** |
-| `pakhawaj-5-long.mp3`, `pakhawaj-vaidya-long.mp3`, `pakhawaj-sample-long.mp3` | not used yet (long performances; possible battle-drum layer later) | YouTube | **TODO** |
-| `cloth-tearing.mp3` | `sfx/pata_fall.mp3` (1.25–2.1 s) | Pixabay | Pixabay Content License — **TODO: page link** |
-| `clothes.mp3` | `sfx/pata_ui.mp3` (0.12–0.42 s) | Pixabay | Pixabay Content License — **TODO: page link** |
-| `cloth-rustle.mp3` | `sfx/pata_sky.mp3` (7.4–8.7 s) | Pixabay | Pixabay Content License — **TODO: page link** |
-
-## Sound — 6 Nov 2026
-
-| Master file | Shipped as | Source (reported) | Link and licence |
-|---|---|---|---|
-| `reveal-brush.mp3` (6 s, two strokes) | `sfx/pata_reveal.mp3` (first stroke, 0.2–0.9 s). Replaces the 2 s ravanhatta sting on the reveal | not given | **TODO: page link + licence** (PATA.md asked for Pixabay or Freesound CC0) |
-
-Originals: `masters/audio/supplied-2026-11-06/`.
+Batches: 30 Oct (battle_night, daily_theme, lesson, abhimanyu, victory_big, trap) · 5 Nov Pata pack
+(ravanhatta, pakhawaj, cloth sounds) · 6 Nov (reveal brush stroke → `sfx/pata_reveal.mp3`).
 
 ## Art
 
@@ -68,12 +36,8 @@ Originals: `masters/audio/supplied-2026-11-06/`.
 
 ## Before a store launch
 
-- **If any file did come from YouTube, it is the risk.** Many "no copyright" uploads re-post other people's recordings, and
-  a recording can carry a Content ID claim even when the upload says it is free. Keep the YouTube
-  sounds as stand-ins only, unless the uploader's page gives a clear licence (CC0 or CC BY with the
-  credit line) for that exact recording. Replacements: Pixabay or Freesound (CC0 filter) pakhawaj
-  and ravanhatta, or — best — a short recording of a local player.
-- Pixabay sounds may be used in a game without credit; they may not be sold or shared on their own.
+- Sound: nothing outstanding.
+- Art: replace the Classic paintings that carry a small corner star (ROADMAP).
 
 All shipped Pata copies are made by `python3 tools/prepare-pata.py` (trim, fade, loudness: one-shots
 around −14 to −20 LUFS, music −17 LUFS, true peak −1.5 dB).

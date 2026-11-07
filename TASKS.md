@@ -22,7 +22,6 @@ Last updated: 7 Nov 2026 (night fields, sideways squares, registers).
 |---|---|---|---|
 | T-05 | C | 5–10 first-session playtests (Home → Pehla Yuddh → first battle) on friends' phones; notes in `docs/ROADMAP.md` | notes added |
 | T-06 | S | Hindi and Marathi for the ~70 first-session strings (`docs/i18n/pending-first-session.en.json`, `turn.*`, `hud.*`, `goal.*`, `astra.shakti`) | catalogues merged, `tests/languages.mjs` passes |
-| T-07 | C | Tell the Director per sound which file is Gemini and which Pixabay (links for Pixabay), so `data/sounds.json` can be marked verified; confirm the 5 Nov pakhawaj and ravanhatta files were not from YouTube | `sounds.json` verified |
 | T-08 | C | New night painting for the wheel (`chakra-night`) in the same true-indigo style as the other three | file supplied |
 | T-09 | D | Scenario cards and remaining dark screens in the Pata look | PR |
 | T-10 | C | Add the three new night masters to your masters zip and Release (`docs/MASTERS.md`) | done |
@@ -45,7 +44,7 @@ Last updated: 7 Nov 2026 (night fields, sideways squares, registers).
 
 - [x] Night fields for lotus, Sarvatobhadra, Kurukshetra in true indigo, no corner star (7 Nov)
 - [x] Square fields turn sideways on phones ≥ 700 px wide, your army on the left (7 Nov)
-- [x] Sound source statement recorded (Gemini or Pixabay, commercial use) in `docs/SOURCES.md` and `data/sounds.json` (7 Nov)
+- [x] Sound sources settled: ravanhatta and pakhawaj recorded by the Commander, long music Gemini, effects Pixabay (`docs/SOURCES.md`, `data/sounds.json`, 7 Nov)
 - [x] `DESIGN.md`, `TASKS.md`, `data/` registers and `tests/data.mjs` (7 Nov)
 - [x] Step 3: wheel turn made visible — landing rings, warning, exposed ranks (PR #22, 7 Nov)
 - [x] Step 2: four wheel lessons, odds in words, Confirm strike / Cancel (PR #21, 7 Nov)
