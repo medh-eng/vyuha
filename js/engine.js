@@ -762,29 +762,56 @@
     return !!(g.rotateEvery && (g.kind === 'wheel' || g.rotationOrder));
   }
 
-  /* The inner rings turn one cell clockwise, carrying whatever stands on
-   * them — and exposing it. The wheel and the lotus share this; each board
-   * lists its rings in clockwise order. */
-  function rotate(state, events) {
-    if (!hasRotation(state)) return false;
+  /* Where every cell of the turning rings goes when the wheel next turns:
+   * { from: to }, one cell clockwise along each ring's listed order. The
+   * wheel and the lotus share this; the preview and the turn itself both use it. */
+  function rotationMap(state) {
+    if (!hasRotation(state)) return {};
     const g = board(state);
     const ringList = state.rotation.rings.length ? state.rotation.rings : (g.rotateRings || [1, 2]);
-    let moved = 0;
+    const map = {};
     ringList.forEach(function (ring) {
       let order = g.rotationOrder && g.rotationOrder[ring];
       if (!order) {
         order = [];
         for (let s = 0; s < g.sectors; s++) order.push('r' + ring + 's' + s);
       }
-      const held = order.map(function (id) { return state.board[id] || null; });
-      order.forEach(function (id) { state.board[id] = null; });
-      held.forEach(function (u, i) {
-        if (!u) return;
-        state.board[order[(i + 1) % order.length]] = u;
-        u.revealed = true; // riding the wheel exposes you
-        moved++;
-      });
+      order.forEach(function (id, i) { map[id] = order[(i + 1) % order.length]; });
     });
+    return map;
+  }
+
+  /* The pieces the next turn will carry: [{ from, to, owner, hidden }]. Display only. */
+  function rotationPreview(state) {
+    const map = rotationMap(state);
+    const out = [];
+    Object.keys(map).forEach(function (from) {
+      const u = state.board[from];
+      if (u) out.push({ from: from, to: map[from], owner: u.owner, hidden: !u.revealed });
+    });
+    return out;
+  }
+
+  /* The inner rings turn one cell clockwise, carrying whatever stands on
+   * them — and exposing it. */
+  function rotate(state, events) {
+    if (!hasRotation(state)) return false;
+    const g = board(state);
+    const map = rotationMap(state);
+    const held = {};
+    Object.keys(map).forEach(function (id) { held[id] = state.board[id] || null; state.board[id] = null; });
+    const carried = [];
+    const exposed = [];
+    Object.keys(map).forEach(function (from) {
+      const u = held[from];
+      if (!u) return;
+      const to = map[from];
+      state.board[to] = u;
+      if (!u.revealed) exposed.push(to);
+      u.revealed = true; // riding the wheel exposes you
+      carried.push(to);
+    });
+    const moved = carried.length;
     state.rotation.count++;
     state.rotation.lastTurn = state.turn;
     if (moved) {
@@ -792,7 +819,7 @@
       log(state, 'rotate', 'The ' + name + ' turns: the inner two rings shift one cell clockwise. Anything on them is exposed.');
       if (events) {
         events.push({
-          kind: 'rotate', sfx: 'rotate',
+          kind: 'rotate', sfx: 'rotate', carried: carried, exposed: exposed,
           text: 'The ' + name + ' turns — the inner rings shifted one cell. Everything they carried is now revealed.'
         });
       }
@@ -1528,6 +1555,8 @@
     beginBattle: beginBattle,
     endGame: endGame,
     rotate: rotate,
+    rotationMap: rotationMap,
+    rotationPreview: rotationPreview,
     hasRotation: hasRotation,
     turnsUntilRotation: turnsUntilRotation,
     hourOf: hourOf,

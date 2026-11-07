@@ -106,6 +106,10 @@ await page.evaluate(() => {
 });
 await page.waitForTimeout(4500);
 rows.push(await measure('battle-mid'));
+// the wheel turn preview (7 Nov 2026): dashed landing rings one round before the turn
+await page.evaluate(() => { const st = AC.game.state; st.turn = 4; AC.game.sel = null; AC.game.armed = null; AC.game.render(); });
+await page.waitForTimeout(4500);   // a redraw replays the last-move pulse (twice, ≈3.8 s)
+rows.push(await measure('battle-turn-soon'));
 // first-session clarity (7 Nov 2026): the Confirm strike step and a wheel lesson
 // are screens a new player sits on while deciding
 await page.evaluate(() => {

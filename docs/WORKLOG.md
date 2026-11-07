@@ -246,3 +246,10 @@ tuning.
 - **Odds in words** on the board and in the rail/Intel (`E.strikeVerdict`): Likely win ≥ 60 %, Uncertain 35–59 %, Likely loss < 35 %; Certain … when only one outcome is possible; % kept as detail.
 - **Confirm strike / Cancel** (and Invoke / Cancel for astras) in the rail; tap-again still works. Armed pulse now finite (3×).
 - New harness `tools/first-session.mjs`; idle probe measures the confirm and lesson screens.
+
+## 7 Nov 2026 (afternoon) — Director: the wheel turn made visible (review plan step 3)
+
+- `E.rotationMap` / `E.rotationPreview`: one map for the turn and its preview; the turn event lists carried and exposed cells.
+- One round before the turn: dashed landing rings (and arrows where they fit) for every carried piece, a toast and a rail line; Calm now warns too.
+- After the turn, for that round: solid gold on enemy ranks it exposed, dashed gold on your exposed pieces, a rail summary.
+- Lesson 2 hides the preview while the player predicts. Idle probe gains battle-turn-soon.
