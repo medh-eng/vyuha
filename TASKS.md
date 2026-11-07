@@ -14,6 +14,7 @@ Last updated: 7 Nov 2026 (night fields, sideways squares, registers).
 | T-01 | C | Merge the pull request for night fields, sideways squares, DESIGN/TASKS/data | merged, live |
 | T-02 | C | On the phone: play a Quick battle on Sarvatobhadra and Kurukshetra sideways; say whether the turned field helps | a yes/no and any trouble |
 | T-03 | C | On the phone: play Quick to round 5 on the wheel; do the dashed landing rings help or clutter? | a yes/no |
+| T-14 | G | Batch 4.1: robot at 844×390 and 640×360, all four fields, lesson and Daily | full run ends with `no problems`; failures reported without game changes |
 | T-04 | D | Review plan step 4: a more useful battle log (cell names, own pieces) and audio priority checks | PR with log + checks |
 
 ## Next
