@@ -1,0 +1,69 @@
+name: Landscape robot
+
+on:
+  push:
+    branches: [chatgpt/4.1-landscape-robot]
+  pull_request:
+    paths:
+      - 'tools/playtest-bot.mjs'
+      - '.github/workflows/landscape-robot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: landscape-robot-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install test dependencies and browser
+        id: dependencies
+        run: |
+          npm install --ignore-scripts --no-audit --no-fund
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+          echo "CHROMIUM_PATH=$(node -e 'process.stdout.write(require("playwright").chromium.executablePath())')" >> "$GITHUB_ENV"
+      - name: Regression checks
+        run: |
+          node tests/rules.mjs
+          node tests/selfplay.mjs 40
+          node tests/daily.mjs
+          node tests/languages.mjs
+          node tests/ui.mjs
+          node tests/data.mjs
+          node tools/pace-budget.mjs
+      - name: Desktop and phone screenshots
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: node tools/shots.mjs .playtest/shots
+      - name: Landscape acceptance
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: node tools/landscape.mjs .playtest/landscape
+      - name: Four wheel lessons
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: node tools/first-session.mjs .playtest/first-session
+      - name: Portrait idle heat
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: node tools/perf-idle.mjs
+      - name: Landscape idle heat
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: VW=844 VH=390 node tools/perf-idle.mjs
+      - name: Complete robot coverage
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: node tools/playtest-bot.mjs .playtest/robot
+      - name: Save screenshots and robot report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: landscape-robot-evidence
+          path: .playtest/
+          include-hidden-files: true
+          retention-days: 14
