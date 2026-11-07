@@ -77,7 +77,10 @@
     backdrop.className = 'modal-backdrop';
     const box = document.createElement('div');
     box.className = 'modal' + (opts.wide ? ' wide' : '') + (opts.art ? ' art-modal' : '');
-    if (opts.art) box.style.setProperty('--modal-art', 'url("' + opts.art + '")');
+    // absolute, because a url() inside a custom property resolves against the stylesheet that
+    // uses it (css/), not the page: the story paintings never showed before 7 Nov
+    if (opts.art) box.style.setProperty('--modal-art', 'url("' + new URL(opts.art, document.baseURI).href + '")');
+    if (opts.artKey) box.dataset.art = opts.artKey;
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-modal', 'true');
     box.setAttribute('aria-label', opts.title || 'Dialog');
@@ -88,6 +91,7 @@
     }).join('');
 
     box.innerHTML =
+      (opts.art ? '<div class="modal-band" aria-hidden="true"></div>' : '') +
       '<div class="modal-head">' +
         '<div>' +
           (opts.kicker ? '<div class="modal-kicker">' + esc(opts.kicker) + '</div>' : '') +
@@ -780,6 +784,7 @@
             const art = AC.art.artFor('card:' + o.v);
             return '<button class="mode-card' + (on ? ' on' : '') + '" data-group="scenario" data-val="' + o.v + '"' +
               (art ? ' style="background-image:url(\'' + art + '\')"' : '') + '>' +
+              (art ? '<span class="mode-card-art" aria-hidden="true" style="background-image:url(\'' + art + '\')"></span>' : '') +
               '<span class="mode-card-body">' +
                 '<span class="mode-card-title">' + esc(o.title) + (o.deva ? ' <span class="deva">' + esc(o.deva) + '</span>' : '') + '</span>' +
                 '<span class="mode-card-sub">' + esc(o.sub) + '</span>' +

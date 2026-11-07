@@ -45,10 +45,14 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function shot(page, name) { await page.screenshot({ path: path.join(out, name + '.png') }); }
 async function closeModals(page) { await page.evaluate(() => AC.app.modals && AC.app.modals.slice().forEach((m) => m.close())); }
 async function tapCell(page, id) {
-  const el = await page.$('#board .cell[data-id="' + id + '"]');
-  if (!el) throw new Error('Missing cell: ' + id);
-  const box = await el.boundingBox();
-  if (!box) throw new Error('Invisible cell: ' + id);
+  // the board can redraw between finding a cell and measuring it, so look it up again (3 tries)
+  let box = null;
+  for (let i = 0; i < 3 && !box; i++) {
+    const el = await page.$('#board .cell[data-id="' + id + '"]');
+    if (el) box = await el.boundingBox();
+    if (!box) await sleep(120);
+  }
+  if (!box) throw new Error('Missing or invisible cell: ' + id);
   const { width, height } = page.viewportSize();
   if (box.x < -1 || box.y < -1 || box.x + box.width > width + 1 || box.y + box.height > height + 1) {
     throw new Error('Cell outside viewport: ' + id + ' ' + JSON.stringify(box));

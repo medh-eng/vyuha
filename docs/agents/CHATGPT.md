@@ -7,6 +7,24 @@ it, wires it into the game, and says plainly if something needs another pass.
 
 **Before any task**, paste the context block once per conversation.
 
+## ▶ Batch 6 — from the Director, 7 Nov 2026 (do these, in this order)
+
+**4.1 is integrated** (robot in landscape, real taps only, seeded, CI on every PR) — thank you. It
+found a real bug the Director's harnesses missed: on the wheel and lotus the centre cell ignored
+taps in the Pata look since 6 Nov (fixed; `tools/battle-log.mjs` now checks every cell takes a
+tap). 4.2 (landscape review) is **dropped** — the landscape was rebuilt on 6 Nov (PR #19). Pata
+is now the chosen look, so the 3 Nov hold on hero-card styling is lifted.
+
+| # | Task | Deliver |
+|---|---|---|
+| 6.1 | **Fix `tools/media-qa.mjs` for both looks** (TASKS T-14). In Pata (the default) an astra moment shows a painted still (read `js/stage.js` and `A.astraMark` in `js/art.js` for what Pata draws instead of `.st-astra-anim`), not the Classic film, so the four astra scenarios fail at "correct motion gate". Make the harness check the still in Pata and the film with `?skin=classic`; run both. No game changes unless a real fault turns up — then report it. | PR on a branch |
+| 6.2 | **Screen the four heroes** (was 5.1, unchanged). | `docs/balance/heroes-2026-11.md` |
+| 6.3 | **Retune `quiet-gate`** (was 4.3, unchanged). | report in `docs/balance/` |
+| 6.4 | **Teach the AI the heroes** (was 5.2, unchanged; after 6.2). | PR on a branch |
+| 6.5 | **Hero card and the four active heroes** (was 5.3), now in the Pata look: cotton cards, ink line, `DESIGN.md` §2–§5 rules. Text and wire-frames. | `incoming/text/hero-cards-design.md` |
+
+Use task IDs from `TASKS.md` for anything you add there (next free: T-19); do not reuse a number.
+
 ## ▶ Note — 3 Nov 2026: new look *Sanjaya's Pata*
 
 The game is moving to a painted-cloth look (`docs/LOOK.md`). In task 5.3, do the hero card's

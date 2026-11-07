@@ -1,12 +1,8 @@
 name: Landscape robot
 
+# Every pull request runs the full AGENTS.md check list (ChatGPT Batch 4.1, widened by the Director 7 Nov).
 on:
-  push:
-    branches: [chatgpt/4.1-landscape-robot]
   pull_request:
-    paths:
-      - 'tools/playtest-bot.mjs'
-      - '.github/workflows/landscape-robot.yml'
   workflow_dispatch:
 
 permissions:
@@ -41,6 +37,8 @@ jobs:
           node tests/ui.mjs
           node tests/data.mjs
           node tools/pace-budget.mjs
+          node tests/audio.mjs
+          node tests/log.mjs
       - name: Desktop and phone screenshots
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: node tools/shots.mjs .playtest/shots
@@ -50,6 +48,9 @@ jobs:
       - name: Four wheel lessons
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: node tools/first-session.mjs .playtest/first-session
+      - name: Battle log on every field
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: node tools/battle-log.mjs .playtest/battle-log
       - name: Portrait idle heat
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: node tools/perf-idle.mjs

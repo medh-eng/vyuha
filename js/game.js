@@ -156,6 +156,7 @@
       kicker: sc.label + (sc.deva ? ' · ' + sc.deva : ''),
       title: legend.title,
       art: art,
+      artKey: st.scenario,
       wide: false,
       body: '<p style="font-size:13px;line-height:1.65;color:var(--dim);margin:0 0 12px">' + esc(legend.text) + '</p>' +
         '<div class="legend-facts">' +

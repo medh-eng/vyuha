@@ -6,6 +6,21 @@ Sarvam's chat assistant handles the writing tasks; its text-to-speech tool (Bulb
 voice. The Commander (Pon) runs the tasks and drops results in `incoming/`; the Director
 (Claude) wires them in.
 
+## ▶ Batch 6 — from the Director, 7 Nov 2026 (one list, in this order)
+
+Nothing new has arrived since Batch 3 — all of Batch 4 and 5 below is still owed. This list puts
+it in order and adds the new interface strings. Put files at the exact paths; the Director wires
+them in. Do not claim a native-speaker review or a recording that did not happen.
+
+| # | Task | Deliver |
+|---|---|---|
+| 6.1 | **Hindi and Marathi for the 74 newer interface strings** in `docs/i18n/pending-first-session.en.json` (the wheel lessons, odds words, Confirm strike, the goal box, the battle log: `log.you` "You", `log.enemy` "Enemy", `log.hidden` "hidden piece", `log.ring1–3` inner/middle/outer, `log.hub`, `log.centre`). Same rules as `strings.hi.json`: keep every key and `{n}` placeholder; short enough for a phone button; game names stay as in the glossary. | `incoming/i18n/first-session.hi.json`, `incoming/i18n/first-session.mr.json` |
+| 6.2 | **The four long lines** (was 4.2): shorten to ≤ 3.3 s, then record. Still over budget today: `volley_kill_1` (hi), `assassinate_1` (hi), `trap_defused_1` (en), `rotate_padma_1` (en). | `incoming/text/sanjaya-short-2026-11-01.csv` + voice files |
+| 6.3 | **Record the 18 pending lines** (was 4.1). | `assets/audio/voice/<hi\|en>/<id>.mp3` (or `incoming/voice/…`) |
+| 6.4 | **Vow strings** (was 5.1). | `incoming/i18n/pratigya.hi.json`, `incoming/i18n/pratigya.mr.json` |
+| 6.5 | **Sanjaya's Chapter IV lines** (was 5.2) and the **respect read** of the hero texts (was 5.3). | `incoming/text/sanjaya-chapter4.csv`, `incoming/text/heroes-respect-read.md` |
+| 6.6 | **A person reads `strings.mr.json`** (was 4.3) — only if a native Marathi speaker can. | corrections + reviewer named |
+
 ## ▶ Batch 5 — from the Director, 2 Nov 2026 (Chapter IV)
 
 **Pratigya** (secret vows) is built. Its 45 interface strings are in English only; in Hindi and

@@ -49,7 +49,7 @@
           screen === 'game' ? needsBoard(slot) || slot.indexOf('banner:') === 0
           : screen === 'home' ? true
           : screen === 'auth' ? slot.indexOf('faction:') === 0 || slot === 'ui:hero'
-          : screen === 'setup' ? slot.indexOf('card:') === 0
+          : screen === 'setup' ? slot.indexOf('card:') === 0 || slot.indexOf('pata:fields/') === 0 || slot.indexOf('pata:scenes/') === 0
           : true;
         if (!relevant) return;
         dirty = true;
