@@ -5,8 +5,10 @@ Read this file before starting work, then read:
 1. `docs/DIRECTOR.md` — Claude's design, rules, respect charter and integration instructions.
 2. `docs/ROADMAP.md` — current owners and pending work.
 3. Your brief: `docs/agents/CHATGPT.md` or `docs/agents/SARVAM.md`.
-4. `docs/HANDOFF.md` — latest status. Update it (replace, do not append dated copies) at the end of every session.
+4. `docs/HANDOFF.md` — latest status. Update it (replace, do not append dated copies) at the end of every session, and update `TASKS.md`.
 5. `docs/PACING.md` — Calm timing budget and overlap rules. Follow it for any audio, voice, card or animation change.
+6. `DESIGN.md` — the look, layout, motion and wording rules; change it in the same PR as any design change.
+7. `TASKS.md` — the one working queue; tick and add tasks there. `data/README.md` — the JSON registers (pieces, astras, fields, sounds, art).
 
 Earlier handoffs, evidence and integrated drafts are in git history; `docs/WORKLOG.md` is the running log.
 
@@ -14,7 +16,7 @@ The user is Commander and final authority. Claude is Director. ChatGPT and Sarva
 
 Keep code changes on a branch with a pull request for review. Avoid overwriting another session's work. Read the current branch head before writing. `main` serves the live game at <https://medh-eng.github.io/vyuha/>.
 
-Before handing over code, run `node tests/rules.mjs`, `node tests/selfplay.mjs 40`, `node tests/daily.mjs`, `node tests/languages.mjs`, `node tests/ui.mjs`, the desktop/phone screenshot harness `node tools/shots.mjs`, the idle-heat probe `node tools/perf-idle.mjs` (every screen under 3% busy; also `VW=844 VH=390` for landscape), the landscape harness `node tools/landscape.mjs`, the first-session harness `node tools/first-session.mjs` (four wheel lessons at 914×411 and 830×318), the Calm line budget `node tools/pace-budget.mjs` and the robot player `node tools/playtest-bot.mjs` (must end with "no problems"). Keep the phone cool: no `infinite` CSS animation on anything that stays on screen; no animated box-shadow, filter or SVG stroke loops. Set `CHROMIUM_PATH` if Chromium is elsewhere. Rebuild `vyuha-standalone.html` with `node tools/build-standalone.mjs` when runtime files change. Report any check you could not complete.
+Before handing over code, run `node tests/rules.mjs`, `node tests/selfplay.mjs 40`, `node tests/daily.mjs`, `node tests/languages.mjs`, `node tests/ui.mjs`, the desktop/phone screenshot harness `node tools/shots.mjs`, the idle-heat probe `node tools/perf-idle.mjs` (every screen under 3% busy; also `VW=844 VH=390` for landscape), the landscape harness `node tools/landscape.mjs`, the first-session harness `node tools/first-session.mjs` (four wheel lessons at 914×411 and 830×318), the registers test `node tests/data.mjs` (after a piece, astra, field, sound or painting change run `node tools/export-data.mjs` first), the Calm line budget `node tools/pace-budget.mjs` and the robot player `node tools/playtest-bot.mjs` (must end with "no problems"). Keep the phone cool: no `infinite` CSS animation on anything that stays on screen; no animated box-shadow, filter or SVG stroke loops. Set `CHROMIUM_PATH` if Chromium is elsewhere. Rebuild `vyuha-standalone.html` with `node tools/build-standalone.mjs` when runtime files change. Report any check you could not complete.
 
 Place draft art and writing at the exact paths in the brief under `incoming/`. Draft content is not a shipped feature. Do not claim a real-person playtest, native-language review, or device test unless it happened. No deity is a piece, target or capture; no pay-for-power or real-money mechanics.
 

@@ -116,17 +116,26 @@ for name in ("chakra-day", "chakra-night"):
 # Phase 2 fields (6 Nov 2026). Each is painted to its board's shape; the game
 # places it with A.PATA_FIELD_BOX in js/art.js, measured on these exact pixels —
 # if a master is replaced, re-measure there. Night is resized onto the day's
-# pixels (the two line up exactly), the star is covered and the cloth re-dyed.
+# pixels (the two line up exactly). The 7 Nov 2026 night masters are painted in
+# true indigo and have no corner star, so they ship as they are. Older night
+# masters (6 Nov) need NIGHT_REPAIR = True: cover the star, re-dye the cloth.
+NIGHT_REPAIR = False
 STAR_TILE = {"padma": 0.085, "small": 0.08, "large": 0.085}
 for field in ("padma", "small", "large"):
     day_src, night_src = art(f"fields/{field}-day.png"), art(f"fields/{field}-night.png")
-    if not day_src:
-        continue
-    day = Image.open(day_src).convert("RGB")
-    save_webp(day, ART_OUT / "fields" / f"{field}-day.webp", 78)
+    if day_src:
+        day = Image.open(day_src).convert("RGB")
+        save_webp(day, ART_OUT / "fields" / f"{field}-day.webp", 78)
+    else:  # no day master here: line the night up on the shipped day copy
+        shipped = ART_OUT / "fields" / f"{field}-day.webp"
+        if not (night_src and shipped.exists()):
+            continue
+        day = Image.open(shipped).convert("RGB")
     if night_src:
         night = Image.open(night_src).convert("RGB").resize(day.size, Image.LANCZOS)
-        save_webp(night_dye(unstar(night, STAR_TILE[field])), ART_OUT / "fields" / f"{field}-night.webp", 78)
+        if NIGHT_REPAIR:
+            night = night_dye(unstar(night, STAR_TILE[field]))
+        save_webp(night, ART_OUT / "fields" / f"{field}-night.webp", 78)
 
 for name in ("cloth-cotton", "cloth-indigo"):
     if (src := art(f"frame/{name}.png")):

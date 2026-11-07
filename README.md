@@ -31,7 +31,7 @@ Free, offline, no account, no tracking. One static web app — open it and play.
 | **Sanjaya** | Narration in Hinglish, हिन्दी or English, with 88 recorded lines. |
 | **Calm pace** | One moment at a time — the move, the clash, Sanjaya's line, then the opponent. Tap to skip; Quick in Settings. |
 | **Your language** | The whole interface in English, हिन्दी or मराठी (Settings). |
-| **Sideways** | Turn the phone: controls move beside the board, nothing in the turn is lost. |
+| **Sideways** | Turn the phone: controls move beside the board, nothing in the turn is lost; the square fields turn with it, your army on the left. |
 | **Profile** | Ten painted avatars or your own photo (kept on the phone), frames, record per opponent. |
 | **Opponents** | Sainik, Dronacharya and Shakuni — and they never peek at your hidden ranks or fort. |
 | **Fields** | Chakravyuha, Padmavyuha, Sarvatobhadra (6 × 8), Kurukshetra (8 × 10). |
@@ -42,8 +42,8 @@ autosave, the intel panel and advisor, a turn clock, colour-blind and high-contr
 reduced motion, keyboard play, and an installable offline app.
 
 The full rules, the art and sound direction, the team and the decisions behind all of it:
-**[`docs/DIRECTOR.md`](docs/DIRECTOR.md)**. What's done and what's next:
-**[`docs/ROADMAP.md`](docs/ROADMAP.md)**.
+**[`docs/DIRECTOR.md`](docs/DIRECTOR.md)**. How it should look and behave: **[`DESIGN.md`](DESIGN.md)**.
+What to do next: **[`TASKS.md`](TASKS.md)**; the chapters: **[`docs/ROADMAP.md`](docs/ROADMAP.md)**.
 
 ## How to play in one screen
 
@@ -85,6 +85,8 @@ assets/                     what the game loads: art/opt (Classic), art/pata (Pa
 masters/                    (not in git) originals as made — zips described in docs/MASTERS.md
 assets/audio/               music and one-shots
                             3D pieces (GLB, STL) are in the masters zips too
+DESIGN.md · TASKS.md        design rules (look, layout, motion, words) · the one working queue
+data/                       JSON registers: pieces, astras, fields, sounds, art (README inside; tests/data.mjs)
 docs/                       DIRECTOR, ROADMAP, HANDOFF, PACING, LANDSCAPE, LOOK, MASTERS, SOURCES; balance/, i18n/, prompts/, agents/, voice/
 incoming/                   drop zone; text/ holds drafts for the next chapter
 tests/                      rules, self-play, Daily, languages, assets, DOM
@@ -101,6 +103,7 @@ node tests/selfplay.mjs 60  # AI-vs-AI battles on all four fields
 node tests/daily.mjs        # Daily catalogues, IST rollover, seeded AI
 node tests/languages.mjs    # 149-key Hindi/Marathi catalogues
 node tests/ui.mjs           # boots index.html in jsdom: home, battle, Calm pace, astras, lesson, daily
+node tests/data.mjs         # data/ registers match the code and the files on disk
 ```
 
 Browser harnesses (need Chromium; set `CHROMIUM_PATH`): `tools/shots.mjs`, `tools/perf-idle.mjs`,

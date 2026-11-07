@@ -1,0 +1,93 @@
+{
+  "_about": "Generated from js/units.js and js/art.js by tools/export-data.mjs. Do not edit by hand.",
+  "fields": [
+    {
+      "key": "wheel",
+      "label": "Chakravyuha",
+      "deva": "चक्रव्यूह",
+      "blurb": "the wheel · the rings turn every 5 rounds",
+      "kind": "wheel",
+      "cols": 0,
+      "rows": 0,
+      "cells": 37,
+      "roundCap": 40,
+      "riftCells": 0,
+      "sidewaysInLandscape": false,
+      "painting": {
+        "day": "assets/art/pata/fields/chakra-day.webp",
+        "night": "assets/art/pata/fields/chakra-night.webp",
+        "box": null
+      }
+    },
+    {
+      "key": "padma",
+      "label": "Padmavyuha",
+      "deva": "पद्मव्यूह",
+      "blurb": "the lotus · six exits, the rings turn",
+      "kind": "lotus",
+      "cols": 0,
+      "rows": 0,
+      "cells": 37,
+      "roundCap": 40,
+      "riftCells": 0,
+      "sidewaysInLandscape": false,
+      "painting": {
+        "day": "assets/art/pata/fields/padma-day.webp",
+        "night": "assets/art/pata/fields/padma-night.webp",
+        "box": {
+          "x": -6.4742,
+          "y": -7.1102,
+          "w": 12.4689,
+          "h": 13.7096
+        }
+      }
+    },
+    {
+      "key": "small",
+      "label": "Sarvatobhadra",
+      "deva": "सर्वतोभद्र",
+      "blurb": "6 × 8 · the classic square",
+      "kind": "square",
+      "cols": 6,
+      "rows": 8,
+      "cells": 48,
+      "roundCap": 40,
+      "riftCells": 4,
+      "sidewaysInLandscape": true,
+      "painting": {
+        "day": "assets/art/pata/fields/small-day.webp",
+        "night": "assets/art/pata/fields/small-night.webp",
+        "box": {
+          "x": -1.7296,
+          "y": -2.2028,
+          "w": 9.467,
+          "h": 11.2273,
+          "stretch": true
+        }
+      }
+    },
+    {
+      "key": "large",
+      "label": "Kurukshetra",
+      "deva": "कुरुक्षेत्र",
+      "blurb": "8 × 10 · the long war",
+      "kind": "square",
+      "cols": 8,
+      "rows": 10,
+      "cells": 80,
+      "roundCap": 50,
+      "riftCells": 8,
+      "sidewaysInLandscape": true,
+      "painting": {
+        "day": "assets/art/pata/fields/large-day.webp",
+        "night": "assets/art/pata/fields/large-night.webp",
+        "box": {
+          "x": -1.4352,
+          "y": -0.9429,
+          "w": 10.8523,
+          "h": 11.922
+        }
+      }
+    }
+  ]
+}

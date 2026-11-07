@@ -11149,7 +11149,36 @@ html[data-skin="pata"] #screen-game .player-strip .strip-name { font-weight: 700
   }
   function isPass() { return g.state && g.state.config.mode === 'pass'; }
   function isAi() { return g.state && g.state.config.mode === 'ai'; }
-  function board() { return G.build(g.state.boardKey); }
+  /* Sideways fields (Commander, 7 Nov 2026): the 6 × 8 and 8 × 10 fields are taller than wide, but a
+   * phone held sideways is wider than tall, so there the field is turned a quarter, your army on the
+   * left. View only: the rules and every cell id are unchanged; only where a cell is drawn. */
+  const turnedCache = {};
+  function turnBoard(b) {
+    if (turnedCache[b.key]) return turnedCache[b.key];
+    const bd = b.bounds, X0 = bd.x + bd.w / 2, Y0 = bd.y + bd.h / 2;
+    const P = function (x, y) { return [X0 - (y - Y0), Y0 + (x - X0)]; };
+    const cells = b.cells.map(function (c) {
+      const p = P(c.x, c.y);
+      return Object.assign({}, c, { x: p[0], y: p[1], points: c.points.map(function (q) { return P(q[0], q[1]); }) });
+    });
+    const out = Object.assign({}, b, {
+      cells: cells, byId: {}, turned: true, src: b,
+      bounds: { x: X0 - bd.h / 2, y: Y0 - bd.w / 2, w: bd.h, h: bd.w },
+      labels: (b.labels || []).map(function (l) {
+        const p = P(l.x, l.y);
+        return Object.assign({}, l, { x: p[0], y: p[1], anchor: 'middle', baseline: 'middle' });
+      })
+    });
+    cells.forEach(function (c) { out.byId[c.id] = c; });
+    return (turnedCache[b.key] = out);
+  }
+  function board() {
+    const b = G.build(g.state.boardKey);
+    return b.kind === 'square' && turnedNow() ? turnBoard(b) : b;
+  }
+  /* sideways only where it gains: from 700 px wide the turned field is width-limited no longer */
+  const TURN_Q = '(orientation: landscape) and (max-height: 520px) and (min-width: 700px)';
+  function turnedNow() { return typeof matchMedia === 'function' && matchMedia(TURN_Q).matches; }
   function viewerOf(st) { return st.viewer === 3 || st.viewer === 0 ? 1 : st.viewer; }
 
   function oppName(st) {
@@ -11971,6 +12000,25 @@ rankBadge('?', R)
     FX.toast(tr('turn.warn', 'The ' + ringName() + ' turns after this round. Dashed rings show where it will carry each piece.'), 'warn');
   }
 
+  /* line the painted field up with its cells, turned a quarter along with them when the field is sideways */
+  function placeField(img, b, st) {
+    const src = b.src || b;
+    const box = (A.PATA_FIELD_BOX && A.PATA_FIELD_BOX[st.boardKey]) || { x: src.bounds.x, y: src.bounds.y, w: src.bounds.w, h: src.bounds.h, cover: true };
+    let cx = box.x + box.w / 2, cy = box.y + box.h / 2;
+    if (b.turned) {
+      const bd = src.bounds, X0 = bd.x + bd.w / 2, Y0 = bd.y + bd.h / 2;
+      const nx = X0 - (cy - Y0), ny = Y0 + (cx - X0);
+      cx = nx; cy = ny;
+      img.setAttribute('transform', 'rotate(90 ' + cx.toFixed(4) + ' ' + cy.toFixed(4) + ')');
+    } else {
+      img.removeAttribute('transform');
+    }
+    img.setAttribute('x', cx - box.w / 2); img.setAttribute('y', cy - box.h / 2);
+    img.setAttribute('width', box.w); img.setAttribute('height', box.h);
+    img.setAttribute('preserveAspectRatio', box.cover ? 'xMidYMid slice' : (box.stretch ? 'none' : 'xMidYMid meet'));
+    img.setAttribute('data-turned', b.turned ? '1' : '0');
+  }
+
   function renderBoard() {
     const st = g.state;
     const svg = $('#board');
@@ -12177,10 +12225,7 @@ rankBadge('?', R)
       } else {
         // the other fields are painted to the board's own shape (docs/prompts/PATA.md);
         // A.PATA_FIELD_BOX lines each painting up with its cells
-        const box = (A.PATA_FIELD_BOX && A.PATA_FIELD_BOX[st.boardKey]) || null;
-        keep.setAttribute('x', box ? box.x : bounds.x); keep.setAttribute('y', box ? box.y : bounds.y);
-        keep.setAttribute('width', box ? box.w : bounds.w); keep.setAttribute('height', box ? box.h : bounds.h);
-        keep.setAttribute('preserveAspectRatio', box ? (box.stretch ? 'none' : 'xMidYMid meet') : 'xMidYMid slice');
+        placeField(keep, b, st);
       }
       svg.insertBefore(keep, svg.firstChild);
     }
@@ -12190,6 +12235,7 @@ rankBadge('?', R)
       AU.play('sky');
       setTimeout(function () { if (fadeOut.parentNode) fadeOut.parentNode.removeChild(fadeOut); }, 1400);
     }
+    if (keep && b.kind !== 'wheel' && keep.getAttribute('data-turned') !== (b.turned ? '1' : '0')) placeField(keep, b, st);
     const lastField = svg.querySelector('image.pata-field.field-out') || keep;
     const after = lastField ? lastField.nextSibling : null;
     if (parsed) {
@@ -13629,6 +13675,14 @@ rankBadge('?', R)
         renderIntel();
       }
     });
+    // turning the phone turns the square fields with it (see turnBoard); wheel and lotus never change
+    if (typeof matchMedia === 'function') {
+      const mqSide = matchMedia(TURN_Q);
+      const redrawTurned = function () {
+        if (g.state && G.build(g.state.boardKey).kind === 'square' && $('#board')) renderBoard();
+      };
+      if (mqSide.addEventListener) mqSide.addEventListener('change', redrawTurned); else if (mqSide.addListener) mqSide.addListener(redrawTurned);
+    }
     svg.addEventListener('keydown', function (e) {
       const cell = e.target.closest('[data-id]');
       if (!cell) return;
