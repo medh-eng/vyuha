@@ -487,10 +487,25 @@
     AC.game.start(app.setup);
   }
 
+  /* The ladder (13 Nov 2026): Yuddh karo sends a player against the opponent they are ready
+   * for — Sainik until two wins over him, Dronacharya until three, then Shakuni. A first battle
+   * against Dronacharya was a first defeat: Sainik-level play beats him about one time in six
+   * (200 seeded battles on the wheel). Custom battle still offers every opponent. */
+  const LADDER = [['recruit', 2], ['veteran', 3], ['archon', Infinity]];
+  function ladder(stats) {
+    const by = (stats && stats.byDiff) || {};
+    for (let i = 0; i < LADDER.length; i++) {
+      const w = (by[LADDER[i][0]] && by[LADDER[i][0]].w) || 0;
+      if (w < LADDER[i][1]) return { key: LADDER[i][0], rung: i, wins: w, need: LADDER[i][1], next: LADDER[i + 1] ? LADDER[i + 1][0] : null };
+    }
+    return { key: 'archon', rung: 2, wins: 0, need: Infinity, next: null };
+  }
+
   function quickSetup() {
     const last = app.settings.lastSetup;
-    return Object.assign({ mode: 'ai', board: 'wheel', tie: 'attacker', difficulty: 'veteran', timer: 0, scenario: 'duel', ruleset: 'vyuha' },
-      last && last.mode === 'ai' ? last : {});
+    const st = app.profile && !app.guest ? app.profile.stats : null;
+    return Object.assign({ mode: 'ai', board: 'wheel', tie: 'attacker', timer: 0, scenario: 'duel', ruleset: 'vyuha' },
+      last && last.mode === 'ai' ? last : {}, { difficulty: ladder(st).key });
   }
 
   function renderHome() {
@@ -642,7 +657,12 @@
   }
 
   function wireHome() {
-    document.getElementById('btn-new-match').addEventListener('click', function () { sfx('select'); show('setup'); });
+    document.getElementById('btn-new-match').addEventListener('click', function () {
+      sfx('select');
+      // until the player has chosen an opponent themselves, Custom battle starts on their ladder rung
+      if (!app.settings.lastSetup) app.setup.difficulty = ladder(app.profile && !app.guest ? app.profile.stats : null).key;
+      show('setup');
+    });
     document.getElementById('btn-quick').addEventListener('click', function () {
       // A brand-new player is offered the four wheel lessons once, before any full battle.
       const st = (app.profile && app.profile.stats) || {};
@@ -1549,6 +1569,7 @@
     applySettings: applySettings,
     patchSettings: patchSettings,
     quickBattle: quickBattle,
+    ladder: ladder,
     boot: boot,
     openProfile: openProfile,
     artLanded: artLanded,

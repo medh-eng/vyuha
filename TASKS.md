@@ -5,15 +5,16 @@ Chapters and history stay in `docs/ROADMAP.md`; what the last session did is in 
 Rules: one line per task, an ID that never changes, "done when" in plain words. Tick it (`[x]`) and
 move it to **Done** in the same pull request that finishes it. Add new work here first.
 
-Last updated: 7 Nov 2026 (agent review, hub tap fix, cleanup).
+Last updated: 13 Nov 2026 (hard review `docs/REVIEW.md`, Part 1: ladder, home and result sideways, scenario paintings).
 
 ## Now
 
 | ID | Owner | Task | Done when |
 |---|---|---|---|
-| T-19 | C | Merge the pull request: ChatGPT robot (4.1), centre-cell tap fix, cleanup, Pata scenario cards (T-09) | merged, live |
+| T-24 | C | Merge the pull request: review Part 1 — scenario paintings, the ladder (Sainik → Dronacharya → Shakuni), home and result card sideways | merged, live |
+| T-05 | C | **The gate for Part 3:** five people who have never seen the game, on their own phones, watched in silence for ten minutes (Home → first battle). Write where each one stops in `docs/ROADMAP.md` | notes added |
+| T-25 | C | On the phone, sideways: is Yuddh karo on the first home screen? After a battle, are all the result buttons in view? | a yes/no each |
 | T-23 | C | Tidy GitHub: repository → **Branches** → delete the 26 old branches marked *Merged* (every commit is in `main`); then **Settings → General → Automatically delete head branches** on, so merged PR branches go by themselves. Claude sessions cannot delete branches | only `main` + open PR branches left |
-| T-20 | C | Paint two scenario cards: `scenes/card-duel.png`, `scenes/card-abhimanyu.png` (2400 × 1350, prompts in `docs/prompts/PATA.md` §5b); upload to `incoming/art/pata/scenes/` | files supplied |
 | T-02 | C | On the phone: play a Quick battle on Sarvatobhadra and Kurukshetra sideways; say whether the turned field helps | a yes/no and any trouble |
 | T-03 | C | On the phone: play Quick to round 5 on the wheel; do the dashed landing rings help or clutter? | a yes/no |
 | T-16 | C | On the phone: open the log mid-battle, tap an entry; do the cell names (C4, outer 5:30) and the saffron mark help? | a yes/no |
@@ -22,8 +23,10 @@ Last updated: 7 Nov 2026 (agent review, hub tap fix, cleanup).
 
 | ID | Owner | Task | Done when |
 |---|---|---|---|
-| T-05 | C | 5–10 first-session playtests (Home → Pehla Yuddh → first battle) on friends' phones; notes in `docs/ROADMAP.md` | notes added |
-| T-06 | S | Sarvam Batch 6.1: Hindi and Marathi for the 74 strings in `docs/i18n/pending-first-session.en.json` | catalogues merged, `tests/languages.mjs` passes |
+| T-26 | D | Review Part 2: battles should end at the fort — a rule for the side that runs out of movers (63 of 200 wheel battles, 82 of 150 lotus), and Kurukshetra's sunset (39 of 60). Screen each on two fresh seed banks | PR with the banks |
+| T-27 | D | The Daily briefing says the task (break in); "Can you get out?" is kept for the escape mode | PR |
+| T-28 | D | Challenge-a-friend link: field, opponent and seed in the link, the sender's rounds to beat; no server | PR |
+| T-06 | S | Sarvam Batch 6.1: Hindi and Marathi for the 79 strings in `docs/i18n/pending-first-session.en.json` | catalogues merged, `tests/languages.mjs` passes |
 | T-08 | C | New night painting for the wheel (`chakra-night`) in the same true-indigo style as the other three | file supplied |
 | T-10 | C | Add the three new night masters to your masters zip and Release (`docs/MASTERS.md`) | done |
 | T-14 | G | ChatGPT Batch 6.1: `tools/media-qa.mjs` expects Classic astra films; in Pata (default) the moment shows a still, so the astra scenarios fail (on `main` too). Test both looks | harness passes in Pata and Classic |
@@ -41,12 +44,15 @@ Last updated: 7 Nov 2026 (agent review, hub tap fix, cleanup).
 
 ## Later
 
-- Puzzles, seven-vyuha campaign, Abhimanyu Escape (after playtests) · festival days, haptics, sound pass ·
+- Review Part 3 (after T-05): the Seven Vyuhas campaign that teaches one rule a battle, Abhimanyu Escape as its last chapter; heroes and vows wait behind it · Part 4: finish Hindi/Marathi, Android build · puzzles · festival days, haptics, sound pass ·
   hero cards in Pata · Android build (Capacitor) · store listing and art · replace Classic paintings that carry a corner star ·
   challenge-a-friend link · name/trademark search · IP review of the rules.
 
 ## Done (newest first)
 
+- [x] T-20 Scenario paintings `card-duel`, `card-abhimanyu` supplied by the Commander and wired in (13 Nov)
+- [x] Hard review and plan `docs/REVIEW.md`; Part 1: the ladder, home and result card sideways (13 Nov)
+- [x] T-19 PR #25 merged (7 Nov)
 - [x] T-09 Scenario cards, story cards (painting band; the story paintings had never loaded in either look — url() inside a CSS variable resolved against `css/`) and the pass-and-play curtain in Pata; sweep harness `tools/pata-sweep.mjs` (7 Nov)
 - [x] T-18 ChatGPT Batch 4.1: robot in landscape (844×390, 640×360), all four fields, drill and Daily, real taps only, seeded; CI workflow on every PR (7 Nov). It found the centre-cell tap bug — fixed
 - [x] Cleanup: `masters/audio/` (36 MB) out of git (in `vyuha-masters-audio.zip`); superseded 1 Nov evidence folders removed (7 Nov)
