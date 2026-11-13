@@ -121,13 +121,11 @@
     PATA_SLOTS['hero:' + k] = 'pata:portraits/' + k;
   });
   ['vayavya', 'sammohana', 'agneya', 'brahma'].forEach(function (k) { PATA_SLOTS['astra:' + k] = 'pata:astras/' + k; });
-  // T-09 (7 Nov 2026): scenario cards and story cards. Until the Commander's own scenario
-  // paintings land (docs/prompts/PATA.md, scenes/card-*.png), each scenario shows the field it
-  // is fought on: Yuddh the Kurukshetra camps, Abhimanyu and the Daily the closed wheel.
-  // When scenes/card-<name>.webp ships, point the slot at 'pata:scenes/card-<name>' instead.
-  PATA_SLOTS['card:duel'] = 'pata:fields/large-day';
-  PATA_SLOTS['card:abhimanyu'] = 'pata:fields/chakra-day';
-  PATA_SLOTS['card:daily'] = 'pata:fields/chakra-day';
+  // Scenario cards and story cards: the Commander's two scenario paintings (T-20, 13 Nov 2026).
+  // Yuddh is the two camps at dawn; Abhimanyu and the Daily are the lone chariot in the closed wheel.
+  PATA_SLOTS['card:duel'] = 'pata:scenes/card-duel';
+  PATA_SLOTS['card:abhimanyu'] = 'pata:scenes/card-abhimanyu';
+  PATA_SLOTS['card:daily'] = 'pata:scenes/card-abhimanyu';
 
   /* Where each Phase 2 field painting sits, in board units (x, y, width,
    * height), measured on the shipped pixels by tools/prepare-pata.py:
