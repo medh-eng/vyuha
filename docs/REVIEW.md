@@ -37,10 +37,10 @@ opponents; no person played). Where a sample is small it says so.
 | 4 | **Sideways, the result card's buttons were cut off** | Buttons ended at 409 px inside a card that ended at 394 px | **Fixed today** |
 | 5 | **Too many rules at once.** Ten kinds of piece, hidden ranks, turning rings, two hours, Makara and Padma, Shakti, four astras, gates — and vows and heroes on the way | Four lessons teach four of these; the first real battle uses all of them | Part 3 (campaign) |
 | 6 | **Nothing to come back for but the Daily.** A record and a title is not a reason to return | — | Part 3 |
-| 7 | **A third of wheel battles end without the fort falling.** One side runs out of pieces that can move and the field is "conceded" | 63 of 200 on the wheel, 82 of 150 on the lotus | Part 2 |
-| 8 | **Kurukshetra rarely finishes.** The sun sets and points decide | 39 of 60 Dronacharya-v-Dronacharya battles, 34 of 60 Sainik-v-Dronacharya. On Sarvatobhadra only 20 of 60 ended at a fort | Part 2 |
-| 9 | **The headline promises a mode that does not exist.** "Abhimanyu got in. Can you get out?" — every mode is about getting *in*, and the Daily card uses that line for a break-in | `js/modes.js` Daily briefing | Part 2 (words), Part 3 (the mode) |
-| 10 | **You cannot play a friend who is not in the room.** In a bluffing game, people are the content | Pass-and-play only | Part 2 (challenge link); live online needs a server — a launch decision |
+| 7 | **A third of wheel battles end without the fort falling.** One side runs out of pieces that can move and the field is "conceded" | 63 of 200 on the wheel, 82 of 150 on the lotus | **Done (Part 2):** rule kept — it is the Stratego rule and decisive. The ending is now *shown*: the fort-fall card, burst and Sanjaya's "fort" line, and the result card says so from your side |
+| 8 | **Kurukshetra rarely finishes.** The sun sets and points decide | 39 of 60 Dronacharya-v-Dronacharya battles, 34 of 60 Sainik-v-Dronacharya. On Sarvatobhadra only 20 of 60 ended at a fort | **Done (Part 2):** rule kept — stopping at sunset is how Kurukshetra was fought. The score that decides it (bala) and the countdown are now in the GOAL box for the last ten rounds. Revisit after playtests |
+| 9 | **The headline promises a mode that does not exist.** "Abhimanyu got in. Can you get out?" — every mode is about getting *in*, and the Daily card uses that line for a break-in | `js/modes.js` Daily briefing | **Words done (Part 2):** the Daily says "The wheel is closed. Break in." and its share line "Same wheel for everyone today. Can you break in?". The mode itself: Part 3 |
+| 10 | **You cannot play a friend who is not in the room.** In a bluffing game, people are the content | Pass-and-play only | **Done (Part 2):** Challenge a friend — the link carries field, opponent, rules, the enemy's formation (a seed) and the rounds to beat. Live online needs a server — a launch decision |
 | 11 | **Hindi and Marathi are half done.** 79 newer strings are English only; battle-log prose is English only | `docs/i18n/pending-first-session.en.json`; Sarvam has delivered nothing since Batch 3 | Part 4 — stop waiting for Sarvam |
 | 12 | **The process is heavier than the game needs.** Fifteen check harnesses, four layers of documents, 28 old branches, for a game with no players | The robot player alone takes over ten minutes | Trim after the gate |
 | 13 | **Fast defeats.** Some battles are over before the player has done anything | 16 of 100 Sainik-v-Dronacharya battles ended by round 10 | Watch in playtests; the ladder softens it |
@@ -54,7 +54,11 @@ ran 67–83 over 150 battles, which is inside chance but worth another bank befo
 The two scenario paintings in the game. The ladder: Sainik → Dronacharya → Shakuni, with the
 promotion shown on the result card. Home and the result card rebuilt for a phone held sideways.
 
-**Part 2 — endings and a friend (next session, Director).**
+**Part 2 — endings and a friend (done 13 Nov, PR #27).** What was decided, and why the rules stayed:
+a rule change to endings needs two seed banks and would change every balance number; the endings
+were right, they were just *invisible*. So they are now shown. Also found and fixed: every stage
+card's sentence was cream on cream in the Pata look (unreadable since Pata became the default).
+The original Part 2 list:
 - A rule so a battle ends at the fort, not by running out of movers; a shorter Kurukshetra or a
   different sunset rule. Each screened on two fresh seed banks before it ships, like the Daily.
 - The Daily briefing says what the task is. The headline line is kept for the mode that earns it.

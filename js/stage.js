@@ -193,6 +193,19 @@
     show(html, 'stage-breach' + (mine ? ' stage-lose' : ' stage-win'), calm() ? 2600 : 1900, done);
   }
 
+  /* The last enemy mover has fallen: the undefended fort is taken (13 Nov 2026). */
+  function fall(ev, viewer, done) {
+    const mine = ev.owner === viewer;
+    const html =
+      '<div class="st-kicker"><span class="deva">दुर्ग</span> · The fort</div>' +
+      '<div class="st-gate" aria-hidden="true">' + A.icon('gate') + '<span class="st-crack"></span></div>' +
+      verdict(mine ? 'fortLost' : 'fort') +
+      '<div class="st-line">' + esc(mine
+        ? tr('fall.ours', 'No fighter of ours is left to stand. The fort is open, and it falls.')
+        : tr('fall.theirs', 'Their last fighter has fallen. Nothing stands at the fort — it is ours.')) + '</div>';
+    show(html, 'stage-breach' + (mine ? ' stage-lose' : ' stage-win'), calm() ? 2600 : 1900, done);
+  }
+
   function astra(ev, viewer, done) {
     const def = (U.ASTRA_DEFS || {})[ev.astra] || { name: ev.astra, deva: '' };
     const ours = ev.owner === viewer;
@@ -229,6 +242,7 @@
     volley: volley,
     scan: scan,
     breach: breach,
+    fall: fall,
     astra: astra,
     sky: sky,
     close: close,

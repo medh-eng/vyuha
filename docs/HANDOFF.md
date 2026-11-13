@@ -1,45 +1,49 @@
 # Handoff — latest status
 
-**13 November 2026 · Director.** Replace this file at the end of each session.
+**13 November 2026 (evening) · Director.** Replace this file at the end of each session.
 
 ## State
 
-The Commander uploaded the two scenario paintings and asked for a hard review of the whole game,
-a plan, and the work done in parts. The review and plan are **`docs/REVIEW.md`** — read it first.
-Branch **`claude/first-session-ladder-scenes`** (PR open, T-24) is Part 1 of that plan:
+The hard review and its four-part plan are **`docs/REVIEW.md`** — read it first.
+
+- **PR #26** (Part 1, branch `claude/first-session-ladder-scenes`): scenario paintings, the ladder, home and result card sideways. CI green; waiting for the Commander.
+- **PR #27** (Part 2, branch `claude/review-part2-endings-challenge`, **stacked on #26** — merge #26 first): endings shown, Daily wording, Challenge a friend.
+
+### Part 2 — what changed
 
 | Item | What changed | Where |
 |---|---|---|
-| Scenario paintings (T-20) | `card-duel` (two camps at dawn) and `card-abhimanyu` (the lone chariot in the closed wheel) are on the scenario cards, the story cards and the Daily card. Field crops and their position overrides removed | `assets/art/pata/scenes/card-*.webp`, `PATA_SLOTS` in `js/art.js`, `css/app.css`, `data/art.json` |
-| **The ladder** | Yuddh karo picks the opponent: Sainik until two wins over him, Dronacharya until three, then Shakuni (`AC.ui.ladder(stats)`). Field and rules still come from the last Custom battle; Custom battle opens on the ladder rung until the player has chosen for themselves. Result card: "One more win over Sainik and Dronacharya comes for you", then on the clearing win a saffron note and **Face Dronacharya** in place of Rematch. Only for an ordinary battle against the rung's opponent; guests have no record, so they stay on Sainik | `js/ui.js` (`LADDER`, `ladder`, `quickSetup`), `js/game.js` (`handleGameOver`), `.ladder-note` |
-| Home, sideways | Height ≤ 520 px: painting beside the title and Yuddh karo; the other doors in a column on the right, Daily first. Yuddh karo was at 461 px on a 411 px screen; now 152–211 px at 914 × 411, 830 × 318, and 167–226 at 640 × 360. Portrait and desktop unchanged | end of `css/app.css` |
-| Result card, sideways | Verdict in one row, numbers on one line, buttons fixed at the foot of the card (they were cut off below the edge at 914 × 411) | end of `css/app.css` |
-| `AC.game.conclude(winner, reason)` | Ends the battle now; `resign` uses it, and so do the new tests | `js/game.js` |
-| Strings | Five `ladder.*` keys (whole sentences with `{a}` `{b}` `{n}`) added to the pending file — now 79 | `docs/i18n/pending-first-session.en.json` |
+| How a battle ended | The engine records `state.endKind`: `fort`, `movers`, `limit`, `sunset`, `quiet`, `stalemate`, `conceded` | `endGame(…, kind)` in `js/engine.js` |
+| The undefended fort (T-26) | Rule unchanged (a side with no movers loses). It now emits an `abandon` event at the loser's fort: a fort card ("The fort is taken" / "has fallen"), a burst at the fort, Sanjaya's fort line (priority 9); the result card says "Their last fighter fell on round N. Nothing stood at the fort — it is taken." | `js/engine.js` finishTurn, `AC.stage.fall`, `narrate`, `endLine` in `js/game.js` |
+| Sunset (T-26) | Rule unchanged. In the last ten rounds before sunset the GOAL box shows "Sunset in N · Bala 24 – 19" (yours first, coloured when ahead/behind) | `renderGoal`, `.goal-turn.sunset` |
+| Daily wording (T-27) | Briefing title "The wheel is closed. Break in."; share line `share.cta` "Same wheel for everyone today. Can you break in?" in English, Hindi and Marathi (Hindi/Marathi by the Director — **needs a native read**). "Abhimanyu got in. Can you get out?" stays as the home headline for the escape mode | `js/modes.js`, `js/languages.js`, `docs/i18n/strings.*.json` |
+| Challenge a friend (T-28) | Every AI battle has `config.seed`, which fixes the enemy formation (fresh each battle; kept only in a challenge). Result card: **Challenge a friend** shares `#c=<field>.<opponent>.<v\|c>.<seed36>.<rounds>` (rounds 0 after a defeat = "avenge me"). Opening the link (or receiving it in an open tab): a briefing, then the same field, opponent and enemy formation; the player still deploys their own army. Result note: beaten / matched / slower / failed / avenged. Challenge battles do not move the ladder note | `newState` seed in `js/engine.js`; `challengeHash`, `challengeNote` in `js/game.js`; `parseChallenge`, `startChallenge` in `js/modes.js`; `deepLink` + `hashchange` in `js/ui.js` |
+| Bug found | Every stage card's sentence (clash, volley, gate, fort) was cream on cream in the Pata look — unreadable since Pata became the default. Now ink | end of `css/app.css` |
+| Bug found | `handleGameOver` could set `AC.app.profile` to null if storage was cleared mid-session | `js/game.js` |
+| Strings | 23 more pending keys (`fall.*`, `end.movers_*`, `goal.sunset`, `goal.bala`, `daily.title`, `result.challenge`, `challenge.*`) — **102 pending** | `docs/i18n/pending-first-session.en.json` |
 
-## Measured this session (seeded AI-v-AI on `main`; no person played)
+Honest limit of the challenge: the AI's moves depend on the player's moves, so it is "same field, same
+opponent, same enemy formation" — not a replay. The text says exactly that.
 
-- Wheel, Dronacharya v Dronacharya, 200 battles: 101–99; median 23 rounds; **63 ended with one side out of movers**, not a fort.
-- Lotus, same, 150: 67–83; **82 ended out of movers**.
-- Wheel, Sainik v Dronacharya, 100: Sainik won 17; 16 over by round 10.
-- Kurukshetra: 39 of 60 (D v D) and 34 of 60 (S v D) ended at sunset. Sarvatobhadra D v D, 60: 19 sunset, 21 out of movers.
+## Measured (seeded AI-v-AI, 40 battles per field, Dronacharya v Dronacharya)
 
-## Checks (this branch)
+wheel fort 31 / movers 9 · lotus movers 28 / fort 11 / sunset 1 · Sarvatobhadra movers 17 / sunset 12 / fort 11 ·
+Kurukshetra sunset 25 / fort 12 / movers 3. Every movers ending carried a correct fort event (57 of 57).
 
-rules 166 · self-play 40 · Daily · languages · UI 195 (11 new, the ladder) · data 159 · assets ·
-audio 44 · log 18 · shots · first-session 32 · landscape 122 · pace-budget (same four long lines as
-before) · battle-log 987 · idle heat under 3 % portrait and 844 × 390 · Pata sweep both looks, no
-errors · robot — see the PR for its last line. `tools/media-qa.mjs` not run (known failure, T-14).
-**Not phone-tested; no real-person playtest.**
+## Checks (Part 2 branch)
 
-## Open
+rules 166 · self-play 40 · Daily · languages · UI 212 (17 new) · data 159 · assets · audio 44 · log 18 ·
+shots · first-session 32 · landscape 122 · pace-budget (same four long lines as before) · battle-log ·
+idle heat — see the PR · robot — see the PR. **Not phone-tested; no real-person playtest; Hindi/Marathi share line not natively reviewed.**
 
-- Commander: merge the PR (T-24); **T-05 five first-session playtests — the gate for Part 3**;
-  T-23 branches; T-08 wheel night field; phone checks T-02/T-03/T-16 and now T-25 (home and result sideways).
-- Sarvam has still delivered nothing since Batch 3; 79 strings wait. `docs/REVIEW.md` Part 4 says stop waiting.
+## Open — Commander
 
-## Next (Director) — Part 2 of `docs/REVIEW.md`
+Merge #26 then #27 · **T-05 five silent first-session playtests — the gate for Part 3** · T-25 phone check
+(home and result sideways; also: send yourself a challenge on WhatsApp and open it) · T-23 branches ·
+T-08 wheel night field · T-02/T-03/T-16.
 
-T-26 endings (out-of-movers on the wheel and lotus; sunset on Kurukshetra), each screened on two
-fresh seed banks · T-27 Daily briefing says the task · T-28 challenge-a-friend link.
-T-21, T-17, T-22 stay behind these.
+## Next — Director
+
+Part 3 waits for T-05. Until then: T-21 (festival days, sound pass), T-17 (log prose keys), T-22
+(battle-log flake). Part 4 prep: the 102 pending strings — Sarvam has delivered nothing since
+Batch 3; the review says stop waiting.

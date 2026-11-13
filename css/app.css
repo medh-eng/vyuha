@@ -3198,3 +3198,16 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
   .modal:has(.result-hero) .modal-actions .btn { flex: 1 1 auto; min-width: 0; padding-left: 10px; padding-right: 10px; white-space: nowrap; }
   .modal:has(.result-hero) .modal-actions .btn-primary { flex: 1.4 1 auto; }
 }
+
+/* ── 13 Nov 2026: sunset and bala in the GOAL box (last ten rounds) ── */
+.goal-turn.sunset { display: flex; justify-content: space-between; gap: 8px; }
+.goal-turn.sunset .goal-bala { white-space: nowrap; }
+.goal-turn.sunset.ahead .goal-bala b:first-child { color: var(--vermilion, var(--solar-2)); }
+.goal-turn.sunset.behind .goal-bala b:last-child { color: var(--lapis, var(--void)); }
+.goal-turn.sunset.soon > span:first-child b { color: var(--vermilion, var(--solar-2)); }
+#screen-game .goal-turn.sunset { display: flex; }
+
+/* ── 13 Nov 2026: the stage cards' sentence in the Pata look ──
+   .st-line was cream for the old dark stage; on the cotton card it vanished (every clash, volley,
+   gate and fort card since the Pata look became the default). Ink on cotton, like the rest. */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .st-line { color: var(--txt-2, #4a3b2a); }

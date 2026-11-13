@@ -1521,9 +1521,17 @@
       const h = (root.location && root.location.hash) || '';
       if (!AC.modes) return;
       if (/^#daily/.test(h)) AC.modes.startDaily();
+      else if (/^#c=/.test(h)) {
+        // a friend's challenge: open it once, then clear the link so a reload goes home
+        AC.modes.startChallenge(AC.modes.parseChallenge(h));
+        try { root.history.replaceState(null, '', root.location.pathname + root.location.search); } catch (e) { /* file:// */ }
+      }
       else if (/^#learn/.test(h)) AC.modes.startWheelLesson(0);
       else if (/^#drill/.test(h)) AC.modes.startTutorial();
     };
+
+    // a challenge link opened while the game is already open in this tab
+    try { root.addEventListener('hashchange', function () { if (app.profile && /^#c=/.test(root.location.hash)) deepLink(); }); } catch (e) { /* no window */ }
 
     setTimeout(function () {
       clearTimeout(watchdog);
