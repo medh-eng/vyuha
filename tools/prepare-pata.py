@@ -144,6 +144,9 @@ if (src := art("frame/border-chakra.png")):
     save_webp(scaled(src, 1086).convert("RGB"), ART_OUT / "frame/border-chakra.webp", 80)
 if (src := art("scenes/home-chamber.png")):
     save_webp(scaled(src, 1672).convert("RGB"), ART_OUT / "scenes/home-chamber.webp", 78)
+for name in ("card-duel", "card-abhimanyu"):   # T-20: scenario cards (docs/prompts/PATA.md 5b)
+    if (src := art(f"scenes/{name}.png")):
+        save_webp(scaled(src, 1200).convert("RGB"), ART_OUT / f"scenes/{name}.webp", 80)
 if (src := art("scenes/home-lamp.png")):
     save_webp(key_magenta(scaled(src, 384)), ART_OUT / "scenes/home-lamp.webp", 86)
 

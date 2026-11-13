@@ -113,6 +113,17 @@ All fill the frame (no magenta needed). Keep the middle quiet: the game draws th
 | `scenes/home-lamp.png` | 1024 × 1024 | Only the lamp's flame and its glow from the picture above, on `#FF00FF`, for the arrival flare. |
 | `portraits/sanjaya.png` | 2048 × 2048 | Sanjaya, head and shoulders, three-quarter profile facing right, calm and warm, cream and saffron shawl, in this cloth-painting style; transparent or `#FF00FF`. |
 
+## 5b. Scenario cards — 2 files (asked 7 Nov 2026, T-20)
+
+Shown on the Custom battle cards and across the top of the story card before each battle. Until
+they arrive the game crops the field paintings. Fill the frame. The card shows a wide strip from
+the **middle third, top to bottom**, so keep the subject in a band across the centre; no text.
+
+| File | Size | Prompt (after the style block) |
+|---|---|---|
+| `scenes/card-duel.png` | 2400 × 1350 | Two camps face each other across an open plain at first light, painted on cotton: on the left the vermilion and saffron tents and sun banners of Suryavansh, on the right the lapis and conch-white tents and crescent banners of Chandravansh; small chariots, horses and elephants waiting in rows; empty ground between them. Calm, before the battle — no fighting. |
+| `scenes/card-abhimanyu.png` | 2400 × 1350 | A young warrior in a small chariot, bow in hand, seen from outside a vast wheel-shaped formation of soldiers, chariots and elephants that is closing around him, rings of warriors in saffron and indigo; one narrow gap in the wheel behind him. Brave, not gory — no wounds, no deity. |
+
 ## 6. Sound — Phase 1
 
 Put files in `incoming/audio/`. WAV, 48 kHz, 24-bit, no reverb, no clipping (levels as in

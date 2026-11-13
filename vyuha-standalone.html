@@ -2768,6 +2768,9 @@ html[data-skin="pata"] .has-field .cell:nth-child(even) .cell-fill { fill: #fff6
 html[data-skin="pata"] .has-field.sky-night .cell .cell-fill,
 html[data-skin="pata"] .has-field.sky-night .cell:nth-child(even) .cell-fill { fill: #d9def5; fill-opacity: 0.08; stroke: #e7e9f6; }
 html[data-skin="pata"] .has-field .cell.hub .cell-fill { fill: none; }
+/* A cell takes taps over its whole shape even when drawn unfilled (the painted hub, above): with
+   fill: none SVG ignores the tap and a piece on the hub could not be picked (robot, 7 Nov). */
+.board-svg .cell .cell-fill { pointer-events: all; }
 html[data-skin="pata"] .has-field .cell.zone-1 .cell-fill { stroke: var(--vermilion); stroke-width: 0.026; }
 html[data-skin="pata"] .has-field .cell.zone-2 .cell-fill { stroke: var(--lapis); stroke-width: 0.026; }
 html[data-skin="pata"] .has-field.sky-night .cell.zone-2 .cell-fill { stroke: #9fb6ff; }
@@ -3121,6 +3124,44 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry :is(.log-where, .log-text b) { color: var(--ink, #1c1510); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .cell.log-mark .cell-fill { stroke: #ffb347 !important; stroke-width: 0.1 !important; fill: rgba(255, 179, 71, 0.3) !important; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .log-entry:is(.kind-core, .kind-end) { color: var(--txt); }
+
+/* ── T-09 (7 Nov 2026): scenario cards, story cards and the pass-and-play curtain in Pata ──
+   Classic keeps its dark painted cards (background-image on the card, ::after shade). In Pata the
+   card is cotton: the painting sits in the top band with an ink rule, the words below in ink. */
+.mode-card-art, .modal-band { display: none; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card { flex-direction: column; justify-content: flex-end; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card::after { display: none; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-art {
+  display: block; position: absolute; left: 0; right: 0; top: 0; bottom: 42%;
+  background-size: cover; background-position: center 42%; border-bottom: 2px solid var(--ink);
+}
+/* Yuddh: the top camp of the Kurukshetra painting rather than the river between them */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card[data-val="duel"] .mode-card-art { background-position: center 6%; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-body { padding: 8px 12px 10px; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-title { color: var(--ink); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-sub { color: var(--txt-2, #4a3b2c); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card.on .mode-card-title { color: var(--vermilion); }
+/* the story card: the painting as a band across the top of the cotton card */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .modal.art-modal .modal-band {
+  display: block; height: clamp(84px, 18vh, 140px); margin: -20px -20px 14px;
+  background: var(--modal-art) center 42% / cover no-repeat; border-bottom: 2px solid var(--ink);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .modal.art-modal[data-art="duel"] .modal-band { background-position: center 6%; }
+@media (max-height: 430px) {
+  :is(html[data-skin="pata"], html[data-skin="pahari"]) .modal.art-modal .modal-band { height: 64px; margin-bottom: 10px; }
+}
+/* the curtain while the phone changes hands: night cloth, a cotton card in the middle */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .curtain {
+  background: #1b2452 url("../assets/art/pata/frame/cloth-indigo.webp") 0 0 / 384px repeat;
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .curtain-card {
+  background: var(--panel); color: var(--txt); border: 2px solid var(--ink); border-radius: var(--r-lg);
+  padding: 22px 20px; box-shadow: var(--shadow-1);
+}
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .curtain-icon { color: var(--vermilion); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .curtain-title { color: var(--ink); }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.curtain-sub, .curtain-count) { color: var(--txt-2, #4a3b2c); }
 
 </style>
 </head>
@@ -8300,6 +8341,13 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     PATA_SLOTS['hero:' + k] = 'pata:portraits/' + k;
   });
   ['vayavya', 'sammohana', 'agneya', 'brahma'].forEach(function (k) { PATA_SLOTS['astra:' + k] = 'pata:astras/' + k; });
+  // T-09 (7 Nov 2026): scenario cards and story cards. Until the Commander's own scenario
+  // paintings land (docs/prompts/PATA.md, scenes/card-*.png), each scenario shows the field it
+  // is fought on: Yuddh the Kurukshetra camps, Abhimanyu and the Daily the closed wheel.
+  // When scenes/card-<name>.webp ships, point the slot at 'pata:scenes/card-<name>' instead.
+  PATA_SLOTS['card:duel'] = 'pata:fields/large-day';
+  PATA_SLOTS['card:abhimanyu'] = 'pata:fields/chakra-day';
+  PATA_SLOTS['card:daily'] = 'pata:fields/chakra-day';
 
   /* Where each Phase 2 field painting sits, in board units (x, y, width,
    * height), measured on the shipped pixels by tools/prepare-pata.py:
@@ -9312,7 +9360,10 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     backdrop.className = 'modal-backdrop';
     const box = document.createElement('div');
     box.className = 'modal' + (opts.wide ? ' wide' : '') + (opts.art ? ' art-modal' : '');
-    if (opts.art) box.style.setProperty('--modal-art', 'url("' + opts.art + '")');
+    // absolute, because a url() inside a custom property resolves against the stylesheet that
+    // uses it (css/), not the page: the story paintings never showed before 7 Nov
+    if (opts.art) box.style.setProperty('--modal-art', 'url("' + new URL(opts.art, document.baseURI).href + '")');
+    if (opts.artKey) box.dataset.art = opts.artKey;
     box.setAttribute('role', 'dialog');
     box.setAttribute('aria-modal', 'true');
     box.setAttribute('aria-label', opts.title || 'Dialog');
@@ -9323,6 +9374,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     }).join('');
 
     box.innerHTML =
+      (opts.art ? '<div class="modal-band" aria-hidden="true"></div>' : '') +
       '<div class="modal-head">' +
         '<div>' +
           (opts.kicker ? '<div class="modal-kicker">' + esc(opts.kicker) + '</div>' : '') +
@@ -10015,6 +10067,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
             const art = AC.art.artFor('card:' + o.v);
             return '<button class="mode-card' + (on ? ' on' : '') + '" data-group="scenario" data-val="' + o.v + '"' +
               (art ? ' style="background-image:url(\'' + art + '\')"' : '') + '>' +
+              (art ? '<span class="mode-card-art" aria-hidden="true" style="background-image:url(\'' + art + '\')"></span>' : '') +
               '<span class="mode-card-body">' +
                 '<span class="mode-card-title">' + esc(o.title) + (o.deva ? ' <span class="deva">' + esc(o.deva) + '</span>' : '') + '</span>' +
                 '<span class="mode-card-sub">' + esc(o.sub) + '</span>' +
@@ -11193,6 +11246,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
       kicker: sc.label + (sc.deva ? ' · ' + sc.deva : ''),
       title: legend.title,
       art: art,
+      artKey: st.scenario,
       wide: false,
       body: '<p style="font-size:13px;line-height:1.65;color:var(--dim);margin:0 0 12px">' + esc(legend.text) + '</p>' +
         '<div class="legend-facts">' +
@@ -15112,7 +15166,7 @@ rankBadge('?', R)
           screen === 'game' ? needsBoard(slot) || slot.indexOf('banner:') === 0
           : screen === 'home' ? true
           : screen === 'auth' ? slot.indexOf('faction:') === 0 || slot === 'ui:hero'
-          : screen === 'setup' ? slot.indexOf('card:') === 0
+          : screen === 'setup' ? slot.indexOf('card:') === 0 || slot.indexOf('pata:fields/') === 0 || slot.indexOf('pata:scenes/') === 0
           : true;
         if (!relevant) return;
         dirty = true;

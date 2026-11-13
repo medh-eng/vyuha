@@ -6,3 +6,4 @@ shots/
 .playtest/
 masters/
 assets/3d/
+__pycache__/

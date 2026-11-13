@@ -34,6 +34,10 @@ stays in Settings and as the fallback.
   Kurukshetra Pahari miniature. Day fields are cotton; night fields are true indigo.
 - Type: display `Rozha One`; Devanagari `Tiro Devanagari Hindi`; body `Inter`. Hindi and Marathi
   strings may wrap to two lines; never shrink a control to fit them.
+- **Cards are cotton:** a painting sits in a band at the top with an ink rule, the words below in
+  ink (scenario cards, story cards, the Daily card); the pass-and-play curtain is night cloth with a
+  cotton card. Until the scenario paintings arrive (`docs/prompts/PATA.md` §5b) the band crops the
+  field the scenario is fought on. Classic keeps its dark painted cards.
 - **No deity** as a piece, target or capture. Astras are wind, trance, fire and light — invoked, never drawn as gods.
 
 ## 2. Fields

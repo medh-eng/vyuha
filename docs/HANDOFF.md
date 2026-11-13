@@ -1,40 +1,40 @@
 # Handoff — latest status
 
-**7 November 2026 (late) · Director.** Replace this file at the end of each session.
+**7 November 2026 (night) · Director.** Replace this file at the end of each session.
 
 ## State
 
-PR #23 (night fields, sideways squares, registers) is merged and live. Branch
-**`claude/battle-log-audio-priority`** (PR open) finishes **T-04, review plan step 4**. Rules, AI,
-Daily and balance unchanged: the engine only records more detail in its log.
+PR #24 (battle log, audio priority) is merged and live. Branch **`claude/agents-review-scenarios`**
+(PR open, T-19) holds four things:
 
 | Item | What changed | Where |
 |---|---|---|
-| Battle log from your side | Each action: **You** / **Enemy** chip, cells by name, then the piece (yours always; an enemy piece only if it could be seen when it moved, else "hidden piece") or the clash/astra sentence. Tap an entry → its cells get a still saffron ring for 2.4 s; on phones (≤ 1080 px) the drawer closes first. Pass-and-play: log blank during the handover. Old saves fall back to the stored English text | `logLine`, `renderLog`, `markCells` in `js/game.js`; CSS at the end of `css/app.css` |
-| Cell names | `G.cellName(board, id)`: squares = printed coordinates (A1 top-left; same names when turned sideways); wheel and lotus = ring + clock position on screen to the half hour (`outer 5:30`, `middle 12:00`, `hub` / `centre`). Unique on all four fields. Also lead each cell's aria-label | `js/geometry.js` |
-| Engine log data | `E.log(state, kind, text, at, extra)`; entries now carry `who`, `from`, `piece`, `seen` (visible after the move), `foe`, `outcome`, `astra`. `text` unchanged | `js/engine.js` |
-| Audio priority | Explicit `PRIORITY` table + `SJ.rank` (stable). Tiers: 9 fort · 8 result · 7 breach · 6 astra · 5 clock warnings · 4 captures/formations · 3 traps · 2 sky/rings · 1 routine. **Fixed:** `rotate_padma` was 4 by a regex accident (now 2); victory/defeat/draw were 1 (now 8 — the result beats the final capture; a taken fort still leads); last-rounds/sunset warnings and Shakti-full were 1 *and* marked said before a line was chosen, so a capture that turn silenced them for the battle (warnings now 5, all said only when spoken, warnings fire anywhere in the last 4 / 3 rounds); Quick kept the 3 oldest queued lines and dropped new ones (now the 3 most important) | `js/sanjaya.js`, `speak`/`narrate`/`performCalm` in `js/game.js` |
-| Strings | 9 new `log.*` keys, English only for now, added to `docs/i18n/pending-first-session.en.json` (T-06). The clash/astra sentences in the log are still English engine prose (T-17) | |
-| Docs | `DESIGN.md` §4 (log) and §5 (which line speaks); AGENTS.md lists the three new checks | |
+| ChatGPT Batch 4.1 merged in | Robot plays portrait 390×844 / 360×640 and landscape 844×390 / 640×360, all four fields, the field drill and a full Daily, through real taps only, seeded (`ROBOT_SEED`), `summary.json`. CI workflow runs the whole check list on **every PR** (widened by the Director; audio, log, battle-log added). Director's tweak: `tapCell` looks a cell up again (3 tries) when the board redraws mid-tap | `tools/playtest-bot.mjs`, `.github/workflows/landscape-robot.yml` |
+| **Bug fix: centre cell ignored taps** | Pata (since 6 Nov) drew the wheel hub / lotus centre with `fill: none` so the painted field shows; SVG then ignores taps there, so a piece on the centre could not be picked by touch. `.board-svg .cell .cell-fill { pointer-events: all }`. `tools/battle-log.mjs` now checks every cell takes a tap at its centre (fails without the fix) | `css/app.css` |
+| T-09 Pata cards | Scenario cards: painting in a top band with an ink rule, words in ink on cotton (the Pata panel rule had wiped the painting and left Classic's black shade). Story cards and the Daily card: painting band across the top. **Story paintings had never loaded in either look** — `url()` inside `--modal-art` resolved against `css/`; now absolute. Pass-and-play curtain: indigo cloth + cotton card. Until the Commander's scenario paintings land, `PATA_SLOTS` crops the fields: Yuddh → Kurukshetra camp, Abhimanyu and Daily → the wheel | `js/art.js` (`PATA_SLOTS card:*`), `js/ui.js` (`.mode-card-art`, `.modal-band`, `artKey`), `js/main.js`, CSS at the end of `css/app.css` |
+| Cleanup | `masters/audio/` (36 MB) out of git — it was still tracked despite `.gitignore`; same files as `vyuha-masters-audio.zip`, in history to `28b4fe6`. Superseded `docs/evidence/landscape-2026-11-01`, `portraits-2026-11-01` removed. Tracked tree ≈ 32 MB. **26 fully merged branches remain on GitHub** — Claude sessions cannot delete branches (T-23) | |
+| Agents | Sarvam: nothing new since Batch 3. ChatGPT: only 4.1. Both briefs now start with **Batch 6** (one ordered list each). ChatGPT 4.2 dropped (landscape rebuilt 6 Nov) | `docs/agents/*.md` |
 
-## Checks (7 Nov, this branch)
+## Checks (this branch)
 
-rules 166 · self-play 40, 0 failures · Daily · languages · UI 184 · data 159 · assets ·
-**audio 44 (new)** · **log 18 (new)** · **battle-log ≈ 930 (new; every field at 914×411, 830×318,
-390×844; three clean runs)** · desktop/phone screenshots · landscape 122 · first-session 32 ·
-idle < 3 % (portrait and 844×390) · Calm budget unchanged (33/46) · robot "no problems" ·
-audio-qa passed · standalone rebuilt · cache stays v34 (code revalidates on load).
-`tools/media-qa.mjs` (not in the required list) fails at the astra-film gate — **on `main` too**:
-in Pata the astra moment is a still, the harness expects the Classic film (T-14).
+rules 166 · self-play 40 · Daily · languages · UI 184 · data 159 · assets · audio 44 · log 18 ·
+battle-log ≈ 1 050 (incl. every-cell tap) · Pata sweep both looks, no errors · robot full run
+(all four viewports) — see the PR for the final line · plus the browser checks listed in the PR.
+`tools/media-qa.mjs` still fails at the astra-film gate on `main` too → ChatGPT 6.1 (T-14).
+
+## When the scenario paintings arrive (T-20)
+
+Upload to `incoming/art/pata/scenes/card-duel.png`, `card-abhimanyu.png` → `python3 tools/prepare-pata.py`
+(already writes `assets/art/pata/scenes/card-*.webp`) → point `PATA_SLOTS['card:duel']` and
+`['card:abhimanyu']` (and `card:daily` → abhimanyu) at `'pata:scenes/card-…'` in `js/art.js` →
+drop the `background-position` overrides for `[data-val="duel"]` / `[data-art="duel"]` if the new
+pictures are centred → `node tools/pata-sweep.mjs` and look.
 
 ## Open
 
-- **Not phone-tested; no real-person playtest.** T-16: are the names and the tap-to-mark useful?
-- Wheel/lotus names are clock positions because those fields print no coordinates; if the
-  Commander prefers printed spoke numbers on the rim, that is a design change to the painted field.
-- T-02/T-03 phone checks from the last PR still wanted.
+- **Not phone-tested; no real-person playtest.** On the phone: a piece on the wheel hub can now be picked.
+- Commander: T-23 (delete merged branches; turn on auto-delete), T-20 (two paintings), T-08 (wheel night field), T-02/T-03/T-16 phone checks, T-05 playtests.
 
 ## Next
 
-`TASKS.md`: T-15 merge · T-02/T-03/T-16 phone checks · T-05 playtests · Director next: **T-09**
-(scenario cards and dark screens in Pata), T-14 (media-qa in both looks), T-17 (log prose keys).
+Director: **T-21** (festival days on the Daily, sound pass), T-17 (log prose keys). Agents: Batch 6.

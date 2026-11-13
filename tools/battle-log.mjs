@@ -55,6 +55,14 @@ async function run(w, h, board) {
     st.viewer = 1;
     AC.game.render();
   });
+  // every cell takes a tap at its centre (the painted hub ignored taps from 6 to 7 Nov)
+  const dead = await page.evaluate(() => [...document.querySelectorAll('#board .cell')].filter((el) => {
+    const q = el.getBoundingClientRect();
+    const hit = document.elementFromPoint(q.left + q.width / 2, q.top + q.height / 2);
+    const cell = hit && hit.closest('.cell');
+    return !cell || cell !== el;
+  }).map((el) => el.dataset.id + '→' + (document.elementFromPoint(el.getBoundingClientRect().left + el.getBoundingClientRect().width / 2, el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2) || {}).tagName));
+  ok(dead.length === 0, board + ' ' + w + 'x' + h + ': every cell takes a tap at its centre' + (dead.length ? ' — dead: ' + dead.join(' ') : ''));
   await page.tap('#btn-hud-log');
   await wait(400);
   const r = await page.evaluate(() => {

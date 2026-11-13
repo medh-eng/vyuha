@@ -52,7 +52,7 @@ Engine and rules untouched; runs beside the hero work.
 - [x] **[C]** Phase 2 art: Padmavyuha, Sarvatobhadra, Kurukshetra day/night, nine avatars, four astra stills, reveal brush (6 Nov)
 - [x] **[D]** Phase 2 wiring: each field lined up with its cells, avatars and astra stills in the Pata look, brush stroke on reveal, night fields re-dyed and the corner star covered (6 Nov)
 - [x] **[C]** Three new night fields in true indigo, no corner star (7 Nov); wheel night field still the earlier painting
-- [ ] **[D]** Phase 2, rest: scenario cards and remaining dark screens in Pata
+- [x] **[D]** Phase 2, rest: scenario cards, story cards and the pass-and-play curtain in Pata (7 Nov; field crops until the Commander's two scenario paintings, T-20)
 - [x] **[D]** Phase 3, first part: Sanjaya's Scroll (result screen → painted share image, `js/scroll.js`), charcoal notes (hold or right-click a hidden enemy)
 - [ ] **[D]** Phase 3, rest: festival days, haptics on clashes, sound pass
 - [ ] **[C]** **Gate 3** — five-person playtest + respect review
@@ -63,7 +63,7 @@ Engine and rules untouched; runs beside the hero work.
 
 - [x] **[D]** Step 1: board size, labels, goal + chakra countdown in view, contrast, astra states (PR #19)
 - [x] **[D]** Step 2: four wheel lessons before the first battle; odds in words (Likely win / Uncertain / Likely loss, Certain once ranks are known); Confirm strike / Cancel (7 Nov, PR #21)
-- [ ] **[S]** Hindi/Marathi for the 65 step-2 strings (`docs/i18n/pending-first-session.en.json`)
+- [ ] **[S]** Hindi/Marathi for the 74 pending strings (Sarvam Batch 6.1) (`docs/i18n/pending-first-session.en.json`)
 - [x] **[D]** Step 3: dashed landing rings one round before the turn, warning, gold cells for exposed enemy ranks after (7 Nov, PR open)
 - [x] **[D]** Step 4: battle log from your side — You/Enemy, cell names, your pieces by name, tap to mark cells; Sanjaya's priority table with checks (7 Nov, PR open)
 - [ ] **[C]** 5–10 real first-session playtests (lessons → first battle), then puzzles, seven-vyuha campaign, Abhimanyu Escape

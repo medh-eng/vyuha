@@ -28,6 +28,9 @@ python3 tools/prepare-audio-pack.py    # the 30 Oct music pack
 
 `masters/` is in `.gitignore`, so unzipped originals are never committed by accident.
 
+7 Nov 2026: `masters/audio/` (36 MB) had stayed tracked despite the ignore rule; it is now out of the
+tree too (same files as `vyuha-masters-audio.zip`, and in git history up to commit `28b4fe6`).
+
 ## New art and sound
 
 New uploads still go to `incoming/` with the names from `docs/prompts/` (see `incoming/README.md`).
