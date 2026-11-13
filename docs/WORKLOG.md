@@ -274,3 +274,18 @@ tuning.
 - **Sarvam:** nothing new since Batch 3. Briefs rewritten as Batch 6 for both agents (one ordered list each; ChatGPT 4.2 dropped as superseded by the 6 Nov landscape rebuild).
 - **Cleanup:** `masters/audio/` (36 MB, still tracked despite `.gitignore`) removed — same files as `vyuha-masters-audio.zip`, in history to `28b4fe6`; superseded evidence `docs/evidence/landscape-2026-11-01`, `portraits-2026-11-01` removed. Tracked tree ≈ 32 MB. Deleting the 26 fully merged branches is refused to Claude sessions (403) → Commander, T-23.
 - **T-09 Pata cards** (same PR): scenario cards with a painting band and ink words; story and Daily cards with a band; the curtain on indigo cloth. Fixed: story-card paintings never loaded in either look (`url()` in `--modal-art` resolved against `css/`). Field crops stand in until the Commander's `scenes/card-duel`, `card-abhimanyu` (prompts `docs/prompts/PATA.md` §5b, `prepare-pata.py` ready). Sweep harness `tools/pata-sweep.mjs [dir] [skin]`.
+
+## 13 Nov 2026 — hard review, Part 1
+
+- **Review** (`docs/REVIEW.md`): what is good, thirteen problems worst first, a four-part plan and the one gate (five silent playtests). Measured on seeded AI-v-AI battles; no person played.
+- **Scenario paintings** from the Commander (T-20) on the scenario, story and Daily cards.
+- **The ladder:** Yuddh karo → Sainik until two wins, Dronacharya until three, then Shakuni; promotion on the result card ("Face Dronacharya"). A first battle against Dronacharya was a first defeat (Sainik-level play won 17 of 100).
+- **Sideways:** Yuddh karo is on the first home screen (was at 461 px of 411); the result card's buttons no longer fall off the edge.
+- `AC.game.conclude`; 11 new UI tests; five `ladder.*` strings queued for Hindi/Marathi (79 pending).
+
+## 13 Nov 2026 (evening) — hard review, Part 2
+
+- **Endings shown, rules kept.** `state.endKind`; out-of-movers now plays as the fort's fall (card, burst, Sanjaya's fort line, a result line from your side); the last ten rounds before sunset show the countdown and the bala in the GOAL box. A rule change would need two seed banks and move every balance number; the endings were right, only invisible.
+- **Daily wording:** "The wheel is closed. Break in." / "Same wheel for everyone today. Can you break in?" (hi/mr by the Director, needs a native read).
+- **Challenge a friend:** seeded enemy formation in every AI battle; `#c=` links; briefing, result note.
+- **Found:** stage-card sentences were cream on cream in Pata — fixed. 17 new UI tests; 102 strings pending.

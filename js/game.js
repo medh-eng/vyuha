@@ -289,6 +289,9 @@
     if (AC.modes && AC.modes.clear) AC.modes.clear();
     clearOverlays();
     if (AC.app.configFromSetup && !config.rules) config = AC.app.configFromSetup(config);
+    // every battle against the AI has a seed for the enemy's formation, so it can be sent to a
+    // friend; a fresh one each time (a rematch is a new formation), kept only for a challenge
+    if (config.mode === 'ai') config = Object.assign({}, config, { seed: config.challenge && config.seed != null ? config.seed : Math.floor(Math.random() * 2147483647) });
     g.state = E.newState(Object.assign({}, config, {
       playerName: AC.app.profile ? AC.app.profile.name : 'Commander'
     }));
@@ -533,6 +536,17 @@
         html += '<div class="goal-turn chakra' + (left <= 1 ? ' soon' : '') + '">' +
           '<span>' + esc(b.kind === 'hex' ? tr('goal.lotus', 'Lotus turns in') : tr('goal.chakra', 'Chakra turns in')) + ' <b>' + left + '</b></span>' +
           '<span class="goal-pips">' + pips + '</span></div>';
+      }
+      // Sunset (13 Nov 2026): in the last ten rounds the score that will decide it is in view.
+      // On Kurukshetra most battles reach sunset; the player must know they are playing for bala.
+      if (!st.turnLimit) {
+        const toSunset = capOf(st) - st.turn + 1;
+        if (toSunset >= 1 && toSunset <= 10) {
+          const me = viewerOf(st), mine = E.strengthOf(st, me), theirs = E.strengthOf(st, me === 1 ? 2 : 1);
+          html += '<div class="goal-turn sunset' + (toSunset <= 3 ? ' soon' : '') + (mine > theirs ? ' ahead' : mine < theirs ? ' behind' : '') + '">' +
+            '<span>' + esc(tr('goal.sunset', 'Sunset in')) + ' <b>' + toSunset + '</b></span>' +
+            '<span class="goal-bala">' + esc(tr('goal.bala', 'Bala')) + ' <b>' + mine + '</b> – <b>' + theirs + '</b></span></div>';
+        }
       }
     }
     el.innerHTML = html;
@@ -1523,6 +1537,31 @@ rankBadge('?', R)
     host.innerHTML = html;
   }
 
+  /* The result card's line, from the player's side, for the endings whose engine text reads like a
+   * rule book. Others keep the engine's sentence. */
+  function endLine(st, outcome) {
+    if (!isAi()) return null; // pass and play: the engine names both armies
+    if (st.endKind === 'movers') {
+      if (outcome !== 'win') return tr('end.movers_lost', 'Our last fighter fell on round {n}. The fort stood undefended, and it fell.').replace('{n}', st.turn);
+      return tr('end.movers_won', 'Their last fighter fell on round {n}. Nothing stood at the fort — it is taken.').replace('{n}', st.turn);
+    }
+    return null;
+  }
+
+  /* How the player did against a friend's challenge, on the result card. */
+  function challengeNote(st, outcome) {
+    const ch = st.config && st.config.challenge;
+    if (!ch) return '';
+    const n = ch.rounds || 0, t = st.turn;
+    let line, up = false;
+    if (outcome !== 'win') line = n ? tr('challenge.failed', 'The challenge stands: your friend took the fort in {n} rounds.').replace('{n}', n) : tr('challenge.failed0', 'The enemy that beat your friend has beaten you too.');
+    else if (!n) { up = true; line = tr('challenge.avenged', 'Avenged: you beat the army that beat your friend.'); }
+    else if (t < n) { up = true; line = tr('challenge.beaten', 'Challenge beaten: {t} rounds against your friend’s {n}.').replace('{t}', t).replace('{n}', n); }
+    else if (t === n) { up = true; line = tr('challenge.matched', 'Matched: {n} rounds, the same as your friend.').replace('{n}', n); }
+    else line = tr('challenge.slower', 'You won in {t} rounds; your friend did it in {n}.').replace('{t}', t).replace('{n}', n);
+    return '<div class="ladder-note' + (up ? ' up' : '') + '">' + esc(line) + '</div>';
+  }
+
   function capOf(st) {
     if (st.turnLimit) return st.turnLimit;
     if (st.config.roundCap) return st.config.roundCap;
@@ -1878,6 +1917,9 @@ rankBadge('?', R)
         else if (ev.outcome === 'def') keys.push(def.owner === me ? 'win_capture' : 'lose_capture');
       } else if (ev.kind === 'core') {
         keys.push(ev.unit && ev.unit.owner === me ? 'fort_won' : 'fort_lost');
+      } else if (ev.kind === 'abandon') {
+        // the last mover fell: the undefended fort is the moment, not a line of small print
+        keys.push(ev.winner === me ? 'fort_won' : 'fort_lost');
       } else if (ev.kind === 'barrage') {
         keys.push(ev.kill ? 'volley_kill' : 'volley_turned');
       } else if (ev.kind === 'scan') {
@@ -2016,7 +2058,7 @@ rankBadge('?', R)
     if (ST && settings().cinematics !== false) {
       cardDone = new Promise(function (resolve) {
         const closed = function () { clearLinks(); resolve(); };
-        const fn = { clash: 'clash', barrage: 'volley', scan: 'scan', breach: 'breach', astra: 'astra', core: 'clash' }[ev.kind];
+        const fn = { clash: 'clash', barrage: 'volley', scan: 'scan', breach: 'breach', astra: 'astra', core: 'clash', abandon: 'fall' }[ev.kind];
         if (fn) ST[fn](ev.kind === 'core' ? Object.assign({ outcome: 'att', core: true }, ev) : ev, me, closed);
         else if (ev.kind === 'sky') ST.sky(ev.hour, E.hourOwner(st) === viewerOf(st), closed);
         else resolve();
@@ -2072,7 +2114,7 @@ rankBadge('?', R)
     const beats = events.filter(function (ev) {
       if (ev.kind === 'move') return !events.some(function (x) { return x.kind === 'clash'; });
       if (ev.kind === 'clash' && (major || hasAstra)) return false;
-      return ['clash', 'barrage', 'scan', 'breach', 'astra', 'core', 'sky', 'rotate'].indexOf(ev.kind) !== -1;
+      return ['clash', 'barrage', 'scan', 'breach', 'astra', 'core', 'abandon', 'sky', 'rotate'].indexOf(ev.kind) !== -1;
     });
     const moments = narrate(events, me, st);
     // the battle's result outranks the blow that ended it (a fort taken outranks both)
@@ -2174,7 +2216,7 @@ rankBadge('?', R)
       }
       if (ev.kind === 'sky') skyEv = ev;
       noteMoment(st, ev);
-      if (ev.kind === 'clash' || ev.kind === 'barrage' || ev.kind === 'scan' || ev.kind === 'breach' || ev.kind === 'astra' || ev.kind === 'core') {
+      if (ev.kind === 'clash' || ev.kind === 'barrage' || ev.kind === 'scan' || ev.kind === 'breach' || ev.kind === 'astra' || ev.kind === 'core' || ev.kind === 'abandon') {
         beats.push(ev);
       }
       if (ev.kind === 'clash') {
@@ -2195,6 +2237,10 @@ rankBadge('?', R)
         FX.spawn(at.x, at.y, { count: 8, color: '#e0a94a', speed: 1.4, size: 1.8, gravity: 0.02 });
       } else if (ev.kind === 'breach') {
         FX.burst(at.x, at.y, { count: 34, color: '#c8452b', speed: 5 });
+        FX.shake(10);
+      } else if (ev.kind === 'abandon') {
+        const f = cellCenter(ev.at);
+        FX.burst(f.x, f.y, { count: 40, color: ev.winner === me ? '#f2cf8b' : '#c8452b', speed: 5 });
         FX.shake(10);
       }
     });
@@ -2236,6 +2282,7 @@ rankBadge('?', R)
     else if (ev.kind === 'breach') ST.breach(ev, viewer, next);
     else if (ev.kind === 'astra') ST.astra(ev, viewer, next);
     else if (ev.kind === 'core') ST.clash(Object.assign({ outcome: 'att', core: true }, ev), viewer, next);
+    else if (ev.kind === 'abandon') ST.fall(ev, viewer, next);
     else next();
   }
 
@@ -2603,12 +2650,23 @@ rankBadge('?', R)
 
   /* ── game over ────────────────────────────────────────────── */
 
-  function shareLine(st, outcome) {
+  function shareLine(st, outcome, linked) {
     const b = L.board(st.boardKey) || U.BOARDS.wheel;
+    if (linked && outcome === 'win') return 'I broke ' + oppName(st) + '’s army on the ' + b.label + ' in ' + st.turn + ' rounds. Same field, same enemy formation — can you do it faster?';
+    if (linked && outcome === 'loss') return oppName(st) + ' took my fort on the ' + b.label + '. Same field, same enemy formation — avenge me.';
     if (outcome === 'win') return 'I broke ' + oppName(st) + '’s army on the ' + b.label + ' in ' + st.turn + ' rounds. Can you?';
     if (outcome === 'loss') return oppName(st) + ' took my fort on the ' + b.label + '. Avenge me.';
     return 'The field was shared on the ' + b.label + ' after ' + st.turn + ' rounds.';
   }
+
+  /* The challenge link (T-28): #c=<field>.<opponent>.<v|c rules>.<seed>.<rounds to beat; 0 = just win>.
+   * No server: the link holds everything. Only for an ordinary battle against the AI. */
+  function challengeHash(st, outcome) {
+    const c = st.config || {};
+    if (!isAi() || c.seed == null || (st.scenario !== 'duel' && !c.challenge) || !U.BOARDS[st.boardKey] || !U.DIFFICULTIES[c.difficulty]) return null;
+    return '#c=' + [st.boardKey, c.difficulty, c.ruleset === 'classic' ? 'c' : 'v', (c.seed >>> 0).toString(36), outcome === 'win' ? st.turn : 0].join('.');
+  }
+  g.challengeHash = challengeHash;
 
   function handleGameOver() {
     if (g.over) return;
@@ -2626,7 +2684,10 @@ rankBadge('?', R)
     if (winner === 1) outcome = 'win';
     else if (winner === 2) outcome = 'loss';
 
+    // the ladder (Yuddh karo): where the player stood before this result, and after it
+    let rungBefore = null, rungAfter = null;
     if (isAiGame && AC.app.profile && !AC.app.guest && !modeHook('noRecord')) {
+      rungBefore = AC.ui.ladder(AC.app.profile.stats);
       S.recordResult(AC.app.profile.id, {
         outcome: outcome,
         captures: (st.captured[1] || []).length,
@@ -2634,7 +2695,8 @@ rankBadge('?', R)
         plies: st.stats.actions,
         difficulty: st.config && st.config.difficulty
       });
-      AC.app.profile = S.getProfile(AC.app.profile.id);
+      AC.app.profile = S.getProfile(AC.app.profile.id) || AC.app.profile;
+      rungAfter = AC.ui.ladder(AC.app.profile.stats);
     }
     S.deleteSave('auto');
     // a lesson that ends in a win tells its own outcome, not "the field is conceded"
@@ -2679,6 +2741,12 @@ rankBadge('?', R)
     if (!g.calmResultNarrated) speak([winner === 0 ? 'draw' : (isAiGame ? (outcome === 'win' ? 'victory' : 'defeat') : 'victory')]);
 
     const extra = modeHook('resultExtras', { outcome: outcome }) || null;
+    // Ladder: only for an ordinary battle against the opponent the player currently stands on
+    const diffKey = st.config && st.config.difficulty;
+    const onRung = !extra && rungBefore && rungAfter && st.scenario === 'duel' && diffKey === rungBefore.key && !(st.config && st.config.challenge);
+    const promoted = !!(onRung && outcome === 'win' && rungAfter.rung > rungBefore.rung);
+    const beaten = onRung ? (L.opponent(diffKey) || U.DIFFICULTIES[diffKey]) : null;
+    const nextOpp = promoted ? (L.opponent(rungAfter.key) || U.DIFFICULTIES[rungAfter.key]) : null;
     const astrasUsed = (st.astraLog || []).filter(function (a) { return a.owner === 1; }).length;
     const actions = [
       { label: 'Home', cls: 'btn-ghost', onClick: function () { g.state = null; AC.ui.show('home'); } },
@@ -2687,12 +2755,38 @@ rankBadge('?', R)
     if (extra && extra.actions) extra.actions.forEach(function (a) { actions.push(a); });
     else {
       if (isAiGame && outcome !== 'draw' && AC.share) {
-        actions.push({ label: tr('result.share', 'Share'), cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { AC.share.text(shareLine(st, outcome)); } });
+        // the share carries the battle: same field, same opponent, same enemy formation (T-28)
+        const hash = challengeHash(st, outcome);
+        actions.push({ label: hash ? tr('result.challenge', 'Challenge a friend') : tr('result.share', 'Share'), cls: 'btn-ghost', icon: 'share', close: false,
+          onClick: function () {
+            AC.share.text(shareLine(st, outcome, !!hash), hash ? { hash: hash, kicker: tr('result.challenge', 'Challenge a friend'), title: tr('challenge.send', 'Send this battle to a friend') } : undefined);
+          } });
       }
       if (AC.scroll && g.moments && g.momentsState === st && g.moments.length) {
         actions.push({ label: 'Sanjaya’s Scroll', cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { openScroll(st, outcome, title); } });
       }
-      actions.push({ label: tr('result.rematch', 'Rematch'), cls: 'btn-primary', onClick: function () { g.start(st.config); } });
+      if (promoted) {
+        // the win that clears a rung: the next opponent takes the place of Rematch
+        // (Rematch stays on the bar under the board)
+        actions.push({ label: tr('ladder.face', 'Face {b}').replace('{b}', nextOpp.label), cls: 'btn-primary', icon: 'sword',
+          onClick: function () { g.start(Object.assign({}, st.config, { difficulty: nextOpp.key })); } });
+      } else {
+        actions.push({ label: tr('result.rematch', 'Rematch'), cls: 'btn-primary', onClick: function () { g.start(st.config); } });
+      }
+    }
+
+    // whole sentences with {a} {b} {n}, so Hindi and Marathi can order the words their own way
+    const fill = function (key, fallback, v) { return tr(key, fallback).replace(/\{(\w)\}/g, function (m, k) { return v[k] == null ? m : v[k]; }); };
+    let ladderHtml = '';
+    if (promoted) {
+      ladderHtml = '<div class="ladder-note up"><b>' + esc(fill('ladder.beaten', '{a} is beaten.', { a: beaten.label })) + '</b> ' +
+        esc(fill('ladder.next', '{b} takes the field against you next.', { b: nextOpp.label })) + '</div>';
+    } else if (onRung && outcome === 'win' && rungAfter.next) {
+      const left = rungAfter.need - rungAfter.wins;
+      const v = { a: beaten.label, b: (L.opponent(rungAfter.next) || U.DIFFICULTIES[rungAfter.next]).label, n: left };
+      ladderHtml = '<div class="ladder-note">' + esc(left === 1
+        ? fill('ladder.one_more', 'One more win over {a} and {b} comes for you.', v)
+        : fill('ladder.more', '{n} more wins over {a} and {b} comes for you.', v)) + '</div>';
     }
 
     AC.ui.modal({
@@ -2705,7 +2799,7 @@ rankBadge('?', R)
         '<div class="result-hero">' +
           '<div class="result-deva deva ' + cls + '">' + deva + '</div>' +
           '<div class="result-title ' + cls + '">' + esc(title) + '</div>' +
-          '<div class="result-reason">' + esc(st.reason || '') + '</div>' +
+          '<div class="result-reason">' + esc(endLine(st, outcome) || st.reason || '') + '</div>' +
         '</div>' +
         '<div class="result-stats">' +
           '<div class="result-stat"><b>' + st.turn + '</b><span>rounds</span></div>' +
@@ -2713,6 +2807,8 @@ rankBadge('?', R)
           '<div class="result-stat"><b>' + (st.captured[2] || []).length + '</b><span>lost</span></div>' +
           '<div class="result-stat"><b>' + astrasUsed + '</b><span>astras</span></div>' +
         '</div>' +
+        ladderHtml +
+        challengeNote(st, outcome) +
         vowHtml +
         (extra && extra.html ? extra.html : ''),
       actions: actions
@@ -2723,11 +2819,17 @@ rankBadge('?', R)
     if (!g.state || g.state.phase === 'over') return;
     // against the AI the player is always the one leaving, even mid-AI-turn
     const loser = isAi() ? 1 : g.state.owner;
+    g.conclude(loser === 1 ? 2 : 1, U.FACTIONS[loser].name + ' left the field.');
+  };
+
+  /* End the battle now with a given winner (resign uses it; so do the tests and harnesses). */
+  g.conclude = function (winner, reason) {
+    if (!g.state || g.state.phase === 'over') return;
     clearTimers();
     g.busy = false;
     g.thinking = false;
     if (AC.stage && AC.stage.close) AC.stage.close();
-    E.endGame(g.state, loser === 1 ? 2 : 1, U.FACTIONS[loser].name + ' left the field.', []);
+    E.endGame(g.state, winner, reason || '', []);
     handleGameOver();
   };
 

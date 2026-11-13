@@ -3112,8 +3112,6 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
   display: block; position: absolute; left: 0; right: 0; top: 0; bottom: 42%;
   background-size: cover; background-position: center 42%; border-bottom: 2px solid var(--ink);
 }
-/* Yuddh: the top camp of the Kurukshetra painting rather than the river between them */
-:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card[data-val="duel"] .mode-card-art { background-position: center 6%; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-body { padding: 8px 12px 10px; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-title { color: var(--ink); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-sub { color: var(--txt-2, #4a3b2c); }
@@ -3124,7 +3122,6 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
   background: var(--modal-art) center 42% / cover no-repeat; border-bottom: 2px solid var(--ink);
   border-radius: var(--r-lg) var(--r-lg) 0 0;
 }
-:is(html[data-skin="pata"], html[data-skin="pahari"]) .modal.art-modal[data-art="duel"] .modal-band { background-position: center 6%; }
 @media (max-height: 430px) {
   :is(html[data-skin="pata"], html[data-skin="pahari"]) .modal.art-modal .modal-band { height: 64px; margin-bottom: 10px; }
 }
@@ -3139,3 +3136,78 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .curtain-icon { color: var(--vermilion); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .curtain-title { color: var(--ink); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.curtain-sub, .curtain-count) { color: var(--txt-2, #4a3b2c); }
+
+/* ── 13 Nov 2026: the ladder note on the result card ── */
+.ladder-note {
+  margin: 10px 0 2px; padding: 9px 12px; border-radius: var(--r-md);
+  border: 1px solid var(--line); font-size: 13px; line-height: 1.4; color: var(--txt-2);
+}
+.ladder-note.up { border: 2px solid var(--saffron); color: var(--txt); background: rgba(240, 138, 36, 0.12); }
+.ladder-note.up b { color: var(--vermilion, var(--solar-2)); }
+
+/* ── 13 Nov 2026: home on a phone held sideways ──
+   At 914 × 411 (and 830 × 318) the chamber painting filled the whole first screen and Yuddh karo
+   sat below the fold. Sideways the painting stands beside the words, so the first screen shows
+   the title, the battle button and the Daily without a scroll. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .home-screen .top-bar { padding-top: 6px; padding-bottom: 6px; }
+  .home-wrap { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); padding: 10px 12px; gap: 10px; }
+  .home-main { display: contents; }
+  .home-hero { grid-column: 1; grid-row: 1; }
+  .home-side { grid-column: 1; grid-row: 2; }
+  .action-grid { grid-column: 2; grid-row: 1 / span 2; }
+  html[data-skin="pata"] .home-hero { padding: 12px 14px 12px calc(38% + 14px) !important; min-height: 0; }
+  html[data-skin="pata"] .home-hero::before {
+    right: auto; bottom: 0; width: 38%; height: auto; padding-bottom: 0;
+    background: url("../assets/art/pata/scenes/home-chamber.webp") 38% center / cover no-repeat;
+    border-right: 2px solid var(--ink);
+  }
+  html[data-skin="pata"] .home-hero::after { display: none; }
+  .home-title { font-size: 30px; margin-top: 2px; }
+  .home-tag { font-size: 12.5px; margin: 4px 0 8px; }
+  .btn-hero { width: 100%; padding: 9px 16px; justify-items: center; text-align: center; }
+  .btn-hero-main { font-size: 18px; }
+  /* the other doors stand in a column beside it, the Daily first */
+  .action-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .action-grid .card-action { padding: 9px 44px 9px 13px; gap: 2px; }
+  .action-grid .card-icon { position: absolute; top: 11px; right: 12px; margin: 0; opacity: 0.6; }
+  .action-grid .card-daily .card-badge { right: 44px; top: 7px; }
+  .action-grid .card-daily .card-title { padding-right: 64px; }
+  .home-wrap { grid-template-rows: auto 1fr; }
+}
+
+/* ── 13 Nov 2026: the result card on a phone held sideways ──
+   At 914 × 411 the card scrolled and its buttons (Rematch among them) were cut off below the
+   edge. Sideways the verdict sits in one row, the numbers stay small and the buttons are always
+   in view at the foot of the card. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .modal:has(.result-hero) { padding-bottom: 0; }
+  .modal:has(.result-hero) .modal-kicker { display: none; }
+  .result-hero { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; align-items: center; text-align: left; padding: 0; }
+  .result-deva { grid-row: 1 / span 2; font-size: 34px; }
+  .result-title { font-size: 20px; }
+  .result-reason { margin-top: 2px; line-height: 1.35; }
+  .result-stats { margin: 8px 0; gap: 6px; }
+  .result-stat { padding: 5px 4px; display: flex; align-items: baseline; justify-content: center; gap: 6px; }
+  .result-stat b { display: inline; font-size: 15px; }
+  .ladder-note { margin: 6px 0 0; padding: 6px 10px; }
+  .modal:has(.result-hero) .modal-actions {
+    position: sticky; bottom: 0; margin: 8px -20px 0; padding: 8px 20px 10px;
+    background: var(--panel, #f7ecd7); border-top: 1px solid var(--line); z-index: 2;
+  }
+  .modal:has(.result-hero) .modal-actions .btn { flex: 1 1 auto; min-width: 0; padding-left: 10px; padding-right: 10px; white-space: nowrap; }
+  .modal:has(.result-hero) .modal-actions .btn-primary { flex: 1.4 1 auto; }
+}
+
+/* ── 13 Nov 2026: sunset and bala in the GOAL box (last ten rounds) ── */
+.goal-turn.sunset { display: flex; justify-content: space-between; gap: 8px; }
+.goal-turn.sunset .goal-bala { white-space: nowrap; }
+.goal-turn.sunset.ahead .goal-bala b:first-child { color: var(--vermilion, var(--solar-2)); }
+.goal-turn.sunset.behind .goal-bala b:last-child { color: var(--lapis, var(--void)); }
+.goal-turn.sunset.soon > span:first-child b { color: var(--vermilion, var(--solar-2)); }
+#screen-game .goal-turn.sunset { display: flex; }
+
+/* ── 13 Nov 2026: the stage cards' sentence in the Pata look ──
+   .st-line was cream for the old dark stage; on the cotton card it vanished (every clash, volley,
+   gate and fort card since the Pata look became the default). Ink on cotton, like the rest. */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .st-line { color: var(--txt-2, #4a3b2a); }

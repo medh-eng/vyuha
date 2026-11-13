@@ -97,6 +97,38 @@
 
   AC.share = { text: shareText, copy: copy, url: publicUrl };
 
+  /* ── a friend's challenge (#c=…, T-28) ───────────────────────── */
+
+  function parseChallenge(hash) {
+    const m = /^#c=([a-z]+)\.([a-z]+)\.([vc])\.([0-9a-z]{1,7})\.(\d{1,3})$/.exec(hash || '');
+    if (!m || !U.BOARDS[m[1]] || !U.DIFFICULTIES[m[2]]) return null;
+    const seed = parseInt(m[4], 36), rounds = parseInt(m[5], 10);
+    if (!(seed >= 0) || rounds > 200) return null;
+    return { board: m[1], difficulty: m[2], ruleset: m[3] === 'c' ? 'classic' : 'vyuha', seed: seed, rounds: rounds };
+  }
+
+  function startChallenge(c) {
+    if (!c) return false;
+    const opp = (L.opponent(c.difficulty) || U.DIFFICULTIES[c.difficulty]).label;
+    const field = (L.board(c.board) || U.BOARDS[c.board]).label;
+    const config = { mode: 'ai', board: c.board, difficulty: c.difficulty, ruleset: c.ruleset, tie: 'attacker', timer: 0, scenario: 'duel',
+      seed: c.seed, challenge: { rounds: c.rounds } };
+    AC.ui.modal({
+      kicker: tr('challenge.kicker', 'A friend’s challenge'),
+      title: c.rounds ? tr('challenge.title', 'Take the fort in fewer than {n} rounds').replace('{n}', c.rounds) : tr('challenge.title0', 'Avenge your friend'),
+      art: A.artFor('card:duel'),
+      body: '<p class="daily-lede">' + esc((c.rounds
+        ? tr('challenge.lede', 'Your friend beat {opp} on the {field} in {n} rounds.')
+        : tr('challenge.lede0', '{opp} took your friend’s fort on the {field}.')).replace('{opp}', opp).replace('{field}', field).replace('{n}', c.rounds)) + ' ' +
+        esc(tr('challenge.same', 'You face the same enemy formation on the same field. You set out your own army.')) + '</p>',
+      actions: [
+        { label: tr('challenge.home', 'Home'), cls: 'btn-ghost', onClick: function () { AC.ui.show('home'); } },
+        { label: tr('challenge.go', 'Take the field'), cls: 'btn-primary', icon: 'sword', onClick: function () { AC.game.start(config); } }
+      ]
+    });
+    return true;
+  }
+
   /* ── shared helpers for prepared matches ─────────────────────── */
 
   function place(state, id, owner, key, extra) {
@@ -658,7 +690,8 @@
     });
     AC.ui.modal({
       kicker: 'Daily Chakravyuha #' + info.n + (official ? '' : ' · practice run'),
-      title: tr('home.tagline', 'Abhimanyu got in. Can you get out?'),
+      // the Daily is a break-in: "Can you get out?" stays for the escape mode that earns it (T-27)
+      title: tr('daily.title', 'The wheel is closed. Break in.'),
       art: A.artFor('card:daily') || A.artFor('card:abhimanyu'),
       body: '<p class="daily-lede">Everyone in India faces this same wheel today. Eight raiders, ten defenders, ' +
         st.turnLimit + ' rounds. ' + (info.mod.knobs.gateOpen ? 'The gate is open: take the fort.' : 'Break the gate, then take the fort.') + '</p>' +
@@ -701,7 +734,7 @@
       ? '🛞 Broke in on round ' + res.rounds + ' of ' + res.limit
       : '🛞 The wheel closed on me (' + res.rounds + ' rounds)';
     const line2 = '⚔️ ' + res.taken + ' taken · 🩸 ' + res.lost + ' lost' + (res.astras ? ' · 🔥 ' + res.astras + ' astra' + (res.astras === 1 ? '' : 's') : '');
-    return head + '\n' + line1 + '\n' + line2 + '\n' + res.grid + '\n' + tr('share.cta', 'Abhimanyu got in. Can you get out?');
+    return head + '\n' + line1 + '\n' + line2 + '\n' + res.grid + '\n' + tr('share.cta', 'Same wheel for everyone today. Can you break in?');
   }
 
   function finishDaily(m) {
@@ -874,6 +907,8 @@
     lessonsDone: lessonsDone,
     WHEEL_LESSONS: WHEEL_LESSONS,
     startDaily: startDaily,
+    parseChallenge: parseChallenge,
+    startChallenge: startChallenge,
     dailyInfo: dailyInfo,
     dailyStatus: dailyStatus,
     dailyShareText: dailyShareText,

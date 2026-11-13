@@ -3135,8 +3135,6 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
   display: block; position: absolute; left: 0; right: 0; top: 0; bottom: 42%;
   background-size: cover; background-position: center 42%; border-bottom: 2px solid var(--ink);
 }
-/* Yuddh: the top camp of the Kurukshetra painting rather than the river between them */
-:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card[data-val="duel"] .mode-card-art { background-position: center 6%; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-body { padding: 8px 12px 10px; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-title { color: var(--ink); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-sub { color: var(--txt-2, #4a3b2c); }
@@ -3147,7 +3145,6 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
   background: var(--modal-art) center 42% / cover no-repeat; border-bottom: 2px solid var(--ink);
   border-radius: var(--r-lg) var(--r-lg) 0 0;
 }
-:is(html[data-skin="pata"], html[data-skin="pahari"]) .modal.art-modal[data-art="duel"] .modal-band { background-position: center 6%; }
 @media (max-height: 430px) {
   :is(html[data-skin="pata"], html[data-skin="pahari"]) .modal.art-modal .modal-band { height: 64px; margin-bottom: 10px; }
 }
@@ -3162,6 +3159,81 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .curtain-icon { color: var(--vermilion); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .curtain-title { color: var(--ink); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.curtain-sub, .curtain-count) { color: var(--txt-2, #4a3b2c); }
+
+/* ── 13 Nov 2026: the ladder note on the result card ── */
+.ladder-note {
+  margin: 10px 0 2px; padding: 9px 12px; border-radius: var(--r-md);
+  border: 1px solid var(--line); font-size: 13px; line-height: 1.4; color: var(--txt-2);
+}
+.ladder-note.up { border: 2px solid var(--saffron); color: var(--txt); background: rgba(240, 138, 36, 0.12); }
+.ladder-note.up b { color: var(--vermilion, var(--solar-2)); }
+
+/* ── 13 Nov 2026: home on a phone held sideways ──
+   At 914 × 411 (and 830 × 318) the chamber painting filled the whole first screen and Yuddh karo
+   sat below the fold. Sideways the painting stands beside the words, so the first screen shows
+   the title, the battle button and the Daily without a scroll. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .home-screen .top-bar { padding-top: 6px; padding-bottom: 6px; }
+  .home-wrap { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); padding: 10px 12px; gap: 10px; }
+  .home-main { display: contents; }
+  .home-hero { grid-column: 1; grid-row: 1; }
+  .home-side { grid-column: 1; grid-row: 2; }
+  .action-grid { grid-column: 2; grid-row: 1 / span 2; }
+  html[data-skin="pata"] .home-hero { padding: 12px 14px 12px calc(38% + 14px) !important; min-height: 0; }
+  html[data-skin="pata"] .home-hero::before {
+    right: auto; bottom: 0; width: 38%; height: auto; padding-bottom: 0;
+    background: url("../assets/art/pata/scenes/home-chamber.webp") 38% center / cover no-repeat;
+    border-right: 2px solid var(--ink);
+  }
+  html[data-skin="pata"] .home-hero::after { display: none; }
+  .home-title { font-size: 30px; margin-top: 2px; }
+  .home-tag { font-size: 12.5px; margin: 4px 0 8px; }
+  .btn-hero { width: 100%; padding: 9px 16px; justify-items: center; text-align: center; }
+  .btn-hero-main { font-size: 18px; }
+  /* the other doors stand in a column beside it, the Daily first */
+  .action-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .action-grid .card-action { padding: 9px 44px 9px 13px; gap: 2px; }
+  .action-grid .card-icon { position: absolute; top: 11px; right: 12px; margin: 0; opacity: 0.6; }
+  .action-grid .card-daily .card-badge { right: 44px; top: 7px; }
+  .action-grid .card-daily .card-title { padding-right: 64px; }
+  .home-wrap { grid-template-rows: auto 1fr; }
+}
+
+/* ── 13 Nov 2026: the result card on a phone held sideways ──
+   At 914 × 411 the card scrolled and its buttons (Rematch among them) were cut off below the
+   edge. Sideways the verdict sits in one row, the numbers stay small and the buttons are always
+   in view at the foot of the card. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .modal:has(.result-hero) { padding-bottom: 0; }
+  .modal:has(.result-hero) .modal-kicker { display: none; }
+  .result-hero { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; align-items: center; text-align: left; padding: 0; }
+  .result-deva { grid-row: 1 / span 2; font-size: 34px; }
+  .result-title { font-size: 20px; }
+  .result-reason { margin-top: 2px; line-height: 1.35; }
+  .result-stats { margin: 8px 0; gap: 6px; }
+  .result-stat { padding: 5px 4px; display: flex; align-items: baseline; justify-content: center; gap: 6px; }
+  .result-stat b { display: inline; font-size: 15px; }
+  .ladder-note { margin: 6px 0 0; padding: 6px 10px; }
+  .modal:has(.result-hero) .modal-actions {
+    position: sticky; bottom: 0; margin: 8px -20px 0; padding: 8px 20px 10px;
+    background: var(--panel, #f7ecd7); border-top: 1px solid var(--line); z-index: 2;
+  }
+  .modal:has(.result-hero) .modal-actions .btn { flex: 1 1 auto; min-width: 0; padding-left: 10px; padding-right: 10px; white-space: nowrap; }
+  .modal:has(.result-hero) .modal-actions .btn-primary { flex: 1.4 1 auto; }
+}
+
+/* ── 13 Nov 2026: sunset and bala in the GOAL box (last ten rounds) ── */
+.goal-turn.sunset { display: flex; justify-content: space-between; gap: 8px; }
+.goal-turn.sunset .goal-bala { white-space: nowrap; }
+.goal-turn.sunset.ahead .goal-bala b:first-child { color: var(--vermilion, var(--solar-2)); }
+.goal-turn.sunset.behind .goal-bala b:last-child { color: var(--lapis, var(--void)); }
+.goal-turn.sunset.soon > span:first-child b { color: var(--vermilion, var(--solar-2)); }
+#screen-game .goal-turn.sunset { display: flex; }
+
+/* ── 13 Nov 2026: the stage cards' sentence in the Pata look ──
+   .st-line was cream for the old dark stage; on the cotton card it vanished (every clash, volley,
+   gate and fort card since the Pata look became the default). Ink on cotton, like the rest. */
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .st-line { color: var(--txt-2, #4a3b2a); }
 
 </style>
 </head>
@@ -3819,7 +3891,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     "result.shared": "The field is shared",
     "result.share": "Share result",
     "result.rematch": "Rematch",
-    "share.cta": "Abhimanyu got in. Can you get out?",
+    "share.cta": "Same wheel for everyone today. Can you break in?",
     "gate.broken": "The gate is broken. One more blow takes the fort.",
     "sky.day": "Dawn — the hour of Surya",
     "sky.night": "Night — the hour of Chandra"
@@ -3970,7 +4042,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     "result.shared": "मैदान बराबरी का",
     "result.share": "नतीजा साझा कीजिए",
     "result.rematch": "फिर लड़िए",
-    "share.cta": "अभिमन्यु अंदर पहुँच गया। आप निकल पाएँगे?",
+    "share.cta": "आज सबके लिए एक ही चक्र। क्या आप भीतर घुस पाएँगे?",
     "gate.broken": "द्वार टूट गया। एक वार और, दुर्ग आपका।",
     "sky.day": "भोर — सूर्य का पहर",
     "sky.night": "रात — चंद्र का पहर"
@@ -4121,7 +4193,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     "result.shared": "मैदान बरोबरीचे",
     "result.share": "निकाल शेअर करा",
     "result.rematch": "पुन्हा लढा",
-    "share.cta": "अभिमन्यू आत पोहोचला. तुम्ही बाहेर पडाल?",
+    "share.cta": "आज सगळ्यांसाठी एकच चक्र. तुम्ही आत घुसू शकाल?",
     "gate.broken": "दरवाजा तुटला. अजून एक वार, दुर्ग तुमचा.",
     "sky.day": "पहाट — सूर्याचा प्रहर",
     "sky.night": "रात्र — चंद्राचा प्रहर"
@@ -4791,9 +4863,21 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
       state.shakti[2] = Math.min(SHAKTI_MAX, startShakti[2] || 0);
     }
     deployPreset(state, 1, 'citadel');
-    // the opponent never shows the same formation twice in a row
-    deployPreset(state, 2, cfg.enemyPreset || PRESETS[Math.floor(Math.random() * PRESETS.length)]);
+    // the opponent never shows the same formation twice in a row. With a seed (a friend's challenge
+    // link, 13 Nov 2026) the enemy's formation is fixed by it, so both players face the same army.
+    const r = cfg.seed != null ? seededRng(cfg.seed) : Math.random;
+    deployPreset(state, 2, cfg.enemyPreset || PRESETS[Math.floor(r() * PRESETS.length)], cfg.seed != null ? r : undefined);
     return state;
+  }
+
+  function seededRng(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
   }
 
   /* ── deployment ──────────────────────────────────────────────── */
@@ -5746,7 +5830,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
         log(state, 'core', faction(unit.owner) + ' took the enemy fort with a volley!', to, volleyBy);
         chron(state, unit.owner).tookFort = true;
         snapshot(state, 'barrage-core');
-        endGame(state, unit.owner, faction(unit.owner) + ' took the enemy fort with a volley on turn ' + state.turn + '.', events);
+        endGame(state, unit.owner, faction(unit.owner) + ' took the enemy fort with a volley on turn ' + state.turn + '.', events, 'fort');
         return { ok: true, type: type, events: events };
       }
       if (target.key === 'B') {
@@ -5871,17 +5955,21 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
 
     if (res.core) {
       chron(state, unit.owner).tookFort = true;
-      endGame(state, unit.owner, faction(unit.owner) + ' captured the enemy fort on turn ' + state.turn + '.', events);
+      endGame(state, unit.owner, faction(unit.owner) + ' captured the enemy fort on turn ' + state.turn + '.', events, 'fort');
       return { ok: true, type: type, events: events };
     }
     finishTurn(state, events);
     return { ok: true, type: type, events: events };
   }
 
-  function endGame(state, winner, reason, events) {
+  /* How a battle ended, for the result card and Sanjaya (13 Nov 2026):
+   * fort · movers (the loser has nothing left that can move) · limit (a scenario's rounds ran out)
+   * · sunset · quiet (no piece fell for too long) · stalemate · conceded (resign). */
+  function endGame(state, winner, reason, events, kind) {
     state.phase = 'over';
     state.winner = winner;
     state.reason = reason;
+    state.endKind = kind || 'conceded';
     state.viewer = 3;
     log(state, 'end', reason);
     snapshot(state, 'end');
@@ -5903,14 +5991,14 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     state.turn++;
     const cap = state.config.roundCap != null ? state.config.roundCap : (U.BOARDS[state.boardKey] && U.BOARDS[state.boardKey].roundCap) || 0;
     if (!state.turnLimit && cap && state.turn > cap) {
-      ceasefire(state, 'Sunset on round ' + cap + ' — the war cannot go on.', events);
+      ceasefire(state, 'Sunset on round ' + cap + ' — the war cannot go on.', events, 'sunset');
       return;
     }
     if (state.turnLimit && state.turn > state.turnLimit) {
       const w = state.limitWinner || 2;
       endGame(state, w, w === 2
         ? 'The rounds ran out — the chakra closed and the breach failed.'
-        : 'The rounds ran out — the line held and ' + faction(w) + ' wins.', events);
+        : 'The rounds ran out — the line held and ' + faction(w) + ' wins.', events, 'limit');
       return;
     }
     if (hasRotation(state) && state.turn % (state.rotation.every || 5) === 0) rotate(state, events);
@@ -5935,14 +6023,15 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     return s;
   }
 
-  function ceasefire(state, why, events) {
+  function ceasefire(state, why, events, kind) {
+    kind = kind || 'quiet';
     const a = strengthOf(state, 1);
     const b = strengthOf(state, 2);
     if (a === b) {
-      endGame(state, 0, why + ' Both armies are equal in strength (' + a + ') — the field is shared.', events);
+      endGame(state, 0, why + ' Both armies are equal in strength (' + a + ') — the field is shared.', events, kind);
     } else {
       const w = a > b ? 1 : 2;
-      endGame(state, w, why + ' ' + faction(w) + ' holds the field, stronger ' + Math.max(a, b) + ' to ' + Math.min(a, b) + '.', events);
+      endGame(state, w, why + ' ' + faction(w) + ' holds the field, stronger ' + Math.max(a, b) + ' to ' + Math.min(a, b) + '.', events, kind);
     }
     state.ceasefire = true;
   }
@@ -5971,13 +6060,19 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
         continue;
       }
       if (!hasAnyLegalMoves(state, other(next), true)) {
-        endGame(state, 0, 'Stalemate — neither commander has a legal action left.', events);
+        endGame(state, 0, 'Stalemate — neither commander has a legal action left.', events, 'stalemate');
       } else {
-        endGame(state, other(next), faction(next) + ' has no piece left that can move — only the fort and its traps stand. The field is conceded.', events);
+        // The loser has nothing left that can move: the fort stands undefended and falls. Same result
+        // as before (the Stratego rule); now the fort's fall is shown and spoken, not just written.
+        let fortAt = null;
+        forEachUnit(state, function (u, id) { if (u.owner === next && u.key === 'F') fortAt = id; });
+        if (events && fortAt) events.push({ kind: 'abandon', sfx: 'core', at: fortAt, owner: next, winner: other(next),
+          text: 'No ' + faction(next) + ' fighter is left to stand. The fort is open.' });
+        endGame(state, other(next), faction(next) + ' has no piece left that can move — only the fort and its traps stand. The field is conceded.', events, 'movers');
       }
       return;
     }
-    endGame(state, 0, 'Stalemate — both armies stand entranced.', events);
+    endGame(state, 0, 'Stalemate — both armies stand entranced.', events, 'stalemate');
   }
 
   function beginBattle(state) {
@@ -8341,13 +8436,11 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     PATA_SLOTS['hero:' + k] = 'pata:portraits/' + k;
   });
   ['vayavya', 'sammohana', 'agneya', 'brahma'].forEach(function (k) { PATA_SLOTS['astra:' + k] = 'pata:astras/' + k; });
-  // T-09 (7 Nov 2026): scenario cards and story cards. Until the Commander's own scenario
-  // paintings land (docs/prompts/PATA.md, scenes/card-*.png), each scenario shows the field it
-  // is fought on: Yuddh the Kurukshetra camps, Abhimanyu and the Daily the closed wheel.
-  // When scenes/card-<name>.webp ships, point the slot at 'pata:scenes/card-<name>' instead.
-  PATA_SLOTS['card:duel'] = 'pata:fields/large-day';
-  PATA_SLOTS['card:abhimanyu'] = 'pata:fields/chakra-day';
-  PATA_SLOTS['card:daily'] = 'pata:fields/chakra-day';
+  // Scenario cards and story cards: the Commander's two scenario paintings (T-20, 13 Nov 2026).
+  // Yuddh is the two camps at dawn; Abhimanyu and the Daily are the lone chariot in the closed wheel.
+  PATA_SLOTS['card:duel'] = 'pata:scenes/card-duel';
+  PATA_SLOTS['card:abhimanyu'] = 'pata:scenes/card-abhimanyu';
+  PATA_SLOTS['card:daily'] = 'pata:scenes/card-abhimanyu';
 
   /* Where each Phase 2 field painting sits, in board units (x, y, width,
    * height), measured on the shipped pixels by tools/prepare-pata.py:
@@ -9770,10 +9863,25 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     AC.game.start(app.setup);
   }
 
+  /* The ladder (13 Nov 2026): Yuddh karo sends a player against the opponent they are ready
+   * for — Sainik until two wins over him, Dronacharya until three, then Shakuni. A first battle
+   * against Dronacharya was a first defeat: Sainik-level play beats him about one time in six
+   * (200 seeded battles on the wheel). Custom battle still offers every opponent. */
+  const LADDER = [['recruit', 2], ['veteran', 3], ['archon', Infinity]];
+  function ladder(stats) {
+    const by = (stats && stats.byDiff) || {};
+    for (let i = 0; i < LADDER.length; i++) {
+      const w = (by[LADDER[i][0]] && by[LADDER[i][0]].w) || 0;
+      if (w < LADDER[i][1]) return { key: LADDER[i][0], rung: i, wins: w, need: LADDER[i][1], next: LADDER[i + 1] ? LADDER[i + 1][0] : null };
+    }
+    return { key: 'archon', rung: 2, wins: 0, need: Infinity, next: null };
+  }
+
   function quickSetup() {
     const last = app.settings.lastSetup;
-    return Object.assign({ mode: 'ai', board: 'wheel', tie: 'attacker', difficulty: 'veteran', timer: 0, scenario: 'duel', ruleset: 'vyuha' },
-      last && last.mode === 'ai' ? last : {});
+    const st = app.profile && !app.guest ? app.profile.stats : null;
+    return Object.assign({ mode: 'ai', board: 'wheel', tie: 'attacker', timer: 0, scenario: 'duel', ruleset: 'vyuha' },
+      last && last.mode === 'ai' ? last : {}, { difficulty: ladder(st).key });
   }
 
   function renderHome() {
@@ -9925,7 +10033,12 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
   }
 
   function wireHome() {
-    document.getElementById('btn-new-match').addEventListener('click', function () { sfx('select'); show('setup'); });
+    document.getElementById('btn-new-match').addEventListener('click', function () {
+      sfx('select');
+      // until the player has chosen an opponent themselves, Custom battle starts on their ladder rung
+      if (!app.settings.lastSetup) app.setup.difficulty = ladder(app.profile && !app.guest ? app.profile.stats : null).key;
+      show('setup');
+    });
     document.getElementById('btn-quick').addEventListener('click', function () {
       // A brand-new player is offered the four wheel lessons once, before any full battle.
       const st = (app.profile && app.profile.stats) || {};
@@ -10784,9 +10897,17 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
       const h = (root.location && root.location.hash) || '';
       if (!AC.modes) return;
       if (/^#daily/.test(h)) AC.modes.startDaily();
+      else if (/^#c=/.test(h)) {
+        // a friend's challenge: open it once, then clear the link so a reload goes home
+        AC.modes.startChallenge(AC.modes.parseChallenge(h));
+        try { root.history.replaceState(null, '', root.location.pathname + root.location.search); } catch (e) { /* file:// */ }
+      }
       else if (/^#learn/.test(h)) AC.modes.startWheelLesson(0);
       else if (/^#drill/.test(h)) AC.modes.startTutorial();
     };
+
+    // a challenge link opened while the game is already open in this tab
+    try { root.addEventListener('hashchange', function () { if (app.profile && /^#c=/.test(root.location.hash)) deepLink(); }); } catch (e) { /* no window */ }
 
     setTimeout(function () {
       clearTimeout(watchdog);
@@ -10832,6 +10953,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     applySettings: applySettings,
     patchSettings: patchSettings,
     quickBattle: quickBattle,
+    ladder: ladder,
     boot: boot,
     openProfile: openProfile,
     artLanded: artLanded,
@@ -11041,6 +11163,19 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     show(html, 'stage-breach' + (mine ? ' stage-lose' : ' stage-win'), calm() ? 2600 : 1900, done);
   }
 
+  /* The last enemy mover has fallen: the undefended fort is taken (13 Nov 2026). */
+  function fall(ev, viewer, done) {
+    const mine = ev.owner === viewer;
+    const html =
+      '<div class="st-kicker"><span class="deva">दुर्ग</span> · The fort</div>' +
+      '<div class="st-gate" aria-hidden="true">' + A.icon('gate') + '<span class="st-crack"></span></div>' +
+      verdict(mine ? 'fortLost' : 'fort') +
+      '<div class="st-line">' + esc(mine
+        ? tr('fall.ours', 'No fighter of ours is left to stand. The fort is open, and it falls.')
+        : tr('fall.theirs', 'Their last fighter has fallen. Nothing stands at the fort — it is ours.')) + '</div>';
+    show(html, 'stage-breach' + (mine ? ' stage-lose' : ' stage-win'), calm() ? 2600 : 1900, done);
+  }
+
   function astra(ev, viewer, done) {
     const def = (U.ASTRA_DEFS || {})[ev.astra] || { name: ev.astra, deva: '' };
     const ours = ev.owner === viewer;
@@ -11077,6 +11212,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     volley: volley,
     scan: scan,
     breach: breach,
+    fall: fall,
     astra: astra,
     sky: sky,
     close: close,
@@ -11379,6 +11515,9 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     if (AC.modes && AC.modes.clear) AC.modes.clear();
     clearOverlays();
     if (AC.app.configFromSetup && !config.rules) config = AC.app.configFromSetup(config);
+    // every battle against the AI has a seed for the enemy's formation, so it can be sent to a
+    // friend; a fresh one each time (a rematch is a new formation), kept only for a challenge
+    if (config.mode === 'ai') config = Object.assign({}, config, { seed: config.challenge && config.seed != null ? config.seed : Math.floor(Math.random() * 2147483647) });
     g.state = E.newState(Object.assign({}, config, {
       playerName: AC.app.profile ? AC.app.profile.name : 'Commander'
     }));
@@ -11623,6 +11762,17 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
         html += '<div class="goal-turn chakra' + (left <= 1 ? ' soon' : '') + '">' +
           '<span>' + esc(b.kind === 'hex' ? tr('goal.lotus', 'Lotus turns in') : tr('goal.chakra', 'Chakra turns in')) + ' <b>' + left + '</b></span>' +
           '<span class="goal-pips">' + pips + '</span></div>';
+      }
+      // Sunset (13 Nov 2026): in the last ten rounds the score that will decide it is in view.
+      // On Kurukshetra most battles reach sunset; the player must know they are playing for bala.
+      if (!st.turnLimit) {
+        const toSunset = capOf(st) - st.turn + 1;
+        if (toSunset >= 1 && toSunset <= 10) {
+          const me = viewerOf(st), mine = E.strengthOf(st, me), theirs = E.strengthOf(st, me === 1 ? 2 : 1);
+          html += '<div class="goal-turn sunset' + (toSunset <= 3 ? ' soon' : '') + (mine > theirs ? ' ahead' : mine < theirs ? ' behind' : '') + '">' +
+            '<span>' + esc(tr('goal.sunset', 'Sunset in')) + ' <b>' + toSunset + '</b></span>' +
+            '<span class="goal-bala">' + esc(tr('goal.bala', 'Bala')) + ' <b>' + mine + '</b> – <b>' + theirs + '</b></span></div>';
+        }
       }
     }
     el.innerHTML = html;
@@ -12613,6 +12763,31 @@ rankBadge('?', R)
     host.innerHTML = html;
   }
 
+  /* The result card's line, from the player's side, for the endings whose engine text reads like a
+   * rule book. Others keep the engine's sentence. */
+  function endLine(st, outcome) {
+    if (!isAi()) return null; // pass and play: the engine names both armies
+    if (st.endKind === 'movers') {
+      if (outcome !== 'win') return tr('end.movers_lost', 'Our last fighter fell on round {n}. The fort stood undefended, and it fell.').replace('{n}', st.turn);
+      return tr('end.movers_won', 'Their last fighter fell on round {n}. Nothing stood at the fort — it is taken.').replace('{n}', st.turn);
+    }
+    return null;
+  }
+
+  /* How the player did against a friend's challenge, on the result card. */
+  function challengeNote(st, outcome) {
+    const ch = st.config && st.config.challenge;
+    if (!ch) return '';
+    const n = ch.rounds || 0, t = st.turn;
+    let line, up = false;
+    if (outcome !== 'win') line = n ? tr('challenge.failed', 'The challenge stands: your friend took the fort in {n} rounds.').replace('{n}', n) : tr('challenge.failed0', 'The enemy that beat your friend has beaten you too.');
+    else if (!n) { up = true; line = tr('challenge.avenged', 'Avenged: you beat the army that beat your friend.'); }
+    else if (t < n) { up = true; line = tr('challenge.beaten', 'Challenge beaten: {t} rounds against your friend’s {n}.').replace('{t}', t).replace('{n}', n); }
+    else if (t === n) { up = true; line = tr('challenge.matched', 'Matched: {n} rounds, the same as your friend.').replace('{n}', n); }
+    else line = tr('challenge.slower', 'You won in {t} rounds; your friend did it in {n}.').replace('{t}', t).replace('{n}', n);
+    return '<div class="ladder-note' + (up ? ' up' : '') + '">' + esc(line) + '</div>';
+  }
+
   function capOf(st) {
     if (st.turnLimit) return st.turnLimit;
     if (st.config.roundCap) return st.config.roundCap;
@@ -12968,6 +13143,9 @@ rankBadge('?', R)
         else if (ev.outcome === 'def') keys.push(def.owner === me ? 'win_capture' : 'lose_capture');
       } else if (ev.kind === 'core') {
         keys.push(ev.unit && ev.unit.owner === me ? 'fort_won' : 'fort_lost');
+      } else if (ev.kind === 'abandon') {
+        // the last mover fell: the undefended fort is the moment, not a line of small print
+        keys.push(ev.winner === me ? 'fort_won' : 'fort_lost');
       } else if (ev.kind === 'barrage') {
         keys.push(ev.kill ? 'volley_kill' : 'volley_turned');
       } else if (ev.kind === 'scan') {
@@ -13106,7 +13284,7 @@ rankBadge('?', R)
     if (ST && settings().cinematics !== false) {
       cardDone = new Promise(function (resolve) {
         const closed = function () { clearLinks(); resolve(); };
-        const fn = { clash: 'clash', barrage: 'volley', scan: 'scan', breach: 'breach', astra: 'astra', core: 'clash' }[ev.kind];
+        const fn = { clash: 'clash', barrage: 'volley', scan: 'scan', breach: 'breach', astra: 'astra', core: 'clash', abandon: 'fall' }[ev.kind];
         if (fn) ST[fn](ev.kind === 'core' ? Object.assign({ outcome: 'att', core: true }, ev) : ev, me, closed);
         else if (ev.kind === 'sky') ST.sky(ev.hour, E.hourOwner(st) === viewerOf(st), closed);
         else resolve();
@@ -13162,7 +13340,7 @@ rankBadge('?', R)
     const beats = events.filter(function (ev) {
       if (ev.kind === 'move') return !events.some(function (x) { return x.kind === 'clash'; });
       if (ev.kind === 'clash' && (major || hasAstra)) return false;
-      return ['clash', 'barrage', 'scan', 'breach', 'astra', 'core', 'sky', 'rotate'].indexOf(ev.kind) !== -1;
+      return ['clash', 'barrage', 'scan', 'breach', 'astra', 'core', 'abandon', 'sky', 'rotate'].indexOf(ev.kind) !== -1;
     });
     const moments = narrate(events, me, st);
     // the battle's result outranks the blow that ended it (a fort taken outranks both)
@@ -13264,7 +13442,7 @@ rankBadge('?', R)
       }
       if (ev.kind === 'sky') skyEv = ev;
       noteMoment(st, ev);
-      if (ev.kind === 'clash' || ev.kind === 'barrage' || ev.kind === 'scan' || ev.kind === 'breach' || ev.kind === 'astra' || ev.kind === 'core') {
+      if (ev.kind === 'clash' || ev.kind === 'barrage' || ev.kind === 'scan' || ev.kind === 'breach' || ev.kind === 'astra' || ev.kind === 'core' || ev.kind === 'abandon') {
         beats.push(ev);
       }
       if (ev.kind === 'clash') {
@@ -13285,6 +13463,10 @@ rankBadge('?', R)
         FX.spawn(at.x, at.y, { count: 8, color: '#e0a94a', speed: 1.4, size: 1.8, gravity: 0.02 });
       } else if (ev.kind === 'breach') {
         FX.burst(at.x, at.y, { count: 34, color: '#c8452b', speed: 5 });
+        FX.shake(10);
+      } else if (ev.kind === 'abandon') {
+        const f = cellCenter(ev.at);
+        FX.burst(f.x, f.y, { count: 40, color: ev.winner === me ? '#f2cf8b' : '#c8452b', speed: 5 });
         FX.shake(10);
       }
     });
@@ -13326,6 +13508,7 @@ rankBadge('?', R)
     else if (ev.kind === 'breach') ST.breach(ev, viewer, next);
     else if (ev.kind === 'astra') ST.astra(ev, viewer, next);
     else if (ev.kind === 'core') ST.clash(Object.assign({ outcome: 'att', core: true }, ev), viewer, next);
+    else if (ev.kind === 'abandon') ST.fall(ev, viewer, next);
     else next();
   }
 
@@ -13693,12 +13876,23 @@ rankBadge('?', R)
 
   /* ── game over ────────────────────────────────────────────── */
 
-  function shareLine(st, outcome) {
+  function shareLine(st, outcome, linked) {
     const b = L.board(st.boardKey) || U.BOARDS.wheel;
+    if (linked && outcome === 'win') return 'I broke ' + oppName(st) + '’s army on the ' + b.label + ' in ' + st.turn + ' rounds. Same field, same enemy formation — can you do it faster?';
+    if (linked && outcome === 'loss') return oppName(st) + ' took my fort on the ' + b.label + '. Same field, same enemy formation — avenge me.';
     if (outcome === 'win') return 'I broke ' + oppName(st) + '’s army on the ' + b.label + ' in ' + st.turn + ' rounds. Can you?';
     if (outcome === 'loss') return oppName(st) + ' took my fort on the ' + b.label + '. Avenge me.';
     return 'The field was shared on the ' + b.label + ' after ' + st.turn + ' rounds.';
   }
+
+  /* The challenge link (T-28): #c=<field>.<opponent>.<v|c rules>.<seed>.<rounds to beat; 0 = just win>.
+   * No server: the link holds everything. Only for an ordinary battle against the AI. */
+  function challengeHash(st, outcome) {
+    const c = st.config || {};
+    if (!isAi() || c.seed == null || (st.scenario !== 'duel' && !c.challenge) || !U.BOARDS[st.boardKey] || !U.DIFFICULTIES[c.difficulty]) return null;
+    return '#c=' + [st.boardKey, c.difficulty, c.ruleset === 'classic' ? 'c' : 'v', (c.seed >>> 0).toString(36), outcome === 'win' ? st.turn : 0].join('.');
+  }
+  g.challengeHash = challengeHash;
 
   function handleGameOver() {
     if (g.over) return;
@@ -13716,7 +13910,10 @@ rankBadge('?', R)
     if (winner === 1) outcome = 'win';
     else if (winner === 2) outcome = 'loss';
 
+    // the ladder (Yuddh karo): where the player stood before this result, and after it
+    let rungBefore = null, rungAfter = null;
     if (isAiGame && AC.app.profile && !AC.app.guest && !modeHook('noRecord')) {
+      rungBefore = AC.ui.ladder(AC.app.profile.stats);
       S.recordResult(AC.app.profile.id, {
         outcome: outcome,
         captures: (st.captured[1] || []).length,
@@ -13724,7 +13921,8 @@ rankBadge('?', R)
         plies: st.stats.actions,
         difficulty: st.config && st.config.difficulty
       });
-      AC.app.profile = S.getProfile(AC.app.profile.id);
+      AC.app.profile = S.getProfile(AC.app.profile.id) || AC.app.profile;
+      rungAfter = AC.ui.ladder(AC.app.profile.stats);
     }
     S.deleteSave('auto');
     // a lesson that ends in a win tells its own outcome, not "the field is conceded"
@@ -13769,6 +13967,12 @@ rankBadge('?', R)
     if (!g.calmResultNarrated) speak([winner === 0 ? 'draw' : (isAiGame ? (outcome === 'win' ? 'victory' : 'defeat') : 'victory')]);
 
     const extra = modeHook('resultExtras', { outcome: outcome }) || null;
+    // Ladder: only for an ordinary battle against the opponent the player currently stands on
+    const diffKey = st.config && st.config.difficulty;
+    const onRung = !extra && rungBefore && rungAfter && st.scenario === 'duel' && diffKey === rungBefore.key && !(st.config && st.config.challenge);
+    const promoted = !!(onRung && outcome === 'win' && rungAfter.rung > rungBefore.rung);
+    const beaten = onRung ? (L.opponent(diffKey) || U.DIFFICULTIES[diffKey]) : null;
+    const nextOpp = promoted ? (L.opponent(rungAfter.key) || U.DIFFICULTIES[rungAfter.key]) : null;
     const astrasUsed = (st.astraLog || []).filter(function (a) { return a.owner === 1; }).length;
     const actions = [
       { label: 'Home', cls: 'btn-ghost', onClick: function () { g.state = null; AC.ui.show('home'); } },
@@ -13777,12 +13981,38 @@ rankBadge('?', R)
     if (extra && extra.actions) extra.actions.forEach(function (a) { actions.push(a); });
     else {
       if (isAiGame && outcome !== 'draw' && AC.share) {
-        actions.push({ label: tr('result.share', 'Share'), cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { AC.share.text(shareLine(st, outcome)); } });
+        // the share carries the battle: same field, same opponent, same enemy formation (T-28)
+        const hash = challengeHash(st, outcome);
+        actions.push({ label: hash ? tr('result.challenge', 'Challenge a friend') : tr('result.share', 'Share'), cls: 'btn-ghost', icon: 'share', close: false,
+          onClick: function () {
+            AC.share.text(shareLine(st, outcome, !!hash), hash ? { hash: hash, kicker: tr('result.challenge', 'Challenge a friend'), title: tr('challenge.send', 'Send this battle to a friend') } : undefined);
+          } });
       }
       if (AC.scroll && g.moments && g.momentsState === st && g.moments.length) {
         actions.push({ label: 'Sanjaya’s Scroll', cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { openScroll(st, outcome, title); } });
       }
-      actions.push({ label: tr('result.rematch', 'Rematch'), cls: 'btn-primary', onClick: function () { g.start(st.config); } });
+      if (promoted) {
+        // the win that clears a rung: the next opponent takes the place of Rematch
+        // (Rematch stays on the bar under the board)
+        actions.push({ label: tr('ladder.face', 'Face {b}').replace('{b}', nextOpp.label), cls: 'btn-primary', icon: 'sword',
+          onClick: function () { g.start(Object.assign({}, st.config, { difficulty: nextOpp.key })); } });
+      } else {
+        actions.push({ label: tr('result.rematch', 'Rematch'), cls: 'btn-primary', onClick: function () { g.start(st.config); } });
+      }
+    }
+
+    // whole sentences with {a} {b} {n}, so Hindi and Marathi can order the words their own way
+    const fill = function (key, fallback, v) { return tr(key, fallback).replace(/\{(\w)\}/g, function (m, k) { return v[k] == null ? m : v[k]; }); };
+    let ladderHtml = '';
+    if (promoted) {
+      ladderHtml = '<div class="ladder-note up"><b>' + esc(fill('ladder.beaten', '{a} is beaten.', { a: beaten.label })) + '</b> ' +
+        esc(fill('ladder.next', '{b} takes the field against you next.', { b: nextOpp.label })) + '</div>';
+    } else if (onRung && outcome === 'win' && rungAfter.next) {
+      const left = rungAfter.need - rungAfter.wins;
+      const v = { a: beaten.label, b: (L.opponent(rungAfter.next) || U.DIFFICULTIES[rungAfter.next]).label, n: left };
+      ladderHtml = '<div class="ladder-note">' + esc(left === 1
+        ? fill('ladder.one_more', 'One more win over {a} and {b} comes for you.', v)
+        : fill('ladder.more', '{n} more wins over {a} and {b} comes for you.', v)) + '</div>';
     }
 
     AC.ui.modal({
@@ -13795,7 +14025,7 @@ rankBadge('?', R)
         '<div class="result-hero">' +
           '<div class="result-deva deva ' + cls + '">' + deva + '</div>' +
           '<div class="result-title ' + cls + '">' + esc(title) + '</div>' +
-          '<div class="result-reason">' + esc(st.reason || '') + '</div>' +
+          '<div class="result-reason">' + esc(endLine(st, outcome) || st.reason || '') + '</div>' +
         '</div>' +
         '<div class="result-stats">' +
           '<div class="result-stat"><b>' + st.turn + '</b><span>rounds</span></div>' +
@@ -13803,6 +14033,8 @@ rankBadge('?', R)
           '<div class="result-stat"><b>' + (st.captured[2] || []).length + '</b><span>lost</span></div>' +
           '<div class="result-stat"><b>' + astrasUsed + '</b><span>astras</span></div>' +
         '</div>' +
+        ladderHtml +
+        challengeNote(st, outcome) +
         vowHtml +
         (extra && extra.html ? extra.html : ''),
       actions: actions
@@ -13813,11 +14045,17 @@ rankBadge('?', R)
     if (!g.state || g.state.phase === 'over') return;
     // against the AI the player is always the one leaving, even mid-AI-turn
     const loser = isAi() ? 1 : g.state.owner;
+    g.conclude(loser === 1 ? 2 : 1, U.FACTIONS[loser].name + ' left the field.');
+  };
+
+  /* End the battle now with a given winner (resign uses it; so do the tests and harnesses). */
+  g.conclude = function (winner, reason) {
+    if (!g.state || g.state.phase === 'over') return;
     clearTimers();
     g.busy = false;
     g.thinking = false;
     if (AC.stage && AC.stage.close) AC.stage.close();
-    E.endGame(g.state, loser === 1 ? 2 : 1, U.FACTIONS[loser].name + ' left the field.', []);
+    E.endGame(g.state, winner, reason || '', []);
     handleGameOver();
   };
 
@@ -14111,6 +14349,38 @@ rankBadge('?', R)
   }
 
   AC.share = { text: shareText, copy: copy, url: publicUrl };
+
+  /* ── a friend's challenge (#c=…, T-28) ───────────────────────── */
+
+  function parseChallenge(hash) {
+    const m = /^#c=([a-z]+)\.([a-z]+)\.([vc])\.([0-9a-z]{1,7})\.(\d{1,3})$/.exec(hash || '');
+    if (!m || !U.BOARDS[m[1]] || !U.DIFFICULTIES[m[2]]) return null;
+    const seed = parseInt(m[4], 36), rounds = parseInt(m[5], 10);
+    if (!(seed >= 0) || rounds > 200) return null;
+    return { board: m[1], difficulty: m[2], ruleset: m[3] === 'c' ? 'classic' : 'vyuha', seed: seed, rounds: rounds };
+  }
+
+  function startChallenge(c) {
+    if (!c) return false;
+    const opp = (L.opponent(c.difficulty) || U.DIFFICULTIES[c.difficulty]).label;
+    const field = (L.board(c.board) || U.BOARDS[c.board]).label;
+    const config = { mode: 'ai', board: c.board, difficulty: c.difficulty, ruleset: c.ruleset, tie: 'attacker', timer: 0, scenario: 'duel',
+      seed: c.seed, challenge: { rounds: c.rounds } };
+    AC.ui.modal({
+      kicker: tr('challenge.kicker', 'A friend’s challenge'),
+      title: c.rounds ? tr('challenge.title', 'Take the fort in fewer than {n} rounds').replace('{n}', c.rounds) : tr('challenge.title0', 'Avenge your friend'),
+      art: A.artFor('card:duel'),
+      body: '<p class="daily-lede">' + esc((c.rounds
+        ? tr('challenge.lede', 'Your friend beat {opp} on the {field} in {n} rounds.')
+        : tr('challenge.lede0', '{opp} took your friend’s fort on the {field}.')).replace('{opp}', opp).replace('{field}', field).replace('{n}', c.rounds)) + ' ' +
+        esc(tr('challenge.same', 'You face the same enemy formation on the same field. You set out your own army.')) + '</p>',
+      actions: [
+        { label: tr('challenge.home', 'Home'), cls: 'btn-ghost', onClick: function () { AC.ui.show('home'); } },
+        { label: tr('challenge.go', 'Take the field'), cls: 'btn-primary', icon: 'sword', onClick: function () { AC.game.start(config); } }
+      ]
+    });
+    return true;
+  }
 
   /* ── shared helpers for prepared matches ─────────────────────── */
 
@@ -14673,7 +14943,8 @@ rankBadge('?', R)
     });
     AC.ui.modal({
       kicker: 'Daily Chakravyuha #' + info.n + (official ? '' : ' · practice run'),
-      title: tr('home.tagline', 'Abhimanyu got in. Can you get out?'),
+      // the Daily is a break-in: "Can you get out?" stays for the escape mode that earns it (T-27)
+      title: tr('daily.title', 'The wheel is closed. Break in.'),
       art: A.artFor('card:daily') || A.artFor('card:abhimanyu'),
       body: '<p class="daily-lede">Everyone in India faces this same wheel today. Eight raiders, ten defenders, ' +
         st.turnLimit + ' rounds. ' + (info.mod.knobs.gateOpen ? 'The gate is open: take the fort.' : 'Break the gate, then take the fort.') + '</p>' +
@@ -14716,7 +14987,7 @@ rankBadge('?', R)
       ? '🛞 Broke in on round ' + res.rounds + ' of ' + res.limit
       : '🛞 The wheel closed on me (' + res.rounds + ' rounds)';
     const line2 = '⚔️ ' + res.taken + ' taken · 🩸 ' + res.lost + ' lost' + (res.astras ? ' · 🔥 ' + res.astras + ' astra' + (res.astras === 1 ? '' : 's') : '');
-    return head + '\n' + line1 + '\n' + line2 + '\n' + res.grid + '\n' + tr('share.cta', 'Abhimanyu got in. Can you get out?');
+    return head + '\n' + line1 + '\n' + line2 + '\n' + res.grid + '\n' + tr('share.cta', 'Same wheel for everyone today. Can you break in?');
   }
 
   function finishDaily(m) {
@@ -14889,6 +15160,8 @@ rankBadge('?', R)
     lessonsDone: lessonsDone,
     WHEEL_LESSONS: WHEEL_LESSONS,
     startDaily: startDaily,
+    parseChallenge: parseChallenge,
+    startChallenge: startChallenge,
     dailyInfo: dailyInfo,
     dailyStatus: dailyStatus,
     dailyShareText: dailyShareText,

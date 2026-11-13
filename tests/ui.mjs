@@ -646,7 +646,7 @@ async function run() {
   const sig = (s) => Object.keys(s.board).filter((k) => s.board[k]).sort().map((k) => k + s.board[k].key).join('|');
   ok(sig(a1) === sig(a2), 'everyone gets the same wheel today');
   const text = AC.modes.dailyShareText({ n: 3, label: '30 Oct', win: true, rounds: 14, limit: 24, taken: 6, lost: 3, astras: 2, grid: '🟨⬛🟥' });
-  ok(/Daily Chakravyuha #3/.test(text) && /Can you get out/.test(text), 'the share card reads well');
+  ok(/Daily Chakravyuha #3/.test(text) && /Can you break in/.test(text), 'the share card reads well');
   AC.app.modals.slice().forEach((m) => m.close());
 
   // ── dialogs answer what was tapped (Concede used to do nothing) ──
@@ -775,6 +775,117 @@ async function run() {
   }
 
   await calmPaceChecks();
+
+  // ── the ladder: Yuddh karo picks the opponent the player is ready for (13 Nov 2026) ──
+  {
+    const closeAll = () => AC.app.modals.slice().forEach((m) => m.close());
+    const pid = AC.app.profile.id;
+    const fresh = () => { AC.storage.resetStats(pid); AC.app.profile = AC.storage.getProfile(pid); AC.ui.patchSettings({ lastSetup: null }); if (AC.modes) AC.modes.clear(); };
+    const battle = async (winner) => {
+      AC.ui.quickBattle(); await sleep(10); closeAll();
+      const lock = $('#action-bar [data-deploy="lock"]'); if (lock) click(lock);
+      await sleep(10); closeAll();
+      const cfg = AC.game.state.config.difficulty;
+      AC.game.conclude(winner, 'test'); await sleep(10);
+      return cfg;
+    };
+    fresh();
+    ok(AC.ui.ladder(AC.app.profile.stats).key === 'recruit', 'a new player stands on the first rung: Sainik');
+    AC.ui.show('home'); await sleep(10);
+    ok(/Sainik/.test($('#quick-sub').textContent), 'the home button names Sainik for a new player');
+    ok((await battle(2)) === 'recruit', 'the first quick battle is against Sainik');
+    ok(!$('.modal .ladder-note'), 'a defeat shows no ladder note');
+    closeAll();
+    await battle(1);
+    ok($('.modal .ladder-note') && !$('.modal .ladder-note.up') && /One more win over Sainik/.test($('.modal .ladder-note').textContent), 'the first win says one more is needed');
+    closeAll();
+    await battle(1);
+    ok($('.modal .ladder-note.up') && /Sainik is beaten/.test($('.modal .ladder-note').textContent), 'the second win over Sainik is the promotion');
+    const face = Array.from($$('.modal .modal-actions button')).filter((b) => /Face Dronacharya/.test(b.textContent))[0];
+    ok(face && face.classList.contains('btn-primary'), 'the promotion offers Dronacharya as the main button');
+    click(face); await sleep(10);
+    ok(AC.game.state.config.difficulty === 'veteran' && AC.game.state.phase !== 'over', 'the button opens a battle against Dronacharya');
+    closeAll();
+    AC.ui.show('home'); await sleep(10);
+    ok(/Dronacharya/.test($('#quick-sub').textContent), 'the home button now names Dronacharya');
+    AC.storage.recordResult(pid, { outcome: 'win', difficulty: 'veteran' });
+    AC.storage.recordResult(pid, { outcome: 'win', difficulty: 'veteran' });
+    AC.storage.recordResult(pid, { outcome: 'win', difficulty: 'veteran' });
+    ok(AC.ui.ladder(AC.storage.getProfile(pid).stats).key === 'archon', 'three wins over Dronacharya bring Shakuni');
+    fresh();
+    AC.game.start({ mode: 'ai', board: 'wheel', difficulty: 'archon' }); await sleep(10); closeAll();
+    AC.game.conclude(1, 'test'); await sleep(10);
+    ok(!$('.modal .ladder-note'), 'a win off the rung (Custom battle against Shakuni) leaves the ladder alone');
+    closeAll(); fresh();
+  }
+
+  // ── Part 2 (13 Nov 2026): the fort's fall, sunset, the challenge link ──
+  {
+    const closeAll = () => AC.app.modals.slice().forEach((m) => m.close());
+    const E = AC.engine;
+    // same seed, same enemy formation; no seed, the formation can differ
+    const layout = (st) => Object.keys(st.board).filter((id) => st.board[id] && st.board[id].owner === 2).map((id) => id + st.board[id].key).sort().join();
+    for (const board of ['wheel', 'small']) {
+      const a = E.newState({ mode: 'ai', board, difficulty: 'veteran', seed: 12345 });
+      const b = E.newState({ mode: 'ai', board, difficulty: 'veteran', seed: 12345 });
+      ok(layout(a) === layout(b), 'a seed fixes the enemy formation on ' + board);
+    }
+    let differs = false;
+    for (let i = 0; i < 6 && !differs; i++) differs = layout(E.newState({ mode: 'ai', board: 'small', difficulty: 'veteran', seed: 1 })) !== layout(E.newState({ mode: 'ai', board: 'small', difficulty: 'veteran', seed: 2 + i }));
+    ok(differs, 'different seeds give different formations');
+
+    // the challenge link round-trips
+    const pid = AC.app.profile.id;
+    AC.storage.resetStats(pid); AC.app.profile = AC.storage.getProfile(pid);
+    AC.game.start({ mode: 'ai', board: 'wheel', difficulty: 'veteran', ruleset: 'vyuha' }); await sleep(10); closeAll();
+    const seed = AC.game.state.config.seed;
+    ok(Number.isInteger(seed), 'every AI battle has a formation seed');
+    AC.game.state.turn = 17;
+    AC.game.conclude(1, 'test'); await sleep(10);
+    const btn = Array.from($$('.modal .modal-actions button')).filter((x) => /Challenge a friend/.test(x.textContent))[0];
+    ok(!!btn, 'a win offers Challenge a friend');
+    click(btn); await sleep(10);
+    const pre = $('.modal .share-preview') ? $('.modal .share-preview').textContent : '';
+    const hash = (/#c=[^\s]+/.exec(pre) || [''])[0];
+    ok(/faster/.test(pre) && hash === '#c=wheel.veteran.v.' + seed.toString(36) + '.17', 'the share text carries field, opponent, rules, seed and rounds');
+    closeAll();
+    const c = AC.modes.parseChallenge(hash);
+    ok(c && c.board === 'wheel' && c.difficulty === 'veteran' && c.seed === seed && c.rounds === 17, 'the link parses back');
+    ok(AC.modes.parseChallenge('#c=moon.veteran.v.1.5') === null && AC.modes.parseChallenge('#c=wheel.god.v.1.5') === null, 'a bad link is refused');
+    AC.modes.startChallenge(c); await sleep(10);
+    ok(/fewer than 17 rounds/.test($('.modal').textContent) && /same enemy formation/.test($('.modal').textContent), 'the challenge briefing says the target');
+    click(Array.from($$('.modal .modal-actions button')).filter((x) => /Take the field/.test(x.textContent))[0]); await sleep(10); closeAll();
+    ok(AC.game.state.config.seed === seed && AC.game.state.config.difficulty === 'veteran', 'the challenge starts with the sender’s seed and opponent');
+    AC.game.state.turn = 14;
+    AC.game.conclude(1, 'test'); await sleep(10);
+    ok(/Challenge beaten: 14 rounds against your friend’s 17/.test($('.modal').textContent), 'a faster win beats the challenge');
+    ok(!/is beaten\./.test($('.modal').textContent), 'a challenge battle does not move the ladder note');
+    closeAll();
+    AC.game.start({ mode: 'ai', board: 'wheel', difficulty: 'veteran' }); await sleep(10); closeAll();
+    ok(AC.game.state.config.seed !== seed, 'an ordinary battle draws a fresh formation');
+
+    // sunset: the last ten rounds show the bala in the goal box
+    AC.game.start({ mode: 'ai', board: 'large', difficulty: 'veteran' }); await sleep(10); closeAll();
+    const lock = $('#action-bar [data-deploy="lock"]'); if (lock) click(lock);
+    await sleep(10); closeAll();
+    AC.game.state.turn = 44; AC.game.render(); await sleep(5);
+    ok(/Sunset in 7/.test($('#hud-goal').textContent) && /Bala \d+ – \d+/.test($('#hud-goal').textContent), 'the goal box counts down to sunset with the bala');
+    AC.game.state.turn = 30; AC.game.render(); await sleep(5);
+    ok(!/Sunset/.test($('#hud-goal').textContent), 'no sunset line before the last ten rounds');
+    AC.game.conclude(2, 'test'); await sleep(10); closeAll();
+
+    // the undefended fort: the out-of-movers ending is shown as the fort's fall
+    const st = E.newState({ mode: 'ai', board: 'wheel', difficulty: 'veteran', seed: 7 });
+    E.beginBattle(st);
+    for (const id of Object.keys(st.board)) { const u = st.board[id]; if (u && u.owner === 2 && u.key !== 'F' && u.key !== 'B') st.board[id] = null; }
+    const ids = Object.keys(st.board);
+    const mover = ids.filter((id) => st.board[id] && st.board[id].owner === 1 && st.board[id].key !== 'F' && st.board[id].key !== 'B')
+      .map((id) => E.allLegalActions(st, 1).filter((a) => a.type === 'move' && a.from === id)[0]).filter(Boolean)[0];
+    const res = E.applyAction(st, mover);
+    const ab = res.events.filter((e) => e.kind === 'abandon')[0];
+    ok(st.phase === 'over' && st.winner === 1 && st.endKind === 'movers', 'a side with no movers loses, as before');
+    ok(ab && st.board[ab.at] && st.board[ab.at].key === 'F' && ab.winner === 1, 'the fort’s fall is an event at the enemy fort');
+  }
 
   // jsdom has no media stack and no canvas backend; those notices are not
   // game errors (audio is verified in the browser instead)
