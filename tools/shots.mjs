@@ -25,6 +25,13 @@ async function shot(page, name) {
 async function closeModals(page) {
   await page.evaluate(() => AC.app.modals.slice().forEach(m => m.close()));
 }
+// 15 Nov 2026: the lesson offer (js/ui.js offerLessonsThen) now gates every entry point and
+// can't be dismissed by a backdrop tap or the close button — a fresh profile must pick one of
+// its two real buttons. The harness plays a returning tester, so it takes the honest skip.
+async function skipLessonOffer(page) {
+  const skip = await page.waitForSelector('.modal-actions [data-act="1"]', { timeout: 5000 }).catch(() => null);
+  if (skip) await skip.click();
+}
 async function checkBoard(page, label, pieces) {
   const counts = await page.evaluate(() => ({
     cells: document.querySelectorAll('#board .cell').length,
@@ -50,6 +57,7 @@ try {
     await shot(page, label + '-home');
     if (label === 'mob') await page.tap('#btn-new-match');
     else await page.click('#btn-new-match');
+    await skipLessonOffer(page);
     await page.waitForSelector('#screen-setup:not([hidden])');
     await shot(page, label + '-setup');
     await page.click('#btn-start-match');

@@ -76,6 +76,10 @@ const rows = [];
 rows.push(await measure('home'));
 await page.evaluate(() => AC.app.modals && AC.app.modals.slice().forEach((m) => m.close()));
 await page.click('#btn-new-match');
+// 15 Nov 2026: the lesson offer now gates Custom battle too and can't be dismissed by a
+// backdrop tap — take the honest skip, same as a returning player would.
+const lessonSkip = await page.waitForSelector('.modal-actions [data-act="1"]', { timeout: 5000 }).catch(() => null);
+if (lessonSkip) await lessonSkip.click();
 await page.waitForSelector('#screen-setup:not([hidden])');
 // BOARD=padma|small|large measures another field (default: the wheel)
 if (process.env.BOARD) await page.evaluate((b) => { AC.app.setup.board = b; AC.ui.renderSetup(); }, process.env.BOARD);
