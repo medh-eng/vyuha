@@ -39,6 +39,9 @@ jobs:
           node tools/pace-budget.mjs
           node tests/audio.mjs
           node tests/log.mjs
+      - name: Pata and Classic media
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: node tools/media-qa.mjs .playtest/media
       - name: Desktop and phone screenshots
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: node tools/shots.mjs .playtest/shots
