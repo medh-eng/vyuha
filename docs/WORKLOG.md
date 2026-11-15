@@ -5,6 +5,30 @@ this file and not ticked in `docs/prompts/ART.md`, it did not happen.
 
 ---
 
+## 15 Nov 2026 (Sarvam AI) — Batch 6: the interface in Hindi and Marathi, Sanjaya re-voiced, vows, Chapter IV
+
+- **The 102 pending interface strings** now read in Hindi and Marathi — the wheel lessons, the odds words,
+  Confirm strike / Cancel / Invoke, the goal box, the battle log, the ladder, the endings, the Daily title and
+  Challenge a friend. All three catalogues are at 251 keys, same order. PR #29.
+- **The 18 pending recordings** are re-voiced (16 Hindi, 2 English) and the stale-audio guard is empty, so
+  those lines speak again. PR #31.
+- **Seven lines were too long and are now short enough.** The four the Director flagged (`volley_kill_1`,
+  `assassinate_1`, `trap_defused_1`, `rotate_padma_1`) plus three found by measuring: `astra_vayavya_enemy_1`
+  ran 6.14 s, `lose_capture_1` broke the routine Calm budget, and five more sat just over four seconds
+  (`defeat_1`, `sunset_near_1`, `dawn_1`, `dawn_enemy_1`, `start_abhimanyu_1`, `astra_sammohana_enemy_1`).
+  **Every one of the 88 recordings is now under 4.0 s; the longest is 3.97 s, the median 2.95 s.**
+- **Vow strings**: 45 Pratigya keys in Hindi and Marathi (`incoming/i18n/pratigya.*.json`).
+- **Sanjaya's Chapter IV lines**: 14 written (`incoming/text/sanjaya-chapter4.csv`), not wired — the Director
+  approves the text first. Draft recordings are in `incoming/voice/chapter4/`, every line ≤ 3.24 s.
+- **The hero respect read** (`incoming/text/heroes-respect-read.md`) and **the cultural read of the whole
+  game** (`incoming/text/cultural-review.md`, Task 5, never delivered before). Top flag in both: Drona as a
+  capturable piece.
+- **A Marathi consistency pass** (`incoming/text/marathi-consistency-pass.md`) for whoever does Batch 6.6:
+  three concrete findings, and a list of what is already consistent so they do not read 296 strings cold.
+- **Two speakers in the game**: this batch is `rahul` at 1.15 as the Director specified; the older 88 files
+  are `ashutosh` at 0.9. One voice must win before release — see `incoming/voice/VOICE.md`.
+- **Not done:** Batch 6.6 (a native Marathi reader) — not claimed, no reviewer named.
+
 ## 6 Nov 2026 (Director) — Commander's phone test: landscape battle rebuilt
 
 - Sanjaya's opening line no longer plays twice (the story card's button and its close both ran it).

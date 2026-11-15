@@ -57,6 +57,24 @@ No native-speaker review; no human phone test; Batch 6.6 still open.
 
 ---
 
+**15 November 2026 · Sarvam (third pass, PR #33).** The last of the Sarvam queue, and the paperwork that was owed.
+
+## Sarvam, third pass — what changed
+
+| Item | What changed | Where |
+|---|---|---|
+| The last long lines | Six more shortened and re-recorded: `defeat_1`, `sunset_near_1`, `dawn_1`, `dawn_enemy_1`, `start_abhimanyu_1`, `astra_sammohana_enemy_1`. **All 88 recordings are now under 4.0 s** — longest 3.97 s, median 2.95 s, was 6.14 s | `js/sanjaya.js`, `docs/voice/sanjaya-lines.csv`, `assets/audio/voice/` |
+| Chapter IV drafts (T-32) | 28 draft recordings of the 14 Chapter IV lines, every one ≤ 3.24 s, sitting in `incoming/voice/chapter4/` **unwired** because the text is not approved. Two English lines were shortened to fit the budget | `incoming/voice/chapter4/`, `incoming/text/sanjaya-chapter4.csv` |
+| The cultural read (Task 5) | Delivered at last: the whole game read against §6 of `docs/DIRECTOR.md`. Seven flags, the biggest being sacred symbols in Pata art and the twelve-spoked wheel reading as the Sudarshana Chakra; three suggestions that touch nothing sacred | `incoming/text/cultural-review.md` |
+| Batch 6.6 support | A consistency pass over all 296 Marathi strings: three real findings (`कडे` doing double duty for "ring" and "towards", `मधे` vs `मध्ये`, `त्यांवर` vs `त्यावर`) and a list of what is already consistent, so the native reader starts with a shortlist. **Not a native review** | `incoming/text/marathi-consistency-pass.md` |
+| Paperwork | The worklog had no entry for either batch (it is Sarvam's file to maintain); `docs/PACING.md` still said the four routine lines needed re-voicing | `docs/WORKLOG.md`, `docs/PACING.md` |
+
+Checks: languages · rules 166 · self-play 40 · Daily · UI 212 · data 159 · assets 88 narration files · audio 44 · log 18 · `pace-budget --strict` (38 of 46 pairs within 5.0 s; the rest are major moments).
+
+Still owed, and not claimed: **Batch 6.6** — a named native Marathi speaker reads the 296 strings. T-32 now sits with the Director: approve the Chapter IV text and the recordings are ready to move.
+
+---
+
 **15 November 2026 · ChatGPT · T-12, Batch 6.5 (on top of 6.3).** Batch 6.5's **written design** is
 delivered at [incoming/text/hero-cards-design.md](../incoming/text/hero-cards-design.md).
 It specifies portrait/landscape Pata placement for the hero picker, battle HUD
