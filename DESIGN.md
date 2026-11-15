@@ -105,6 +105,17 @@ stays in Settings and as the fallback.
 - The four wheel lessons teach one idea each, from controlled starting positions, then point to
   Daily and Quick Battle. No long rules screen.
 
+### Locked options (T-34, 16 Nov 2026)
+
+- A Setup option not yet unlocked by level (`js/ui.js` `unlockLevel`) shows the lock icon in
+  place of its own icon, and "Unlocks at Level N" in place of its blurb — never hidden, so the
+  player can see what's coming. Tapping it does nothing but a toast; it never silently reverts
+  to the last valid choice without saying why.
+- Only content a player hasn't seen yet locks this way (new battlefields, the Abhimanyu
+  scenario). A basic preference (rules, turn clock, who to play against) never locks — see
+  `docs/HANDOFF.md` for the current line and why.
+- Never behind payment. See section 6 and the Launch section of `docs/ROADMAP.md`.
+
 ## 5. Motion, sound and heat
 
 - **The phone stays cool.** No `infinite` CSS animation on anything that stays on screen; no

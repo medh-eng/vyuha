@@ -1,5 +1,56 @@
 # Handoff — latest status
 
+**16 November 2026 · Director.** T-34 built and merged: the progression system scoped the day
+before (below) is now live. A free level 1–6 — score = matches played + wins×2, so playing
+always helps and winning helps twice as much — unlocks, one at a time:
+
+| Level | Score | Unlocks |
+|---|---|---|
+| 2 | 3 | Sarvatobhadra (`small`) |
+| 3 | 8 | Padmavyuha (`padma`) |
+| 4 | 16 | Kurukshetra (`large`) |
+| 5 | 30 | the Abhimanyu scenario |
+| 6 | 50 | everything above |
+
+`js/ui.js` (`LEVELS`, `levelScore`, `levelFor`, `unlockLevel`) is the source of truth — no
+runtime `data/` file, matching how the win-ladder (`LADDER`/`ladder()`) and rank titles
+(`TITLES`/`titleFor()`) already work in that same file; `data/README.md` is explicit that
+`data/*.json` are generated/hand-kept doc copies the runtime never reads, so a new one here
+would have been pure overhead. On the Setup screen, a locked board or scenario shows a lock
+icon (new `A.icon('lock')` in `js/art.js`) and "Unlocks at Level N" in place of its blurb;
+tapping it does nothing but a toast ("Unlocks at Level N — play and win more battles"). The
+home screen's rank line now ends with "· Level N" and either "more unlocks at Level N+1" or
+"everything unlocked". Guests (no profile, never recorded) stay at level 1, same as the
+existing win-ladder already treats them.
+
+**Left unlocked from the start, on purpose, not yet revisited (T-40):** Pass & play, the
+Daily, Classic vs VYUHA rules, the turn clock, and the AI-difficulty picker. Locking Pass &
+play or the Daily would cut against the game's own stated retention loop (`docs/ROADMAP.md`
+"What to measure" — Daily-on-day-2 is the habit metric); the rules/clock toggles are basic
+preferences, not content worth grinding for. Only battlefields and the Abhimanyu scenario are
+new content a player hasn't seen yet, which is what "locked, unlocks by playing" usually means
+in games like this — if that reads as too thin once real players try it, T-40 is where to
+widen it.
+
+**What this does not touch:** the gate only lives in the Setup-screen click handler
+(`renderSetup`'s `host.onclick` in `js/ui.js`). `AC.game.start()` called directly — Quick
+battle's default, a Daily, a Challenge-a-friend link, a saved formation — is unaffected, so a
+level-1 player can still *receive* a friend's Kurukshetra challenge link and play it; they
+just can't *pick* Kurukshetra themselves from Custom battle until they've earned it. Whether
+that's the right line, or whether it should be enforced end-to-end, is T-35. The existing
+win-ladder (Sainik → Dronacharya → Shakuni) is a separate, older mechanism and is *not* also
+enforced in Custom battle's difficulty picker — anyone can still pick Shakuni on turn one
+there; T-36 is whether to close that with the same locked-button treatment this PR adds.
+
+Checks: rules 166 · UI 223 (4 new, covering the lock itself: shows locked at level 1, tapping
+does nothing, levels up, then selects) · data 159 · audio 44 · log 18 · languages (251 keys) ·
+self-play 40 · Daily · media QA (22 scenarios) · screenshots (desk+mob) · landscape 122 ·
+first-session 32 · battle-log 1053 · idle heat (portrait + landscape, every screen < 3%) ·
+pace-budget · the full robot (`tools/playtest-bot.mjs`) run in the background, result to follow.
+No human phone test yet — that's T-38.
+
+---
+
 **15 November 2026 · Director.** T-34 scoped, not built: the Commander asked for a leveling
 system — battle modes, formations and options locked at the start, unlocked by matches played
 and matches won, with a Play Store paid option to unlock everything at once. That paid
