@@ -1,9 +1,32 @@
 # Handoff — latest status
 
-**15 November 2026 · ChatGPT · T-12, Batch 6.5 (on top of 6.3)**
+**15 November 2026 · Sarvam.** Batch 6.1 landed — Hindi and Marathi for the 102 pending strings (T-06, PR #29).
 
-Batch 6.5's **written design** is delivered at
-[incoming/text/hero-cards-design.md](../incoming/text/hero-cards-design.md).
+## Sarvam Batch 6.1 — what changed
+
+| Item | What changed | Where |
+|---|---|---|
+| 102 keys | Hindi and Marathi for the wheel lessons, the odds words, Confirm strike / Cancel / Invoke, the goal box (`goal.sunset`, `goal.bala`), the battle log (`log.*`), the ladder (`ladder.*`), the endings (`fall.*`, `end.movers_*`), the Daily title and Challenge a friend (`challenge.*`, `result.challenge`) | `docs/i18n/strings.hi.json`, `strings.mr.json` and `strings.en.json` — all three at 251 keys, same order |
+| Bundle | `js/languages.js` and `vyuha-standalone.html` regenerated | `node tools/build-languages.mjs`, `node tools/build-standalone.mjs` |
+| Test | `tests/languages.mjs` pins 251 keys and also asserts the bundle covers every English key | `tests/languages.mjs` |
+| Glossary held | रैंक / दर्जा · खाना / घर · दाँव / डाव · घेरे / कडे · दुश्मन / शत्रू · दुर्ग · द्वार / दरवाजा · मोहरा · बौछार / वर्षाव · दृष्टि / दृष्टी · सेनापति / सेनापती · महारथी · दिव्यदृष्टि / दिव्यदृष्टी · अग्न्यस्त्र · ब्रह्मास्त्र · शक्ति / शक्ती | — |
+| Register | Hindi stays polite (करें / कीजिए) with dandas; Marathi keeps तुम्ही with full stops, as in the existing catalogue | — |
+| share.cta (T-30) | The Marathi question gets its particle: “तुम्ही आत घुसू शकाल का?” The Hindi reads clean | `docs/i18n/strings.mr.json` |
+
+Checks: rules 166 · self-play 40 · Daily · languages (251 keys) · UI 212 · data 159 · assets · audio 44 · log 18 ·
+pace-budget · `tools/language-shots.mjs` in Hindi and Marathi at 390 and 360 (real touch, no sideways overflow,
+result title translated, preference persists, offline standalone). `tools/language-shots.mjs` is flaky at
+`visible cell r1s0` (the cell exists but has no layout box ~250 ms after `startPrepared`): it failed 3 of 5
+runs on this branch and 2 of 2 runs on `main` at `6849539`, so it predates Batch 6.1 — logged as T-31.
+
+Honest limits: **no native-speaker review** of the new Hindi or Marathi (T-30 is still owed); no human
+phone test; older engine prose outside the catalogue (help and coach lines, event log sentences) is still
+English — that is T-17 and the coverage boundary in `docs/i18n/README.md`.
+
+---
+
+**15 November 2026 · ChatGPT · T-12, Batch 6.5 (on top of 6.3).** Batch 6.5's **written design** is
+delivered at [incoming/text/hero-cards-design.md](../incoming/text/hero-cards-design.md).
 It specifies portrait/landscape Pata placement for the hero picker, battle HUD
 and result screen; turn-by-turn previews for Arjuna, Drona, Abhimanyu and Bhishma;
 the four implemented passive traits; hidden-information fairness; accessibility,

@@ -5,7 +5,7 @@ Chapters and history stay in `docs/ROADMAP.md`; what the last session did is in 
 Rules: one line per task, an ID that never changes, "done when" in plain words. Tick it (`[x]`) and
 move it to **Done** in the same pull request that finishes it. Add new work here first.
 
-Last updated: 15 Nov 2026 (Quiet Gate balance and Pata hero-card design).
+Last updated: 15 Nov 2026 (Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings, catalogues at 251 keys; ChatGPT Quiet Gate balance and Pata hero-card design).
 
 ## Now
 
@@ -13,7 +13,7 @@ Last updated: 15 Nov 2026 (Quiet Gate balance and Pata hero-card design).
 |---|---|---|---|
 | T-05 | C | **The gate for Part 3:** five people who have never seen the game, on their own phones, watched in silence for ten minutes (Home → first battle). Write where each one stops in `docs/ROADMAP.md` | notes added |
 | T-25 | C | On the phone, sideways: is Yuddh karo on the first home screen? After a battle, are all the result buttons in view? Win a battle, tap **Challenge a friend**, send it to yourself on WhatsApp and open it — does the briefing appear? | a yes/no each |
-| T-30 | C/S | A native reader checks the new Hindi and Marathi Daily share line (`share.cta`) | ok or a correction |
+| T-30 | C/S | A native reader checks the new Hindi and Marathi Daily share line (`share.cta`). Sarvam's pass added `का` to the Marathi question; the Hindi reads clean | ok or a correction |
 | T-23 | C | Tidy GitHub: repository → **Branches** → delete the 26 old branches marked *Merged* (every commit is in `main`); then **Settings → General → Automatically delete head branches** on, so merged PR branches go by themselves. Claude sessions cannot delete branches | only `main` + open PR branches left |
 | T-02 | C | On the phone: play a Quick battle on Sarvatobhadra and Kurukshetra sideways; say whether the turned field helps | a yes/no and any trouble |
 | T-03 | C | On the phone: play Quick to round 5 on the wheel; do the dashed landing rings help or clutter? | a yes/no |
@@ -23,12 +23,12 @@ Last updated: 15 Nov 2026 (Quiet Gate balance and Pata hero-card design).
 
 | ID | Owner | Task | Done when |
 |---|---|---|---|
-| T-06 | S | Sarvam Batch 6.1: Hindi and Marathi for the 102 strings in `docs/i18n/pending-first-session.en.json` | catalogues merged, `tests/languages.mjs` passes |
 | T-08 | C | New night painting for the wheel (`chakra-night`) in the same true-indigo style as the other three | file supplied |
 | T-10 | C | Add the three new night masters to your masters zip and Release (`docs/MASTERS.md`) | done |
 | T-17 | D | Battle-log prose (clash/astra sentences) is English-only engine text; give it keys for Sarvam | log readable in hi/mr |
 | T-22 | D | `tools/battle-log.mjs` failed once in six runs (7 Nov, message not kept): make it log every failed check to a file, then find the flake | six clean runs |
 | T-21 | D | Rang Phase 3, rest: festival days on the Daily and a sound pass (levels, overlaps) across every screen | PR |
+| T-31 | D | `tools/language-shots.mjs` is flaky at `visible cell r1s0`: the cell has no layout box ~250 ms after `startPrepared`. Reproduced on `main` at `6849539` (2 of 2 runs) and on `sarvam/batch-6.1-strings` (3 of 5) — wait for the board to lay out instead of the fixed 250 ms | ten clean runs |
 
 ## Waiting on others
 
@@ -46,13 +46,11 @@ Last updated: 15 Nov 2026 (Quiet Gate balance and Pata hero-card design).
 
 ## Done (newest first)
 
-- [x] T-12 / Batch 6.5: Pata hero-card placements and four future active hero flows specified in incoming/text/hero-cards-design.md; written design only, not playable (15 Nov).
-
-- [x] T-12 / Batch 6.3: Quiet Gate retuned and screened on two fresh banks. All four results meet the target. Candidate awaits Director integration (docs/balance/README.md).
-
-- [x] T-14 ChatGPT Batch 6.1: media QA checks all four Pata paintings and Classic bronze films, reduced motion and battery saver. Run `node tools/media-qa.mjs` for both looks.
-- [x] T-24 and T-29: Parts 1 and 2 merged in PRs #26 and #27 (15 Nov).
-
+- [x] T-06 Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings — wheel lessons, odds words, Confirm strike, goal box, battle log, ladder, Challenge a friend; catalogues at 251 keys, `tests/languages.mjs` and the hi/mr layout harness pass (15 Nov, PR #29)
+- [x] T-12 / Batch 6.5: Pata hero-card placements and four future active hero flows specified in incoming/text/hero-cards-design.md; written design only, not playable (15 Nov, PR #32)
+- [x] T-12 / Batch 6.3: Quiet Gate retuned and screened on two fresh banks, four raider win rates in target range (15 Nov, PR #30)
+- [x] T-14 ChatGPT Batch 6.1: media QA checks all four Pata paintings and Classic bronze films, reduced motion and battery saver (15 Nov, PR #28)
+- [x] T-24 and T-29: Parts 1 and 2 merged in PRs #26 and #27 (15 Nov)
 - [x] T-26 endings shown (fort-fall card, sunset + bala in the GOAL box); T-27 Daily wording; T-28 Challenge a friend; stage-card text fixed in Pata (13 Nov, PR #27)
 - [x] T-20 Scenario paintings `card-duel`, `card-abhimanyu` supplied by the Commander and wired in (13 Nov)
 - [x] Hard review and plan `docs/REVIEW.md`; Part 1: the ladder, home and result card sideways (13 Nov)

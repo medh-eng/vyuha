@@ -1,7 +1,9 @@
 # Interface localisation
 
-The runtime bundles the 149-key English catalogue and Sarvam's matching Hindi
-and Marathi catalogues. Source translations are unchanged from PR #5 (`c52bb2b`).
+The runtime bundles the 251-key English catalogue and Sarvam's matching Hindi
+and Marathi catalogues. The first 149 keys are unchanged from PR #5 (`c52bb2b`);
+the 102 keys added on 15 Nov are Sarvam Batch 6.1 (wheel lessons, odds words,
+Confirm strike, the goal box, the battle log, the ladder and Challenge a friend).
 
 - English: `docs/i18n/strings.en.json`
 - Hindi/Marathi: `docs/i18n/strings.hi.json`, `strings.mr.json`

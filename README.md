@@ -101,7 +101,7 @@ npm install                 # only for the DOM test (jsdom)
 node tests/rules.mjs        # 121 rule checks, including every Chapter III layer
 node tests/selfplay.mjs 60  # AI-vs-AI battles on all four fields
 node tests/daily.mjs        # Daily catalogues, IST rollover, seeded AI
-node tests/languages.mjs    # 149-key Hindi/Marathi catalogues
+node tests/languages.mjs    # 251-key Hindi/Marathi catalogues
 node tests/ui.mjs           # boots index.html in jsdom: home, battle, Calm pace, astras, lesson, daily
 node tests/data.mjs         # data/ registers match the code and the files on disk
 ```

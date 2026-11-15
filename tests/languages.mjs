@@ -5,7 +5,9 @@ import assert from 'node:assert/strict';
 const root = new URL('../', import.meta.url);
 for (const name of ['units', 'languages', 'geometry', 'engine', 'sanjaya']) vm.runInThisContext(fs.readFileSync(new URL('js/' + name + '.js', root), 'utf8'));
 const { i18n: L, units: U, engine: E, sanjaya: SJ } = globalThis.AC;
-assert.equal(L.keys.length, 149);
+const catalogue = JSON.parse(fs.readFileSync(new URL('docs/i18n/strings.en.json', root)));
+assert.equal(L.keys.length, Object.keys(catalogue).length, 'bundle covers every English key');
+assert.equal(L.keys.length, 251);
 const originalDefinitions = JSON.stringify(U);
 const state = E.newState({ board: 'wheel', mode: 'ai' });
 const before = JSON.stringify(state);
@@ -38,4 +40,4 @@ SJ.stop(); SJ.say('fort_won', { force: true }); assert.ok(played.at(-1).endsWith
 SJ.stop(); SJ.setLang('en'); SJ.say('astra_vayavya_enemy', { force: true }); assert.equal(played.length, 1, 'a held English recording stays silent');
 SJ.stop();
 assert.equal(SJ.voicePending.hi.length, 16); assert.equal(SJ.voicePending.en.length, 2);
-console.log('149-key catalogues, state separation, fallbacks and stale voice guards passed.');
+console.log(L.keys.length + '-key catalogues, state separation, fallbacks and stale voice guards passed.');
