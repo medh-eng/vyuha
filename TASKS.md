@@ -50,7 +50,7 @@ Last updated: 15 Nov 2026 (Sarvam Batch 6.2-6.5: the 18 pending recordings, four
 
 ## Done (newest first)
 
-- [x] Sarvam Batch 6.2-6.5 (15 Nov) — the 18 pending recordings re-voiced and the stale-audio guard cleared; the four over-budget routine lines shortened (`volley_kill_1`, `assassinate_1`, `trap_defused_1`, `rotate_padma_1`) plus `astra_vayavya_enemy_1`, which ran 6.14 s; vow strings in Hindi and Marathi (`incoming/i18n/pratigya.*.json`); Sanjaya's Chapter IV lines (`incoming/text/sanjaya-chapter4.csv`); the hero respect read (`incoming/text/heroes-respect-read.md`)
+- [x] Sarvam Batch 6.2-6.5 (15 Nov, PR #31) — the 18 pending recordings re-voiced and the stale-audio guard cleared; the four over-budget routine lines shortened (`volley_kill_1`, `assassinate_1`, `trap_defused_1`, `rotate_padma_1`) plus `astra_vayavya_enemy_1`, which ran 6.14 s; vow strings in Hindi and Marathi (`incoming/i18n/pratigya.*.json`); Sanjaya's Chapter IV lines (`incoming/text/sanjaya-chapter4.csv`); the hero respect read (`incoming/text/heroes-respect-read.md`)
 - [x] T-06 Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings — wheel lessons, odds words, Confirm strike, goal box, battle log, ladder, Challenge a friend; catalogues at 251 keys, `tests/languages.mjs` and the hi/mr layout harness pass (15 Nov, PR #29)
 - [x] T-26 endings shown (fort-fall card, sunset + bala in the GOAL box); T-27 Daily wording; T-28 Challenge a friend; stage-card text fixed in Pata (13 Nov, PR #27)
 - [x] T-20 Scenario paintings `card-duel`, `card-abhimanyu` supplied by the Commander and wired in (13 Nov)

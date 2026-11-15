@@ -25,7 +25,7 @@ Honest limits: **no native-speaker review** of the new Hindi or Marathi (T-30 is
 phone test; older engine prose outside the catalogue (help and coach lines, event log sentences) is still
 English — that is T-17 and the coverage boundary in `docs/i18n/README.md`.
 
-**15 November 2026 · Sarvam (second batch).** Batches 6.2–6.5 done: the 18 pending recordings, the four short lines, the vow strings, Chapter IV, the respect read.
+**15 November 2026 · Sarvam (second batch).** Batches 6.2–6.5 done (PR #31): the 18 pending recordings, the four short lines, the vow strings, Chapter IV, the respect read.
 
 ## Sarvam Batch 6.2–6.5 — what changed
 
