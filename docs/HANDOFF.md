@@ -17,8 +17,9 @@
 
 Checks: rules 166 · self-play 40 · Daily · languages (251 keys) · UI 212 · data 159 · assets · audio 44 · log 18 ·
 pace-budget · `tools/language-shots.mjs` in Hindi and Marathi at 390 and 360 (real touch, no sideways overflow,
-result title translated, preference persists, offline standalone). The language harness failed once on
-`visible cell r1s0` and passed on a clean re-run — the same timing flake class as T-22.
+result title translated, preference persists, offline standalone). `tools/language-shots.mjs` is flaky at
+`visible cell r1s0` (the cell exists but has no layout box ~250 ms after `startPrepared`): it failed 3 of 5
+runs on this branch and 2 of 2 runs on `main` at `6849539`, so it predates Batch 6.1 — logged as T-31.
 
 Honest limits: **no native-speaker review** of the new Hindi or Marathi (T-30 is still owed); no human
 phone test; older engine prose outside the catalogue (help and coach lines, event log sentences) is still
