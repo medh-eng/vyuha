@@ -40,11 +40,12 @@ older PR description counted seven). Those exact corrections and the two
 Commander-approved three-language rewrites are applied. The voice script was
 regenerated. No recording was generated, renamed or replaced.
 
-`docs/voice/pending-recordings.json` lists **16 Hindi and 2 English** files whose
-old recordings no longer match reviewed text. Hindi serves Hinglish as well.
-Those lines display their text without the stale voice; unchanged clips still
-play. The Hindi list includes the four earlier pending re-records from the
-Director's handoff. Clear each pending entry only when its new file is supplied.
+`docs/voice/pending-recordings.json` is now **empty**: all 16 Hindi and 2 English
+lines whose old recordings no longer matched reviewed text were re-voiced on
+15 Nov 2026 (Sarvam Batch 6.3, speaker `rahul`, pace 1.15), and the four routine
+lines that ran over the Calm budget were shortened and re-recorded (Batch 6.2).
+The guard itself stays in `js/sanjaya.js` and is still tested — add an id to
+`VOICE_PENDING` if a recording ever has to be pulled again.
 
 Keep the queued Promise/ended-event narration implementation from PR #4 when
 integrating: retain this pending-recording guard inside that implementation.

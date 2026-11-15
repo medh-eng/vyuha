@@ -5,7 +5,7 @@ Chapters and history stay in `docs/ROADMAP.md`; what the last session did is in 
 Rules: one line per task, an ID that never changes, "done when" in plain words. Tick it (`[x]`) and
 move it to **Done** in the same pull request that finishes it. Add new work here first.
 
-Last updated: 15 Nov 2026 (Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings, catalogues at 251 keys; ChatGPT Quiet Gate balance and Pata hero-card design).
+Last updated: 15 Nov 2026 (Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings, catalogues at 251 keys; Batch 6.2-6.5: the 18 pending recordings, four shortened lines, vow strings, Chapter IV lines, respect read; ChatGPT Quiet Gate balance and Pata hero-card design).
 
 ## Now
 
@@ -34,7 +34,8 @@ Last updated: 15 Nov 2026 (Sarvam Batch 6.1: Hindi and Marathi for the 102 pendi
 
 | ID | Owner | Task |
 |---|---|---|
-| T-11 | S | Sarvam Batch 6.2–6.6: shorten + record the 4 long lines, record the 18 pending, vow strings, Chapter IV lines, respect read, Marathi read |
+| T-11 | S | Sarvam Batch 6.6: a native Marathi speaker reads `docs/i18n/strings.mr.json` (only if one can be found; do not claim it otherwise) | corrections + reviewer named |
+| T-32 | S | Record Sanjaya's 14 Chapter IV lines once the Director approves `incoming/text/sanjaya-chapter4.csv` (28 files, hi and en) | files in `assets/audio/voice/` |
 | T-12 | G | ChatGPT Batch 6.2 (four-hero balance screen) and 6.4 (AI hero awareness) remain; Batch 6.5 design delivered in incoming/text/hero-cards-design.md. Hero gameplay follows the campaign (docs/REVIEW.md) |
 | T-13 | C | Respect review by three players from different backgrounds (`docs/DIRECTOR.md` §6) |
 
@@ -46,6 +47,7 @@ Last updated: 15 Nov 2026 (Sarvam Batch 6.1: Hindi and Marathi for the 102 pendi
 
 ## Done (newest first)
 
+- [x] Sarvam Batch 6.2-6.5 (15 Nov, PR #31) — the 18 pending recordings re-voiced and the stale-audio guard cleared; the four over-budget routine lines shortened (`volley_kill_1`, `assassinate_1`, `trap_defused_1`, `rotate_padma_1`) plus `astra_vayavya_enemy_1`, which ran 6.14 s; vow strings in Hindi and Marathi (`incoming/i18n/pratigya.*.json`); Sanjaya's Chapter IV lines (`incoming/text/sanjaya-chapter4.csv`); the hero respect read (`incoming/text/heroes-respect-read.md`)
 - [x] T-06 Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings — wheel lessons, odds words, Confirm strike, goal box, battle log, ladder, Challenge a friend; catalogues at 251 keys, `tests/languages.mjs` and the hi/mr layout harness pass (15 Nov, PR #29)
 - [x] T-12 / Batch 6.5: Pata hero-card placements and four future active hero flows specified in incoming/text/hero-cards-design.md; written design only, not playable (15 Nov, PR #32)
 - [x] T-12 / Batch 6.3: Quiet Gate retuned and screened on two fresh banks, four raider win rates in target range (15 Nov, PR #30)

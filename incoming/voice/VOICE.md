@@ -31,3 +31,20 @@ Never mix speakers between batches — one voice for the whole game.
   this is treated as final; any corrected line is a one-file re-record
   (`tools/voice-gen.py --ids <id>`).
 - Task 3: Marathi set, after the Hindi review.
+
+## Batch 2 — 15 November 2026
+
+- **Tool:** same endpoint, model `bulbul:v3`
+- **Speaker:** `rahul` (the Director's Batch 4.1/6.3 note) · **Pace:** 1.15 · 44100 Hz, mono, MP3 64 kbps
+- **Files:** 22 — 18 Hindi, 4 English. The 18 pending re-records, the four shortened routine lines, and
+  `astra_vayavya_enemy_1` (shortened from a 6.14 s line to 3.92 s)
+- **Result:** 22 generated, 0 failures
+
+**This makes two speakers in the game.** Batch 1 above is `ashutosh` at 0.9; batch 2 is `rahul` at 1.15.
+Pick one before release: either regenerate the whole set with
+
+```
+SARVAM_API_KEY=... python3 tools/voice-gen.py --speaker rahul --pace 1.15 --lang both
+```
+
+or re-record this batch with `--speaker ashutosh --pace 0.9 --ids <the 22 ids>`. Never ship a mix.
