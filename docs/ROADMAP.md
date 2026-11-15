@@ -105,12 +105,19 @@ Engine and rules untouched; runs beside the hero work.
 - [ ] **[C]** Name/trademark search for "VYUHA"; IP review of the rules before going commercial (not legal advice)
 - [ ] **[C]** Launch week — Makar Sankranti is the natural moment
 - [ ] **[D]** Monetisation, if any: cosmetic folk-art editions only; never power, never real money
-- [ ] **[D]** Progression (T-34, 15 Nov): battle modes, formations/fields and in-game options unlock
-  for free by level — matches played, matches won. This is the retention loop, not a monetisation
-  path, so none of it may sit behind payment: that would be pay-for-power or close enough to read as
-  it. A paid Play Store "edition" (if built at all) stays inside the line above — extra cosmetic
-  looks/art only, never a mode, field or feature. Needs: a level/XP formula, a gated-content table in
-  `data/` (which fields/modes/options unlock at which level), and UI for "locked, unlocks at level N."
+- [x] **[D]** Progression (T-34, built 16 Nov): a free level (1–6, from matches played + wins×2) unlocks
+  Sarvatobhadra, Padmavyuha, Kurukshetra and the Abhimanyu scenario one at a time on the Setup screen —
+  locked options show a lock icon and "Unlocks at Level N," tapping does nothing. No payment path: this
+  is the retention loop, not a monetisation one, so none of it sits behind payment — that would be
+  pay-for-power or close enough to read as it. A paid Play Store "edition" (if ever built) stays inside
+  the line above: extra cosmetic looks/art only, never a mode, field or feature. `js/ui.js` (`LEVELS`,
+  `levelFor`, `unlockLevel`) is the source of truth — no runtime `data/` file, matching how the existing
+  win-ladder and rank titles already work in that file. Left unlocked from the start, by design: Pass &
+  play, the Daily, Classic/VYUHA rules, the turn clock and the AI-difficulty picker — see `docs/HANDOFF.md`
+  for why. Follow-ups: T-35 (does a direct `AC.game.start()` call, e.g. a shared link, bypass the lock on
+  purpose or by oversight), T-36 (should Setup also enforce the existing difficulty ladder), T-37 (no
+  onboarding beat explains levels exist yet), T-38 (a real phone check is still owed), T-39 (the
+  thresholds are hand-tuned, not screened), T-40 (revisit the locked set's scope once T-38/T-39 land).
 
 ---
 

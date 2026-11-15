@@ -516,7 +516,9 @@
     document.getElementById('home-sigil').innerHTML = A.avatar ? A.avatar(p, { size: 40, title: titleFor((p && p.stats && p.stats.wins) || 0)[1], streak: (p && p.stats && p.stats.streak) || 0 }) : A.sigil('chevron');
 
     const stats = (p && p.stats) || { wins: 0, losses: 0, draws: 0, matches: 0, captures: 0, cores: 0, bestStreak: 0 };
-    document.getElementById('home-rank').textContent = rankLabel(stats) + ' · ' + stats.matches + ' battle' + (stats.matches === 1 ? '' : 's');
+    const lvl = levelFor(p && !app.guest ? stats : null);
+    document.getElementById('home-rank').textContent = rankLabel(stats) + ' · ' + stats.matches + ' battle' + (stats.matches === 1 ? '' : 's') +
+      ' · Level ' + lvl.level + (lvl.next ? ' · more unlocks at Level ' + lvl.next : ' · everything unlocked');
     document.getElementById('home-greeting').textContent = greeting() + ', ' + name;
 
     document.getElementById('ci-quick').innerHTML = A.icon('sword') + ' ' + esc(tr('home.quick', 'Yuddh karo'));
@@ -615,6 +617,40 @@
     const w = stats.wins || 0;
     const next = TITLES.filter(function (x) { return x[0] > w; })[0];
     return next ? next[1] + ' at ' + next[0] + (next[0] === 1 ? ' win' : ' wins') : 'none — you are an Atimaharathi';
+  }
+
+  /* Progression (T-34, 16 Nov 2026): the Commander asked for battle modes, fields and
+   * options to start locked and unlock for free as a player levels up — matches played,
+   * matches won. Every one of these stays free: that is the retention loop, not a
+   * monetisation path. See the Launch-section rule in docs/ROADMAP.md ("never power,
+   * never real money") and the never-change rule in AGENTS.md — a paid Play Store
+   * "edition" may only ever unlock extra cosmetic looks, never a mode, field or option.
+   * A win counts double so winning climbs faster than just playing, but playing alone
+   * still gets there. Guests (no profile, never recorded — js/game.js) stay at level 1. */
+  const LEVELS = [
+    { level: 1, score: 0, unlocks: null },
+    { level: 2, score: 3, unlocks: { board: 'small' } },
+    { level: 3, score: 8, unlocks: { board: 'padma' } },
+    { level: 4, score: 16, unlocks: { board: 'large' } },
+    { level: 5, score: 30, unlocks: { scenario: 'abhimanyu' } },
+    { level: 6, score: 50, unlocks: null }
+  ];
+  function levelScore(stats) {
+    const s = stats || {};
+    return (s.matches || 0) + (s.wins || 0) * 2;
+  }
+  function levelFor(stats) {
+    const score = levelScore(stats);
+    let cur = LEVELS[0];
+    LEVELS.forEach(function (l) { if (score >= l.score) cur = l; });
+    const next = LEVELS[LEVELS.indexOf(cur) + 1] || null;
+    return { level: cur.level, score: score, next: next ? next.level : null, toNext: next ? next.score - score : 0 };
+  }
+  // the level at which a board or scenario key unlocks; the starting ones are always 1
+  function unlockLevel(kind, key) {
+    if ((kind === 'board' && key === 'wheel') || (kind === 'scenario' && key === 'duel')) return 1;
+    const found = LEVELS.filter(function (l) { return l.unlocks && l.unlocks[kind] === key; })[0];
+    return found ? found.level : 1;
   }
 
   function describeSave(save) {
@@ -744,6 +780,11 @@
     const host = document.getElementById('setup-form');
     const s = app.setup;
     const groups = [];
+    const myLevel = levelFor(app.profile && !app.guest ? app.profile.stats : null).level;
+    // a board/scenario the player (or the profile they just switched to) hasn't unlocked
+    // yet cannot stay selected — fall back to what's always open
+    if (unlockLevel('board', s.board) > myLevel) s.board = 'wheel';
+    if (unlockLevel('scenario', s.scenario) > myLevel) s.scenario = 'duel';
 
     groups.push({
       label: 'Opponent',
@@ -759,7 +800,8 @@
       key: 'scenario',
       options: Object.keys(U.SCENARIOS).map(function (k) {
         const sc = L.scenario(k);
-        return { v: k, title: sc.label, deva: sc.deva, sub: sc.blurb, icon: k === 'duel' ? 'sword' : 'bolt' };
+        const need = unlockLevel('scenario', k);
+        return { v: k, title: sc.label, deva: sc.deva, sub: sc.blurb, icon: k === 'duel' ? 'sword' : 'bolt', need: need };
       })
     });
     groups.push({
@@ -767,7 +809,8 @@
       key: 'board',
       options: (scen.boards || Object.keys(U.BOARDS)).map(function (k) {
         const b = L.board(k);
-        return { v: k, title: b.label, deva: b.deva, sub: b.blurb, icon: 'grid' };
+        const need = unlockLevel('board', k);
+        return { v: k, title: b.label, deva: b.deva, sub: b.blurb, icon: 'grid', need: need };
       })
     });
     if (s.mode === 'ai') {
@@ -813,15 +856,17 @@
           '<div class="opt-label">' + esc(label) + '</div>' +
           '<div class="mode-cards">' + g.options.map(function (o) {
             const on = String(app.setup.scenario) === String(o.v);
+            const locked = o.need > myLevel;
             const art = AC.art.artFor('card:' + o.v);
-            return '<button class="mode-card' + (on ? ' on' : '') + '" data-group="scenario" data-val="' + o.v + '"' +
-              (art ? ' style="background-image:url(\'' + art + '\')"' : '') + '>' +
-              (art ? '<span class="mode-card-art" aria-hidden="true" style="background-image:url(\'' + art + '\')"></span>' : '') +
+            return '<button class="mode-card' + (on ? ' on' : '') + (locked ? ' locked' : '') + '" data-group="scenario" data-val="' + o.v + '"' +
+              (locked ? ' data-need="' + o.need + '" aria-disabled="true"' : '') +
+              (art && !locked ? ' style="background-image:url(\'' + art + '\')"' : '') + '>' +
+              (art && !locked ? '<span class="mode-card-art" aria-hidden="true" style="background-image:url(\'' + art + '\')"></span>' : '') +
               '<span class="mode-card-body">' +
                 '<span class="mode-card-title">' + esc(o.title) + (o.deva ? ' <span class="deva">' + esc(o.deva) + '</span>' : '') + '</span>' +
-                '<span class="mode-card-sub">' + esc(o.sub) + '</span>' +
+                '<span class="mode-card-sub">' + (locked ? 'Unlocks at Level ' + o.need : esc(o.sub)) + '</span>' +
               '</span>' +
-              (on ? '<span class="mode-card-tick">' + A.icon('check') + '</span>' : '') +
+              (locked ? '<span class="mode-card-tick">' + A.icon('lock') + '</span>' : on ? '<span class="mode-card-tick">' + A.icon('check') + '</span>' : '') +
             '</button>';
           }).join('') + '</div></div>';
       }
@@ -830,15 +875,19 @@
         '<div class="opt-label">' + esc(label) + '</div>' +
         '<div class="opt-row">' + g.options.map(function (o) {
           const on = String(app.setup[g.key] == null ? (g.key === 'ruleset' ? 'vyuha' : '') : app.setup[g.key]) === String(o.v);
-          return '<button class="opt' + (on ? ' on' : '') + '" data-group="' + g.key + '" data-val="' + o.v + '">' +
-            '<span class="opt-title">' + A.icon(o.icon) + esc(o.title) + (o.deva ? ' <span class="deva">' + esc(o.deva) + '</span>' : '') + '</span>' +
-            '<span class="opt-sub">' + esc(o.sub) + '</span></button>';
+          const locked = o.need > myLevel;
+          return '<button class="opt' + (on ? ' on' : '') + (locked ? ' locked' : '') + '" data-group="' + g.key + '" data-val="' + o.v + '"' +
+            (locked ? ' data-need="' + o.need + '" aria-disabled="true"' : '') + '>' +
+            '<span class="opt-title">' + A.icon(locked ? 'lock' : o.icon) + esc(o.title) + (o.deva ? ' <span class="deva">' + esc(o.deva) + '</span>' : '') + '</span>' +
+            '<span class="opt-sub">' + (locked ? 'Unlocks at Level ' + o.need : esc(o.sub)) + '</span></button>';
         }).join('') + '</div></div>';
     }).join('');
 
     host.onclick = function (e) {
       const b = e.target.closest('[data-group]');
       if (!b) return;
+      const need = b.getAttribute('data-need');
+      if (need) { sfx('error'); FX.toast('Unlocks at Level ' + need + ' — play and win more battles.', 'warn'); return; }
       const key = b.getAttribute('data-group');
       let val = b.getAttribute('data-val');
       if (key === 'timer') val = Number(val);
@@ -1590,6 +1639,8 @@
     patchSettings: patchSettings,
     quickBattle: quickBattle,
     ladder: ladder,
+    levelFor: levelFor,
+    unlockLevel: unlockLevel,
     boot: boot,
     openProfile: openProfile,
     artLanded: artLanded,

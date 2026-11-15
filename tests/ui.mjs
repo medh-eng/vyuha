@@ -288,6 +288,20 @@ async function run() {
   click($('#btn-new-match'));
   ok(!$('#screen-setup').hidden, 'setup screen opens');
   ok($$('#setup-form .opt').length >= 9, 'setup options rendered');
+
+  // ── T-34: a level-1 profile has not unlocked Kurukshetra yet ──
+  ok(AC.ui.levelFor(AC.app.profile.stats).level === 1, 'a fresh profile starts at level 1');
+  const lockedLarge = document.querySelector('#setup-form [data-group="board"][data-val="large"]');
+  ok(!!lockedLarge && lockedLarge.classList.contains('locked') && /Unlocks at Level/.test(lockedLarge.textContent),
+    'Kurukshetra shows locked for a level-1 profile');
+  click(lockedLarge);
+  ok(AC.app.setup.board !== 'large', 'tapping a locked battlefield does not select it');
+  // level up by playing (T-34's combined score), then it unlocks for free — stay at
+  // 0 wins so this does not also trigger the Pratigya vow offer (wins >= 1) downstream
+  AC.app.profile.stats = Object.assign({}, AC.app.profile.stats, { matches: 60, wins: 0 });
+  AC.ui.renderSetup();
+  ok(AC.ui.levelFor(AC.app.profile.stats).level === 6, 'playing and winning raises the level');
+
   click(document.querySelector('#setup-form [data-group="board"][data-val="large"]'));
   click(document.querySelector('#setup-form [data-group="tie"][data-val="mutual"]'));
   click($('#btn-start-match'));
