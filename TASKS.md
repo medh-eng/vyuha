@@ -5,7 +5,7 @@ Chapters and history stay in `docs/ROADMAP.md`; what the last session did is in 
 Rules: one line per task, an ID that never changes, "done when" in plain words. Tick it (`[x]`) and
 move it to **Done** in the same pull request that finishes it. Add new work here first.
 
-Last updated: 15 Nov 2026 (T-14 media QA and the merges of Parts 1 and 2).
+Last updated: 15 Nov 2026 (Quiet Gate screened in banks 5 and 6).
 
 ## Now
 
@@ -35,7 +35,7 @@ Last updated: 15 Nov 2026 (T-14 media QA and the merges of Parts 1 and 2).
 | ID | Owner | Task |
 |---|---|---|
 | T-11 | S | Sarvam Batch 6.2–6.6: shorten + record the 4 long lines, record the 18 pending, vow strings, Chapter IV lines, respect read, Marathi read |
-| T-12 | G | ChatGPT Batch 6.2–6.5: screen the four heroes (50–58 %), retune quiet-gate, AI hero awareness, hero-card design in Pata |
+| T-12 | G | ChatGPT Batch 6.2, 6.4 and 6.5: hero screening, AI hero awareness and Pata hero-card design. Heroes follow the campaign (see docs/REVIEW.md) |
 | T-13 | C | Respect review by three players from different backgrounds (`docs/DIRECTOR.md` §6) |
 
 ## Later
@@ -45,6 +45,8 @@ Last updated: 15 Nov 2026 (T-14 media QA and the merges of Parts 1 and 2).
   challenge-a-friend link · name/trademark search · IP review of the rules.
 
 ## Done (newest first)
+
+- [x] T-12 / Batch 6.3: Quiet Gate retuned and screened on two fresh banks. All four results meet the target. Candidate awaits Director integration (docs/balance/README.md).
 
 - [x] T-14 ChatGPT Batch 6.1: media QA checks all four Pata paintings and Classic bronze films, reduced motion and battery saver. Run `node tools/media-qa.mjs` for both looks.
 - [x] T-24 and T-29: Parts 1 and 2 merged in PRs #26 and #27 (15 Nov).
