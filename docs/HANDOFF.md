@@ -1,5 +1,23 @@
 # Handoff — latest status
 
+**15 November 2026 · Director.** T-34 scoped, not built: the Commander asked for a leveling
+system — battle modes, formations and options locked at the start, unlocked by matches played
+and matches won, with a Play Store paid option to unlock everything at once. That paid
+unlock-all would have broken the Launch-section rule in `docs/ROADMAP.md` ("never power, never
+real money") and the project's own never-change rule in `AGENTS.md`/`VYUHA-CONTEXT.md` ("No
+pay-for-power, no real money"), so I flagged it before building anything. Resolved: progression
+stays entirely free (level up by playing/winning unlocks modes/fields/options for everyone, no
+payment path); a paid Play Store "edition" may still exist but is restricted to extra cosmetic
+looks/art, same as the cosmetic-folk-art-editions line already on the roadmap. See T-34 in
+`TASKS.md` and the Launch section of `docs/ROADMAP.md` for the design brief — level/XP formula,
+a `data/` table of what unlocks at which level, and "locked, unlocks at level N" UI are still to
+design and build.
+
+Also this session: T-33 (below) landed, after fixing a CI regression it introduced — see its
+own entry — and PR #34 is merged.
+
+---
+
 **15 November 2026 · Director.** T-33: unmissable first battle, after the Commander's own
 playtest (`docs/ROADMAP.md` Playtest notes) found the lesson offer silent on two of three
 entry points. `offerLessonsThen()` now gates Quick, Custom and the Daily alike, the modal

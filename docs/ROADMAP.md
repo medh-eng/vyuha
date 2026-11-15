@@ -105,6 +105,12 @@ Engine and rules untouched; runs beside the hero work.
 - [ ] **[C]** Name/trademark search for "VYUHA"; IP review of the rules before going commercial (not legal advice)
 - [ ] **[C]** Launch week — Makar Sankranti is the natural moment
 - [ ] **[D]** Monetisation, if any: cosmetic folk-art editions only; never power, never real money
+- [ ] **[D]** Progression (T-34, 15 Nov): battle modes, formations/fields and in-game options unlock
+  for free by level — matches played, matches won. This is the retention loop, not a monetisation
+  path, so none of it may sit behind payment: that would be pay-for-power or close enough to read as
+  it. A paid Play Store "edition" (if built at all) stays inside the line above — extra cosmetic
+  looks/art only, never a mode, field or feature. Needs: a level/XP formula, a gated-content table in
+  `data/` (which fields/modes/options unlock at which level), and UI for "locked, unlocks at level N."
 
 ---
 

@@ -29,6 +29,7 @@ Last updated: 15 Nov 2026 (Sarvam Batch 6.1: Hindi and Marathi for the 102 pendi
 | T-22 | D | `tools/battle-log.mjs` failed once in six runs (7 Nov, message not kept): make it log every failed check to a file, then find the flake | six clean runs |
 | T-21 | D | Rang Phase 3, rest: festival days on the Daily and a sound pass (levels, overlaps) across every screen | PR |
 | T-31 | D | `tools/language-shots.mjs` is flaky at `visible cell r1s0`: the cell has no layout box ~250 ms after `startPrepared`. Reproduced on `main` at `6849539` (2 of 2 runs) and on `sarvam/batch-6.1-strings` (3 of 5) — wait for the board to lay out instead of the fixed 250 ms | ten clean runs |
+| T-34 | D | **Progression system** (Commander, 15 Nov): battle modes, formations/fields and options start locked and unlock for free as a player's level rises, driven by matches played and matches won — see design note below. A separate paid Play Store "edition" may unlock extra cosmetic looks only (new Pata art, skins), never a mode/feature/field; everything unlockable by playing must stay free. Confirms the Launch-section rule in `docs/ROADMAP.md`: "never power, never real money" | design doc + `data/` schema for level thresholds and gated content |
 
 ## Waiting on others
 
