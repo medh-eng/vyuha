@@ -25,6 +25,36 @@ Honest limits: **no native-speaker review** of the new Hindi or Marathi (T-30 is
 phone test; older engine prose outside the catalogue (help and coach lines, event log sentences) is still
 English — that is T-17 and the coverage boundary in `docs/i18n/README.md`.
 
+**15 November 2026 · Sarvam (second batch).** Batches 6.2–6.5 done: the 18 pending recordings, the four short lines, the vow strings, Chapter IV, the respect read.
+
+## Sarvam Batch 6.2–6.5 — what changed
+
+| Item | What changed | Where |
+|---|---|---|
+| The 18 pending recordings (6.3) | Re-voiced: 16 Hindi and 2 English. The stale-audio guard is now **empty** (`VOICE_PENDING`), so these lines speak again instead of showing text only | `assets/audio/voice/{hi,en}/…`, `js/sanjaya.js`, `docs/voice/pending-recordings.json` |
+| The four long lines (6.2) | Shortened, then re-recorded, all now inside 3.3 s at pace 1.15: `volley_kill_1` 2.56 s, `assassinate_1` 2.64 s, `trap_defused_1` (en) 3.03 s, `rotate_padma_1` (en) 2.80 s | `js/sanjaya.js` → `docs/voice/sanjaya-lines.csv`; record in `incoming/text/sanjaya-short-2026-11-01.csv` |
+| A fifth line, found by measuring | `astra_vayavya_enemy_1` ran **6.14 s** (English) / 5.62 s (Hindi) — the longest line in the game, far past the 4 s bar. Shortened and re-recorded: 3.92 s both | same |
+| Vow strings (6.4) | 45 Pratigya keys in Hindi and Marathi; the Deva vow words and the title names kept | `incoming/i18n/pratigya.hi.json`, `pratigya.mr.json` |
+| Chapter IV lines (6.5) | 14 lines written, **not recorded** (2 per id, `vow_taken`, `vow_kept`, `vow_broken`, `hero_bhima_holds`, `hero_karna_armour`, `hero_ghatotkacha_night`, `hero_dhrishtadyumna_gate`). Columns as in `sanjaya-lines.csv`; every line is 11 words or fewer | `incoming/text/sanjaya-chapter4.csv` |
+| Respect read (6.5) | Hero quotes and vow names read for what could land wrong; natural Hindi given for all eight hero quotes. Top flag: **Drona as a capturable piece** — get one external opinion before release | `incoming/text/heroes-respect-read.md` |
+
+### Read this before release: the narrator is now two voices
+
+The Director's Batch 4.1/6.3 note specifies **speaker `rahul`, pace 1.15**, and that is what I recorded —
+22 files. The 88 older files are **speaker `ashutosh`, pace 0.9** (`incoming/voice/VOICE.md`). So Sanjaya
+is currently two different men, and `VOICE.md`'s own rule is one voice for the whole game. Either accept
+rahul as the voice and regenerate everything (`SARVAM_API_KEY=… python3 tools/voice-gen.py --speaker rahul
+--pace 1.15`), or tell me to re-record these 22 with ashutosh at 0.9 — the four short lines would then need
+checking against the Calm budget again. I did not regenerate the other 88 without approval.
+
+Measured after recording: longest line in the game is now `dawn_1` (Hindi) at 4.36 s; four Hindi lines sit
+between 4.2 and 4.4 s (`dawn_1`, `start_abhimanyu_1`, `lose_capture_1`, `astra_sammohana_enemy_1`), all with
+text that was not in scope to shorten. Everything else is under 4 s; the median is 2.9 s.
+
+Checks: `tests/languages.mjs` (the guard is still tested, now by injecting a pending id) · `tests/rules.mjs`
+166 · self-play 40 · Daily · UI 212 · data 159 · audio 44 · log 18 · pace-budget (46 line/voice pairs, no routine line over budget) · the hi/mr layout harness, which passed Hindi at 390 and 360 and Marathi at 390 before hitting the known T-31 flake (`visible cell r1s0`) — nothing to do with this batch.
+No native-speaker review; no human phone test; Batch 6.6 still open.
+
 ## State
 
 The hard review and its four-part plan are **`docs/REVIEW.md`** — read it first.

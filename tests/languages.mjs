@@ -35,9 +35,14 @@ assert.equal(L.text('lesson.move.title', 'Existing English'), 'Existing English'
 const played = [];
 globalThis.Audio = class { constructor(url) { this.url = url; } play() { played.push(this.url); return Promise.resolve(); } pause() {} };
 // Lines queue rather than interrupt, so each check starts from a quiet narrator.
-SJ.setLang('hi'); SJ.say('scan', { force: true }); assert.equal(played.length, 0, 'a held Hindi recording stays silent');
-SJ.stop(); SJ.say('fort_won', { force: true }); assert.ok(played.at(-1).endsWith('/hi/fort_won_1.mp3'), 'a current recording plays');
-SJ.stop(); SJ.setLang('en'); SJ.say('astra_vayavya_enemy', { force: true }); assert.equal(played.length, 1, 'a held English recording stays silent');
+SJ.setLang('hi'); SJ.say('fort_won', { force: true }); assert.ok(played.at(-1).endsWith('/hi/fort_won_1.mp3'), 'a current recording plays');
 SJ.stop();
-assert.equal(SJ.voicePending.hi.length, 16); assert.equal(SJ.voicePending.en.length, 2);
+// The guard is still real: a line listed as pending stays silent until it is re-voiced.
+SJ.voicePending.hi.push('scan_1');
+SJ.say('scan', { force: true }); assert.equal(played.length, 1, 'a held Hindi recording stays silent');
+SJ.stop(); SJ.voicePending.hi.length = 0;
+SJ.setLang('en'); SJ.voicePending.en.push('astra_vayavya_enemy_1');
+SJ.say('astra_vayavya_enemy', { force: true }); assert.equal(played.length, 1, 'a held English recording stays silent');
+SJ.stop(); SJ.voicePending.en.length = 0;
+assert.equal(SJ.voicePending.hi.length, 0); assert.equal(SJ.voicePending.en.length, 0);
 console.log(L.keys.length + '-key catalogues, state separation, fallbacks and stale voice guards passed.');

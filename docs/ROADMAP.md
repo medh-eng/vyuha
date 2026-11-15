@@ -31,7 +31,7 @@ History: `docs/WORKLOG.md`.
 
 - [ ] **[C]** Phone test: three Calm battles, one Quick, portrait and landscape; warmth after 10–20 min
 - [ ] **[C]** Five real people play Pehla Yuddh and one Daily on their own phones (`incoming/text/playtest.md`); notes below
-- [ ] **[S]** Record 18 lines whose text changed in review + 4 shorter routine lines (`docs/agents/SARVAM.md` Batch 4)
+- [x] **[S]** Record 18 lines whose text changed in review + 4 shorter routine lines — done 15 Nov, guard cleared (Batch 6.2-6.3)
 - [ ] **[S]** A native speaker reads the Marathi interface
 - [ ] **[C][G]** Art still open: full-screen effects, gate-breach art, store art (`docs/prompts/ART.md`)
 - [ ] **[C]** Respect review by at least three players from different backgrounds (`DIRECTOR.md` §6)
@@ -84,7 +84,7 @@ Engine and rules untouched; runs beside the hero work.
 - [ ] **[G]** Screen the four heroes (50–58 % target) — Karna on the Maharathi ran 60.5 % in the first bank
 - [ ] **[G]** AI values hero traits (`predict`, `strikeOdds`)
 - [ ] **[G]→[D]** Hero card design (`incoming/text/hero-cards-design.md`), then the Director builds the card, the pick and the four active heroes (Arjuna, Drona, Abhimanyu, Bhishma); the card's art and styling wait for Gate 1 of *Rang*
-- [ ] **[S]** Vow strings in Hindi/Marathi; Sanjaya's vow and hero lines
+- [x] **[S]** Vow strings in Hindi/Marathi; Sanjaya's vow and hero lines written, respect read done (15 Nov); recordings wait for the Director's approval of the text
 - [ ] **[C]** Vow stamps and title seals (`docs/prompts/ART.md`, Chapter IV)
 - [ ] **[D]** Campaign map: the seven vyuhas, one lesson each (drafts: `incoming/text/campaign.md`)
 - [ ] **[D]** Facing, introduced in the Krauncha chapter
