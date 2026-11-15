@@ -1,5 +1,31 @@
 # Handoff — latest status
 
+**15 November 2026 · Director.** T-33: unmissable first battle, after the Commander's own
+playtest (`docs/ROADMAP.md` Playtest notes) found the lesson offer silent on two of three
+entry points. `offerLessonsThen()` now gates Quick, Custom and the Daily alike, the modal
+can no longer be dismissed by a stray backdrop tap, and the decline is reworded from "Fight
+now" to "Skip — I've played before" so it reads as a real claim rather than an equally
+tempting shortcut. Sanjaya's ambient lines (dawn, a scan, Shakti full — tier 1–2 in the
+priority table) now stay quiet while a coached step is open, in Pehla Yuddh and the wheel
+lessons alike, via a suppressor the audio module exposes and `js/modes.js` sets; a line a
+step actually waits on (a clash, a trap, an astra, the wheel turning) is unaffected. No
+change to the lessons' own content, to a returning player's home screen, or to any mode once
+the lessons are done. Checks: rules 166 · UI 219 (7 new, covering the offer itself) · data
+159 · audio 44 · first-session (unchanged) · landscape 122.
+
+This does not satisfy T-05 — the boy was coached throughout, not left silent — but it is the
+first evidence from outside this repo, and this fix is a direct response to it, not campaign
+content, so it did not wait behind the gate.
+
+CI follow-up (same day, PR #34): `tools/shots.mjs` and `tools/perf-idle.mjs` both click
+`#btn-new-match` from a freshly cleared profile, which the new offer now catches too —
+neither harness answered the modal, so both timed out waiting for `#screen-setup`. Fixed by
+taking the honest skip in both tools before the tutorial lands on `main`. Rebased onto PRs
+#29/#31/#33 (Sarvam's strings, merged first); re-ran rules 166 · UI 219 · data 159 · both
+screenshot sets · both idle-heat viewports — all clean.
+
+---
+
 **15 November 2026 · Sarvam.** Batch 6.1 landed — Hindi and Marathi for the 102 pending strings (T-06, PR #29).
 
 ## Sarvam Batch 6.1 — what changed
