@@ -5,7 +5,7 @@ Chapters and history stay in `docs/ROADMAP.md`; what the last session did is in 
 Rules: one line per task, an ID that never changes, "done when" in plain words. Tick it (`[x]`) and
 move it to **Done** in the same pull request that finishes it. Add new work here first.
 
-Last updated: 15 Nov 2026 (Quiet Gate screened in banks 5 and 6).
+Last updated: 15 Nov 2026 (Quiet Gate balance and Pata hero-card design).
 
 ## Now
 
@@ -35,7 +35,7 @@ Last updated: 15 Nov 2026 (Quiet Gate screened in banks 5 and 6).
 | ID | Owner | Task |
 |---|---|---|
 | T-11 | S | Sarvam Batch 6.2–6.6: shorten + record the 4 long lines, record the 18 pending, vow strings, Chapter IV lines, respect read, Marathi read |
-| T-12 | G | ChatGPT Batch 6.2, 6.4 and 6.5: hero screening, AI hero awareness and Pata hero-card design. Heroes follow the campaign (see docs/REVIEW.md) |
+| T-12 | G | ChatGPT Batch 6.2 (four-hero balance screen) and 6.4 (AI hero awareness) remain; Batch 6.5 design delivered in incoming/text/hero-cards-design.md. Hero gameplay follows the campaign (docs/REVIEW.md) |
 | T-13 | C | Respect review by three players from different backgrounds (`docs/DIRECTOR.md` §6) |
 
 ## Later
@@ -45,6 +45,8 @@ Last updated: 15 Nov 2026 (Quiet Gate screened in banks 5 and 6).
   challenge-a-friend link · name/trademark search · IP review of the rules.
 
 ## Done (newest first)
+
+- [x] T-12 / Batch 6.5: Pata hero-card placements and four future active hero flows specified in incoming/text/hero-cards-design.md; written design only, not playable (15 Nov).
 
 - [x] T-12 / Batch 6.3: Quiet Gate retuned and screened on two fresh banks. All four results meet the target. Candidate awaits Director integration (docs/balance/README.md).
 
