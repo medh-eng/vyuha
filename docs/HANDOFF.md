@@ -2,7 +2,7 @@
 
 **13 November 2026 (evening) · Director.** Replace this file at the end of each session.
 
-**15 November 2026 · Sarvam.** Batch 6.1 landed — Hindi and Marathi for the 102 pending strings (T-06).
+**15 November 2026 · Sarvam.** Batch 6.1 landed — Hindi and Marathi for the 102 pending strings (T-06, PR #29).
 
 ## Sarvam Batch 6.1 — what changed
 
