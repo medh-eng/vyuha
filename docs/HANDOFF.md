@@ -55,7 +55,7 @@ Checks: `tests/languages.mjs` (the guard is still tested, now by injecting a pen
 166 · self-play 40 · Daily · UI 212 · data 159 · audio 44 · log 18 · pace-budget (46 line/voice pairs, no routine line over budget) · the hi/mr layout harness, which passed Hindi at 390 and 360 and Marathi at 390 before hitting the known T-31 flake (`visible cell r1s0`) — nothing to do with this batch.
 No native-speaker review; no human phone test; Batch 6.6 still open.
 
-**15 November 2026 · Sarvam (third pass).** The last of the Sarvam queue, and the paperwork that was owed.
+**15 November 2026 · Sarvam (third pass, PR #33).** The last of the Sarvam queue, and the paperwork that was owed.
 
 ## Sarvam, third pass — what changed
 
