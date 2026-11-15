@@ -185,9 +185,21 @@
       state.shakti[2] = Math.min(SHAKTI_MAX, startShakti[2] || 0);
     }
     deployPreset(state, 1, 'citadel');
-    // the opponent never shows the same formation twice in a row
-    deployPreset(state, 2, cfg.enemyPreset || PRESETS[Math.floor(Math.random() * PRESETS.length)]);
+    // the opponent never shows the same formation twice in a row. With a seed (a friend's challenge
+    // link, 13 Nov 2026) the enemy's formation is fixed by it, so both players face the same army.
+    const r = cfg.seed != null ? seededRng(cfg.seed) : Math.random;
+    deployPreset(state, 2, cfg.enemyPreset || PRESETS[Math.floor(r() * PRESETS.length)], cfg.seed != null ? r : undefined);
     return state;
+  }
+
+  function seededRng(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
   }
 
   /* ── deployment ──────────────────────────────────────────────── */
@@ -1140,7 +1152,7 @@
         log(state, 'core', faction(unit.owner) + ' took the enemy fort with a volley!', to, volleyBy);
         chron(state, unit.owner).tookFort = true;
         snapshot(state, 'barrage-core');
-        endGame(state, unit.owner, faction(unit.owner) + ' took the enemy fort with a volley on turn ' + state.turn + '.', events);
+        endGame(state, unit.owner, faction(unit.owner) + ' took the enemy fort with a volley on turn ' + state.turn + '.', events, 'fort');
         return { ok: true, type: type, events: events };
       }
       if (target.key === 'B') {
@@ -1265,17 +1277,21 @@
 
     if (res.core) {
       chron(state, unit.owner).tookFort = true;
-      endGame(state, unit.owner, faction(unit.owner) + ' captured the enemy fort on turn ' + state.turn + '.', events);
+      endGame(state, unit.owner, faction(unit.owner) + ' captured the enemy fort on turn ' + state.turn + '.', events, 'fort');
       return { ok: true, type: type, events: events };
     }
     finishTurn(state, events);
     return { ok: true, type: type, events: events };
   }
 
-  function endGame(state, winner, reason, events) {
+  /* How a battle ended, for the result card and Sanjaya (13 Nov 2026):
+   * fort · movers (the loser has nothing left that can move) · limit (a scenario's rounds ran out)
+   * · sunset · quiet (no piece fell for too long) · stalemate · conceded (resign). */
+  function endGame(state, winner, reason, events, kind) {
     state.phase = 'over';
     state.winner = winner;
     state.reason = reason;
+    state.endKind = kind || 'conceded';
     state.viewer = 3;
     log(state, 'end', reason);
     snapshot(state, 'end');
@@ -1297,14 +1313,14 @@
     state.turn++;
     const cap = state.config.roundCap != null ? state.config.roundCap : (U.BOARDS[state.boardKey] && U.BOARDS[state.boardKey].roundCap) || 0;
     if (!state.turnLimit && cap && state.turn > cap) {
-      ceasefire(state, 'Sunset on round ' + cap + ' — the war cannot go on.', events);
+      ceasefire(state, 'Sunset on round ' + cap + ' — the war cannot go on.', events, 'sunset');
       return;
     }
     if (state.turnLimit && state.turn > state.turnLimit) {
       const w = state.limitWinner || 2;
       endGame(state, w, w === 2
         ? 'The rounds ran out — the chakra closed and the breach failed.'
-        : 'The rounds ran out — the line held and ' + faction(w) + ' wins.', events);
+        : 'The rounds ran out — the line held and ' + faction(w) + ' wins.', events, 'limit');
       return;
     }
     if (hasRotation(state) && state.turn % (state.rotation.every || 5) === 0) rotate(state, events);
@@ -1329,14 +1345,15 @@
     return s;
   }
 
-  function ceasefire(state, why, events) {
+  function ceasefire(state, why, events, kind) {
+    kind = kind || 'quiet';
     const a = strengthOf(state, 1);
     const b = strengthOf(state, 2);
     if (a === b) {
-      endGame(state, 0, why + ' Both armies are equal in strength (' + a + ') — the field is shared.', events);
+      endGame(state, 0, why + ' Both armies are equal in strength (' + a + ') — the field is shared.', events, kind);
     } else {
       const w = a > b ? 1 : 2;
-      endGame(state, w, why + ' ' + faction(w) + ' holds the field, stronger ' + Math.max(a, b) + ' to ' + Math.min(a, b) + '.', events);
+      endGame(state, w, why + ' ' + faction(w) + ' holds the field, stronger ' + Math.max(a, b) + ' to ' + Math.min(a, b) + '.', events, kind);
     }
     state.ceasefire = true;
   }
@@ -1365,13 +1382,19 @@
         continue;
       }
       if (!hasAnyLegalMoves(state, other(next), true)) {
-        endGame(state, 0, 'Stalemate — neither commander has a legal action left.', events);
+        endGame(state, 0, 'Stalemate — neither commander has a legal action left.', events, 'stalemate');
       } else {
-        endGame(state, other(next), faction(next) + ' has no piece left that can move — only the fort and its traps stand. The field is conceded.', events);
+        // The loser has nothing left that can move: the fort stands undefended and falls. Same result
+        // as before (the Stratego rule); now the fort's fall is shown and spoken, not just written.
+        let fortAt = null;
+        forEachUnit(state, function (u, id) { if (u.owner === next && u.key === 'F') fortAt = id; });
+        if (events && fortAt) events.push({ kind: 'abandon', sfx: 'core', at: fortAt, owner: next, winner: other(next),
+          text: 'No ' + faction(next) + ' fighter is left to stand. The fort is open.' });
+        endGame(state, other(next), faction(next) + ' has no piece left that can move — only the fort and its traps stand. The field is conceded.', events, 'movers');
       }
       return;
     }
-    endGame(state, 0, 'Stalemate — both armies stand entranced.', events);
+    endGame(state, 0, 'Stalemate — both armies stand entranced.', events, 'stalemate');
   }
 
   function beginBattle(state) {

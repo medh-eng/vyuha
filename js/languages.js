@@ -149,7 +149,7 @@
     "result.shared": "The field is shared",
     "result.share": "Share result",
     "result.rematch": "Rematch",
-    "share.cta": "Abhimanyu got in. Can you get out?",
+    "share.cta": "Same wheel for everyone today. Can you break in?",
     "gate.broken": "The gate is broken. One more blow takes the fort.",
     "sky.day": "Dawn — the hour of Surya",
     "sky.night": "Night — the hour of Chandra"
@@ -300,7 +300,7 @@
     "result.shared": "मैदान बराबरी का",
     "result.share": "नतीजा साझा कीजिए",
     "result.rematch": "फिर लड़िए",
-    "share.cta": "अभिमन्यु अंदर पहुँच गया। आप निकल पाएँगे?",
+    "share.cta": "आज सबके लिए एक ही चक्र। क्या आप भीतर घुस पाएँगे?",
     "gate.broken": "द्वार टूट गया। एक वार और, दुर्ग आपका।",
     "sky.day": "भोर — सूर्य का पहर",
     "sky.night": "रात — चंद्र का पहर"
@@ -451,7 +451,7 @@
     "result.shared": "मैदान बरोबरीचे",
     "result.share": "निकाल शेअर करा",
     "result.rematch": "पुन्हा लढा",
-    "share.cta": "अभिमन्यू आत पोहोचला. तुम्ही बाहेर पडाल?",
+    "share.cta": "आज सगळ्यांसाठी एकच चक्र. तुम्ही आत घुसू शकाल?",
     "gate.broken": "दरवाजा तुटला. अजून एक वार, दुर्ग तुमचा.",
     "sky.day": "पहाट — सूर्याचा प्रहर",
     "sky.night": "रात्र — चंद्राचा प्रहर"

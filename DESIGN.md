@@ -75,6 +75,15 @@ stays in Settings and as the fallback.
 - **One main button on the result card.** Rematch, or — on the win that clears a ladder rung —
   "Face <next opponent>" in its place, with the saffron ladder note above it.
 
+### Endings and the friend's challenge (13 Nov 2026)
+
+- **Every ending is shown, not only written.** The fort taken, the fort left undefended (the last
+  mover fell) — both get the fort card and Sanjaya's fort line. Sunset gets a countdown with the
+  bala (yours first) in the GOAL box for the last ten rounds.
+- **Stage cards: ink on cotton.** In the Pata look the sentence under a verdict is `--txt-2`.
+- **Challenge a friend** replaces Share on a result against the AI. The text promises only what is
+  true: same field, same opponent, same enemy formation.
+
 ## 4. Reading the battle (first-session clarity)
 
 - **Odds are words first:** Likely win (≥ 60 %), Uncertain (35–59 %), Likely loss (< 35 %), based

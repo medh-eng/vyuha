@@ -63,7 +63,7 @@ Engine and rules untouched; runs beside the hero work.
 ## Hard review (13 Nov 2026) — `docs/REVIEW.md`
 
 - [x] **[D]** Part 1: scenario paintings in; Yuddh karo ladder Sainik → Dronacharya → Shakuni with the promotion on the result card; home and result card rebuilt for a phone held sideways (PR open)
-- [ ] **[D]** Part 2: battles end at the fort (out-of-movers, Kurukshetra sunset), Daily briefing wording, challenge-a-friend link
+- [x] **[D]** Part 2: endings shown (fort-fall card for out-of-movers; sunset countdown with bala), Daily briefing wording, Challenge a friend link (PR #27)
 - [ ] **[C]** **The gate:** five silent first-session playtests (T-05)
 - [ ] **[D]** Part 3: the Seven Vyuhas campaign (one rule a battle), Abhimanyu Escape
 - [ ] **[D][C]** Part 4: Hindi/Marathi finished, Android build, store
@@ -72,7 +72,7 @@ Engine and rules untouched; runs beside the hero work.
 
 - [x] **[D]** Step 1: board size, labels, goal + chakra countdown in view, contrast, astra states (PR #19)
 - [x] **[D]** Step 2: four wheel lessons before the first battle; odds in words (Likely win / Uncertain / Likely loss, Certain once ranks are known); Confirm strike / Cancel (7 Nov, PR #21)
-- [ ] **[S]** Hindi/Marathi for the 79 pending strings (Sarvam Batch 6.1) (`docs/i18n/pending-first-session.en.json`)
+- [ ] **[S]** Hindi/Marathi for the 102 pending strings (Sarvam Batch 6.1) (`docs/i18n/pending-first-session.en.json`)
 - [x] **[D]** Step 3: dashed landing rings one round before the turn, warning, gold cells for exposed enemy ranks after (7 Nov, PR open)
 - [x] **[D]** Step 4: battle log from your side — You/Enemy, cell names, your pieces by name, tap to mark cells; Sanjaya's priority table with checks (7 Nov, PR open)
 - [ ] **[C]** 5–10 real first-session playtests (lessons → first battle), then puzzles, seven-vyuha campaign, Abhimanyu Escape

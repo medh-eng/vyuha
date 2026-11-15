@@ -13,7 +13,9 @@ Last updated: 13 Nov 2026 (hard review `docs/REVIEW.md`, Part 1: ladder, home an
 |---|---|---|---|
 | T-24 | C | Merge the pull request: review Part 1 — scenario paintings, the ladder (Sainik → Dronacharya → Shakuni), home and result card sideways | merged, live |
 | T-05 | C | **The gate for Part 3:** five people who have never seen the game, on their own phones, watched in silence for ten minutes (Home → first battle). Write where each one stops in `docs/ROADMAP.md` | notes added |
-| T-25 | C | On the phone, sideways: is Yuddh karo on the first home screen? After a battle, are all the result buttons in view? | a yes/no each |
+| T-25 | C | On the phone, sideways: is Yuddh karo on the first home screen? After a battle, are all the result buttons in view? Win a battle, tap **Challenge a friend**, send it to yourself on WhatsApp and open it — does the briefing appear? | a yes/no each |
+| T-29 | C | Merge PR #27 (Part 2: endings shown, Daily wording, Challenge a friend) — after #26, it is stacked on it | merged, live |
+| T-30 | C/S | A native reader checks the new Hindi and Marathi Daily share line (`share.cta`) | ok or a correction |
 | T-23 | C | Tidy GitHub: repository → **Branches** → delete the 26 old branches marked *Merged* (every commit is in `main`); then **Settings → General → Automatically delete head branches** on, so merged PR branches go by themselves. Claude sessions cannot delete branches | only `main` + open PR branches left |
 | T-02 | C | On the phone: play a Quick battle on Sarvatobhadra and Kurukshetra sideways; say whether the turned field helps | a yes/no and any trouble |
 | T-03 | C | On the phone: play Quick to round 5 on the wheel; do the dashed landing rings help or clutter? | a yes/no |
@@ -23,10 +25,7 @@ Last updated: 13 Nov 2026 (hard review `docs/REVIEW.md`, Part 1: ladder, home an
 
 | ID | Owner | Task | Done when |
 |---|---|---|---|
-| T-26 | D | Review Part 2: battles should end at the fort — a rule for the side that runs out of movers (63 of 200 wheel battles, 82 of 150 lotus), and Kurukshetra's sunset (39 of 60). Screen each on two fresh seed banks | PR with the banks |
-| T-27 | D | The Daily briefing says the task (break in); "Can you get out?" is kept for the escape mode | PR |
-| T-28 | D | Challenge-a-friend link: field, opponent and seed in the link, the sender's rounds to beat; no server | PR |
-| T-06 | S | Sarvam Batch 6.1: Hindi and Marathi for the 79 strings in `docs/i18n/pending-first-session.en.json` | catalogues merged, `tests/languages.mjs` passes |
+| T-06 | S | Sarvam Batch 6.1: Hindi and Marathi for the 102 strings in `docs/i18n/pending-first-session.en.json` | catalogues merged, `tests/languages.mjs` passes |
 | T-08 | C | New night painting for the wheel (`chakra-night`) in the same true-indigo style as the other three | file supplied |
 | T-10 | C | Add the three new night masters to your masters zip and Release (`docs/MASTERS.md`) | done |
 | T-14 | G | ChatGPT Batch 6.1: `tools/media-qa.mjs` expects Classic astra films; in Pata (default) the moment shows a still, so the astra scenarios fail (on `main` too). Test both looks | harness passes in Pata and Classic |
@@ -50,6 +49,7 @@ Last updated: 13 Nov 2026 (hard review `docs/REVIEW.md`, Part 1: ladder, home an
 
 ## Done (newest first)
 
+- [x] T-26 endings shown (fort-fall card, sunset + bala in the GOAL box); T-27 Daily wording; T-28 Challenge a friend; stage-card text fixed in Pata (13 Nov, PR #27)
 - [x] T-20 Scenario paintings `card-duel`, `card-abhimanyu` supplied by the Commander and wired in (13 Nov)
 - [x] Hard review and plan `docs/REVIEW.md`; Part 1: the ladder, home and result card sideways (13 Nov)
 - [x] T-19 PR #25 merged (7 Nov)

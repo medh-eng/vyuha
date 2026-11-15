@@ -282,3 +282,10 @@ tuning.
 - **The ladder:** Yuddh karo → Sainik until two wins, Dronacharya until three, then Shakuni; promotion on the result card ("Face Dronacharya"). A first battle against Dronacharya was a first defeat (Sainik-level play won 17 of 100).
 - **Sideways:** Yuddh karo is on the first home screen (was at 461 px of 411); the result card's buttons no longer fall off the edge.
 - `AC.game.conclude`; 11 new UI tests; five `ladder.*` strings queued for Hindi/Marathi (79 pending).
+
+## 13 Nov 2026 (evening) — hard review, Part 2
+
+- **Endings shown, rules kept.** `state.endKind`; out-of-movers now plays as the fort's fall (card, burst, Sanjaya's fort line, a result line from your side); the last ten rounds before sunset show the countdown and the bala in the GOAL box. A rule change would need two seed banks and move every balance number; the endings were right, only invisible.
+- **Daily wording:** "The wheel is closed. Break in." / "Same wheel for everyone today. Can you break in?" (hi/mr by the Director, needs a native read).
+- **Challenge a friend:** seeded enemy formation in every AI battle; `#c=` links; briefing, result note.
+- **Found:** stage-card sentences were cream on cream in Pata — fixed. 17 new UI tests; 102 strings pending.
