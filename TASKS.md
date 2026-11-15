@@ -5,17 +5,15 @@ Chapters and history stay in `docs/ROADMAP.md`; what the last session did is in 
 Rules: one line per task, an ID that never changes, "done when" in plain words. Tick it (`[x]`) and
 move it to **Done** in the same pull request that finishes it. Add new work here first.
 
-Last updated: 15 Nov 2026 (Sarvam Batch 6.2-6.5: the 18 pending recordings, four shortened lines, vow strings, Chapter IV lines, respect read).
+Last updated: 15 Nov 2026 (Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings, catalogues at 251 keys; Batch 6.2-6.5: the 18 pending recordings, four shortened lines, vow strings, Chapter IV lines, respect read; ChatGPT Quiet Gate balance and Pata hero-card design).
 
 ## Now
 
 | ID | Owner | Task | Done when |
 |---|---|---|---|
-| T-24 | C | Merge the pull request: review Part 1 — scenario paintings, the ladder (Sainik → Dronacharya → Shakuni), home and result card sideways | merged, live |
 | T-05 | C | **The gate for Part 3:** five people who have never seen the game, on their own phones, watched in silence for ten minutes (Home → first battle). Write where each one stops in `docs/ROADMAP.md` | notes added |
 | T-25 | C | On the phone, sideways: is Yuddh karo on the first home screen? After a battle, are all the result buttons in view? Win a battle, tap **Challenge a friend**, send it to yourself on WhatsApp and open it — does the briefing appear? | a yes/no each |
-| T-29 | C | Merge PR #27 (Part 2: endings shown, Daily wording, Challenge a friend) — after #26, it is stacked on it | merged, live |
-| T-30 | C | A native reader checks the new Hindi and Marathi Daily share line (`share.cta`). Sarvam's pass added `का` to the Marathi question; the Hindi reads clean | ok or a correction |
+| T-30 | C/S | A native reader checks the new Hindi and Marathi Daily share line (`share.cta`). Sarvam's pass added `का` to the Marathi question; the Hindi reads clean | ok or a correction |
 | T-23 | C | Tidy GitHub: repository → **Branches** → delete the 26 old branches marked *Merged* (every commit is in `main`); then **Settings → General → Automatically delete head branches** on, so merged PR branches go by themselves. Claude sessions cannot delete branches | only `main` + open PR branches left |
 | T-02 | C | On the phone: play a Quick battle on Sarvatobhadra and Kurukshetra sideways; say whether the turned field helps | a yes/no and any trouble |
 | T-03 | C | On the phone: play Quick to round 5 on the wheel; do the dashed landing rings help or clutter? | a yes/no |
@@ -27,7 +25,6 @@ Last updated: 15 Nov 2026 (Sarvam Batch 6.2-6.5: the 18 pending recordings, four
 |---|---|---|---|
 | T-08 | C | New night painting for the wheel (`chakra-night`) in the same true-indigo style as the other three | file supplied |
 | T-10 | C | Add the three new night masters to your masters zip and Release (`docs/MASTERS.md`) | done |
-| T-14 | G | ChatGPT Batch 6.1: `tools/media-qa.mjs` expects Classic astra films; in Pata (default) the moment shows a still, so the astra scenarios fail (on `main` too). Test both looks | harness passes in Pata and Classic |
 | T-17 | D | Battle-log prose (clash/astra sentences) is English-only engine text; give it keys for Sarvam | log readable in hi/mr |
 | T-22 | D | `tools/battle-log.mjs` failed once in six runs (7 Nov, message not kept): make it log every failed check to a file, then find the flake | six clean runs |
 | T-21 | D | Rang Phase 3, rest: festival days on the Daily and a sound pass (levels, overlaps) across every screen | PR |
@@ -39,7 +36,7 @@ Last updated: 15 Nov 2026 (Sarvam Batch 6.2-6.5: the 18 pending recordings, four
 |---|---|---|
 | T-11 | S | Sarvam Batch 6.6: a native Marathi speaker reads `docs/i18n/strings.mr.json` (only if one can be found; do not claim it otherwise) | corrections + reviewer named |
 | T-32 | S | Record Sanjaya's 14 Chapter IV lines once the Director approves `incoming/text/sanjaya-chapter4.csv` (28 files, hi and en) | files in `assets/audio/voice/` |
-| T-12 | G | ChatGPT Batch 6.2–6.5: screen the four heroes (50–58 %), retune quiet-gate, AI hero awareness, hero-card design in Pata |
+| T-12 | G | ChatGPT Batch 6.2 (four-hero balance screen) and 6.4 (AI hero awareness) remain; Batch 6.5 design delivered in incoming/text/hero-cards-design.md. Hero gameplay follows the campaign (docs/REVIEW.md) |
 | T-13 | C | Respect review by three players from different backgrounds (`docs/DIRECTOR.md` §6) |
 
 ## Later
@@ -52,6 +49,10 @@ Last updated: 15 Nov 2026 (Sarvam Batch 6.2-6.5: the 18 pending recordings, four
 
 - [x] Sarvam Batch 6.2-6.5 (15 Nov, PR #31) — the 18 pending recordings re-voiced and the stale-audio guard cleared; the four over-budget routine lines shortened (`volley_kill_1`, `assassinate_1`, `trap_defused_1`, `rotate_padma_1`) plus `astra_vayavya_enemy_1`, which ran 6.14 s; vow strings in Hindi and Marathi (`incoming/i18n/pratigya.*.json`); Sanjaya's Chapter IV lines (`incoming/text/sanjaya-chapter4.csv`); the hero respect read (`incoming/text/heroes-respect-read.md`)
 - [x] T-06 Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings — wheel lessons, odds words, Confirm strike, goal box, battle log, ladder, Challenge a friend; catalogues at 251 keys, `tests/languages.mjs` and the hi/mr layout harness pass (15 Nov, PR #29)
+- [x] T-12 / Batch 6.5: Pata hero-card placements and four future active hero flows specified in incoming/text/hero-cards-design.md; written design only, not playable (15 Nov, PR #32)
+- [x] T-12 / Batch 6.3: Quiet Gate retuned and screened on two fresh banks, four raider win rates in target range (15 Nov, PR #30)
+- [x] T-14 ChatGPT Batch 6.1: media QA checks all four Pata paintings and Classic bronze films, reduced motion and battery saver (15 Nov, PR #28)
+- [x] T-24 and T-29: Parts 1 and 2 merged in PRs #26 and #27 (15 Nov)
 - [x] T-26 endings shown (fort-fall card, sunset + bala in the GOAL box); T-27 Daily wording; T-28 Challenge a friend; stage-card text fixed in Pata (13 Nov, PR #27)
 - [x] T-20 Scenario paintings `card-duel`, `card-abhimanyu` supplied by the Commander and wired in (13 Nov)
 - [x] Hard review and plan `docs/REVIEW.md`; Part 1: the ladder, home and result card sideways (13 Nov)
