@@ -4,6 +4,7 @@
  * Screens the built-in catalogue plus docs/balance/daily-candidates.json
  * (drafts not yet live). --output=docs/balance/<label>.json saves a report;
  * use a fresh, disjoint seed bank for each validation round.
+ * Use --modifier=quiet-gate to screen one candidate (default: all).
  * Promotion rule: 30–55% raider wins on both boards in two fresh banks.
  */
 import fs from 'node:fs';
@@ -16,7 +17,10 @@ for (const file of ['units', 'languages', 'geometry', 'engine', 'ai', 'modes']) 
 const { engine: E, ai, modes: M } = globalThis.AC;
 const games = Number(process.argv[2] || 60);
 assert.ok(Number.isInteger(games) && games > 0);
-const mods = M.MODIFIERS.concat(JSON.parse(fs.readFileSync(new URL('docs/balance/daily-candidates.json', root))));
+const catalogue = M.MODIFIERS.concat(JSON.parse(fs.readFileSync(new URL('docs/balance/daily-candidates.json', root))));
+const modifierArg = process.argv.find(a => a.startsWith('--modifier='));
+const mods = modifierArg ? catalogue.filter(mod => mod.key === modifierArg.slice('--modifier='.length)) : catalogue;
+assert.ok(mods.length, 'Unknown modifier: ' + modifierArg);
 const seedArg = process.argv.find(a => a.startsWith('--seed='));
 const seedBase = seedArg ? Number(seedArg.slice(7)) : 0x51f15e;
 assert.ok(Number.isInteger(seedBase) && seedBase >= 0 && seedBase <= 0xffffffff);

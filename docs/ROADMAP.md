@@ -89,7 +89,7 @@ Engine and rules untouched; runs beside the hero work.
 - [ ] **[D]** Campaign map: the seven vyuhas, one lesson each (drafts: `incoming/text/campaign.md`)
 - [ ] **[D]** Facing, introduced in the Krauncha chapter
 - [ ] **[D]** Marathi narrator (text drafted: `incoming/text/sanjaya-marathi.csv`)
-- [ ] **[D][G]** Retune `quiet-gate` and screen it in two fresh banks
+- [x] **[G]** Retuned `quiet-gate` and screened it in two fresh banks. Candidate qualified on both fields. [Results and reproduction](balance/README.md#quiet-gate--15-november-2026). Director to decide catalogue integration.
 
 ## Chapter V — social
 
