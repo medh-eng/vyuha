@@ -124,3 +124,16 @@ written up here first.
 ## Playtest notes
 
 *(Add a dated line per session: who played, device, what confused them, what they loved.)*
+
+- **15 Nov 2026 · the Commander, informally, one new boy, phone unrecorded.** No Mahabharat
+  knowledge, no Stratego-style background. The Commander explained every card, every step and
+  the objective by hand; it took about 15 minutes before the first real battle began, and the
+  boy was hard to keep interested. Not one of the five silent T-05 playtests (the Commander
+  explained throughout, so this does not count toward the gate) — but it is the first real
+  evidence anyone outside this repo has touched the game, and it confirmed exactly what
+  `docs/REVIEW.md` problem 5 predicted. **Fixed the same day:** the four-lesson offer had only
+  ever appeared on Quick battle, could be dismissed by a stray tap, and never asked twice; a
+  player who tapped Custom battle or the Daily first met the full rule set with nobody there to
+  explain it. Every primary entry point now offers the lessons, the offer cannot be dismissed
+  by accident, and ambient narration stays quiet while a coached step is open. See
+  `docs/HANDOFF.md`.

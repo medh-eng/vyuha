@@ -5,7 +5,7 @@ Chapters and history stay in `docs/ROADMAP.md`; what the last session did is in 
 Rules: one line per task, an ID that never changes, "done when" in plain words. Tick it (`[x]`) and
 move it to **Done** in the same pull request that finishes it. Add new work here first.
 
-Last updated: 15 Nov 2026 (Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings, catalogues at 251 keys; Batch 6.2-6.5: the 18 pending recordings, four shortened lines, vow strings, Chapter IV lines, respect read; final pass: every recording under 4 s, Chapter IV drafts, cultural review, Marathi consistency pass; ChatGPT Quiet Gate balance and Pata hero-card design).
+Last updated: 15 Nov 2026 (Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings, catalogues at 251 keys; Batch 6.2-6.5: the 18 pending recordings, four shortened lines, vow strings, Chapter IV lines, respect read; final pass: every recording under 4 s, Chapter IV drafts, cultural review, Marathi consistency pass; Director: unmissable first battle, after a real playtest; ChatGPT Quiet Gate balance and Pata hero-card design).
 
 ## Now
 
@@ -47,6 +47,7 @@ Last updated: 15 Nov 2026 (Sarvam Batch 6.1: Hindi and Marathi for the 102 pendi
 
 ## Done (newest first)
 
+- [x] T-33 Unmissable first battle: the wheel-lesson offer now gates Custom battle and the Daily too, not only Quick; it cannot be dismissed by a stray tap; the decline is an honest claim ("Skip — I've played before") instead of an equally tempting "Fight now"; Sanjaya's ambient lines stay quiet while a coached step is open. Found by a real (informal) playtest — see `docs/ROADMAP.md` Playtest notes (15 Nov, PR #34).
 - [x] Sarvam, 15 Nov, second pass (PR #33) — every one of the 88 recordings is now under 4.0 s (longest 3.97 s, median 2.95 s): `defeat_1`, `sunset_near_1`, `dawn_1`, `dawn_enemy_1`, `start_abhimanyu_1`, `astra_sammohana_enemy_1` shortened and re-recorded; Chapter IV draft recordings (28 files, ≤ 3.24 s); the cultural read of the whole game (`incoming/text/cultural-review.md`, Task 5); a Marathi consistency pass for Batch 6.6; `docs/WORKLOG.md` and `docs/PACING.md` brought up to date
 - [x] Sarvam Batch 6.2-6.5 (15 Nov, PR #31) — the 18 pending recordings re-voiced and the stale-audio guard cleared; the four over-budget routine lines shortened (`volley_kill_1`, `assassinate_1`, `trap_defused_1`, `rotate_padma_1`) plus `astra_vayavya_enemy_1`, which ran 6.14 s; vow strings in Hindi and Marathi (`incoming/i18n/pratigya.*.json`); Sanjaya's Chapter IV lines (`incoming/text/sanjaya-chapter4.csv`); the hero respect read (`incoming/text/heroes-respect-read.md`)
 - [x] T-06 Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings — wheel lessons, odds words, Confirm strike, goal box, battle log, ladder, Challenge a friend; catalogues at 251 keys, `tests/languages.mjs` and the hi/mr layout harness pass (15 Nov, PR #29)
