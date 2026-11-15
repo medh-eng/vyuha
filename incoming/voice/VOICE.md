@@ -48,3 +48,9 @@ SARVAM_API_KEY=... python3 tools/voice-gen.py --speaker rahul --pace 1.15 --lang
 ```
 
 or re-record this batch with `--speaker ashutosh --pace 0.9 --ids <the 22 ids>`. Never ship a mix.
+
+## Chapter IV drafts — 15 November 2026
+
+The 14 Chapter IV lines are recorded as drafts (28 files, `rahul` at 1.15, every line ≤ 3.24 s) in
+`incoming/voice/chapter4/{hi,en}/`. They are **not wired into the game** — the Director approves the
+text first. See the README in that folder.

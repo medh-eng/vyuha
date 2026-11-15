@@ -48,19 +48,21 @@ median 3 s line, 5.6 s with the longest lines.**
 `docs/evidence/calm-pace/timeline.json`. Eleven media-QA scenarios still pass (capture, trap,
 breach, victory, volley, four astras, reduced motion, battery saver).
 
-## Every line, measured (1 Nov, second pass)
+## Every line, measured (15 Nov, third pass — after the Sarvam re-recording)
 
 `node tools/pace-budget.mjs` computes clash → AI preview for every battle line in both voices
 from the shipped recordings and the constants in the code:
 
-- **33 of 46** line/voice pairs reach the AI within 5.0 s; typical routine clash **4.0–4.6 s**;
-  shortest 3.5 s.
-- **Four routine lines** are over by 0.05–0.4 s: `volley_kill_1` (hi 3.76 s),
-  `trap_defused_1` (en 3.53 s), `assassinate_1` (hi 3.47 s), `rotate_padma_1` (en 3.40 s).
-  These need re-voicing at **≤ 3.3 s** (Sarvam Batch 4). Nothing is sped up in code.
-- The rest of the over-5 s pairs are **major moments** (gate breach, astras, dusk) where a
-  longer beat is intended.
-- The "520 ms slide" seen in the recording was screen-capture overhead: without capture the card
+- **38 of 46** line/voice pairs reach the AI within 5.0 s; the rest are **major moments** (gate
+  breach, astras, dusk) where a longer beat is intended. `--strict` passes: no routine line is
+  over budget.
+- **The four routine lines that were over are fixed**: `volley_kill_1` 3.76 → **2.56 s**,
+  `assassinate_1` 3.47 → **2.64 s**, `trap_defused_1` (en) 3.53 → **3.03 s**,
+  `rotate_padma_1` (en) 3.40 → **2.80 s**. The wording was shortened first, then recorded; the
+  new text is in `incoming/text/sanjaya-short-2026-11-01.csv`.
+- **Every one of the 88 recordings is now under 4.0 s** — the longest is 3.97 s, the median 2.95 s.
+  Three more lines came in under the bar on the way (`astra_vayavya_enemy_1` was 6.14 s).
+- The "520 ms slide" seen in an old recording was screen-capture overhead: without capture the card
   and effect start 315 ms after the slide begins (446 ms at 4× CPU throttle).
 - Re-check after any new recording: `node tools/pace-budget.mjs --strict` fails if a routine line
   is over budget.
@@ -70,7 +72,7 @@ from the shipped recordings and the constants in the code:
 | # | Task | Owner |
 |---|---|---|
 | 1 | Phone test of PR #8: three Calm battles, one Quick, portrait **and** landscape. Note any line that feels rushed, any moment that feels slow, warmth after 10 min. | Commander |
-| 2 | Re-voice the four routine lines above to ≤ 3.3 s (rewrite text shorter if needed), plus the 18 pending recordings in `docs/voice/pending-recordings.json`. | Sarvam |
+| 2 | ~~Re-voice the four routine lines above to ≤ 3.3 s, plus the 18 pending recordings.~~ Done 15 Nov — see the third pass above. | Sarvam |
 | 3 | Only if the Commander still finds ordinary clashes slow after #1: speak on an ordinary clash every other turn (text still shows). Not built — decide from the phone test. | Director |
 
 When an effect file changes: run `python3 tools/sfx-envelope.py assets/audio/sfx/*.mp3` and update
