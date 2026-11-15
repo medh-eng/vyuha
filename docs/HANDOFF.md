@@ -1,6 +1,28 @@
 # Handoff — latest status
 
-**15 November 2026 · ChatGPT · T-12, Batch 6.3**
+**15 November 2026 · ChatGPT · T-12, Batch 6.5 (on top of 6.3)**
+
+Batch 6.5's **written design** is delivered at
+[incoming/text/hero-cards-design.md](../incoming/text/hero-cards-design.md).
+It specifies portrait/landscape Pata placement for the hero picker, battle HUD
+and result screen; turn-by-turn previews for Arjuna, Drona, Abhimanyu and Bhishma;
+the four implemented passive traits; hidden-information fairness; accessibility,
+language keys, balance requirements, and integration acceptance tests. The existing
+hero portraits were checked by filename (not visually approved). No gameplay,
+art, translation or runtime code changed on this branch. Local browser tests were
+not run: only the repository instructions and source files were reviewed.
+
+**Sequencing:** The 13 November hard review still holds: T-05 five real first-time
+phone playtests, then the Seven Vyuhas campaign, before implementing/shipping
+heroes. Batch 6.2 (the reproducible four-hero balance screen) and 6.4 (hero-aware
+AI and fair odds) therefore remain pending for that stage. Existing PR #28
+(media QA) and #30 (Quiet Gate) must be merged in that order before this
+stacked design branch. PRs #29/#31 are Sarvam's separate stacked translation
+work. Do not enable heroes on main from this design alone.
+
+---
+
+**Earlier 15 November 2026 · ChatGPT · T-12, Batch 6.3**
 
 Quiet Gate passed its two-bank screen with four starting Shakti for the defenders.
 The four raider win rates were 50.8% and 51.7% in bank 5, and 45.0% and 49.2% in bank 6
