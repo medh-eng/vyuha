@@ -922,4 +922,17 @@
     MODIFIERS_III: MODIFIERS_III,
     clear: function () { active = null; }
   });
+
+  /* 15 Nov 2026: a real playtest found coaching text competing with Sanjaya's ambient lines
+   * (dawn, a scan, Shakti full) for a new player's attention. While a coached step is still
+   * open — Pehla Yuddh or a wheel lesson — keep only the lines a step actually waits on
+   * (tier 3 and above: a clash, a trap, an astra, the wheel turning); tier 1-2 colour stays
+   * quiet until the step is done. A finished lesson, and every other mode, is unaffected. */
+  if (AC.sanjaya && AC.sanjaya.setSuppressor) {
+    AC.sanjaya.setSuppressor(function (key) {
+      if (!active || active.finished) return false;
+      if (active.kind !== 'wheel' && active.kind !== 'tutorial') return false;
+      return AC.sanjaya.priority(key) <= 2;
+    });
+  }
 })(typeof globalThis !== 'undefined' ? globalThis : this);

@@ -656,36 +656,48 @@
       '<span>' + esc(label) + '</span><span class="switch ' + (on ? 'on' : '') + '"></span></div>';
   }
 
+  /* 15 Nov 2026: a real playtest (one new boy, no Mahabharat knowledge, 15 minutes of the
+   * Commander explaining every card by hand) showed the gap here. The offer below existed, but
+   * only one button (Quick battle) ever asked, it could vanish on a single accidental tap of
+   * the backdrop, and once declined it never asked again — so a first-ever player who tapped
+   * Custom battle or the Daily first met the full rule set with nobody there to explain it.
+   * Now every primary entry point asks, the choice can't be dismissed by accident, and the
+   * decline is worded as a real claim ("I've played before") rather than an equally tempting
+   * "Fight now". This is still one honest skip, not a forced tutorial: a returning player, or
+   * a friend who already knows Stratego, should not be made to sit through it. */
+  function offerLessonsThen(proceed) {
+    const st = (app.profile && app.profile.stats) || {};
+    const fresh = !app.settings.tutorialDone && !app.settings.lessonOffered && !(app.settings.wheelLessons || []).length && !st.matches;
+    if (!fresh || !AC.modes || !AC.modes.startWheelLesson) { proceed(); return; }
+    sfx('select');
+    patchSettings({ lessonOffered: true });
+    modal({
+      dismissible: false,
+      kicker: tr('wheel.offer_kicker', 'First time on the wheel?'),
+      title: tr('wheel.offer_title', 'Four short lessons first'),
+      body: '<p class="daily-lede">' + esc(tr('wheel.offer_body', 'About a minute each: a first strike, the turning wheel, a hidden rank and one astra. Then your first battle.')) + '</p>',
+      actions: [
+        { label: tr('wheel.offer_yes', 'Start the lessons'), cls: 'btn-primary', onClick: function () { AC.modes.startWheelLesson(0); } },
+        { label: tr('wheel.offer_no', 'Skip — I’ve played before'), cls: 'btn-ghost', onClick: proceed }
+      ]
+    });
+  }
+
   function wireHome() {
     document.getElementById('btn-new-match').addEventListener('click', function () {
       sfx('select');
-      // until the player has chosen an opponent themselves, Custom battle starts on their ladder rung
-      if (!app.settings.lastSetup) app.setup.difficulty = ladder(app.profile && !app.guest ? app.profile.stats : null).key;
-      show('setup');
+      offerLessonsThen(function () {
+        // until the player has chosen an opponent themselves, Custom battle starts on their ladder rung
+        if (!app.settings.lastSetup) app.setup.difficulty = ladder(app.profile && !app.guest ? app.profile.stats : null).key;
+        show('setup');
+      });
     });
     document.getElementById('btn-quick').addEventListener('click', function () {
-      // A brand-new player is offered the four wheel lessons once, before any full battle.
-      const st = (app.profile && app.profile.stats) || {};
-      const fresh = !app.settings.tutorialDone && !app.settings.lessonOffered && !(app.settings.wheelLessons || []).length && !st.matches;
-      if (fresh && AC.modes && AC.modes.startWheelLesson) {
-        sfx('select');
-        patchSettings({ lessonOffered: true });
-        modal({
-          kicker: tr('wheel.offer_kicker', 'First time on the wheel?'),
-          title: tr('wheel.offer_title', 'Four short lessons first'),
-          body: '<p class="daily-lede">' + esc(tr('wheel.offer_body', 'About a minute each: a first strike, the turning wheel, a hidden rank and one astra. Then your first battle.')) + '</p>',
-          actions: [
-            { label: tr('wheel.offer_yes', 'Start the lessons'), cls: 'btn-primary', onClick: function () { AC.modes.startWheelLesson(0); } },
-            { label: tr('wheel.offer_no', 'Fight now'), cls: 'btn-ghost', onClick: quickBattle }
-          ]
-        });
-        return;
-      }
-      quickBattle();
+      offerLessonsThen(quickBattle);
     });
     document.getElementById('btn-daily').addEventListener('click', function () {
       sfx('select');
-      if (AC.modes) AC.modes.startDaily();
+      offerLessonsThen(function () { if (AC.modes) AC.modes.startDaily(); });
     });
     document.getElementById('home-name').addEventListener('click', function () { sfx('ui'); openProfile(); });
     document.getElementById('home-sigil').addEventListener('click', function () { sfx('ui'); openProfile(); });

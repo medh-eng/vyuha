@@ -9528,6 +9528,12 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
   let pending = [];
   let active = null;
   let idleWaiters = [];
+  // 15 Nov 2026: during a coached step (the four wheel lessons) a new player is reading
+  // instruction text and watching a highlighted cell; a queue of ambient lines (dawn, a scan,
+  // Shakti full) arriving on top of that is the "sound overwhelms the screen" a real playtest
+  // found. The caller that owns coaching (js/modes.js) supplies the rule; this module only
+  // asks it. A forced line (`say(key, { force: true })`) still always speaks.
+  let suppress = null;
 
   /* Who speaks when several moments fall in one turn (review plan step 4, 7 Nov 2026).
    * Every line key has an explicit tier; tests/audio.mjs fails if a key is missing.
@@ -9624,6 +9630,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     opts = opts || {};
     const line = pick(key);
     if (!line || (!opts.force && Date.now() - lastAt < 900)) return Promise.resolve(null);
+    if (!opts.force && suppress && suppress(key)) return Promise.resolve(null);
     return new Promise(function (resolve) {
       const rank = opts.priority || priority(key);
       pending = pending.filter(function (item) {
@@ -9673,7 +9680,8 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     textOf: textOf,
     lang: function () { return lang; },
     allLines: allLines,
-    onLine: function (fn) { onLine = fn; }
+    onLine: function (fn) { onLine = fn; },
+    setSuppressor: function (fn) { suppress = fn || null; }
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
@@ -10338,36 +10346,48 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
       '<span>' + esc(label) + '</span><span class="switch ' + (on ? 'on' : '') + '"></span></div>';
   }
 
+  /* 15 Nov 2026: a real playtest (one new boy, no Mahabharat knowledge, 15 minutes of the
+   * Commander explaining every card by hand) showed the gap here. The offer below existed, but
+   * only one button (Quick battle) ever asked, it could vanish on a single accidental tap of
+   * the backdrop, and once declined it never asked again — so a first-ever player who tapped
+   * Custom battle or the Daily first met the full rule set with nobody there to explain it.
+   * Now every primary entry point asks, the choice can't be dismissed by accident, and the
+   * decline is worded as a real claim ("I've played before") rather than an equally tempting
+   * "Fight now". This is still one honest skip, not a forced tutorial: a returning player, or
+   * a friend who already knows Stratego, should not be made to sit through it. */
+  function offerLessonsThen(proceed) {
+    const st = (app.profile && app.profile.stats) || {};
+    const fresh = !app.settings.tutorialDone && !app.settings.lessonOffered && !(app.settings.wheelLessons || []).length && !st.matches;
+    if (!fresh || !AC.modes || !AC.modes.startWheelLesson) { proceed(); return; }
+    sfx('select');
+    patchSettings({ lessonOffered: true });
+    modal({
+      dismissible: false,
+      kicker: tr('wheel.offer_kicker', 'First time on the wheel?'),
+      title: tr('wheel.offer_title', 'Four short lessons first'),
+      body: '<p class="daily-lede">' + esc(tr('wheel.offer_body', 'About a minute each: a first strike, the turning wheel, a hidden rank and one astra. Then your first battle.')) + '</p>',
+      actions: [
+        { label: tr('wheel.offer_yes', 'Start the lessons'), cls: 'btn-primary', onClick: function () { AC.modes.startWheelLesson(0); } },
+        { label: tr('wheel.offer_no', 'Skip — I’ve played before'), cls: 'btn-ghost', onClick: proceed }
+      ]
+    });
+  }
+
   function wireHome() {
     document.getElementById('btn-new-match').addEventListener('click', function () {
       sfx('select');
-      // until the player has chosen an opponent themselves, Custom battle starts on their ladder rung
-      if (!app.settings.lastSetup) app.setup.difficulty = ladder(app.profile && !app.guest ? app.profile.stats : null).key;
-      show('setup');
+      offerLessonsThen(function () {
+        // until the player has chosen an opponent themselves, Custom battle starts on their ladder rung
+        if (!app.settings.lastSetup) app.setup.difficulty = ladder(app.profile && !app.guest ? app.profile.stats : null).key;
+        show('setup');
+      });
     });
     document.getElementById('btn-quick').addEventListener('click', function () {
-      // A brand-new player is offered the four wheel lessons once, before any full battle.
-      const st = (app.profile && app.profile.stats) || {};
-      const fresh = !app.settings.tutorialDone && !app.settings.lessonOffered && !(app.settings.wheelLessons || []).length && !st.matches;
-      if (fresh && AC.modes && AC.modes.startWheelLesson) {
-        sfx('select');
-        patchSettings({ lessonOffered: true });
-        modal({
-          kicker: tr('wheel.offer_kicker', 'First time on the wheel?'),
-          title: tr('wheel.offer_title', 'Four short lessons first'),
-          body: '<p class="daily-lede">' + esc(tr('wheel.offer_body', 'About a minute each: a first strike, the turning wheel, a hidden rank and one astra. Then your first battle.')) + '</p>',
-          actions: [
-            { label: tr('wheel.offer_yes', 'Start the lessons'), cls: 'btn-primary', onClick: function () { AC.modes.startWheelLesson(0); } },
-            { label: tr('wheel.offer_no', 'Fight now'), cls: 'btn-ghost', onClick: quickBattle }
-          ]
-        });
-        return;
-      }
-      quickBattle();
+      offerLessonsThen(quickBattle);
     });
     document.getElementById('btn-daily').addEventListener('click', function () {
       sfx('select');
-      if (AC.modes) AC.modes.startDaily();
+      offerLessonsThen(function () { if (AC.modes) AC.modes.startDaily(); });
     });
     document.getElementById('home-name').addEventListener('click', function () { sfx('ui'); openProfile(); });
     document.getElementById('home-sigil').addEventListener('click', function () { sfx('ui'); openProfile(); });
@@ -15481,6 +15501,19 @@ rankBadge('?', R)
     MODIFIERS_III: MODIFIERS_III,
     clear: function () { active = null; }
   });
+
+  /* 15 Nov 2026: a real playtest found coaching text competing with Sanjaya's ambient lines
+   * (dawn, a scan, Shakti full) for a new player's attention. While a coached step is still
+   * open — Pehla Yuddh or a wheel lesson — keep only the lines a step actually waits on
+   * (tier 3 and above: a clash, a trap, an astra, the wheel turning); tier 1-2 colour stays
+   * quiet until the step is done. A finished lesson, and every other mode, is unaffected. */
+  if (AC.sanjaya && AC.sanjaya.setSuppressor) {
+    AC.sanjaya.setSuppressor(function (key) {
+      if (!active || active.finished) return false;
+      if (active.kind !== 'wheel' && active.kind !== 'tutorial') return false;
+      return AC.sanjaya.priority(key) <= 2;
+    });
+  }
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
 </script>

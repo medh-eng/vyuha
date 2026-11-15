@@ -175,6 +175,12 @@
   let pending = [];
   let active = null;
   let idleWaiters = [];
+  // 15 Nov 2026: during a coached step (the four wheel lessons) a new player is reading
+  // instruction text and watching a highlighted cell; a queue of ambient lines (dawn, a scan,
+  // Shakti full) arriving on top of that is the "sound overwhelms the screen" a real playtest
+  // found. The caller that owns coaching (js/modes.js) supplies the rule; this module only
+  // asks it. A forced line (`say(key, { force: true })`) still always speaks.
+  let suppress = null;
 
   /* Who speaks when several moments fall in one turn (review plan step 4, 7 Nov 2026).
    * Every line key has an explicit tier; tests/audio.mjs fails if a key is missing.
@@ -271,6 +277,7 @@
     opts = opts || {};
     const line = pick(key);
     if (!line || (!opts.force && Date.now() - lastAt < 900)) return Promise.resolve(null);
+    if (!opts.force && suppress && suppress(key)) return Promise.resolve(null);
     return new Promise(function (resolve) {
       const rank = opts.priority || priority(key);
       pending = pending.filter(function (item) {
@@ -320,6 +327,7 @@
     textOf: textOf,
     lang: function () { return lang; },
     allLines: allLines,
-    onLine: function (fn) { onLine = fn; }
+    onLine: function (fn) { onLine = fn; },
+    setSuppressor: function (fn) { suppress = fn || null; }
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

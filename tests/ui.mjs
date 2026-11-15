@@ -263,6 +263,27 @@ async function run() {
   ok(!$('#screen-home').hidden, 'home screen after login');
   ok(AC.storage.listProfiles().some((p) => p.name === 'Test Vega' && p.hasPin), 'PIN stored as a hash');
 
+  // ── 15 Nov 2026: the unmissable lesson offer, found missing in a real playtest ──
+  // a genuinely fresh profile meets the offer on Custom battle too, not only Quick
+  click($('#btn-new-match'));
+  ok($$('.modal-backdrop').length === 1 && /Four short lessons first/.test($('.modal').textContent),
+    'a fresh profile is offered the lessons from Custom battle, not only Quick');
+  ok(!$('.modal').querySelector('.modal-close'), 'the offer has no quiet X to miss it by');
+  $('.modal-backdrop').dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+  ok($$('.modal-backdrop').length === 1, 'a backdrop tap does not dismiss it either');
+  ok($('#screen-setup').hidden, 'and setup has not opened yet');
+  click([...$('.modal').querySelectorAll('button')].find((b) => /played before/.test(b.textContent)));
+  ok($$('.modal-backdrop').length === 0 && !$('#screen-setup').hidden, 'an honest skip reaches setup');
+  ok(!!AC.app.settings.lessonOffered, 'the offer is not asked again this session');
+  AC.ui.show('home');
+  click($('#btn-daily'));
+  ok(!$$('.modal-backdrop').some((b) => /Four short lessons first/.test(b.textContent)), 'already answered once, the Daily does not ask again');
+  AC.app.modals.slice().forEach((m) => m.close());
+  AC.modes.clear(); AC.game.state = null; AC.ui.show('home');
+  // the rest of this smoke test is not exercising onboarding (lines 591, 637+ drive the
+  // coach directly); skip the offer from here so a fresh profile still reaches setup at once.
+  AC.ui.patchSettings({ tutorialDone: true });
+
   // setup: square board first
   click($('#btn-new-match'));
   ok(!$('#screen-setup').hidden, 'setup screen opens');
