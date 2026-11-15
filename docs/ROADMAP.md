@@ -5,7 +5,8 @@ The live status board. Ticked = on `main` and playable. Owner tags: **[C]** Comm
 
 The working queue is [`TASKS.md`](../TASKS.md); this file is the chapter board.
 
-Last updated: **7 Nov 2026** — new night fields, sideways square fields, `DESIGN.md`/`TASKS.md`/`data/`; first-session clarity (PR #21, merged) and the wheel turn made visible (step 3, PR open).
+Last updated: **13 Nov 2026** — hard review and four-part plan (`docs/REVIEW.md`); Part 1 in a PR: scenario paintings, the ladder, home and result card sideways.
+Earlier: **7 Nov 2026** — new night fields, sideways square fields, `DESIGN.md`/`TASKS.md`/`data/`; first-session clarity (PR #21, merged) and the wheel turn made visible (step 3, PR open).
 Earlier: **3 Nov 2026** — *Rang* look plan accepted (`docs/LOOK.md`); Chapter IV first slice
 in PR #12: Pratigya vows playable, hero engine for four passive heroes (hidden until screened).
 History: `docs/WORKLOG.md`.
@@ -59,11 +60,19 @@ Engine and rules untouched; runs beside the hero work.
 - [ ] **[D]** Phase 4: hero cards in the new style, dhvaja banners, folk-art edition, campaign scroll
 - [ ] **[C]** Replace today's paintings that carry a corner watermark before any store launch
 
+## Hard review (13 Nov 2026) — `docs/REVIEW.md`
+
+- [x] **[D]** Part 1: scenario paintings in; Yuddh karo ladder Sainik → Dronacharya → Shakuni with the promotion on the result card; home and result card rebuilt for a phone held sideways (PR open)
+- [ ] **[D]** Part 2: battles end at the fort (out-of-movers, Kurukshetra sunset), Daily briefing wording, challenge-a-friend link
+- [ ] **[C]** **The gate:** five silent first-session playtests (T-05)
+- [ ] **[D]** Part 3: the Seven Vyuhas campaign (one rule a battle), Abhimanyu Escape
+- [ ] **[D][C]** Part 4: Hindi/Marathi finished, Android build, store
+
 ## First-session clarity — review plan (Gemini + ChatGPT, 6 Nov 2026)
 
 - [x] **[D]** Step 1: board size, labels, goal + chakra countdown in view, contrast, astra states (PR #19)
 - [x] **[D]** Step 2: four wheel lessons before the first battle; odds in words (Likely win / Uncertain / Likely loss, Certain once ranks are known); Confirm strike / Cancel (7 Nov, PR #21)
-- [ ] **[S]** Hindi/Marathi for the 74 pending strings (Sarvam Batch 6.1) (`docs/i18n/pending-first-session.en.json`)
+- [ ] **[S]** Hindi/Marathi for the 79 pending strings (Sarvam Batch 6.1) (`docs/i18n/pending-first-session.en.json`)
 - [x] **[D]** Step 3: dashed landing rings one round before the turn, warning, gold cells for exposed enemy ranks after (7 Nov, PR open)
 - [x] **[D]** Step 4: battle log from your side — You/Enemy, cell names, your pieces by name, tap to mark cells; Sanjaya's priority table with checks (7 Nov, PR open)
 - [ ] **[C]** 5–10 real first-session playtests (lessons → first battle), then puzzles, seven-vyuha campaign, Abhimanyu Escape

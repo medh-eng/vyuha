@@ -3135,8 +3135,6 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
   display: block; position: absolute; left: 0; right: 0; top: 0; bottom: 42%;
   background-size: cover; background-position: center 42%; border-bottom: 2px solid var(--ink);
 }
-/* Yuddh: the top camp of the Kurukshetra painting rather than the river between them */
-:is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card[data-val="duel"] .mode-card-art { background-position: center 6%; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-body { padding: 8px 12px 10px; }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-title { color: var(--ink); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .mode-card-sub { color: var(--txt-2, #4a3b2c); }
@@ -3147,7 +3145,6 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
   background: var(--modal-art) center 42% / cover no-repeat; border-bottom: 2px solid var(--ink);
   border-radius: var(--r-lg) var(--r-lg) 0 0;
 }
-:is(html[data-skin="pata"], html[data-skin="pahari"]) .modal.art-modal[data-art="duel"] .modal-band { background-position: center 6%; }
 @media (max-height: 430px) {
   :is(html[data-skin="pata"], html[data-skin="pahari"]) .modal.art-modal .modal-band { height: 64px; margin-bottom: 10px; }
 }
@@ -3162,6 +3159,68 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .curtain-icon { color: var(--vermilion); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) .curtain-title { color: var(--ink); }
 :is(html[data-skin="pata"], html[data-skin="pahari"]) :is(.curtain-sub, .curtain-count) { color: var(--txt-2, #4a3b2c); }
+
+/* ── 13 Nov 2026: the ladder note on the result card ── */
+.ladder-note {
+  margin: 10px 0 2px; padding: 9px 12px; border-radius: var(--r-md);
+  border: 1px solid var(--line); font-size: 13px; line-height: 1.4; color: var(--txt-2);
+}
+.ladder-note.up { border: 2px solid var(--saffron); color: var(--txt); background: rgba(240, 138, 36, 0.12); }
+.ladder-note.up b { color: var(--vermilion, var(--solar-2)); }
+
+/* ── 13 Nov 2026: home on a phone held sideways ──
+   At 914 × 411 (and 830 × 318) the chamber painting filled the whole first screen and Yuddh karo
+   sat below the fold. Sideways the painting stands beside the words, so the first screen shows
+   the title, the battle button and the Daily without a scroll. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .home-screen .top-bar { padding-top: 6px; padding-bottom: 6px; }
+  .home-wrap { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); padding: 10px 12px; gap: 10px; }
+  .home-main { display: contents; }
+  .home-hero { grid-column: 1; grid-row: 1; }
+  .home-side { grid-column: 1; grid-row: 2; }
+  .action-grid { grid-column: 2; grid-row: 1 / span 2; }
+  html[data-skin="pata"] .home-hero { padding: 12px 14px 12px calc(38% + 14px) !important; min-height: 0; }
+  html[data-skin="pata"] .home-hero::before {
+    right: auto; bottom: 0; width: 38%; height: auto; padding-bottom: 0;
+    background: url("../assets/art/pata/scenes/home-chamber.webp") 38% center / cover no-repeat;
+    border-right: 2px solid var(--ink);
+  }
+  html[data-skin="pata"] .home-hero::after { display: none; }
+  .home-title { font-size: 30px; margin-top: 2px; }
+  .home-tag { font-size: 12.5px; margin: 4px 0 8px; }
+  .btn-hero { width: 100%; padding: 9px 16px; justify-items: center; text-align: center; }
+  .btn-hero-main { font-size: 18px; }
+  /* the other doors stand in a column beside it, the Daily first */
+  .action-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .action-grid .card-action { padding: 9px 44px 9px 13px; gap: 2px; }
+  .action-grid .card-icon { position: absolute; top: 11px; right: 12px; margin: 0; opacity: 0.6; }
+  .action-grid .card-daily .card-badge { right: 44px; top: 7px; }
+  .action-grid .card-daily .card-title { padding-right: 64px; }
+  .home-wrap { grid-template-rows: auto 1fr; }
+}
+
+/* ── 13 Nov 2026: the result card on a phone held sideways ──
+   At 914 × 411 the card scrolled and its buttons (Rematch among them) were cut off below the
+   edge. Sideways the verdict sits in one row, the numbers stay small and the buttons are always
+   in view at the foot of the card. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .modal:has(.result-hero) { padding-bottom: 0; }
+  .modal:has(.result-hero) .modal-kicker { display: none; }
+  .result-hero { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; align-items: center; text-align: left; padding: 0; }
+  .result-deva { grid-row: 1 / span 2; font-size: 34px; }
+  .result-title { font-size: 20px; }
+  .result-reason { margin-top: 2px; line-height: 1.35; }
+  .result-stats { margin: 8px 0; gap: 6px; }
+  .result-stat { padding: 5px 4px; display: flex; align-items: baseline; justify-content: center; gap: 6px; }
+  .result-stat b { display: inline; font-size: 15px; }
+  .ladder-note { margin: 6px 0 0; padding: 6px 10px; }
+  .modal:has(.result-hero) .modal-actions {
+    position: sticky; bottom: 0; margin: 8px -20px 0; padding: 8px 20px 10px;
+    background: var(--panel, #f7ecd7); border-top: 1px solid var(--line); z-index: 2;
+  }
+  .modal:has(.result-hero) .modal-actions .btn { flex: 1 1 auto; min-width: 0; padding-left: 10px; padding-right: 10px; white-space: nowrap; }
+  .modal:has(.result-hero) .modal-actions .btn-primary { flex: 1.4 1 auto; }
+}
 
 </style>
 </head>
@@ -8341,13 +8400,11 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     PATA_SLOTS['hero:' + k] = 'pata:portraits/' + k;
   });
   ['vayavya', 'sammohana', 'agneya', 'brahma'].forEach(function (k) { PATA_SLOTS['astra:' + k] = 'pata:astras/' + k; });
-  // T-09 (7 Nov 2026): scenario cards and story cards. Until the Commander's own scenario
-  // paintings land (docs/prompts/PATA.md, scenes/card-*.png), each scenario shows the field it
-  // is fought on: Yuddh the Kurukshetra camps, Abhimanyu and the Daily the closed wheel.
-  // When scenes/card-<name>.webp ships, point the slot at 'pata:scenes/card-<name>' instead.
-  PATA_SLOTS['card:duel'] = 'pata:fields/large-day';
-  PATA_SLOTS['card:abhimanyu'] = 'pata:fields/chakra-day';
-  PATA_SLOTS['card:daily'] = 'pata:fields/chakra-day';
+  // Scenario cards and story cards: the Commander's two scenario paintings (T-20, 13 Nov 2026).
+  // Yuddh is the two camps at dawn; Abhimanyu and the Daily are the lone chariot in the closed wheel.
+  PATA_SLOTS['card:duel'] = 'pata:scenes/card-duel';
+  PATA_SLOTS['card:abhimanyu'] = 'pata:scenes/card-abhimanyu';
+  PATA_SLOTS['card:daily'] = 'pata:scenes/card-abhimanyu';
 
   /* Where each Phase 2 field painting sits, in board units (x, y, width,
    * height), measured on the shipped pixels by tools/prepare-pata.py:
@@ -9770,10 +9827,25 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     AC.game.start(app.setup);
   }
 
+  /* The ladder (13 Nov 2026): Yuddh karo sends a player against the opponent they are ready
+   * for — Sainik until two wins over him, Dronacharya until three, then Shakuni. A first battle
+   * against Dronacharya was a first defeat: Sainik-level play beats him about one time in six
+   * (200 seeded battles on the wheel). Custom battle still offers every opponent. */
+  const LADDER = [['recruit', 2], ['veteran', 3], ['archon', Infinity]];
+  function ladder(stats) {
+    const by = (stats && stats.byDiff) || {};
+    for (let i = 0; i < LADDER.length; i++) {
+      const w = (by[LADDER[i][0]] && by[LADDER[i][0]].w) || 0;
+      if (w < LADDER[i][1]) return { key: LADDER[i][0], rung: i, wins: w, need: LADDER[i][1], next: LADDER[i + 1] ? LADDER[i + 1][0] : null };
+    }
+    return { key: 'archon', rung: 2, wins: 0, need: Infinity, next: null };
+  }
+
   function quickSetup() {
     const last = app.settings.lastSetup;
-    return Object.assign({ mode: 'ai', board: 'wheel', tie: 'attacker', difficulty: 'veteran', timer: 0, scenario: 'duel', ruleset: 'vyuha' },
-      last && last.mode === 'ai' ? last : {});
+    const st = app.profile && !app.guest ? app.profile.stats : null;
+    return Object.assign({ mode: 'ai', board: 'wheel', tie: 'attacker', timer: 0, scenario: 'duel', ruleset: 'vyuha' },
+      last && last.mode === 'ai' ? last : {}, { difficulty: ladder(st).key });
   }
 
   function renderHome() {
@@ -9925,7 +9997,12 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
   }
 
   function wireHome() {
-    document.getElementById('btn-new-match').addEventListener('click', function () { sfx('select'); show('setup'); });
+    document.getElementById('btn-new-match').addEventListener('click', function () {
+      sfx('select');
+      // until the player has chosen an opponent themselves, Custom battle starts on their ladder rung
+      if (!app.settings.lastSetup) app.setup.difficulty = ladder(app.profile && !app.guest ? app.profile.stats : null).key;
+      show('setup');
+    });
     document.getElementById('btn-quick').addEventListener('click', function () {
       // A brand-new player is offered the four wheel lessons once, before any full battle.
       const st = (app.profile && app.profile.stats) || {};
@@ -10832,6 +10909,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     applySettings: applySettings,
     patchSettings: patchSettings,
     quickBattle: quickBattle,
+    ladder: ladder,
     boot: boot,
     openProfile: openProfile,
     artLanded: artLanded,
@@ -13716,7 +13794,10 @@ rankBadge('?', R)
     if (winner === 1) outcome = 'win';
     else if (winner === 2) outcome = 'loss';
 
+    // the ladder (Yuddh karo): where the player stood before this result, and after it
+    let rungBefore = null, rungAfter = null;
     if (isAiGame && AC.app.profile && !AC.app.guest && !modeHook('noRecord')) {
+      rungBefore = AC.ui.ladder(AC.app.profile.stats);
       S.recordResult(AC.app.profile.id, {
         outcome: outcome,
         captures: (st.captured[1] || []).length,
@@ -13725,6 +13806,7 @@ rankBadge('?', R)
         difficulty: st.config && st.config.difficulty
       });
       AC.app.profile = S.getProfile(AC.app.profile.id);
+      rungAfter = AC.ui.ladder(AC.app.profile.stats);
     }
     S.deleteSave('auto');
     // a lesson that ends in a win tells its own outcome, not "the field is conceded"
@@ -13769,6 +13851,12 @@ rankBadge('?', R)
     if (!g.calmResultNarrated) speak([winner === 0 ? 'draw' : (isAiGame ? (outcome === 'win' ? 'victory' : 'defeat') : 'victory')]);
 
     const extra = modeHook('resultExtras', { outcome: outcome }) || null;
+    // Ladder: only for an ordinary battle against the opponent the player currently stands on
+    const diffKey = st.config && st.config.difficulty;
+    const onRung = !extra && rungBefore && rungAfter && st.scenario === 'duel' && diffKey === rungBefore.key;
+    const promoted = !!(onRung && outcome === 'win' && rungAfter.rung > rungBefore.rung);
+    const beaten = onRung ? (L.opponent(diffKey) || U.DIFFICULTIES[diffKey]) : null;
+    const nextOpp = promoted ? (L.opponent(rungAfter.key) || U.DIFFICULTIES[rungAfter.key]) : null;
     const astrasUsed = (st.astraLog || []).filter(function (a) { return a.owner === 1; }).length;
     const actions = [
       { label: 'Home', cls: 'btn-ghost', onClick: function () { g.state = null; AC.ui.show('home'); } },
@@ -13782,7 +13870,28 @@ rankBadge('?', R)
       if (AC.scroll && g.moments && g.momentsState === st && g.moments.length) {
         actions.push({ label: 'Sanjaya’s Scroll', cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { openScroll(st, outcome, title); } });
       }
-      actions.push({ label: tr('result.rematch', 'Rematch'), cls: 'btn-primary', onClick: function () { g.start(st.config); } });
+      if (promoted) {
+        // the win that clears a rung: the next opponent takes the place of Rematch
+        // (Rematch stays on the bar under the board)
+        actions.push({ label: tr('ladder.face', 'Face {b}').replace('{b}', nextOpp.label), cls: 'btn-primary', icon: 'sword',
+          onClick: function () { g.start(Object.assign({}, st.config, { difficulty: nextOpp.key })); } });
+      } else {
+        actions.push({ label: tr('result.rematch', 'Rematch'), cls: 'btn-primary', onClick: function () { g.start(st.config); } });
+      }
+    }
+
+    // whole sentences with {a} {b} {n}, so Hindi and Marathi can order the words their own way
+    const fill = function (key, fallback, v) { return tr(key, fallback).replace(/\{(\w)\}/g, function (m, k) { return v[k] == null ? m : v[k]; }); };
+    let ladderHtml = '';
+    if (promoted) {
+      ladderHtml = '<div class="ladder-note up"><b>' + esc(fill('ladder.beaten', '{a} is beaten.', { a: beaten.label })) + '</b> ' +
+        esc(fill('ladder.next', '{b} takes the field against you next.', { b: nextOpp.label })) + '</div>';
+    } else if (onRung && outcome === 'win' && rungAfter.next) {
+      const left = rungAfter.need - rungAfter.wins;
+      const v = { a: beaten.label, b: (L.opponent(rungAfter.next) || U.DIFFICULTIES[rungAfter.next]).label, n: left };
+      ladderHtml = '<div class="ladder-note">' + esc(left === 1
+        ? fill('ladder.one_more', 'One more win over {a} and {b} comes for you.', v)
+        : fill('ladder.more', '{n} more wins over {a} and {b} comes for you.', v)) + '</div>';
     }
 
     AC.ui.modal({
@@ -13803,6 +13912,7 @@ rankBadge('?', R)
           '<div class="result-stat"><b>' + (st.captured[2] || []).length + '</b><span>lost</span></div>' +
           '<div class="result-stat"><b>' + astrasUsed + '</b><span>astras</span></div>' +
         '</div>' +
+        ladderHtml +
         vowHtml +
         (extra && extra.html ? extra.html : ''),
       actions: actions
@@ -13813,11 +13923,17 @@ rankBadge('?', R)
     if (!g.state || g.state.phase === 'over') return;
     // against the AI the player is always the one leaving, even mid-AI-turn
     const loser = isAi() ? 1 : g.state.owner;
+    g.conclude(loser === 1 ? 2 : 1, U.FACTIONS[loser].name + ' left the field.');
+  };
+
+  /* End the battle now with a given winner (resign uses it; so do the tests and harnesses). */
+  g.conclude = function (winner, reason) {
+    if (!g.state || g.state.phase === 'over') return;
     clearTimers();
     g.busy = false;
     g.thinking = false;
     if (AC.stage && AC.stage.close) AC.stage.close();
-    E.endGame(g.state, loser === 1 ? 2 : 1, U.FACTIONS[loser].name + ' left the field.', []);
+    E.endGame(g.state, winner, reason || '', []);
     handleGameOver();
   };
 

@@ -14,7 +14,7 @@ them in. Do not claim a native-speaker review or a recording that did not happen
 
 | # | Task | Deliver |
 |---|---|---|
-| 6.1 | **Hindi and Marathi for the 74 newer interface strings** in `docs/i18n/pending-first-session.en.json` (the wheel lessons, odds words, Confirm strike, the goal box, the battle log: `log.you` "You", `log.enemy` "Enemy", `log.hidden` "hidden piece", `log.ring1–3` inner/middle/outer, `log.hub`, `log.centre`). Same rules as `strings.hi.json`: keep every key and `{n}` placeholder; short enough for a phone button; game names stay as in the glossary. | `incoming/i18n/first-session.hi.json`, `incoming/i18n/first-session.mr.json` |
+| 6.1 | **Hindi and Marathi for the 79 newer interface strings** in `docs/i18n/pending-first-session.en.json` (the wheel lessons, odds words, Confirm strike, the goal box, the battle log: `log.you` "You", `log.enemy` "Enemy", `log.hidden` "hidden piece", `log.ring1–3` inner/middle/outer, `log.hub`, `log.centre`). Same rules as `strings.hi.json`: keep every key and `{n}` placeholder; short enough for a phone button; game names stay as in the glossary. | `incoming/i18n/first-session.hi.json`, `incoming/i18n/first-session.mr.json` |
 | 6.2 | **The four long lines** (was 4.2): shorten to ≤ 3.3 s, then record. Still over budget today: `volley_kill_1` (hi), `assassinate_1` (hi), `trap_defused_1` (en), `rotate_padma_1` (en). | `incoming/text/sanjaya-short-2026-11-01.csv` + voice files |
 | 6.3 | **Record the 18 pending lines** (was 4.1). | `assets/audio/voice/<hi\|en>/<id>.mp3` (or `incoming/voice/…`) |
 | 6.4 | **Vow strings** (was 5.1). | `incoming/i18n/pratigya.hi.json`, `incoming/i18n/pratigya.mr.json` |

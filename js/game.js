@@ -2626,7 +2626,10 @@ rankBadge('?', R)
     if (winner === 1) outcome = 'win';
     else if (winner === 2) outcome = 'loss';
 
+    // the ladder (Yuddh karo): where the player stood before this result, and after it
+    let rungBefore = null, rungAfter = null;
     if (isAiGame && AC.app.profile && !AC.app.guest && !modeHook('noRecord')) {
+      rungBefore = AC.ui.ladder(AC.app.profile.stats);
       S.recordResult(AC.app.profile.id, {
         outcome: outcome,
         captures: (st.captured[1] || []).length,
@@ -2635,6 +2638,7 @@ rankBadge('?', R)
         difficulty: st.config && st.config.difficulty
       });
       AC.app.profile = S.getProfile(AC.app.profile.id);
+      rungAfter = AC.ui.ladder(AC.app.profile.stats);
     }
     S.deleteSave('auto');
     // a lesson that ends in a win tells its own outcome, not "the field is conceded"
@@ -2679,6 +2683,12 @@ rankBadge('?', R)
     if (!g.calmResultNarrated) speak([winner === 0 ? 'draw' : (isAiGame ? (outcome === 'win' ? 'victory' : 'defeat') : 'victory')]);
 
     const extra = modeHook('resultExtras', { outcome: outcome }) || null;
+    // Ladder: only for an ordinary battle against the opponent the player currently stands on
+    const diffKey = st.config && st.config.difficulty;
+    const onRung = !extra && rungBefore && rungAfter && st.scenario === 'duel' && diffKey === rungBefore.key;
+    const promoted = !!(onRung && outcome === 'win' && rungAfter.rung > rungBefore.rung);
+    const beaten = onRung ? (L.opponent(diffKey) || U.DIFFICULTIES[diffKey]) : null;
+    const nextOpp = promoted ? (L.opponent(rungAfter.key) || U.DIFFICULTIES[rungAfter.key]) : null;
     const astrasUsed = (st.astraLog || []).filter(function (a) { return a.owner === 1; }).length;
     const actions = [
       { label: 'Home', cls: 'btn-ghost', onClick: function () { g.state = null; AC.ui.show('home'); } },
@@ -2692,7 +2702,28 @@ rankBadge('?', R)
       if (AC.scroll && g.moments && g.momentsState === st && g.moments.length) {
         actions.push({ label: 'Sanjaya’s Scroll', cls: 'btn-ghost', icon: 'share', close: false, onClick: function () { openScroll(st, outcome, title); } });
       }
-      actions.push({ label: tr('result.rematch', 'Rematch'), cls: 'btn-primary', onClick: function () { g.start(st.config); } });
+      if (promoted) {
+        // the win that clears a rung: the next opponent takes the place of Rematch
+        // (Rematch stays on the bar under the board)
+        actions.push({ label: tr('ladder.face', 'Face {b}').replace('{b}', nextOpp.label), cls: 'btn-primary', icon: 'sword',
+          onClick: function () { g.start(Object.assign({}, st.config, { difficulty: nextOpp.key })); } });
+      } else {
+        actions.push({ label: tr('result.rematch', 'Rematch'), cls: 'btn-primary', onClick: function () { g.start(st.config); } });
+      }
+    }
+
+    // whole sentences with {a} {b} {n}, so Hindi and Marathi can order the words their own way
+    const fill = function (key, fallback, v) { return tr(key, fallback).replace(/\{(\w)\}/g, function (m, k) { return v[k] == null ? m : v[k]; }); };
+    let ladderHtml = '';
+    if (promoted) {
+      ladderHtml = '<div class="ladder-note up"><b>' + esc(fill('ladder.beaten', '{a} is beaten.', { a: beaten.label })) + '</b> ' +
+        esc(fill('ladder.next', '{b} takes the field against you next.', { b: nextOpp.label })) + '</div>';
+    } else if (onRung && outcome === 'win' && rungAfter.next) {
+      const left = rungAfter.need - rungAfter.wins;
+      const v = { a: beaten.label, b: (L.opponent(rungAfter.next) || U.DIFFICULTIES[rungAfter.next]).label, n: left };
+      ladderHtml = '<div class="ladder-note">' + esc(left === 1
+        ? fill('ladder.one_more', 'One more win over {a} and {b} comes for you.', v)
+        : fill('ladder.more', '{n} more wins over {a} and {b} comes for you.', v)) + '</div>';
     }
 
     AC.ui.modal({
@@ -2713,6 +2744,7 @@ rankBadge('?', R)
           '<div class="result-stat"><b>' + (st.captured[2] || []).length + '</b><span>lost</span></div>' +
           '<div class="result-stat"><b>' + astrasUsed + '</b><span>astras</span></div>' +
         '</div>' +
+        ladderHtml +
         vowHtml +
         (extra && extra.html ? extra.html : ''),
       actions: actions
@@ -2723,11 +2755,17 @@ rankBadge('?', R)
     if (!g.state || g.state.phase === 'over') return;
     // against the AI the player is always the one leaving, even mid-AI-turn
     const loser = isAi() ? 1 : g.state.owner;
+    g.conclude(loser === 1 ? 2 : 1, U.FACTIONS[loser].name + ' left the field.');
+  };
+
+  /* End the battle now with a given winner (resign uses it; so do the tests and harnesses). */
+  g.conclude = function (winner, reason) {
+    if (!g.state || g.state.phase === 'over') return;
     clearTimers();
     g.busy = false;
     g.thinking = false;
     if (AC.stage && AC.stage.close) AC.stage.close();
-    E.endGame(g.state, loser === 1 ? 2 : 1, U.FACTIONS[loser].name + ' left the field.', []);
+    E.endGame(g.state, winner, reason || '', []);
     handleGameOver();
   };
 

@@ -776,6 +776,49 @@ async function run() {
 
   await calmPaceChecks();
 
+  // ── the ladder: Yuddh karo picks the opponent the player is ready for (13 Nov 2026) ──
+  {
+    const closeAll = () => AC.app.modals.slice().forEach((m) => m.close());
+    const pid = AC.app.profile.id;
+    const fresh = () => { AC.storage.resetStats(pid); AC.app.profile = AC.storage.getProfile(pid); AC.ui.patchSettings({ lastSetup: null }); if (AC.modes) AC.modes.clear(); };
+    const battle = async (winner) => {
+      AC.ui.quickBattle(); await sleep(10); closeAll();
+      const lock = $('#action-bar [data-deploy="lock"]'); if (lock) click(lock);
+      await sleep(10); closeAll();
+      const cfg = AC.game.state.config.difficulty;
+      AC.game.conclude(winner, 'test'); await sleep(10);
+      return cfg;
+    };
+    fresh();
+    ok(AC.ui.ladder(AC.app.profile.stats).key === 'recruit', 'a new player stands on the first rung: Sainik');
+    AC.ui.show('home'); await sleep(10);
+    ok(/Sainik/.test($('#quick-sub').textContent), 'the home button names Sainik for a new player');
+    ok((await battle(2)) === 'recruit', 'the first quick battle is against Sainik');
+    ok(!$('.modal .ladder-note'), 'a defeat shows no ladder note');
+    closeAll();
+    await battle(1);
+    ok($('.modal .ladder-note') && !$('.modal .ladder-note.up') && /One more win over Sainik/.test($('.modal .ladder-note').textContent), 'the first win says one more is needed');
+    closeAll();
+    await battle(1);
+    ok($('.modal .ladder-note.up') && /Sainik is beaten/.test($('.modal .ladder-note').textContent), 'the second win over Sainik is the promotion');
+    const face = Array.from($$('.modal .modal-actions button')).filter((b) => /Face Dronacharya/.test(b.textContent))[0];
+    ok(face && face.classList.contains('btn-primary'), 'the promotion offers Dronacharya as the main button');
+    click(face); await sleep(10);
+    ok(AC.game.state.config.difficulty === 'veteran' && AC.game.state.phase !== 'over', 'the button opens a battle against Dronacharya');
+    closeAll();
+    AC.ui.show('home'); await sleep(10);
+    ok(/Dronacharya/.test($('#quick-sub').textContent), 'the home button now names Dronacharya');
+    AC.storage.recordResult(pid, { outcome: 'win', difficulty: 'veteran' });
+    AC.storage.recordResult(pid, { outcome: 'win', difficulty: 'veteran' });
+    AC.storage.recordResult(pid, { outcome: 'win', difficulty: 'veteran' });
+    ok(AC.ui.ladder(AC.storage.getProfile(pid).stats).key === 'archon', 'three wins over Dronacharya bring Shakuni');
+    fresh();
+    AC.game.start({ mode: 'ai', board: 'wheel', difficulty: 'archon' }); await sleep(10); closeAll();
+    AC.game.conclude(1, 'test'); await sleep(10);
+    ok(!$('.modal .ladder-note'), 'a win off the rung (Custom battle against Shakuni) leaves the ladder alone');
+    closeAll(); fresh();
+  }
+
   // jsdom has no media stack and no canvas backend; those notices are not
   // game errors (audio is verified in the browser instead)
   const realErrors = errors.filter((e) => !/Not implemented: (window\.|HTMLCanvas|HTMLMediaElement)/.test(e));

@@ -134,7 +134,7 @@ A side whose every movable piece is entranced loses the turn, not the battle.
 
 | Mode | What it is |
 |---|---|
-| **Yuddh karo** (quick battle) | One tap: the last setup, or Chakravyuha vs Dronacharya. |
+| **Yuddh karo** (quick battle) | One tap: the last field and rules, against the opponent on the player's ladder rung — Sainik until two wins over him, Dronacharya until three, then Shakuni. The win that clears a rung offers the next opponent on the result card. Custom battle offers every opponent. |
 | **Custom battle** | Field, opponent, scenario, rules, tie rule, turn clock. |
 | **Abhimanyu** | 8 raiders (no fort, no trap) vs 10 defenders on the wheel, 28 rounds, raiders by day with 2 Shakti. |
 | **Daily Chakravyuha** | Seeded by the date in IST; 8 raiders vs 10; 24 rounds; one modifier a day; one official attempt; streaks; share card. Sundays are Padmavyuha day. |

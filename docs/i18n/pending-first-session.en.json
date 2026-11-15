@@ -72,5 +72,10 @@
   "wheel.wheel.predict.text": "Every 5th round the two inner rings turn one cell clockwise and carry what stands on them. They turn after this round. Where will your Rath (2) be? Tap that cell.",
   "wheel.wheel.predict.wrong": "Not there. Only the two inner rings turn, one cell clockwise: at the foot of the wheel that is to the left.",
   "wheel.wheel.title": "The wheel turns",
-  "wheel.wheel.turn.text": "You marked it. Now end the round: move your Maharathi (9) one cell, and watch the wheel turn."
+  "wheel.wheel.turn.text": "You marked it. Now end the round: move your Maharathi (9) one cell, and watch the wheel turn.",
+  "ladder.beaten": "{a} is beaten.",
+  "ladder.next": "{b} takes the field against you next.",
+  "ladder.one_more": "One more win over {a} and {b} comes for you.",
+  "ladder.more": "{n} more wins over {a} and {b} comes for you.",
+  "ladder.face": "Face {b}"
 }

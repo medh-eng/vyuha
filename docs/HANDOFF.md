@@ -1,40 +1,45 @@
 # Handoff — latest status
 
-**7 November 2026 (night) · Director.** Replace this file at the end of each session.
+**13 November 2026 · Director.** Replace this file at the end of each session.
 
 ## State
 
-PR #24 (battle log, audio priority) is merged and live. Branch **`claude/agents-review-scenarios`**
-(PR open, T-19) holds four things:
+The Commander uploaded the two scenario paintings and asked for a hard review of the whole game,
+a plan, and the work done in parts. The review and plan are **`docs/REVIEW.md`** — read it first.
+Branch **`claude/first-session-ladder-scenes`** (PR open, T-24) is Part 1 of that plan:
 
 | Item | What changed | Where |
 |---|---|---|
-| ChatGPT Batch 4.1 merged in | Robot plays portrait 390×844 / 360×640 and landscape 844×390 / 640×360, all four fields, the field drill and a full Daily, through real taps only, seeded (`ROBOT_SEED`), `summary.json`. CI workflow runs the whole check list on **every PR** (widened by the Director; audio, log, battle-log added). Director's tweak: `tapCell` looks a cell up again (3 tries) when the board redraws mid-tap | `tools/playtest-bot.mjs`, `.github/workflows/landscape-robot.yml` |
-| **Bug fix: centre cell ignored taps** | Pata (since 6 Nov) drew the wheel hub / lotus centre with `fill: none` so the painted field shows; SVG then ignores taps there, so a piece on the centre could not be picked by touch. `.board-svg .cell .cell-fill { pointer-events: all }`. `tools/battle-log.mjs` now checks every cell takes a tap at its centre (fails without the fix) | `css/app.css` |
-| T-09 Pata cards | Scenario cards: painting in a top band with an ink rule, words in ink on cotton (the Pata panel rule had wiped the painting and left Classic's black shade). Story cards and the Daily card: painting band across the top. **Story paintings had never loaded in either look** — `url()` inside `--modal-art` resolved against `css/`; now absolute. Pass-and-play curtain: indigo cloth + cotton card. Until the Commander's scenario paintings land, `PATA_SLOTS` crops the fields: Yuddh → Kurukshetra camp, Abhimanyu and Daily → the wheel | `js/art.js` (`PATA_SLOTS card:*`), `js/ui.js` (`.mode-card-art`, `.modal-band`, `artKey`), `js/main.js`, CSS at the end of `css/app.css` |
-| Cleanup | `masters/audio/` (36 MB) out of git — it was still tracked despite `.gitignore`; same files as `vyuha-masters-audio.zip`, in history to `28b4fe6`. Superseded `docs/evidence/landscape-2026-11-01`, `portraits-2026-11-01` removed. Tracked tree ≈ 32 MB. **26 fully merged branches remain on GitHub** — Claude sessions cannot delete branches (T-23) | |
-| Agents | Sarvam: nothing new since Batch 3. ChatGPT: only 4.1. Both briefs now start with **Batch 6** (one ordered list each). ChatGPT 4.2 dropped (landscape rebuilt 6 Nov) | `docs/agents/*.md` |
+| Scenario paintings (T-20) | `card-duel` (two camps at dawn) and `card-abhimanyu` (the lone chariot in the closed wheel) are on the scenario cards, the story cards and the Daily card. Field crops and their position overrides removed | `assets/art/pata/scenes/card-*.webp`, `PATA_SLOTS` in `js/art.js`, `css/app.css`, `data/art.json` |
+| **The ladder** | Yuddh karo picks the opponent: Sainik until two wins over him, Dronacharya until three, then Shakuni (`AC.ui.ladder(stats)`). Field and rules still come from the last Custom battle; Custom battle opens on the ladder rung until the player has chosen for themselves. Result card: "One more win over Sainik and Dronacharya comes for you", then on the clearing win a saffron note and **Face Dronacharya** in place of Rematch. Only for an ordinary battle against the rung's opponent; guests have no record, so they stay on Sainik | `js/ui.js` (`LADDER`, `ladder`, `quickSetup`), `js/game.js` (`handleGameOver`), `.ladder-note` |
+| Home, sideways | Height ≤ 520 px: painting beside the title and Yuddh karo; the other doors in a column on the right, Daily first. Yuddh karo was at 461 px on a 411 px screen; now 152–211 px at 914 × 411, 830 × 318, and 167–226 at 640 × 360. Portrait and desktop unchanged | end of `css/app.css` |
+| Result card, sideways | Verdict in one row, numbers on one line, buttons fixed at the foot of the card (they were cut off below the edge at 914 × 411) | end of `css/app.css` |
+| `AC.game.conclude(winner, reason)` | Ends the battle now; `resign` uses it, and so do the new tests | `js/game.js` |
+| Strings | Five `ladder.*` keys (whole sentences with `{a}` `{b}` `{n}`) added to the pending file — now 79 | `docs/i18n/pending-first-session.en.json` |
+
+## Measured this session (seeded AI-v-AI on `main`; no person played)
+
+- Wheel, Dronacharya v Dronacharya, 200 battles: 101–99; median 23 rounds; **63 ended with one side out of movers**, not a fort.
+- Lotus, same, 150: 67–83; **82 ended out of movers**.
+- Wheel, Sainik v Dronacharya, 100: Sainik won 17; 16 over by round 10.
+- Kurukshetra: 39 of 60 (D v D) and 34 of 60 (S v D) ended at sunset. Sarvatobhadra D v D, 60: 19 sunset, 21 out of movers.
 
 ## Checks (this branch)
 
-rules 166 · self-play 40 · Daily · languages · UI 184 · data 159 · assets · audio 44 · log 18 ·
-battle-log ≈ 1 050 (incl. every-cell tap) · Pata sweep both looks, no errors · robot full run
-(all four viewports) — see the PR for the final line · plus the browser checks listed in the PR.
-`tools/media-qa.mjs` still fails at the astra-film gate on `main` too → ChatGPT 6.1 (T-14).
-
-## When the scenario paintings arrive (T-20)
-
-Upload to `incoming/art/pata/scenes/card-duel.png`, `card-abhimanyu.png` → `python3 tools/prepare-pata.py`
-(already writes `assets/art/pata/scenes/card-*.webp`) → point `PATA_SLOTS['card:duel']` and
-`['card:abhimanyu']` (and `card:daily` → abhimanyu) at `'pata:scenes/card-…'` in `js/art.js` →
-drop the `background-position` overrides for `[data-val="duel"]` / `[data-art="duel"]` if the new
-pictures are centred → `node tools/pata-sweep.mjs` and look.
+rules 166 · self-play 40 · Daily · languages · UI 195 (11 new, the ladder) · data 159 · assets ·
+audio 44 · log 18 · shots · first-session 32 · landscape 122 · pace-budget (same four long lines as
+before) · battle-log 987 · idle heat under 3 % portrait and 844 × 390 · Pata sweep both looks, no
+errors · robot — see the PR for its last line. `tools/media-qa.mjs` not run (known failure, T-14).
+**Not phone-tested; no real-person playtest.**
 
 ## Open
 
-- **Not phone-tested; no real-person playtest.** On the phone: a piece on the wheel hub can now be picked.
-- Commander: T-23 (delete merged branches; turn on auto-delete), T-20 (two paintings), T-08 (wheel night field), T-02/T-03/T-16 phone checks, T-05 playtests.
+- Commander: merge the PR (T-24); **T-05 five first-session playtests — the gate for Part 3**;
+  T-23 branches; T-08 wheel night field; phone checks T-02/T-03/T-16 and now T-25 (home and result sideways).
+- Sarvam has still delivered nothing since Batch 3; 79 strings wait. `docs/REVIEW.md` Part 4 says stop waiting.
 
-## Next
+## Next (Director) — Part 2 of `docs/REVIEW.md`
 
-Director: **T-21** (festival days on the Daily, sound pass), T-17 (log prose keys). Agents: Batch 6.
+T-26 endings (out-of-movers on the wheel and lotus; sunset on Kurukshetra), each screened on two
+fresh seed banks · T-27 Daily briefing says the task · T-28 challenge-a-friend link.
+T-21, T-17, T-22 stay behind these.

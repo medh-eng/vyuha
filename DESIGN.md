@@ -65,6 +65,16 @@ stays in Settings and as the fallback.
   830 × 318 (with the address bar), and 844 × 390.
 - Battles on phones open full screen and sideways; if the browser refuses, nothing else changes.
 
+### Home and the result card, sideways (13 Nov 2026)
+
+- **Yuddh karo is on the first screen at every size.** On a phone held sideways (height ≤ 520 px)
+  the chamber painting stands beside the title and the button; the other doors (Daily first) are a
+  column on the right. Checked at 914 × 411, 830 × 318 and 640 × 360.
+- **The result card never scrolls its buttons away.** Sideways the verdict is one row, the four
+  numbers one line, and the buttons stay at the foot of the card.
+- **One main button on the result card.** Rematch, or — on the win that clears a ladder rung —
+  "Face <next opponent>" in its place, with the saffron ladder note above it.
+
 ## 4. Reading the battle (first-session clarity)
 
 - **Odds are words first:** Likely win (≥ 60 %), Uncertain (35–59 %), Likely loss (< 35 %), based
