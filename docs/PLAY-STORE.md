@@ -75,9 +75,8 @@ Title (30 characters max): `VYUHA: Chakravyuha Strategy` (27) · Short descripti
 
 ## Not done, and why
 
-- **Not built or installed yet.** The Director's workspace cannot reach Google's Android download
-  servers, so the first real build happens in GitHub Actions on this PR. Nobody has opened the app
-  on a phone.
+- **Built, not installed.** GitHub Actions built it on PR #37 (bundle 33 MB, test APK 34 MB).
+  Nobody has opened the app on a phone yet (T-42).
 - **Sideways lock.** In the browser the battle turns the screen sideways; the app follows the
   phone's own rotation instead (both layouts work). A rotation plugin can come later if wanted.
 - **Hindi and Marathi store listing.** English (and the Hinglish draft) only for now.

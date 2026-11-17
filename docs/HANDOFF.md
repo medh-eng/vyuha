@@ -59,9 +59,12 @@ log 18 · shots · landscape 122 · first-session 32 · battle-log 1002 · reada
 all passed. Idle heat: every screen under 3 % upright and at 844×390. Robot: the first full run
 caught a real regression (the labelled HUD squeezed the 360×640 field to 102 px) — fixed above;
 the second full run had one timeout in the phone Daily; replaying the phone set on this branch
-and on main side by side: both "no problems" (battles differ run to run — same family as T-22). **Not done:** the Android build itself (this workspace
-cannot reach Google's download servers — the PR's Android workflow is the first build); no phone,
-APK or human test of any of this.
+and on main side by side: both "no problems" (battles differ run to run — same family as T-22);
+the third full run: **no problems** on all four viewports.
+**Android build (PR #37 workflow): BUILD SUCCESSFUL** — `vyuha-play-bundle` 33 MB (unsigned until
+the four secrets exist) and `vyuha-phone-test-apk` 34 MB. The `android-actions/setup-android`
+step failed in sdkmanager, so the workflow now uses the runner's own SDK. **Not done:** no phone, APK install or human test of any
+of this.
 
 ## Waiting on the Commander
 T-41 Play steps · T-42 test APK on the phone · T-43 store words · and still T-05 (the gate),
