@@ -85,6 +85,11 @@
 
   function startTips() {
     if (tipTimer) clearInterval(tipTimer);
+    // a lesson teaches one thing: no rotating tips, and only the buttons it has introduced
+    const stage = modes() && modes().lessonStage ? modes().lessonStage() : 0;
+    const screen = document.getElementById('screen-game');
+    if (screen) { if (stage) screen.setAttribute('data-lesson', stage); else screen.removeAttribute('data-lesson'); }
+    if (stage) { tipTimer = null; paintStrip('', ''); return; }
     tipIndex = Math.floor(Math.random() * TIPS.length);
     const paint = function () {
       // Sanjaya's latest line stays up for a while before tips return
@@ -158,7 +163,7 @@
       art: art,
       artKey: st.scenario,
       wide: false,
-      body: '<p style="font-size:13px;line-height:1.65;color:var(--dim);margin:0 0 12px">' + esc(legend.text) + '</p>' +
+      body: '<p style="font-size:14px;line-height:1.65;color:var(--dim);margin:0 0 12px">' + esc(legend.text) + '</p>' +
         '<div class="legend-facts">' +
           '<span><b>' + st.rosters[1].length + '</b> your pieces</span>' +
           '<span><b>' + st.rosters[2].length + '</b> theirs</span>' +
@@ -472,6 +477,7 @@
    * that started the battle; if the browser refuses, nothing else changes. */
   function canFull() {
     const d = typeof document !== 'undefined' ? document : null;
+    if (AC.native && AC.native.isApp) return false; // the app is already full screen
     return !!(d && d.fullscreenEnabled && d.documentElement.requestFullscreen &&
       typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches);
   }
@@ -1141,6 +1147,8 @@ rankBadge('?', R)
       // once per player, after the opening: settings are written outside this render
       g.noteHintQueued = true;
       setTimeout(function () {
+        // not during a lesson: one idea at a time. It is offered in the first real battle instead.
+        if (modes() && modes().lessonStage && modes().lessonStage()) { g.noteHintQueued = false; return; }
         AC.ui.patchSettings({ noteHinted: true });
         FX.toast('Tip: hold a hidden enemy to pencil your guess on it.', 'info');
       }, 1200);
@@ -1324,7 +1332,7 @@ rankBadge('?', R)
       return '<button class="astra-btn ' + cls + ' el-' + def.element + '" data-astra="' + key + '"' +
         ' title="' + esc(def.name + ' — ' + def.one + ' Costs ' + def.cost + ' Shakti' + (used ? ' (used)' : '')) + '"' +
         ' aria-label="' + esc(def.name) + '"' + (used ? ' disabled' : '') + '>' +
-        A.astraMark(key) + '<span class="astra-name">' + esc(def.name) + '</span><span class="astra-cost">' + pips + '</span></button>';
+        A.astraMark(key) + '<span class="astra-name">' + esc(def.name).replace(/(.)astra$/, '$1<wbr>astra') + '</span><span class="astra-cost">' + pips + '</span></button>';
     }).join('') + '</span>';
   }
 

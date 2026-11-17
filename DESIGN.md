@@ -104,6 +104,24 @@ stays in Settings and as the fallback.
   steps aside first. Cell names also lead each cell's screen-reader label.
 - The four wheel lessons teach one idea each, from controlled starting positions, then point to
   Daily and Quick Battle. No long rules screen.
+- **A lesson shows only what it has taught** (17 Nov 2026, after the Commander's first real
+  playtest lost a new player in 15 minutes of explaining). In a wheel lesson the battle screen hides
+  the clock, Intel, Log, the hour chip, Advisor and the rotating tips (`#screen-game[data-lesson]`,
+  set from `AC.modes.lessonStage()`); the wheel's countdown appears only in lesson 2, Shakti and the
+  astras only in lesson 4, and the pencil-a-guess tip waits for the first real battle. The last
+  lesson card names the three battle buttons the lessons kept out of sight (Intel, Log, Advisor).
+
+### Big words, big buttons (17 Nov 2026)
+
+- **Floor:** no words under **12 px**, no button under **40 px** on its short side, on any screen
+  `tools/readability.mjs` walks (Home, the lesson offer, Setup, deployment, battle, rules,
+  settings, a lesson; 390 × 844 and 914 × 411). Words drawn inside the field scale with the field
+  and are not counted. Battle buttons are 44 px or more.
+- **Every icon carries its word**, upright as well as sideways: Menu, Intel, Log, the clock, the hour
+  chip and all four astras (a long astra name breaks before "astra"). Upright, Settings lives in Menu
+  so six labelled buttons fit a 360 px phone; on tablets it comes back in the one-row HUD.
+- On short screens a card's buttons stay in view while its words scroll.
+- Locked scenario cards keep their painting, greyed, and say in ink when they open.
 
 ### Locked options (T-34, 16 Nov 2026)
 
@@ -153,4 +171,5 @@ Before a change goes to a pull request:
 3. Changed a piece, astra, field or painting box? Run `node tools/export-data.mjs`; commit `data/`.
 4. Anything that moves or repeats: heat rule (section 5) and the idle probe.
 5. Screens that change: before/after screenshots at 914 × 411 and 830 × 318.
-6. Update `TASKS.md` (tick, add) and replace `docs/HANDOFF.md`.
+6. Words or buttons that change: `node tools/readability.mjs` (no words under 12 px, no button under 40 px).
+7. Update `TASKS.md` (tick, add) and replace `docs/HANDOFF.md`.

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- the slate of the VYUHA icon, behind the bronze wheel -->
+    <color name="ic_launcher_background">#2B2A44</color>
+</resources>

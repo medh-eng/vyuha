@@ -5,12 +5,15 @@ Chapters and history stay in `docs/ROADMAP.md`; what the last session did is in 
 Rules: one line per task, an ID that never changes, "done when" in plain words. Tick it (`[x]`) and
 move it to **Done** in the same pull request that finishes it. Add new work here first.
 
-Last updated: 16 Nov 2026 (Director: T-34 progression system built and merged — free level-based unlocks for fields and the Abhimanyu scenario, no payment path; 15 Nov: Sarvam Batch 6.1: Hindi and Marathi for the 102 pending strings, catalogues at 251 keys; Batch 6.2-6.5: the 18 pending recordings, four shortened lines, vow strings, Chapter IV lines, respect read; final pass: every recording under 4 s, Chapter IV drafts, cultural review, Marathi consistency pass; Director: unmissable first battle, after a real playtest; ChatGPT Quiet Gate balance and Pata hero-card design).
+Last updated: 17 Nov 2026 (Director: Play Store readiness — Android app, store pictures, privacy page, Play guide `docs/PLAY-STORE.md`; big words and big buttons with `tools/readability.mjs`; lessons show only what they have taught; tablet field fix. Earlier, 16 Nov: T-34 progression system; 15 Nov: Sarvam Batch 6.x; Director: unmissable first battle).
 
 ## Now
 
 | ID | Owner | Task | Done when |
 |---|---|---|---|
+| T-41 | C | **Play Store, your part** — follow `docs/PLAY-STORE.md` steps 1–7: merge the PR, make the upload key, add the four GitHub secrets, run *Actions → Android build*, install the test APK on your phone, then Play Console + closed test with 12 testers for 14 days | app live on Play |
+| T-42 | C | On the phone with the **test APK**: Back button (card → Menu → Home → leaves), full screen, sound stops when you switch app, WhatsApp share opens WhatsApp, a lesson and a Quick battle | a yes/no each |
+| T-43 | C | Read the store words: fix the three out-of-date points listed in `docs/PLAY-STORE.md` ("Words for the listing") in `incoming/text/store-listing.md`, or say "Director, do it" | listing approved |
 | T-05 | C | **The gate for Part 3:** five people who have never seen the game, on their own phones, watched in silence for ten minutes (Home → first battle). Write where each one stops in `docs/ROADMAP.md` | notes added |
 | T-25 | C | On the phone, sideways: is Yuddh karo on the first home screen? After a battle, are all the result buttons in view? Win a battle, tap **Challenge a friend**, send it to yourself on WhatsApp and open it — does the briefing appear? | a yes/no each |
 | T-30 | C/S | A native reader checks the new Hindi and Marathi Daily share line (`share.cta`). Sarvam's pass added `का` to the Marathi question; the Hindi reads clean | ok or a correction |
@@ -23,6 +26,7 @@ Last updated: 16 Nov 2026 (Director: T-34 progression system built and merged �
 
 | ID | Owner | Task | Done when |
 |---|---|---|---|
+| T-44 | D | Tablets held sideways (1024 × 600, 1280 × 800) use the upright layout with a wide, short field; give them the phone's sideways rails | field ≥ 60 % of screen height on both |
 | T-08 | C | New night painting for the wheel (`chakra-night`) in the same true-indigo style as the other three | file supplied |
 | T-10 | C | Add the three new night masters to your masters zip and Release (`docs/MASTERS.md`) | done |
 | T-17 | D | Battle-log prose (clash/astra sentences) is English-only engine text; give it keys for Sarvam | log readable in hi/mr |
@@ -53,6 +57,7 @@ Last updated: 16 Nov 2026 (Director: T-34 progression system built and merged �
 
 ## Done (newest first)
 
+- [x] T-45 Play Store readiness (17 Nov): Capacitor Android app targeting API 36, build workflow, icons and splash, Back button, background silence, bundled fonts, privacy page, store pictures, `docs/PLAY-STORE.md`; readability floor (12 px words, 40 px buttons) with every battle icon labelled; lessons show only what they have taught; the 781–1080 px tablet field fix.
 - [x] T-34 Progression system: a free level (1–6) from matches played + wins×2 unlocks Sarvatobhadra at level 2, Padmavyuha at 3, Kurukshetra at 4, the Abhimanyu scenario at 5 — shown locked with a lock icon and "Unlocks at Level N" on the Setup screen, tapping does nothing but a toast. Home screen shows the current level. No payment path anywhere; a paid Play Store edition, if ever built, stays cosmetic-only per `docs/ROADMAP.md`. Follow-ups opened as T-35 through T-40 (16 Nov).
 - [x] T-33 Unmissable first battle: the wheel-lesson offer now gates Custom battle and the Daily too, not only Quick; it cannot be dismissed by a stray tap; the decline is an honest claim ("Skip — I've played before") instead of an equally tempting "Fight now"; Sanjaya's ambient lines stay quiet while a coached step is open. Found by a real (informal) playtest — see `docs/ROADMAP.md` Playtest notes (15 Nov, PR #34).
 - [x] Sarvam, 15 Nov, second pass (PR #33) — every one of the 88 recordings is now under 4.0 s (longest 3.97 s, median 2.95 s): `defeat_1`, `sunset_near_1`, `dawn_1`, `dawn_enemy_1`, `start_abhimanyu_1`, `astra_sammohana_enemy_1` shortened and re-recorded; Chapter IV draft recordings (28 files, ≤ 3.24 s); the cultural read of the whole game (`incoming/text/cultural-review.md`, Task 5); a Marathi consistency pass for Batch 6.6; `docs/WORKLOG.md` and `docs/PACING.md` brought up to date

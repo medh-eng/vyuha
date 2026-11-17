@@ -7,3 +7,6 @@ shots/
 masters/
 assets/3d/
 __pycache__/
+
+# Android build input, made by tools/build-www.mjs
+www/
