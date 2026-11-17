@@ -802,8 +802,11 @@
    * the score pauses, the audio engine sleeps, and both come back on return.
    * A game left playing music in the background is a warm phone in a pocket. */
   let sleptEls = [];
-  function onVisibility() {
-    const hidden = root.document && root.document.visibilityState === 'hidden';
+  let asleep = false;
+  function onVisibility(force) {
+    const hidden = typeof force === 'boolean' ? force : (root.document && root.document.visibilityState === 'hidden');
+    if (hidden === asleep) return;
+    asleep = hidden;
     if (hidden) {
       sleptEls = [musicState.el, stingEl].filter(function (el) { return el && !el.paused; });
       sleptEls.forEach(function (el) { try { el.pause(); } catch (e) { /* ignore */ } });
@@ -821,10 +824,12 @@
   }
   if (root.document && root.document.addEventListener) {
     root.document.addEventListener('visibilitychange', onVisibility);
-    root.addEventListener && root.addEventListener('pagehide', function () { onVisibility(); });
+    root.addEventListener && root.addEventListener('pagehide', function () { onVisibility(true); });
   }
 
   AC.audio = {
+    /* the Android app's pause/resume (js/native.js) */
+    sleep: function (hidden) { onVisibility(!!hidden); },
     supported: supported,
     init: init,
     unlock: unlock,

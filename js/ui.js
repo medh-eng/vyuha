@@ -861,7 +861,7 @@
             return '<button class="mode-card' + (on ? ' on' : '') + (locked ? ' locked' : '') + '" data-group="scenario" data-val="' + o.v + '"' +
               (locked ? ' data-need="' + o.need + '" aria-disabled="true"' : '') +
               (art && !locked ? ' style="background-image:url(\'' + art + '\')"' : '') + '>' +
-              (art && !locked ? '<span class="mode-card-art" aria-hidden="true" style="background-image:url(\'' + art + '\')"></span>' : '') +
+              (art ? '<span class="mode-card-art" aria-hidden="true" style="background-image:url(\'' + art + '\')"></span>' : '') +
               '<span class="mode-card-body">' +
                 '<span class="mode-card-title">' + esc(o.title) + (o.deva ? ' <span class="deva">' + esc(o.deva) + '</span>' : '') + '</span>' +
                 '<span class="mode-card-sub">' + (locked ? 'Unlocks at Level ' + o.need : esc(o.sub)) + '</span>' +
@@ -1093,7 +1093,7 @@
           toggleRow('Tap twice to strike', 'confirmActions', s.confirmActions !== false) +
           toggleRow('Show intel panel', 'showIntel', s.showIntel !== false) +
           toggleRow('Board coordinates', 'coordinates', s.coordinates !== false) +
-          toggleRow('Full screen, sideways, in battle (phones)', 'fullscreen', s.fullscreen !== false) +
+          (AC.native && AC.native.isApp ? '' : toggleRow('Full screen, sideways, in battle (phones)', 'fullscreen', s.fullscreen !== false)) +
           toggleRow('Battery saver (cooler phone)', 'batterySaver', liteOn(s)) +
           toggleRow('Reduced motion', 'reducedMotion', !!s.reducedMotion) +
           toggleRow('Colour-blind palette', 'colorblind', !!s.colorblind) +

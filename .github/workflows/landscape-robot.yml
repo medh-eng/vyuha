@@ -48,6 +48,9 @@ jobs:
       - name: Landscape acceptance
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: node tools/landscape.mjs .playtest/landscape
+      - name: Big words, big buttons
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: node tools/readability.mjs .playtest/readability
       - name: Four wheel lessons
         if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
         run: node tools/first-session.mjs .playtest/first-session

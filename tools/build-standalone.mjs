@@ -19,6 +19,10 @@ let html = read('index.html');
 let css = read('css/app.css');
 const hero = fs.readFileSync(path.join(root, 'assets/hero.jpg'));
 css = css.replace("url('../assets/hero.jpg')", "url('data:image/jpeg;base64," + hero.toString('base64') + "')");
+// the bundled fonts travel inside the single file too
+const fontsCss = read('css/fonts.css').replace(/url\('\.\.\/(assets\/fonts\/[^']+\.woff2)'\)/g, (_, f) =>
+  "url('data:font/woff2;base64," + fs.readFileSync(path.join(root, f)).toString('base64') + "')");
+html = html.replace(/<link rel="stylesheet" href="css\/fonts\.css" \/>/, () => '<style>\n' + fontsCss + '\n</style>');
 html = html.replace(
   /<link rel="stylesheet" href="css\/app\.css" \/>/,
   '<style>\n' + css + '\n</style>'

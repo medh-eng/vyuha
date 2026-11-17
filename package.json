@@ -11,7 +11,9 @@
     "test:ui": "node tests/ui.mjs",
     "test:languages": "node tests/languages.mjs",
     "shots": "node tools/shots.mjs",
-    "build": "node tools/build-standalone.mjs"
+    "build": "node tools/build-standalone.mjs",
+    "android:prepare": "node tools/build-www.mjs && npx cap sync android",
+    "android:open": "npx cap open android"
   },
   "keywords": [
     "game",
@@ -28,6 +30,10 @@
   "private": true,
   "homepage": "https://medh-eng.github.io/vyuha/",
   "devDependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
     "jsdom": "^26.1.0",
     "puppeteer-core": "^24.0.0"
   }

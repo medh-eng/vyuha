@@ -81,7 +81,10 @@
       body: '<pre class="share-preview">' + esc(full) + '</pre>',
       actions: [
         { label: 'WhatsApp', cls: 'btn-primary', icon: 'whatsapp', close: false, onClick: function () {
-            const w = root.open('https://wa.me/?text=' + encodeURIComponent(full), '_blank');
+            const wa = 'https://wa.me/?text=' + encodeURIComponent(full);
+            // in the Android app a link handed to the system opens WhatsApp itself
+            if (AC.native && AC.native.isApp) { root.location.href = wa; return; }
+            const w = root.open(wa, '_blank');
             if (!w) FX.toast('Your browser blocked the window — use Copy instead.', 'warn');
           } },
         { label: 'Copy', cls: 'btn-ghost', close: false, onClick: function () {
@@ -484,7 +487,12 @@
     const next = nextLessonIndex();
     const nextLesson = next === -1 ? null : WHEEL_LESSONS[next];
     const html = '<p class="daily-lede">' + esc(wheelText(lesson, 'done', lesson.done)) + '</p>' +
-      (nextLesson ? '' : '<p class="daily-lede">' + esc(tr('wheel.all_done', 'That is the wheel. Now fight on it: the Daily Chakravyuha is the same wheel for everyone today, and Quick battle starts a full match.')) + '</p>');
+      (nextLesson ? '' : '<p class="daily-lede">' + esc(tr('wheel.all_done', 'That is the wheel. Now fight on it: the Daily Chakravyuha is the same wheel for everyone today, and Quick battle starts a full match.')) + '</p>' +
+        // the three battle buttons the lessons kept out of sight, named once before the first real fight
+        '<div class="lesson-legend"><b>' + esc(tr('wheel.legend.title', 'Three buttons you will meet in battle')) + '</b>' +
+        '<span>' + AC.art.icon('eye') + esc(tr('wheel.legend.intel', 'Intel — which enemy ranks are still hidden.')) + '</span>' +
+        '<span>' + AC.art.icon('book') + esc(tr('wheel.legend.log', 'Log — everything that has happened, move by move.')) + '</span>' +
+        '<span>' + AC.art.icon('brain') + esc(tr('wheel.legend.advisor', 'Advisor — suggests a move when you are stuck.')) + '</span></div>');
     const actions = nextLesson
       ? [{ label: tr('wheel.next', 'Next lesson') + ': ' + wheelText(nextLesson, 'title', nextLesson.title), cls: 'btn-primary', onClick: function () { startWheelLesson(next); } }]
       : [
@@ -920,6 +928,9 @@
     MODIFIERS: MODIFIERS,
     MODIFIERS_II: MODIFIERS_II,
     MODIFIERS_III: MODIFIERS_III,
+    /* 1–4 while a wheel lesson is being taught, else 0: the battle screen shows only
+     * what that lesson has introduced (css: #screen-game[data-lesson]) */
+    lessonStage: function () { return active && active.kind === 'wheel' && !active.finished ? active.lesson + 1 : 0; },
     clear: function () { active = null; }
   });
 

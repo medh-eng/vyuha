@@ -7,7 +7,7 @@ for (const name of ['units', 'languages', 'geometry', 'engine', 'sanjaya']) vm.r
 const { i18n: L, units: U, engine: E, sanjaya: SJ } = globalThis.AC;
 const catalogue = JSON.parse(fs.readFileSync(new URL('docs/i18n/strings.en.json', root)));
 assert.equal(L.keys.length, Object.keys(catalogue).length, 'bundle covers every English key');
-assert.equal(L.keys.length, 251);
+assert.equal(L.keys.length, 255);
 const originalDefinitions = JSON.stringify(U);
 const state = E.newState({ board: 'wheel', mode: 'ai' });
 const before = JSON.stringify(state);

@@ -1,211 +1,78 @@
 # Handoff — latest status
 
-**16 November 2026 · Director.** T-34 built and merged: the progression system scoped the day
-before (below) is now live. A free level 1–6 — score = matches played + wins×2, so playing
-always helps and winning helps twice as much — unlocks, one at a time:
+**17 November 2026 · Director.** The Commander asked: is everything done and up to date for
+Google Play, is there a tutorial, are words and icons big and easy, is the game less confusing —
+and do what is needed. One PR, branch `claude/readable-store-ready`.
 
-| Level | Score | Unlocks |
-|---|---|---|
-| 2 | 3 | Sarvatobhadra (`small`) |
-| 3 | 8 | Padmavyuha (`padma`) |
-| 4 | 16 | Kurukshetra (`large`) |
-| 5 | 30 | the Abhimanyu scenario |
-| 6 | 50 | everything above |
+## What changed
 
-`js/ui.js` (`LEVELS`, `levelScore`, `levelFor`, `unlockLevel`) is the source of truth — no
-runtime `data/` file, matching how the win-ladder (`LADDER`/`ladder()`) and rank titles
-(`TITLES`/`titleFor()`) already work in that same file; `data/README.md` is explicit that
-`data/*.json` are generated/hand-kept doc copies the runtime never reads, so a new one here
-would have been pure overhead. On the Setup screen, a locked board or scenario shows a lock
-icon (new `A.icon('lock')` in `js/art.js`) and "Unlocks at Level N" in place of its blurb;
-tapping it does nothing but a toast ("Unlocks at Level N — play and win more battles"). The
-home screen's rank line now ends with "· Level N" and either "more unlocks at Level N+1" or
-"everything unlocked". Guests (no profile, never recorded) stay at level 1, same as the
-existing win-ladder already treats them.
+**Play Store** (full guide: `docs/PLAY-STORE.md`)
+- `android/` — Capacitor 8 Android project, `com.medheng.vyuha`, target **API 36** (Google's rule
+  for new apps since 31 Aug 2026), min API 24. `MainActivity` hides the system bars (swipe to
+  peek). Icons from the bronze wheel (adaptive: wheel on `#2B2A44`), splash = cotton + wheel (the
+  Capacitor logo is gone). Release signing reads `android/keystore.properties` or the
+  `VYUHA_UPLOAD_*` env vars; keys are git-ignored.
+- `.github/workflows/android.yml` — builds `vyuha-play-bundle` (.aab) and `vyuha-phone-test-apk`
+  on app PRs and by hand. Unsigned until the Commander adds the four secrets.
+- `tools/build-www.mjs` → `www/` (git-ignored): only the game files go into the app.
+  `npm run android:prepare` = build-www + `cap sync android`.
+- `js/native.js` (first script, does nothing in a browser): `AC.native.isApp`; phone Back closes the
+  top card → opens Menu in battle → goes Home → leaves the app on Home; `appStateChange` sleeps the
+  audio (`AC.audio.sleep`, new; `onVisibility` now takes a forced state and ignores repeats).
+  In the app the browser full-screen button and its Settings switch are hidden (`canFull()` false);
+  WhatsApp share uses `location.href` so Android opens WhatsApp.
+- Fonts bundled: `css/fonts.css` + `assets/fonts/` (Inter latin 400–800, Rozha One and Tiro
+  Devanagari Hindi latin + devanagari, OFL) — no Google Fonts request, works offline; the
+  standalone build inlines them as data URIs. Offline cache **v35** (adds fonts.css, native.js).
+- `privacy.html` — nothing collected; plain words.
+- `store/` — 512 icon, 1024×500 feature graphic (the card-duel painting), five sideways
+  (1688×860) and five upright (860×1688) screenshots as the app draws them. Remake:
+  `node tools/store-assets.mjs`.
 
-**Left unlocked from the start, on purpose, not yet revisited (T-40):** Pass & play, the
-Daily, Classic vs VYUHA rules, the turn clock, and the AI-difficulty picker. Locking Pass &
-play or the Daily would cut against the game's own stated retention loop (`docs/ROADMAP.md`
-"What to measure" — Daily-on-day-2 is the habit metric); the rules/clock toggles are basic
-preferences, not content worth grinding for. Only battlefields and the Abhimanyu scenario are
-new content a player hasn't seen yet, which is what "locked, unlocks by playing" usually means
-in games like this — if that reads as too thin once real players try it, T-40 is where to
-widen it.
+**Big words, big buttons** (`tools/readability.mjs`, now in AGENTS.md and CI)
+- Floor: no words under 12 px, no button under 40 px on Home, lesson offer, Setup, deploy, battle,
+  rules, settings and a lesson at 390×844 and 914×411. Every small `font-size` in `css/app.css`
+  was raised (7→11 … 13.5→14.5 px); icon buttons 44 px.
+- Upright battle HUD: round and turn on one thin line, then 44 px labelled buttons (Menu, hour,
+  clock, Intel, Log; Settings sits in Menu there). Tablets ≥ 700 px: one compact row with Settings
+  back. Astras labelled upright too (4 across under "Your move" + Advisor; long names break before
+  "astra"). Short upright phones (≤ 760 px tall) drop the rotating tip strip in battle. Field height
+  vs main: 360×640 226 px (main 232), 390×844 391 px (main 436).
+- Short screens: a card's buttons stick to its foot while the words scroll.
+- Locked scenario cards keep a greyed painting and say in ink when they open.
 
-**What this does not touch:** the gate only lives in the Setup-screen click handler
-(`renderSetup`'s `host.onclick` in `js/ui.js`). `AC.game.start()` called directly — Quick
-battle's default, a Daily, a Challenge-a-friend link, a saved formation — is unaffected, so a
-level-1 player can still *receive* a friend's Kurukshetra challenge link and play it; they
-just can't *pick* Kurukshetra themselves from Custom battle until they've earned it. Whether
-that's the right line, or whether it should be enforced end-to-end, is T-35. The existing
-win-ladder (Sainik → Dronacharya → Shakuni) is a separate, older mechanism and is *not* also
-enforced in Custom battle's difficulty picker — anyone can still pick Shakuni on turn one
-there; T-36 is whether to close that with the same locked-button treatment this PR adds.
+**Less confusion in the lessons** (from the 15 Nov playtest: 15 minutes of explaining)
+- `#screen-game[data-lesson]` (from new `AC.modes.lessonStage()`): during a wheel lesson the clock,
+  Intel, Log, hour chip, Advisor and rotating tips are hidden; the countdown shows only in lesson 2;
+  the pencil-a-guess tip waits for the first real battle. On short sideways screens the action card
+  runs to the foot of the rail so Confirm is whole at 830×318.
+- The last lesson card names the three hidden buttons (Intel, Log, Advisor); 4 new strings
+  `wheel.legend.*` in en/hi/mr (**Hindi and Marathi by the Director — need a native read, T-30**).
+  Catalogues 255 keys.
 
-Checks: rules 166 · UI 223 (4 new, covering the lock itself: shows locked at level 1, tapping
-does nothing, levels up, then selects) · data 159 · audio 44 · log 18 · languages (251 keys) ·
-self-play 40 · Daily · media QA (22 scenarios) · screenshots (desk+mob) · landscape 122 ·
-first-session 32 · battle-log 1053 · idle heat (portrait + landscape, every screen < 3%) ·
-pace-budget · the full robot (`tools/playtest-bot.mjs`) run in the background, result to follow.
-No human phone test yet — that's T-38.
+**Tablet fix** — a leftover 210 px grid column squeezed the whole field into 210 px on every
+781–1080 px wide screen (most Android tablets). Removed.
 
----
+## Checks (17 Nov, this branch)
+rules 166 · selfplay 40 · daily · languages (255 keys) · ui 223 · data 159 · pace-budget · audio 44 ·
+log 18 · shots · landscape 122 · first-session 32 · battle-log 1002 · readability · media-qa —
+all passed. Idle heat: every screen under 3 % upright and at 844×390. Robot: the first full run
+caught a real regression (the labelled HUD squeezed the 360×640 field to 102 px) — fixed above;
+the second full run had one timeout in the phone Daily; replaying the phone set on this branch
+and on main side by side: both "no problems" (battles differ run to run — same family as T-22);
+the third full run: **no problems** on all four viewports. CI's robot on this PR then hit the
+same phone-Daily timeout once. Locally, 3 phone-only + 2 full diagnostic runs were all clean, so
+it is intermittent (≈2 of 9 runs here; main's recent CI runs were clean). The robot now prints the
+action, the last taps and what lay under the finger when an action does not land — read that
+line the next time it fails (T-22, now also covering this).
+**Android build (PR #37 workflow): BUILD SUCCESSFUL** — `vyuha-play-bundle` 33 MB (unsigned until
+the four secrets exist) and `vyuha-phone-test-apk` 34 MB. The `android-actions/setup-android`
+step failed in sdkmanager, so the workflow now uses the runner's own SDK. **Not done:** no phone, APK install or human test of any
+of this.
 
-**15 November 2026 · Director.** T-34 scoped, not built: the Commander asked for a leveling
-system — battle modes, formations and options locked at the start, unlocked by matches played
-and matches won, with a Play Store paid option to unlock everything at once. That paid
-unlock-all would have broken the Launch-section rule in `docs/ROADMAP.md` ("never power, never
-real money") and the project's own never-change rule in `AGENTS.md`/`VYUHA-CONTEXT.md` ("No
-pay-for-power, no real money"), so I flagged it before building anything. Resolved: progression
-stays entirely free (level up by playing/winning unlocks modes/fields/options for everyone, no
-payment path); a paid Play Store "edition" may still exist but is restricted to extra cosmetic
-looks/art, same as the cosmetic-folk-art-editions line already on the roadmap. See T-34 in
-`TASKS.md` and the Launch section of `docs/ROADMAP.md` for the design brief — level/XP formula,
-a `data/` table of what unlocks at which level, and "locked, unlocks at level N" UI are still to
-design and build.
+## Waiting on the Commander
+T-41 Play steps · T-42 test APK on the phone · T-43 store words · and still T-05 (the gate),
+T-25, T-30, T-23, T-02/03/16, T-08.
 
-Also this session: T-33 (below) landed, after fixing a CI regression it introduced — see its
-own entry — and PR #34 is merged.
-
----
-
-**15 November 2026 · Director.** T-33: unmissable first battle, after the Commander's own
-playtest (`docs/ROADMAP.md` Playtest notes) found the lesson offer silent on two of three
-entry points. `offerLessonsThen()` now gates Quick, Custom and the Daily alike, the modal
-can no longer be dismissed by a stray backdrop tap, and the decline is reworded from "Fight
-now" to "Skip — I've played before" so it reads as a real claim rather than an equally
-tempting shortcut. Sanjaya's ambient lines (dawn, a scan, Shakti full — tier 1–2 in the
-priority table) now stay quiet while a coached step is open, in Pehla Yuddh and the wheel
-lessons alike, via a suppressor the audio module exposes and `js/modes.js` sets; a line a
-step actually waits on (a clash, a trap, an astra, the wheel turning) is unaffected. No
-change to the lessons' own content, to a returning player's home screen, or to any mode once
-the lessons are done. Checks: rules 166 · UI 219 (7 new, covering the offer itself) · data
-159 · audio 44 · first-session (unchanged) · landscape 122.
-
-This does not satisfy T-05 — the boy was coached throughout, not left silent — but it is the
-first evidence from outside this repo, and this fix is a direct response to it, not campaign
-content, so it did not wait behind the gate.
-
-CI follow-up (same day, PR #34): `tools/shots.mjs` and `tools/perf-idle.mjs` both click
-`#btn-new-match` from a freshly cleared profile, which the new offer now catches too —
-neither harness answered the modal, so both timed out waiting for `#screen-setup`. Fixed by
-taking the honest skip in both tools before the tutorial lands on `main`. Rebased onto PRs
-#29/#31/#33 (Sarvam's strings, merged first); re-ran rules 166 · UI 219 · data 159 · both
-screenshot sets · both idle-heat viewports — all clean.
-
----
-
-**15 November 2026 · Sarvam.** Batch 6.1 landed — Hindi and Marathi for the 102 pending strings (T-06, PR #29).
-
-## Sarvam Batch 6.1 — what changed
-
-| Item | What changed | Where |
-|---|---|---|
-| 102 keys | Hindi and Marathi for the wheel lessons, the odds words, Confirm strike / Cancel / Invoke, the goal box (`goal.sunset`, `goal.bala`), the battle log (`log.*`), the ladder (`ladder.*`), the endings (`fall.*`, `end.movers_*`), the Daily title and Challenge a friend (`challenge.*`, `result.challenge`) | `docs/i18n/strings.hi.json`, `strings.mr.json` and `strings.en.json` — all three at 251 keys, same order |
-| Bundle | `js/languages.js` and `vyuha-standalone.html` regenerated | `node tools/build-languages.mjs`, `node tools/build-standalone.mjs` |
-| Test | `tests/languages.mjs` pins 251 keys and also asserts the bundle covers every English key | `tests/languages.mjs` |
-| Glossary held | रैंक / दर्जा · खाना / घर · दाँव / डाव · घेरे / कडे · दुश्मन / शत्रू · दुर्ग · द्वार / दरवाजा · मोहरा · बौछार / वर्षाव · दृष्टि / दृष्टी · सेनापति / सेनापती · महारथी · दिव्यदृष्टि / दिव्यदृष्टी · अग्न्यस्त्र · ब्रह्मास्त्र · शक्ति / शक्ती | — |
-| Register | Hindi stays polite (करें / कीजिए) with dandas; Marathi keeps तुम्ही with full stops, as in the existing catalogue | — |
-| share.cta (T-30) | The Marathi question gets its particle: “तुम्ही आत घुसू शकाल का?” The Hindi reads clean | `docs/i18n/strings.mr.json` |
-
-Checks: rules 166 · self-play 40 · Daily · languages (251 keys) · UI 212 · data 159 · assets · audio 44 · log 18 ·
-pace-budget · `tools/language-shots.mjs` in Hindi and Marathi at 390 and 360 (real touch, no sideways overflow,
-result title translated, preference persists, offline standalone). `tools/language-shots.mjs` is flaky at
-`visible cell r1s0` (the cell exists but has no layout box ~250 ms after `startPrepared`): it failed 3 of 5
-runs on this branch and 2 of 2 runs on `main` at `6849539`, so it predates Batch 6.1 — logged as T-31.
-
-Honest limits: **no native-speaker review** of the new Hindi or Marathi (T-30 is still owed); no human
-phone test; older engine prose outside the catalogue (help and coach lines, event log sentences) is still
-English — that is T-17 and the coverage boundary in `docs/i18n/README.md`.
-
----
-
-**15 November 2026 · Sarvam (second batch).** Batches 6.2–6.5 done (PR #31): the 18 pending recordings, the four short lines, the vow strings, Chapter IV, the respect read.
-
-## Sarvam Batch 6.2–6.5 — what changed
-
-| Item | What changed | Where |
-|---|---|---|
-| The 18 pending recordings (6.3) | Re-voiced: 16 Hindi and 2 English. The stale-audio guard is now **empty** (`VOICE_PENDING`), so these lines speak again instead of showing text only | `assets/audio/voice/{hi,en}/…`, `js/sanjaya.js`, `docs/voice/pending-recordings.json` |
-| The four long lines (6.2) | Shortened, then re-recorded, all now inside 3.3 s at pace 1.15: `volley_kill_1` 2.56 s, `assassinate_1` 2.64 s, `trap_defused_1` (en) 3.03 s, `rotate_padma_1` (en) 2.80 s | `js/sanjaya.js` → `docs/voice/sanjaya-lines.csv`; record in `incoming/text/sanjaya-short-2026-11-01.csv` |
-| A fifth line, found by measuring | `astra_vayavya_enemy_1` ran **6.14 s** (English) / 5.62 s (Hindi) — the longest line in the game, far past the 4 s bar. Shortened and re-recorded: 3.92 s both | same |
-| Vow strings (6.4) | 45 Pratigya keys in Hindi and Marathi; the Deva vow words and the title names kept | `incoming/i18n/pratigya.hi.json`, `pratigya.mr.json` |
-| Chapter IV lines (6.5) | 14 lines written, **not recorded** (2 per id, `vow_taken`, `vow_kept`, `vow_broken`, `hero_bhima_holds`, `hero_karna_armour`, `hero_ghatotkacha_night`, `hero_dhrishtadyumna_gate`). Columns as in `sanjaya-lines.csv`; every line is 11 words or fewer | `incoming/text/sanjaya-chapter4.csv` |
-| Respect read (6.5) | Hero quotes and vow names read for what could land wrong; natural Hindi given for all eight hero quotes. Top flag: **Drona as a capturable piece** — get one external opinion before release | `incoming/text/heroes-respect-read.md` |
-
-### Read this before release: the narrator is now two voices
-
-The Director's Batch 4.1/6.3 note specifies **speaker `rahul`, pace 1.15**, and that is what I recorded —
-22 files. The 88 older files are **speaker `ashutosh`, pace 0.9** (`incoming/voice/VOICE.md`). So Sanjaya
-is currently two different men, and `VOICE.md`'s own rule is one voice for the whole game. Either accept
-rahul as the voice and regenerate everything (`SARVAM_API_KEY=… python3 tools/voice-gen.py --speaker rahul
---pace 1.15`), or tell me to re-record these 22 with ashutosh at 0.9 — the four short lines would then need
-checking against the Calm budget again. I did not regenerate the other 88 without approval.
-
-Measured after recording: longest line in the game is now `dawn_1` (Hindi) at 4.36 s; four Hindi lines sit
-between 4.2 and 4.4 s (`dawn_1`, `start_abhimanyu_1`, `lose_capture_1`, `astra_sammohana_enemy_1`), all with
-text that was not in scope to shorten. Everything else is under 4 s; the median is 2.9 s.
-
-Checks: `tests/languages.mjs` (the guard is still tested, now by injecting a pending id) · `tests/rules.mjs`
-166 · self-play 40 · Daily · UI 212 · data 159 · audio 44 · log 18 · pace-budget (46 line/voice pairs, no routine line over budget) · the hi/mr layout harness, which passed Hindi at 390 and 360 and Marathi at 390 before hitting the known T-31 flake (`visible cell r1s0`) — nothing to do with this batch.
-No native-speaker review; no human phone test; Batch 6.6 still open.
-
----
-
-**15 November 2026 · Sarvam (third pass, PR #33).** The last of the Sarvam queue, and the paperwork that was owed.
-
-## Sarvam, third pass — what changed
-
-| Item | What changed | Where |
-|---|---|---|
-| The last long lines | Six more shortened and re-recorded: `defeat_1`, `sunset_near_1`, `dawn_1`, `dawn_enemy_1`, `start_abhimanyu_1`, `astra_sammohana_enemy_1`. **All 88 recordings are now under 4.0 s** — longest 3.97 s, median 2.95 s, was 6.14 s | `js/sanjaya.js`, `docs/voice/sanjaya-lines.csv`, `assets/audio/voice/` |
-| Chapter IV drafts (T-32) | 28 draft recordings of the 14 Chapter IV lines, every one ≤ 3.24 s, sitting in `incoming/voice/chapter4/` **unwired** because the text is not approved. Two English lines were shortened to fit the budget | `incoming/voice/chapter4/`, `incoming/text/sanjaya-chapter4.csv` |
-| The cultural read (Task 5) | Delivered at last: the whole game read against §6 of `docs/DIRECTOR.md`. Seven flags, the biggest being sacred symbols in Pata art and the twelve-spoked wheel reading as the Sudarshana Chakra; three suggestions that touch nothing sacred | `incoming/text/cultural-review.md` |
-| Batch 6.6 support | A consistency pass over all 296 Marathi strings: three real findings (`कडे` doing double duty for "ring" and "towards", `मधे` vs `मध्ये`, `त्यांवर` vs `त्यावर`) and a list of what is already consistent, so the native reader starts with a shortlist. **Not a native review** | `incoming/text/marathi-consistency-pass.md` |
-| Paperwork | The worklog had no entry for either batch (it is Sarvam's file to maintain); `docs/PACING.md` still said the four routine lines needed re-voicing | `docs/WORKLOG.md`, `docs/PACING.md` |
-
-Checks: languages · rules 166 · self-play 40 · Daily · UI 212 · data 159 · assets 88 narration files · audio 44 · log 18 · `pace-budget --strict` (38 of 46 pairs within 5.0 s; the rest are major moments).
-
-Still owed, and not claimed: **Batch 6.6** — a named native Marathi speaker reads the 296 strings. T-32 now sits with the Director: approve the Chapter IV text and the recordings are ready to move.
-
----
-
-**15 November 2026 · ChatGPT · T-12, Batch 6.5 (on top of 6.3).** Batch 6.5's **written design** is
-delivered at [incoming/text/hero-cards-design.md](../incoming/text/hero-cards-design.md).
-It specifies portrait/landscape Pata placement for the hero picker, battle HUD
-and result screen; turn-by-turn previews for Arjuna, Drona, Abhimanyu and Bhishma;
-the four implemented passive traits; hidden-information fairness; accessibility,
-language keys, balance requirements, and integration acceptance tests. The existing
-hero portraits were checked by filename (not visually approved). No gameplay,
-art, translation or runtime code changed on this branch. Local browser tests were
-not run: only the repository instructions and source files were reviewed.
-
-**Sequencing:** The 13 November hard review still holds: T-05 five real first-time
-phone playtests, then the Seven Vyuhas campaign, before implementing/shipping
-heroes. Batch 6.2 (the reproducible four-hero balance screen) and 6.4 (hero-aware
-AI and fair odds) therefore remain pending for that stage. Existing PR #28
-(media QA) and #30 (Quiet Gate) must be merged in that order before this
-stacked design branch. PRs #29/#31 are Sarvam's separate stacked translation
-work. Do not enable heroes on main from this design alone.
-
----
-
-**Earlier 15 November 2026 · ChatGPT · T-12, Batch 6.3**
-
-Quiet Gate passed its two-bank screen with four starting Shakti for the defenders.
-The four raider win rates were 50.8% and 51.7% in bank 5, and 45.0% and 49.2% in bank 6
-(wheel, then lotus). The Director can review the draft for inclusion in the Daily rotation.
-The [balance report](balance/README.md#quiet-gate--15-november-2026) includes paired controls,
-the seed bases, and replay commands. No catalogue or game behaviour changed.
-
-PR #28 delivers Batch 6.1. Both skins passed all media checks in GitHub Actions. In its
-first CI attempt the unrelated battle-log harness stopped at “padma: at least one of
-your own moves was checked (0)”. The simulated battle did not supply the move the test
-requires. [Job log](https://github.com/medh-eng/vyuha/actions/runs/43699342760/job/132766806259).
-This is evidence for the Director’s existing T-22 harness task.
-
-The newer [review plan](REVIEW.md) places heroes after the campaign. The remaining
-ChatGPT items within T-12 are the four-hero balance screen, AI hero awareness and
-the Pata hero-card design. The campaign awaits T-05, five first-time players on
-their own phones. Record observations in the roadmap. Parts 1 and 2 are on main.
-Sarvam’s translation submission is in PR #29, with its native review still pending.
+## Director next
+T-44 tablets sideways · T-17, T-21, T-22 · Part 3 waits for T-05.

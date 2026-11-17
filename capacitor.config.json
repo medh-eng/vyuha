@@ -1,0 +1,10 @@
+{
+  "appId": "com.medheng.vyuha",
+  "appName": "VYUHA",
+  "webDir": "www",
+  "backgroundColor": "#efe0bd",
+  "android": {
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  }
+}

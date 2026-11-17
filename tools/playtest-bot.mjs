@@ -57,6 +57,9 @@ async function tapCell(page, id) {
   if (box.x < -1 || box.y < -1 || box.x + box.width > width + 1 || box.y + box.height > height + 1) {
     throw new Error('Cell outside viewport: ' + id + ' ' + JSON.stringify(box));
   }
+  const hit = await page.evaluate(([x, y]) => { const e = document.elementFromPoint(x, y); return e ? (e.closest('[id]') ? '#' + e.closest('[id]').id + ' ' : '') + e.tagName + '.' + (typeof e.className === 'string' ? e.className : (e.className.baseVal || '')) : 'none'; }, [box.x + box.width / 2, box.y + box.height / 2]);
+  // the last few taps and what lay under the finger, printed if an action does not land (T-22)
+  globalThis.__taps = (globalThis.__taps || []).slice(-5).concat(id + ' -> ' + hit);
   await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
   return true;
 }
@@ -91,7 +94,12 @@ async function playAction(page, act) {
   const confirm = page.locator('#action-bar [data-act="confirm"]');
   if (await confirm.count()) await confirm.tap();
   // A failed tap is a failure, never silently replaced by game.perform().
-  await page.waitForFunction(n => AC.game.state.log.length !== n, before, { timeout: 3000 });
+  try { await page.waitForFunction(n => AC.game.state.log.length !== n, before, { timeout: 3000 }); }
+  catch (e) {
+    const info = await page.evaluate(() => ({ armed: !!AC.game.armed, sel: AC.game.selected || null, mode: AC.game.mode || null, owner: AC.game.state.owner, phase: AC.game.state.phase, bar: document.getElementById('action-bar').innerText.slice(0, 160), modals: AC.app.modals.length, toast: (document.querySelector('.toast') || {}).innerText }));
+    console.log('  action did not land:', JSON.stringify(act), 'taps', JSON.stringify(globalThis.__taps), 'state', JSON.stringify(info));
+    throw e;
+  }
 }
 
 async function audit(page, tag) {
