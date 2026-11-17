@@ -60,7 +60,11 @@ all passed. Idle heat: every screen under 3 % upright and at 844×390. Robot: th
 caught a real regression (the labelled HUD squeezed the 360×640 field to 102 px) — fixed above;
 the second full run had one timeout in the phone Daily; replaying the phone set on this branch
 and on main side by side: both "no problems" (battles differ run to run — same family as T-22);
-the third full run: **no problems** on all four viewports.
+the third full run: **no problems** on all four viewports. CI's robot on this PR then hit the
+same phone-Daily timeout once. Locally, 3 phone-only + 2 full diagnostic runs were all clean, so
+it is intermittent (≈2 of 9 runs here; main's recent CI runs were clean). The robot now prints the
+action, the last taps and what lay under the finger when an action does not land — read that
+line the next time it fails (T-22, now also covering this).
 **Android build (PR #37 workflow): BUILD SUCCESSFUL** — `vyuha-play-bundle` 33 MB (unsigned until
 the four secrets exist) and `vyuha-phone-test-apk` 34 MB. The `android-actions/setup-android`
 step failed in sdkmanager, so the workflow now uses the runner's own SDK. **Not done:** no phone, APK install or human test of any

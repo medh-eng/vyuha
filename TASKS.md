@@ -30,7 +30,7 @@ Last updated: 17 Nov 2026 (Director: Play Store readiness — Android app, store
 | T-08 | C | New night painting for the wheel (`chakra-night`) in the same true-indigo style as the other three | file supplied |
 | T-10 | C | Add the three new night masters to your masters zip and Release (`docs/MASTERS.md`) | done |
 | T-17 | D | Battle-log prose (clash/astra sentences) is English-only engine text; give it keys for Sarvam | log readable in hi/mr |
-| T-22 | D | `tools/battle-log.mjs` failed once in six runs (7 Nov, message not kept): make it log every failed check to a file, then find the flake | six clean runs |
+| T-22 | D | Flakes: `tools/battle-log.mjs` failed once in six runs (7 Nov); the robot's phone Daily timed out on a tap 2 of 9 runs on PR #37 (17 Nov) — the robot now prints the action, last taps and what lay under the finger; find the cause | six clean runs of each |
 | T-21 | D | Rang Phase 3, rest: festival days on the Daily and a sound pass (levels, overlaps) across every screen | PR |
 | T-31 | D | `tools/language-shots.mjs` is flaky at `visible cell r1s0`: the cell has no layout box ~250 ms after `startPrepared`. Reproduced on `main` at `6849539` (2 of 2 runs) and on `sarvam/batch-6.1-strings` (3 of 5) — wait for the board to lay out instead of the fixed 250 ms | ten clean runs |
 | T-35 | D | Progression (T-34) only gates the Setup screen's own board/scenario buttons. `AC.game.start()` and `quickBattle()`'s default still reach a locked board/scenario if called directly (Daily, Challenge-a-friend links, saved formations) — decide whether those should also respect level, or are meant to stay exempt (a shared link, for instance, has to open whatever the sender picked) | decision written here + enforced or explicitly exempted in code |
