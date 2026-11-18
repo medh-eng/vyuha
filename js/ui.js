@@ -530,7 +530,6 @@
     document.getElementById('ci-daily').innerHTML = A.icon('calendar');
     document.getElementById('ci-tutorial').innerHTML = A.icon('help');
     document.getElementById('ci-new').innerHTML = A.icon('grid');
-    document.getElementById('ci-resume').innerHTML = A.icon('play');
     document.getElementById('ci-saves').innerHTML = A.icon('folder');
     document.getElementById('ci-rules').innerHTML = A.icon('book');
     document.getElementById('btn-home-settings').innerHTML = A.icon('settings');
@@ -557,11 +556,11 @@
 
     const auto = S.listSaves().filter(function (s) { return s.slot === 'auto'; })[0];
     const saves = S.listSaves().filter(function (s) { return s.slot !== 'auto'; });
-    document.getElementById('resume-sub').textContent = auto
-      ? describeSave(auto)
-      : 'No battle in progress';
-    document.getElementById('saves-sub').textContent = saves.length + ' of 3 slots used';
-    document.getElementById('btn-resume').disabled = !auto;
+    // A battle left half-played is saved automatically and resumes from here.
+    document.getElementById('saves-sub').textContent = auto
+      ? 'Battle in progress · tap to resume'
+      : saves.length + ' of 3 slots used';
+    document.getElementById('btn-saves').classList.toggle('card-pulse', !!auto);
 
 
     const sj = document.getElementById('home-sanjaya');
@@ -740,12 +739,6 @@
     document.getElementById('btn-tutorial').addEventListener('click', function () {
       sfx('select');
       if (AC.modes) AC.modes.openLessons();
-    });
-    document.getElementById('btn-resume').addEventListener('click', function () {
-      const auto = S.listSaves().filter(function (s) { return s.slot === 'auto'; })[0];
-      if (!auto) { FX.toast('No battle in progress.', 'warn'); return; }
-      sfx('select');
-      AC.game.load(auto.state, 'auto');
     });
     document.getElementById('btn-saves').addEventListener('click', function () { sfx('ui'); openSaves('home'); });
     document.getElementById('btn-rules').addEventListener('click', function () { sfx('ui'); openCodex(); });
@@ -1399,19 +1392,19 @@
       if (!s) {
         return '<div class="save-card empty">' +
           '<div class="save-thumb">' + A.icon('folder') + '</div>' +
-          '<div class="save-info"><div class="save-title">' + (isAuto ? 'Autosave' : 'Slot ' + slot) + '</div>' +
-          '<div class="save-meta">Empty' + (isAuto ? ' — starts automatically when you deploy' : '') + '</div></div>' +
+          '<div class="save-info"><div class="save-title">' + (isAuto ? 'Battle in progress' : 'Slot ' + slot) + '</div>' +
+          '<div class="save-meta">' + (isAuto ? 'None — a battle you leave half-played waits here' : 'Empty') + '</div></div>' +
           (isAuto ? '' : '<div class="save-actions"><button class="btn btn-ghost btn-xs" data-save-slot="' + slot + '">Save here</button></div>') +
         '</div>';
       }
       return '<div class="save-card">' +
         '<div class="save-thumb">' + A.boardPreview(s.state && AC.engine.thumbnailBoard(s.state)) + '</div>' +
         '<div class="save-info">' +
-          '<div class="save-title">' + (isAuto ? 'Autosave' : 'Slot ' + slot) + '</div>' +
-          '<div class="save-meta">' + esc(s.label || describeSave(s)) + ' · ' + timeAgo(s.updatedAt) + '</div>' +
+          '<div class="save-title">' + (isAuto ? 'Battle in progress' : 'Slot ' + slot) + '</div>' +
+          '<div class="save-meta">' + esc(isAuto ? describeSave(s) : (s.label || describeSave(s))) + ' · ' + timeAgo(s.updatedAt) + '</div>' +
         '</div>' +
         '<div class="save-actions">' +
-          '<button class="btn btn-primary btn-xs" data-load="' + slot + '">Load</button>' +
+          '<button class="btn btn-primary btn-xs" data-load="' + slot + '">' + (isAuto ? 'Resume' : 'Load') + '</button>' +
           (isAuto ? '' : '<button class="btn btn-ghost btn-xs" data-overwrite="' + slot + '">Save</button>') +
           '<button class="btn btn-danger btn-xs" data-del="' + slot + '" aria-label="Delete">' + A.icon('trash') + '</button>' +
         '</div>' +
@@ -1424,7 +1417,7 @@
       title: 'Saved games',
       wide: true,
       body: '<div class="save-list">' + ['auto', '1', '2', '3'].map(card).join('') + '</div>' +
-        '<p class="fineprint">Autosave keeps one rolling snapshot of your current battle. Slots 1–3 are manual. Saves stay on this device; use Export on the home screen to move them.</p>',
+        '<p class="fineprint">Any battle you leave half-played is kept here as “Battle in progress” — tap Resume to carry on. Slots 1–3 are manual. Saves stay on this device; use Export on the home screen to move them.</p>',
       actions: [{ label: 'Close', cls: 'btn-ghost' }]
     });
 

@@ -3393,6 +3393,51 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
   #screen-game .action-bar .action-buttons > .astra-row { order: 3; flex: 1 0 100%; width: 100%; }
 }
 
+
+/* ── the stage, docked on the astra panel (18 Nov) ───────────────────
+   Attack, volley, astra and fort beats no longer cover the board: they sit
+   on the action bar — the right rail in landscape, the bottom panel in
+   portrait. Words stay at 12 px or more. */
+.stage.stage-dock {
+  inset: auto; padding: 0; display: block; background: none !important; backdrop-filter: none;
+  border-radius: 12px; z-index: 85;
+}
+.stage-dock .st-astra-anim, .stage-dock .stage-skip { display: none; }
+.stage-dock .stage-card {
+  width: 100%; height: 100%; box-sizing: border-box; border-radius: 12px; padding: 6px 8px;
+  display: flex; flex-direction: column; justify-content: center; gap: 2px;
+  overflow-y: auto; overscroll-behavior: contain; transform: none; transition: none;
+}
+.stage-dock .st-kicker { margin: 0; font-size: 12px; letter-spacing: 0.12em; }
+.stage-dock .st-arena { grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr); gap: 2px; }
+.stage-dock .st-arena.st-solo { grid-template-columns: 56px minmax(0, 1fr); }
+.stage-dock .st-piece { gap: 1px; }
+.stage-dock .st-disc { width: 44px; height: 44px; }
+.stage-dock .st-disc .emblem { width: 30px; height: 30px; }
+.stage-dock .st-disc .emblem-art { width: 34px; height: 34px; }
+.stage-dock .st-name { font-size: 12px; line-height: 1.15; }
+.stage-dock .st-rank { font-size: 18px; }
+.stage-dock .st-chip { font-size: 12px; padding: 1px 5px; }
+.stage-dock .st-spark, .stage-dock .st-arrows { height: 32px; }
+.stage-dock .st-spark::before { width: 30px; height: 30px; margin: -15px; }
+.stage-dock .st-spark::after { width: 44px; height: 44px; margin: -22px; }
+.stage-dock .st-verdict { margin: 2px 0 0; }
+.stage-dock .st-verdict .deva { font-size: 22px; }
+.stage-dock .st-verdict b { font-size: 12px; letter-spacing: 0.16em; }
+.stage-dock .st-line { font-size: 12.5px; line-height: 1.3; margin: 2px auto 0; max-width: none; }
+.stage-dock .st-gate { width: 52px; height: 52px; }
+.stage-dock .st-gate .ico { width: 52px; height: 52px; }
+.stage-dock .st-astra-mark { width: 52px; height: 52px; margin: 0 auto; }
+.stage-dock .st-astra-mark .astra-ico, .stage-dock .st-astra-mark .astra-art { width: 48px; height: 48px; }
+.stage-dock .st-astra-name .deva { font-size: 20px; }
+.stage-dock .st-astra-name b { font-size: 14px; }
+.stage-dock.stage-astra-brahma .st-astra-name .deva { font-size: 22px; }
+.stage-dock .st-astra-by { font-size: 12px; margin: 0; letter-spacing: 0.08em; }
+html[data-skin] .stage-dock .st-disc .emblem-pata { width: 46px; height: 46px; }
+html[data-skin] .stage-dock .st-astra-mark { width: 64px; height: 64px; }
+html[data-skin] .stage-dock .st-astra-mark :is(img, svg, .astra-art, .astra-ico) { width: 60px; height: 60px; object-fit: contain; }
+html[data-skin] .stage-dock .st-disc .emblem :is(img, svg) { max-width: 100%; max-height: 100%; }
+
 </style>
 </head>
 <body>
@@ -3537,15 +3582,10 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
             <span class="card-title" data-i18n="home.custom">Custom battle</span>
             <span class="card-sub" data-i18n="home.custom.sub">Board, opponent, scenario and rules</span>
           </button>
-          <button class="card-action" id="btn-resume">
-            <span class="card-icon" id="ci-resume"></span>
-            <span class="card-title" data-i18n="home.continue">Continue</span>
-            <span class="card-sub" id="resume-sub">No game in progress</span>
-          </button>
           <button class="card-action" id="btn-saves">
             <span class="card-icon" id="ci-saves"></span>
             <span class="card-title" data-i18n="home.saves">Saved games</span>
-            <span class="card-sub" id="saves-sub">0 of 3 slots used</span>
+            <span class="card-sub" id="saves-sub">Resume or save a battle</span>
           </button>
           <button class="card-action" id="btn-rules">
             <span class="card-icon" id="ci-rules"></span>
@@ -10436,7 +10476,6 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     document.getElementById('ci-daily').innerHTML = A.icon('calendar');
     document.getElementById('ci-tutorial').innerHTML = A.icon('help');
     document.getElementById('ci-new').innerHTML = A.icon('grid');
-    document.getElementById('ci-resume').innerHTML = A.icon('play');
     document.getElementById('ci-saves').innerHTML = A.icon('folder');
     document.getElementById('ci-rules').innerHTML = A.icon('book');
     document.getElementById('btn-home-settings').innerHTML = A.icon('settings');
@@ -10463,11 +10502,11 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
 
     const auto = S.listSaves().filter(function (s) { return s.slot === 'auto'; })[0];
     const saves = S.listSaves().filter(function (s) { return s.slot !== 'auto'; });
-    document.getElementById('resume-sub').textContent = auto
-      ? describeSave(auto)
-      : 'No battle in progress';
-    document.getElementById('saves-sub').textContent = saves.length + ' of 3 slots used';
-    document.getElementById('btn-resume').disabled = !auto;
+    // A battle left half-played is saved automatically and resumes from here.
+    document.getElementById('saves-sub').textContent = auto
+      ? 'Battle in progress · tap to resume'
+      : saves.length + ' of 3 slots used';
+    document.getElementById('btn-saves').classList.toggle('card-pulse', !!auto);
 
 
     const sj = document.getElementById('home-sanjaya');
@@ -10646,12 +10685,6 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     document.getElementById('btn-tutorial').addEventListener('click', function () {
       sfx('select');
       if (AC.modes) AC.modes.openLessons();
-    });
-    document.getElementById('btn-resume').addEventListener('click', function () {
-      const auto = S.listSaves().filter(function (s) { return s.slot === 'auto'; })[0];
-      if (!auto) { FX.toast('No battle in progress.', 'warn'); return; }
-      sfx('select');
-      AC.game.load(auto.state, 'auto');
     });
     document.getElementById('btn-saves').addEventListener('click', function () { sfx('ui'); openSaves('home'); });
     document.getElementById('btn-rules').addEventListener('click', function () { sfx('ui'); openCodex(); });
@@ -11305,19 +11338,19 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
       if (!s) {
         return '<div class="save-card empty">' +
           '<div class="save-thumb">' + A.icon('folder') + '</div>' +
-          '<div class="save-info"><div class="save-title">' + (isAuto ? 'Autosave' : 'Slot ' + slot) + '</div>' +
-          '<div class="save-meta">Empty' + (isAuto ? ' — starts automatically when you deploy' : '') + '</div></div>' +
+          '<div class="save-info"><div class="save-title">' + (isAuto ? 'Battle in progress' : 'Slot ' + slot) + '</div>' +
+          '<div class="save-meta">' + (isAuto ? 'None — a battle you leave half-played waits here' : 'Empty') + '</div></div>' +
           (isAuto ? '' : '<div class="save-actions"><button class="btn btn-ghost btn-xs" data-save-slot="' + slot + '">Save here</button></div>') +
         '</div>';
       }
       return '<div class="save-card">' +
         '<div class="save-thumb">' + A.boardPreview(s.state && AC.engine.thumbnailBoard(s.state)) + '</div>' +
         '<div class="save-info">' +
-          '<div class="save-title">' + (isAuto ? 'Autosave' : 'Slot ' + slot) + '</div>' +
-          '<div class="save-meta">' + esc(s.label || describeSave(s)) + ' · ' + timeAgo(s.updatedAt) + '</div>' +
+          '<div class="save-title">' + (isAuto ? 'Battle in progress' : 'Slot ' + slot) + '</div>' +
+          '<div class="save-meta">' + esc(isAuto ? describeSave(s) : (s.label || describeSave(s))) + ' · ' + timeAgo(s.updatedAt) + '</div>' +
         '</div>' +
         '<div class="save-actions">' +
-          '<button class="btn btn-primary btn-xs" data-load="' + slot + '">Load</button>' +
+          '<button class="btn btn-primary btn-xs" data-load="' + slot + '">' + (isAuto ? 'Resume' : 'Load') + '</button>' +
           (isAuto ? '' : '<button class="btn btn-ghost btn-xs" data-overwrite="' + slot + '">Save</button>') +
           '<button class="btn btn-danger btn-xs" data-del="' + slot + '" aria-label="Delete">' + A.icon('trash') + '</button>' +
         '</div>' +
@@ -11330,7 +11363,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
       title: 'Saved games',
       wide: true,
       body: '<div class="save-list">' + ['auto', '1', '2', '3'].map(card).join('') + '</div>' +
-        '<p class="fineprint">Autosave keeps one rolling snapshot of your current battle. Slots 1–3 are manual. Saves stay on this device; use Export on the home screen to move them.</p>',
+        '<p class="fineprint">Any battle you leave half-played is kept here as “Battle in progress” — tap Resume to carry on. Slots 1–3 are manual. Saves stay on this device; use Export on the home screen to move them.</p>',
       actions: [{ label: 'Close', cls: 'btn-ghost' }]
     });
 
@@ -11610,6 +11643,28 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     if (current) { clearTimeout(current.timer); current.timer = null; }
   }
 
+  /* The beat sits on the astra panel (the action bar) instead of over the
+   * board: beside the board in landscape, under it in portrait. If the panel
+   * is not on screen it falls back to the old full-screen card. */
+  function dock(el) {
+    const bar = document.getElementById('action-bar');
+    const r = bar && bar.getBoundingClientRect();
+    if (!r || r.width < 80 || r.height < 60 || !bar.offsetParent) return;
+    let top = r.top, height = r.height;
+    // Portrait: the panel alone is too short for the card, so take everything
+    // under the board (player strip, Sanjaya, controls).
+    const shell = document.getElementById('board-shell');
+    if (shell && root.innerHeight > root.innerWidth) {
+      top = Math.min(top, shell.getBoundingClientRect().bottom + 6);
+      height = root.innerHeight - top - 4;
+    }
+    el.classList.add('stage-dock');
+    el.style.left = Math.round(r.left) + 'px';
+    el.style.top = Math.round(top) + 'px';
+    el.style.width = Math.round(r.width) + 'px';
+    el.style.height = Math.round(height) + 'px';
+  }
+
   /* Mount a beat. `ms` is how long it holds before it leaves on its own. */
   function show(html, cls, ms, done, opts) {
     if (current) close(true);
@@ -11628,6 +11683,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     const film = el.querySelector('.st-astra-anim');
     if (film) film.addEventListener('error', function () { film.remove(); });
     document.body.appendChild(el);
+    if (opts.dock !== false) dock(el);
     const hold = reduced() && !calm() ? Math.min(ms, 1100) : ms;
     current = { el: el, done: done, timer: setTimeout(function () { close(true); }, hold) };
     if (!opts.passive) el.addEventListener('click', function () {
@@ -11797,7 +11853,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
       '<div class="st-sky-mark">' + A.icon(day ? 'sun' : 'moon') + '</div>' +
       '<div class="st-astra-name"><span class="deva">' + (day ? 'दिनमान' : 'रात्रि') + '</span><b>' + tr('sky.' + hour, day ? 'Dawn — the hour of Surya' : 'Night — the hour of Chandra') + '</b></div>' +
       '<div class="st-astra-by">' + (viewerHour ? 'Your army strikes at +1 until the sky turns again.' : 'The enemy strikes at +1 until the sky turns again.') + '</div>';
-    show(html, 'stage-sky stage-' + (day ? 'day' : 'night'), 1700, done, { passive: !done });
+    show(html, 'stage-sky stage-' + (day ? 'day' : 'night'), 1700, done, { passive: !done, dock: false });
   }
 
   AC.stage = {
