@@ -9194,18 +9194,14 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     { key: 'draupadi', name: 'Draupadi', deva: 'द्रौपदी', slot: 'hero:draupadi', sigil: 'sun' },
     { key: 'dhrishtadyumna', name: 'Dhrishtadyumna', deva: 'धृष्टद्युम्न', slot: 'hero:dhrishtadyumna', sigil: 'chevron' }
   ];
-  const FRAMES = [['brass', 'Brass'], ['silver', 'Silver'], ['saffron', 'Saffron'], ['indigo', 'Indigo'], ['none', 'None']];
-  const TINTS = [['none', 'Natural'], ['warm', 'Dawn'], ['cool', 'Night'], ['mono', 'Ink']];
-  const BADGES = [['none', 'None'], ['title', 'Title'], ['sun', 'Surya'], ['moon', 'Chandra'], ['diya', 'Streak']];
-
   /* `p` is a profile; `opts.size` in px; `opts.title` the short title text
    * for the title badge; `opts.streak` for the streak badge. */
   function avatar(p, opts) {
     opts = opts || {};
     const av = (p && p.avatar) || {};
-    const frame = av.frame || 'brass';
-    const tint = av.tint || 'none';
-    const badge = av.badge || 'none';
+    // One look for everyone: brass frame, natural tint, rank-title badge.
+    const frame = 'brass';
+    const tint = 'none';
     let face = '';
     if (av.photo) face = '<img class="av-img" src="' + av.photo + '" alt="" draggable="false">';
     else {
@@ -9213,11 +9209,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
       const painted = a ? artFor(a.slot) : null;
       face = painted ? '<img class="av-img" src="' + painted + '" alt="" draggable="false">' : sigil(a ? a.sigil : (p && p.sigil) || 'chevron', 'av-sigil');
     }
-    let b = '';
-    if (badge === 'sun') b = '<span class="av-badge">' + icon('sun') + '</span>';
-    else if (badge === 'moon') b = '<span class="av-badge">' + icon('moon') + '</span>';
-    else if (badge === 'diya') b = '<span class="av-badge av-badge-num">' + icon('diya') + (opts.streak || 0) + '</span>';
-    else if (badge === 'title' && opts.title) b = '<span class="av-badge av-badge-txt">' + opts.title + '</span>';
+    const b = opts.title ? '<span class=\"av-badge av-badge-txt\">' + opts.title + '</span>' : '';
     return '<span class="av av-frame-' + frame + ' av-tint-' + tint + ' ' + (opts.cls || '') + '"' +
       (opts.size ? ' style="--av:' + opts.size + 'px"' : '') + '>' + face + b + '</span>';
   }
@@ -9365,9 +9357,6 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
     figureInner: figureInner,
     avatar: avatar,
     AVATARS: AVATARS,
-    AVATAR_FRAMES: FRAMES,
-    AVATAR_TINTS: TINTS,
-    AVATAR_BADGES: BADGES,
     emblem: emblem,
     astraMark: astraMark,
     sanjayaMark: sanjayaMark,
@@ -11204,8 +11193,8 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
 
       host.innerHTML =
         '<div class="hub-top">' + A.avatar(p, { size: 76, title: t[1], streak: st.streak || 0 }) +
-          '<div><div class="hub-name">' + esc(p.name) + ' <button class="link-btn" data-hub="rename">change name</button></div>' +
-          '<div class="hub-title">' + t[1] + ' ' + t[2] + '</div>' +
+          '<div><div class="hub-name">' + esc(p.name) + ' <button class="btn btn-ghost btn-sm" data-hub="rename">Change name</button></div>' +
+          '<div class="hub-title">' + esc(tr('hub.rank', 'Rank')) + ' - ' + t[1] + ' ' + t[2] + '</div>' +
           '<div class="hub-next">Next title: ' + esc(nextTitle(st)) + '</div></div>' +
         '</div>' +
         '<div class="hub-h">' + esc(tr('home.record', 'Record')) + '</div>' +
@@ -11223,7 +11212,7 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
         '<div class="av-picker">' + A.AVATARS.map(function (a) {
           const on = !av.photo && av.pick === a.key;
           return '<button class="av-pick' + (on ? ' on' : '') + '" data-pick="' + a.key + '" aria-label="' + esc(a.name) + '">' +
-            A.avatar({ avatar: { pick: a.key, frame: av.frame, tint: av.tint } }) + '<span>' + esc(a.name) + '</span></button>';
+            A.avatar({ avatar: { pick: a.key } }) + '<span>' + esc(a.name) + '</span></button>';
         }).join('') + '</div>' +
         '<div class="hub-h">Your own photo</div>' +
         '<div class="hub-photo">' +
@@ -11231,23 +11220,12 @@ button.log-entry:focus-visible { outline: 2px solid var(--gold); outline-offset:
           (av.photo ? '<button class="btn btn-ghost btn-sm" data-hub="nophoto">Remove photo</button>' : '') +
         '</div>' +
         '<p class="fineprint">Your photo stays on this device. It is never uploaded or shared.</p>' +
-        '<div class="hub-h">Customise</div>' +
-        seg('Frame', 'frame', A.AVATAR_FRAMES, av.frame || 'brass') +
-        seg('Tint', 'tint', A.AVATAR_TINTS, av.tint || 'none') +
-        seg('Badge', 'badge', A.AVATAR_BADGES, av.badge || 'none') +
         '<div class="hub-foot"><button class="link-btn" data-hub="switch">Switch player</button></div>';
-    }
-    function seg(label, key, list, cur) {
-      return '<div class="hub-seg"><span class="seg-label">' + label + '</span><div class="seg">' + list.map(function (o) {
-        return '<button class="seg-btn' + (o[0] === cur ? ' on' : '') + '" data-av="' + key + '" data-val="' + o[0] + '">' + o[1] + '</button>';
-      }).join('') + '</div></div>';
     }
 
     host.addEventListener('click', function (e) {
       const pick = e.target.closest('[data-pick]');
       if (pick) { sfx('select'); save({ pick: pick.getAttribute('data-pick'), photo: null }); return; }
-      const avb = e.target.closest('[data-av]');
-      if (avb) { sfx('ui'); const patch = {}; patch[avb.getAttribute('data-av')] = avb.getAttribute('data-val'); save(patch); return; }
       const h = e.target.closest('[data-hub]');
       if (!h) return;
       const what = h.getAttribute('data-hub');

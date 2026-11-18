@@ -1298,8 +1298,8 @@
 
       host.innerHTML =
         '<div class="hub-top">' + A.avatar(p, { size: 76, title: t[1], streak: st.streak || 0 }) +
-          '<div><div class="hub-name">' + esc(p.name) + ' <button class="link-btn" data-hub="rename">change name</button></div>' +
-          '<div class="hub-title">' + t[1] + ' ' + t[2] + '</div>' +
+          '<div><div class="hub-name">' + esc(p.name) + ' <button class="btn btn-ghost btn-sm" data-hub="rename">Change name</button></div>' +
+          '<div class="hub-title">' + esc(tr('hub.rank', 'Rank')) + ' - ' + t[1] + ' ' + t[2] + '</div>' +
           '<div class="hub-next">Next title: ' + esc(nextTitle(st)) + '</div></div>' +
         '</div>' +
         '<div class="hub-h">' + esc(tr('home.record', 'Record')) + '</div>' +
@@ -1317,7 +1317,7 @@
         '<div class="av-picker">' + A.AVATARS.map(function (a) {
           const on = !av.photo && av.pick === a.key;
           return '<button class="av-pick' + (on ? ' on' : '') + '" data-pick="' + a.key + '" aria-label="' + esc(a.name) + '">' +
-            A.avatar({ avatar: { pick: a.key, frame: av.frame, tint: av.tint } }) + '<span>' + esc(a.name) + '</span></button>';
+            A.avatar({ avatar: { pick: a.key } }) + '<span>' + esc(a.name) + '</span></button>';
         }).join('') + '</div>' +
         '<div class="hub-h">Your own photo</div>' +
         '<div class="hub-photo">' +
@@ -1325,23 +1325,12 @@
           (av.photo ? '<button class="btn btn-ghost btn-sm" data-hub="nophoto">Remove photo</button>' : '') +
         '</div>' +
         '<p class="fineprint">Your photo stays on this device. It is never uploaded or shared.</p>' +
-        '<div class="hub-h">Customise</div>' +
-        seg('Frame', 'frame', A.AVATAR_FRAMES, av.frame || 'brass') +
-        seg('Tint', 'tint', A.AVATAR_TINTS, av.tint || 'none') +
-        seg('Badge', 'badge', A.AVATAR_BADGES, av.badge || 'none') +
         '<div class="hub-foot"><button class="link-btn" data-hub="switch">Switch player</button></div>';
-    }
-    function seg(label, key, list, cur) {
-      return '<div class="hub-seg"><span class="seg-label">' + label + '</span><div class="seg">' + list.map(function (o) {
-        return '<button class="seg-btn' + (o[0] === cur ? ' on' : '') + '" data-av="' + key + '" data-val="' + o[0] + '">' + o[1] + '</button>';
-      }).join('') + '</div></div>';
     }
 
     host.addEventListener('click', function (e) {
       const pick = e.target.closest('[data-pick]');
       if (pick) { sfx('select'); save({ pick: pick.getAttribute('data-pick'), photo: null }); return; }
-      const avb = e.target.closest('[data-av]');
-      if (avb) { sfx('ui'); const patch = {}; patch[avb.getAttribute('data-av')] = avb.getAttribute('data-val'); save(patch); return; }
       const h = e.target.closest('[data-hub]');
       if (!h) return;
       const what = h.getAttribute('data-hub');
