@@ -47,6 +47,28 @@
     if (current) { clearTimeout(current.timer); current.timer = null; }
   }
 
+  /* The beat sits on the astra panel (the action bar) instead of over the
+   * board: beside the board in landscape, under it in portrait. If the panel
+   * is not on screen it falls back to the old full-screen card. */
+  function dock(el) {
+    const bar = document.getElementById('action-bar');
+    const r = bar && bar.getBoundingClientRect();
+    if (!r || r.width < 80 || r.height < 60 || !bar.offsetParent) return;
+    let top = r.top, height = r.height;
+    // Portrait: the panel alone is too short for the card, so take everything
+    // under the board (player strip, Sanjaya, controls).
+    const shell = document.getElementById('board-shell');
+    if (shell && root.innerHeight > root.innerWidth) {
+      top = Math.min(top, shell.getBoundingClientRect().bottom + 6);
+      height = root.innerHeight - top - 4;
+    }
+    el.classList.add('stage-dock');
+    el.style.left = Math.round(r.left) + 'px';
+    el.style.top = Math.round(top) + 'px';
+    el.style.width = Math.round(r.width) + 'px';
+    el.style.height = Math.round(height) + 'px';
+  }
+
   /* Mount a beat. `ms` is how long it holds before it leaves on its own. */
   function show(html, cls, ms, done, opts) {
     if (current) close(true);
@@ -65,6 +87,7 @@
     const film = el.querySelector('.st-astra-anim');
     if (film) film.addEventListener('error', function () { film.remove(); });
     document.body.appendChild(el);
+    if (opts.dock !== false) dock(el);
     const hold = reduced() && !calm() ? Math.min(ms, 1100) : ms;
     current = { el: el, done: done, timer: setTimeout(function () { close(true); }, hold) };
     if (!opts.passive) el.addEventListener('click', function () {
@@ -234,7 +257,7 @@
       '<div class="st-sky-mark">' + A.icon(day ? 'sun' : 'moon') + '</div>' +
       '<div class="st-astra-name"><span class="deva">' + (day ? 'दिनमान' : 'रात्रि') + '</span><b>' + tr('sky.' + hour, day ? 'Dawn — the hour of Surya' : 'Night — the hour of Chandra') + '</b></div>' +
       '<div class="st-astra-by">' + (viewerHour ? 'Your army strikes at +1 until the sky turns again.' : 'The enemy strikes at +1 until the sky turns again.') + '</div>';
-    show(html, 'stage-sky stage-' + (day ? 'day' : 'night'), 1700, done, { passive: !done });
+    show(html, 'stage-sky stage-' + (day ? 'day' : 'night'), 1700, done, { passive: !done, dock: false });
   }
 
   AC.stage = {

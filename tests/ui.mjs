@@ -715,6 +715,7 @@ async function run() {
   AC.ui.show('home');
   await sleep(10);
   ok(!document.getElementById('quick-settings') && !document.getElementById('stat-grid'), 'home no longer carries settings, data or record blocks');
+  ok(!document.getElementById('btn-resume'), 'Continue is merged into Saved games');
   AC.ui.openProfile();
   await sleep(10);
   ok($$('.av-pick').length === 10, 'the profile hub offers ten avatars');
