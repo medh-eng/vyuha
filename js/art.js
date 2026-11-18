@@ -358,18 +358,14 @@
     { key: 'draupadi', name: 'Draupadi', deva: 'द्रौपदी', slot: 'hero:draupadi', sigil: 'sun' },
     { key: 'dhrishtadyumna', name: 'Dhrishtadyumna', deva: 'धृष्टद्युम्न', slot: 'hero:dhrishtadyumna', sigil: 'chevron' }
   ];
-  const FRAMES = [['brass', 'Brass'], ['silver', 'Silver'], ['saffron', 'Saffron'], ['indigo', 'Indigo'], ['none', 'None']];
-  const TINTS = [['none', 'Natural'], ['warm', 'Dawn'], ['cool', 'Night'], ['mono', 'Ink']];
-  const BADGES = [['none', 'None'], ['title', 'Title'], ['sun', 'Surya'], ['moon', 'Chandra'], ['diya', 'Streak']];
-
   /* `p` is a profile; `opts.size` in px; `opts.title` the short title text
    * for the title badge; `opts.streak` for the streak badge. */
   function avatar(p, opts) {
     opts = opts || {};
     const av = (p && p.avatar) || {};
-    const frame = av.frame || 'brass';
-    const tint = av.tint || 'none';
-    const badge = av.badge || 'none';
+    // One look for everyone: brass frame, natural tint, rank-title badge.
+    const frame = 'brass';
+    const tint = 'none';
     let face = '';
     if (av.photo) face = '<img class="av-img" src="' + av.photo + '" alt="" draggable="false">';
     else {
@@ -377,11 +373,7 @@
       const painted = a ? artFor(a.slot) : null;
       face = painted ? '<img class="av-img" src="' + painted + '" alt="" draggable="false">' : sigil(a ? a.sigil : (p && p.sigil) || 'chevron', 'av-sigil');
     }
-    let b = '';
-    if (badge === 'sun') b = '<span class="av-badge">' + icon('sun') + '</span>';
-    else if (badge === 'moon') b = '<span class="av-badge">' + icon('moon') + '</span>';
-    else if (badge === 'diya') b = '<span class="av-badge av-badge-num">' + icon('diya') + (opts.streak || 0) + '</span>';
-    else if (badge === 'title' && opts.title) b = '<span class="av-badge av-badge-txt">' + opts.title + '</span>';
+    const b = opts.title ? '<span class=\"av-badge av-badge-txt\">' + opts.title + '</span>' : '';
     return '<span class="av av-frame-' + frame + ' av-tint-' + tint + ' ' + (opts.cls || '') + '"' +
       (opts.size ? ' style="--av:' + opts.size + 'px"' : '') + '>' + face + b + '</span>';
   }
@@ -529,9 +521,6 @@
     figureInner: figureInner,
     avatar: avatar,
     AVATARS: AVATARS,
-    AVATAR_FRAMES: FRAMES,
-    AVATAR_TINTS: TINTS,
-    AVATAR_BADGES: BADGES,
     emblem: emblem,
     astraMark: astraMark,
     sanjayaMark: sanjayaMark,

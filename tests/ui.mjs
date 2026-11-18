@@ -720,10 +720,12 @@ async function run() {
   ok($$('.av-pick').length === 10, 'the profile hub offers ten avatars');
   ok($$('.stand-row').length === 3 && /Record/.test($('.modal').textContent), 'the hub shows the record and the level of play');
   click($('[data-pick="bhima"]'));
-  click($('[data-av="frame"][data-val="saffron"]'));
   const prof = AC.storage.getProfile(AC.app.profile.id);
-  ok(prof.avatar && prof.avatar.pick === 'bhima' && prof.avatar.frame === 'saffron', 'the chosen avatar and frame are kept');
-  ok($('#home-sigil .av-frame-saffron'), 'the home top bar wears the new avatar');
+  ok(prof.avatar && prof.avatar.pick === 'bhima', 'the chosen avatar is kept');
+  ok(!$('[data-av]') && !/Customise/.test($('.modal').textContent), 'the profile has no frame, tint or badge choices');
+  ok(/Rank - /.test($('.hub-title').textContent), 'the profile shows the rank as "Rank - title"');
+  ok($('[data-hub="rename"].btn'), 'Change name is a button');
+  ok($('.modal .av-badge-txt') && $('#home-sigil .av-frame-brass .av-badge-txt'), 'the avatar always wears its title badge');
   AC.app.modals.slice().forEach((m) => m.close());
   AC.ui.openSettings();
   await sleep(10);
