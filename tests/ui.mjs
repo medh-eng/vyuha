@@ -730,7 +730,7 @@ async function run() {
   AC.app.modals.slice().forEach((m) => m.close());
   AC.ui.openSettings();
   await sleep(10);
-  ok($('[data-data="export"]') && $('[data-data="import"]') && $('[data-data="reset"]'), 'backup and reset live in Settings');
+  ok(!$('[data-data]'), 'Settings has no export, import or reset buttons (removed 24 Nov)');
   ok(document.documentElement.classList.contains('lite') === AC.app.liteOn(), 'battery saver follows the setting');
   AC.app.modals.slice().forEach((m) => m.close());
 

@@ -975,7 +975,7 @@
         }).join('');
       }
       if (k === 'rules') {
-        return block([
+        return '<button class="btn btn-primary pm-walk" data-walk="1">' + tr('primer.open_rules', 'Rules, one at a time') + '</button>' + block([
           ['The objective', 'Break the gate of the enemy Durg (fort), then take it. The first successful blow — or a volley — breaks the gate and reveals the fort; the second takes it and ends the battle. Leave the enemy with no legal move and they concede.'],
           ['Movement', 'Pieces move along a cell’s lanes. Rifts on the square fields cannot be crossed, but arrows fly over them. The Rath slides any distance, the Ashvarohi up to two, everyone else one.'],
           ['Combat', 'The attacker resolves the clash. Higher strength wins: rank, plus +1 in your hour, plus +1 for a Makara pincer — against rank plus +1 for a Padma guard. Bonuses never add more than +2.'],
@@ -1029,6 +1029,7 @@
       actions: [{ label: 'Close', cls: 'btn-ghost' }]
     });
     m.el.addEventListener('click', function (e) {
+      if (e.target.closest('[data-walk]') && AC.primer) { m.close(); AC.primer.openRules({}); return; }
       const b = e.target.closest('[data-codex]');
       if (!b) return;
       active = b.getAttribute('data-codex');
@@ -1093,13 +1094,7 @@
           toggleRow('High contrast', 'highContrast', !!s.highContrast) +
         '</div>' +
       '</div>' +
-      '<div class="hub-h">Your data</div>' +
-      '<div class="data-actions">' +
-        '<button class="btn btn-ghost btn-sm" data-data="export">' + A.icon('download') + 'Export backup</button>' +
-        '<button class="btn btn-ghost btn-sm" data-data="import">Import backup</button>' +
-        '<button class="btn btn-ghost btn-sm btn-danger-ghost" data-data="reset">Reset record</button>' +
-      '</div>' +
-      '<p class="fineprint">Every setting, profile and save stays on this device. A backup moves them to another.</p>';
+      '<p class="fineprint">Every setting, profile and save stays on this device.</p>';
 
     const m = modal({
       kicker: 'Preferences',
@@ -1122,14 +1117,6 @@
     });
 
     m.el.addEventListener('click', function (e) {
-      const dataBtn = e.target.closest('[data-data]');
-      if (dataBtn) {
-        const what = dataBtn.getAttribute('data-data');
-        if (what === 'export') exportBackup();
-        else if (what === 'import') { sfx('ui'); document.getElementById('file-import').click(); }
-        else resetRecord();
-        return;
-      }
       const segBtn = e.target.closest('[data-segval]');
       if (segBtn) {
         const seg = segBtn.closest('[data-seg]');

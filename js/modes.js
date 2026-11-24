@@ -387,6 +387,11 @@
   /* The first time: straight into the next lesson. Afterwards: a short list. */
   function openLessons() {
     const done = lessonsDone();
+    // the first time: the battlefield primer (board, armies, warriors, rules), then the first lesson
+    if (!done.length && !((AC.app && AC.app.settings) || {}).primerSeen && AC.primer) {
+      AC.primer.openBattlefield({ onDone: function () { startWheelLesson(0); } });
+      return;
+    }
     if (!done.length) { startWheelLesson(0); return; }
     const next = nextLessonIndex();
     const m = AC.ui.modal({
@@ -399,6 +404,9 @@
           '<small>' + esc(wheelText(l, 'blurb', l.blurb)) + '</small></span>' +
           '<span class="lesson-tick">' + (isDone ? '✓' : i === next ? tr('wheel.start', 'Start') : '') + '</span></button>';
       }).join('') + '</div>' +
+        '<div class="lesson-know">' +
+          '<button class="btn btn-ghost" data-know="field">' + esc(tr('primer.open_field', 'Know the battlefield')) + '</button>' +
+          '<button class="btn btn-ghost" data-know="rules">' + esc(tr('primer.open_rules', 'Rules, one at a time')) + '</button></div>' +
         '<div class="lesson-drill">' + esc(tr('wheel.drill_lede', 'Also:')) + ' <button data-drill="1">' +
         esc(tr('wheel.drill', 'Field drill — look, volley, trap and fort (six steps)')) + '</button></div>',
       actions: [{ label: tr('wheel.close', 'Close'), cls: 'btn-ghost' }]
@@ -406,7 +414,13 @@
     m.el.addEventListener('click', function (e) {
       const row = e.target.closest('[data-lesson]');
       if (row) { m.close(); startWheelLesson(+row.getAttribute('data-lesson')); return; }
-      if (e.target.closest('[data-drill]')) { m.close(); startTutorial(); }
+      if (e.target.closest('[data-drill]')) { m.close(); startTutorial(); return; }
+      const know = e.target.closest('[data-know]');
+      if (know && AC.primer) {
+        m.close();
+        if (know.getAttribute('data-know') === 'field') AC.primer.openBattlefield({});
+        else AC.primer.openRules({});
+      }
     });
   }
 

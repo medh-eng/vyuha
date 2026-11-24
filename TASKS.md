@@ -57,6 +57,8 @@ Last updated: 17 Nov 2026 (Director: Play Store readiness — Android app, store
 
 ## Done (newest first)
 
+- [x] T-46 Primer (24 Nov): Settings loses Export/Import/Reset; Intel's army chip is solid and readable; Pehla Yuddh opens with *Know the battlefield* (board, the two armies, tap-each-warrior panel) then *The rules, one at a time* (11 cards), typed out with a soft key sound (`js/primer.js`, `AC.audio` `type`). Also in the lessons list and the Rules tab. Not phone-tested.
+
 - [x] T-45 Play Store readiness (17 Nov): Capacitor Android app targeting API 36, build workflow, icons and splash, Back button, background silence, bundled fonts, privacy page, store pictures, `docs/PLAY-STORE.md`; readability floor (12 px words, 40 px buttons) with every battle icon labelled; lessons show only what they have taught; the 781–1080 px tablet field fix.
 - [x] T-34 Progression system: a free level (1–6) from matches played + wins×2 unlocks Sarvatobhadra at level 2, Padmavyuha at 3, Kurukshetra at 4, the Abhimanyu scenario at 5 — shown locked with a lock icon and "Unlocks at Level N" on the Setup screen, tapping does nothing but a toast. Home screen shows the current level. No payment path anywhere; a paid Play Store edition, if ever built, stays cosmetic-only per `docs/ROADMAP.md`. Follow-ups opened as T-35 through T-40 (16 Nov).
 - [x] T-33 Unmissable first battle: the wheel-lesson offer now gates Custom battle and the Daily too, not only Quick; it cannot be dismissed by a stray tap; the decline is an honest claim ("Skip — I've played before") instead of an equally tempting "Fight now"; Sanjaya's ambient lines stay quiet while a coached step is open. Found by a real (informal) playtest — see `docs/ROADMAP.md` Playtest notes (15 Nov, PR #34).

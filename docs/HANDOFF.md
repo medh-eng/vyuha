@@ -1,5 +1,7 @@
 # Handoff — latest status
 
+**24 November 2026 · Director (addendum).** Branch `ux/settings-intel-lessons-rules`: Settings no longer shows Export/Import/Reset (functions left in `js/ui.js`); Intel's top-right army chip now solid fill + white text; new `js/primer.js` (battlefield primer and the 11-card rules walkthrough, typewriter + `type` sound, tap text to finish, honours Reduced motion and Mute) opened from Pehla Yuddh the first time, from the lessons list, and from Rules → "Rules, one at a time". Cache v36. Checks run: rules, daily, languages, ui, data, audio, log, readability, first-session, landscape, pace-budget. Not run: perf-idle, playtest-bot, shots, battle-log. Not phone-tested; Hindi/Marathi strings for `primer.*` and `rule.*` still go to Sarvam.
+
 **17 November 2026 · Director.** The Commander asked: is everything done and up to date for
 Google Play, is there a tutorial, are words and icons big and easy, is the game less confusing —
 and do what is needed. One PR, branch `claude/readable-store-ready`.

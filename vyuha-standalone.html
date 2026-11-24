@@ -364,8 +364,8 @@ input::placeholder { color: var(--faint); }
   color: var(--txt-2);
   background: rgba(255, 255, 255, 0.04);
 }
-.chip-solar { color: #fde9c0; border-color: rgba(224, 169, 74, 0.4); background: rgba(224, 169, 74, 0.12); }
-.chip-void { color: #fecdd3; border-color: rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.12); }
+.chip-solar { color: #fff; border-color: #7a2e0c; background: #b8431a; }
+.chip-void { color: #fff; border-color: #14266b; background: #2a4a9e; }
 .chip-gold { color: #fde68a; border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.12); }
 .chip-green { color: #a7f3d0; border-color: rgba(52, 211, 153, 0.4); background: rgba(52, 211, 153, 0.12); }
 
@@ -3437,6 +3437,132 @@ html[data-skin] .stage-dock .st-disc .emblem-pata { width: 46px; height: 46px; }
 html[data-skin] .stage-dock .st-astra-mark { width: 64px; height: 64px; }
 html[data-skin] .stage-dock .st-astra-mark :is(img, svg, .astra-art, .astra-ico) { width: 60px; height: 60px; object-fit: contain; }
 html[data-skin] .stage-dock .st-disc .emblem :is(img, svg) { max-width: 100%; max-height: 100%; }
+
+/* ── The primer: know the battlefield, the rules one at a time (24 Nov 2026) ──
+   Static. The typing is a timer, not an animation. Words >= 12 px, buttons >= 40 px. */
+.modal.primer { width: min(900px, 100%); }
+.pm { display: grid; gap: 12px; }
+.pm-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; align-items: center; }
+.pm h3 { font-size: 18px; margin: 0 0 8px; }
+.pm h3 .deva, .pm-deva { color: var(--vermilion, var(--solar-2)); }
+.pm-deva { font-size: 22px; margin-bottom: 6px; }
+.pm-line { display: grid; font-size: 17px; line-height: 1.6; cursor: pointer; }
+.pm-line > * { grid-area: 1 / 1; }
+.pm-ghost { visibility: hidden; }
+.pm-line.typing .pm-typed::after { content: "▌"; opacity: 0.55; }
+.pm-points { margin: 10px 0 0; padding-left: 20px; font-size: 15px; line-height: 1.6; color: var(--txt-2); }
+.pm-pic { display: grid; place-items: center; min-height: 150px; }
+.pm-pic-field img { width: 100%; max-height: 300px; object-fit: contain; border-radius: var(--r-sm); }
+.pm-pic-field.small img { max-height: 200px; }
+.pm-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 8px; }
+.pm-fig { margin: 0; display: grid; justify-items: center; gap: 4px; max-width: 128px; text-align: center; }
+.pm-fig img { width: 92px; height: 92px; object-fit: contain; }
+.pm-fig figcaption { font-size: 13px; line-height: 1.3; color: var(--txt-2); }
+.pm-fig svg { width: 64px; height: 64px; }
+.pm-fig.sun svg { color: #d98a1c; } .pm-fig.moon svg { color: #4a63c9; }
+.pm-fig.astra img { width: 78px; height: 78px; border-radius: 12px; }
+.pm-arrow, .pm-vs { font-size: 26px; font-weight: 800; color: var(--vermilion, var(--solar)); align-self: center; padding-bottom: 18px; }
+.pm-vs { font-size: 18px; }
+.pm-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 4px; }
+.pm-nav .btn { min-height: 44px; min-width: 96px; }
+.pm-dots { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.pm-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong); }
+.pm-dots i.done { background: var(--dim); }
+.pm-dots i.on { background: var(--vermilion, var(--solar)); transform: scale(1.3); }
+
+/* armies */
+.pm-armies { display: grid; gap: 10px; }
+.pm-army { display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: var(--r-sm); border: 2px solid var(--line-strong); }
+.pm-army.sun { border-color: #b8431a; background: rgba(184, 67, 26, 0.08); }
+.pm-army.moon { border-color: #2a4a9e; background: rgba(42, 74, 158, 0.08); }
+.pm-army p { margin: 0; font-size: 15px; line-height: 1.5; color: var(--txt-2); }
+.pm-armies-note { display: flex; gap: 12px; align-items: center; }
+.pm-armies-note .pm-line { font-size: 16px; }
+
+/* the warriors */
+.pm-warriors { align-items: start; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+.pm-army-switch { display: flex; gap: 6px; margin-bottom: 8px; }
+.pm-army-switch button { flex: 1; min-height: 40px; border-radius: 999px; border: 1px solid var(--line-strong); font-size: 13.5px; font-weight: 700; color: inherit; background: transparent; }
+.pm-army-switch button.on { color: #fff; background: #b8431a; border-color: #7a2e0c; }
+.pm-army-switch button.on[data-army="2"] { background: #2a4a9e; border-color: #14266b; }
+.pm-icons { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.pm-icon { position: relative; display: grid; justify-items: center; gap: 2px; padding: 4px 2px; min-height: 64px; border-radius: var(--r-sm); border: 2px solid var(--line); background: rgba(255, 255, 255, 0.04); color: inherit; }
+.pm-icon img { width: 44px; height: 44px; object-fit: contain; }
+.pm-icon span { font-size: 12px; line-height: 1.15; font-weight: 700; }
+.pm-icon.on { border-color: var(--vermilion, var(--solar)); background: rgba(217, 80, 40, 0.12); }
+.pm-icon.seen::after { content: "✓"; position: absolute; top: 1px; right: 4px; font-size: 13px; font-weight: 800; color: #2f8f5d; }
+.pm-progress { margin: 8px 0 0; font-size: 13.5px; color: var(--dim); }
+.pm-panel { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px; padding: 10px; border-radius: var(--r-sm); border: 2px solid var(--vermilion, var(--solar)); background: rgba(255, 255, 255, 0.05); }
+.pm-big img { width: 96px; height: 120px; object-fit: contain; }
+.pm-name { font-size: 17px; font-weight: 800; display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+.pm-name .deva { font-size: 16px; font-weight: 400; color: var(--vermilion, var(--solar-2)); }
+.pm-tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 6px; }
+.pm-tags span { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--txt-2); }
+.pm-warriors .pm-line { font-size: 14.5px; line-height: 1.5; }
+.pm-tip { margin: 6px 0 0; font-size: 13.5px; color: var(--gold); line-height: 1.4; }
+:is(html[data-skin="pata"], html[data-skin="pahari"]) .pm-tip { color: #8a4b0a; }
+.pm-walk { width: 100%; min-height: 48px; margin-bottom: 10px; }
+.lesson-know { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.lesson-know .btn { flex: 1 1 140px; min-height: 44px; }
+
+@media (max-width: 640px) {
+  .pm-split, .pm-warriors { grid-template-columns: 1fr; }
+  .pm-panel { grid-template-columns: 76px minmax(0, 1fr); }
+  .pm-big img { width: 76px; height: 96px; }
+}
+/* landscape phones: tighter, side by side */
+@media (orientation: landscape) and (max-height: 520px) {
+  .modal.primer { padding: 12px 16px; }
+  .pm { gap: 8px; }
+  .pm-split { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr); gap: 12px; }
+  .pm-warriors { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+  .pm-pic { min-height: 0; }
+  .pm-pic-field img { max-height: 190px; }
+  .pm-fig img { width: 64px; height: 64px; }
+  .pm-fig.astra img { width: 56px; height: 56px; }
+  .pm-fig svg { width: 44px; height: 44px; }
+  .pm-line { font-size: 15px; line-height: 1.45; }
+  .pm h3 { font-size: 16px; margin-bottom: 4px; }
+  .pm-points { display: none; }
+  .pm-icon { min-height: 52px; padding: 2px; }
+  .pm-icon img { width: 32px; height: 32px; }
+  .pm-army { padding: 6px 10px; }
+  .pm-army p { font-size: 13.5px; line-height: 1.4; }
+  .pm-army .pm-fig img { width: 48px; height: 48px; }
+  .pm-armies-note .pm-fig img { width: 44px; height: 44px; }
+  .pm-armies-note .pm-line { font-size: 14px; }
+  .pm-panel { grid-template-columns: 64px minmax(0, 1fr); padding: 8px; }
+  .pm-big img { width: 64px; height: 84px; }
+  .pm-warriors .pm-line { font-size: 13.5px; line-height: 1.4; }
+  .pm-tip { display: none; }
+  .pm-nav .btn { min-height: 40px; }
+}
+.pm-icon span { overflow-wrap: anywhere; letter-spacing: -0.02em; }
+@media (max-width: 640px) { .pm-icons { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (orientation: landscape) and (max-height: 520px) {
+  .modal.primer .modal-head { margin-bottom: 6px; }
+  .modal.primer .modal-title { font-size: 15px; }
+  .pm-armies { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pm-armies-note { grid-column: 1 / -1; }
+  .pm-army { align-items: flex-start; }
+  .pm-army h3 { font-size: 15px; }
+  .pm-army p { font-size: 13px; }
+  .pm-rule .pm-split { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+  .pm-row { flex-wrap: nowrap; gap: 4px; }
+  .pm-fig { max-width: 96px; }
+  .pm-fig img { width: 58px; height: 58px; }
+  .pm-fig figcaption { font-size: 12px; }
+  .pm-arrow { font-size: 20px; padding-bottom: 14px; }
+  .pm-row.pm-astras { flex-wrap: wrap; }
+}
+@media (orientation: landscape) and (max-height: 340px) {
+  .modal.primer .modal-kicker { display: none; }
+  .modal.primer { padding-top: 8px; }
+}
+@media (orientation: landscape) and (max-height: 340px) {
+  .pm-army .pm-fig figcaption { display: none; }
+  .pm-armies-note .pm-fig img { width: 36px; height: 44px; }
+}
 
 </style>
 </head>
@@ -7754,6 +7880,8 @@ html[data-skin] .stage-dock .st-disc .emblem :is(img, svg) { max-width: 100%; ma
     },
     keypad: function () { tone({ freq: 900, to: 1100, dur: 0.05, type: 'square', gain: 0.05 }); },
     tick: function () { tone({ freq: 1500, dur: 0.03, type: 'square', gain: 0.04 }); },
+    // the typewriter: a soft key, a little different each time (primer.js)
+    type: function () { tone({ freq: 1100 + Math.random() * 500, to: 600, dur: 0.028, type: 'triangle', gain: 0.05 }); },
     rotate: function () {
       // stone grinding on stone, with a rising shimmer as the wheel settles
       noise({ freq: 220, to: 90, dur: 1.1, gain: 0.14, filter: 'lowpass', q: 0.8 });
@@ -8403,6 +8531,7 @@ html[data-skin] .stage-dock .st-disc .emblem :is(img, svg) { max-width: 100%; ma
     skin: 'pata',        // Rang look: pata (default since 5 Nov 2026) · bronze (Classic); pahari, bright via ?skin=
     tutorialDone: false,
     wheelLessons: [],    // keys of the four wheel lessons finished (7 Nov 2026)
+    primerSeen: false,   // the battlefield primer (board, armies, warriors) has been read once
     lessonOffered: false, // the first Quick battle offered the lessons once
     landscapeHintDismissed: false,
     fullscreen: true     // battles on a phone open full screen and sideways
@@ -10910,7 +11039,7 @@ html[data-skin] .stage-dock .st-disc .emblem :is(img, svg) { max-width: 100%; ma
         }).join('');
       }
       if (k === 'rules') {
-        return block([
+        return '<button class="btn btn-primary pm-walk" data-walk="1">' + tr('primer.open_rules', 'Rules, one at a time') + '</button>' + block([
           ['The objective', 'Break the gate of the enemy Durg (fort), then take it. The first successful blow — or a volley — breaks the gate and reveals the fort; the second takes it and ends the battle. Leave the enemy with no legal move and they concede.'],
           ['Movement', 'Pieces move along a cell’s lanes. Rifts on the square fields cannot be crossed, but arrows fly over them. The Rath slides any distance, the Ashvarohi up to two, everyone else one.'],
           ['Combat', 'The attacker resolves the clash. Higher strength wins: rank, plus +1 in your hour, plus +1 for a Makara pincer — against rank plus +1 for a Padma guard. Bonuses never add more than +2.'],
@@ -10964,6 +11093,7 @@ html[data-skin] .stage-dock .st-disc .emblem :is(img, svg) { max-width: 100%; ma
       actions: [{ label: 'Close', cls: 'btn-ghost' }]
     });
     m.el.addEventListener('click', function (e) {
+      if (e.target.closest('[data-walk]') && AC.primer) { m.close(); AC.primer.openRules({}); return; }
       const b = e.target.closest('[data-codex]');
       if (!b) return;
       active = b.getAttribute('data-codex');
@@ -11028,13 +11158,7 @@ html[data-skin] .stage-dock .st-disc .emblem :is(img, svg) { max-width: 100%; ma
           toggleRow('High contrast', 'highContrast', !!s.highContrast) +
         '</div>' +
       '</div>' +
-      '<div class="hub-h">Your data</div>' +
-      '<div class="data-actions">' +
-        '<button class="btn btn-ghost btn-sm" data-data="export">' + A.icon('download') + 'Export backup</button>' +
-        '<button class="btn btn-ghost btn-sm" data-data="import">Import backup</button>' +
-        '<button class="btn btn-ghost btn-sm btn-danger-ghost" data-data="reset">Reset record</button>' +
-      '</div>' +
-      '<p class="fineprint">Every setting, profile and save stays on this device. A backup moves them to another.</p>';
+      '<p class="fineprint">Every setting, profile and save stays on this device.</p>';
 
     const m = modal({
       kicker: 'Preferences',
@@ -11057,14 +11181,6 @@ html[data-skin] .stage-dock .st-disc .emblem :is(img, svg) { max-width: 100%; ma
     });
 
     m.el.addEventListener('click', function (e) {
-      const dataBtn = e.target.closest('[data-data]');
-      if (dataBtn) {
-        const what = dataBtn.getAttribute('data-data');
-        if (what === 'export') exportBackup();
-        else if (what === 'import') { sfx('ui'); document.getElementById('file-import').click(); }
-        else resetRecord();
-        return;
-      }
       const segBtn = e.target.closest('[data-segval]');
       if (segBtn) {
         const seg = segBtn.closest('[data-seg]');
@@ -14885,6 +15001,296 @@ rankBadge('?', R)
 
 </script>
 <script>
+/* js/primer.js */
+/* VYUHA — the primer: "Know the battlefield" and "The rules, one at a time".
+ *
+ * Two guided screens that come before the lessons (Commander, 24 Nov 2026):
+ *   1. The battlefield — what the board is, the two armies, and every warrior:
+ *      tap an icon, see its painting large beside a panel that explains it.
+ *   2. The rules — one rule per card, zoomed in, with a picture.
+ * Text is typed out letter by letter with a soft key sound. A tap on the text
+ * finishes the line at once; Reduced motion and Mute are respected.
+ * No infinite animation anywhere: the typing is a timer that stops by itself.
+ * Strings are English with tr() keys; Hindi and Marathi go to Sarvam.
+ * Attaches to global AC.primer
+ */
+(function (root) {
+  'use strict';
+  const AC = (root.AC = root.AC || {});
+  const U = AC.units, L = AC.i18n, A = AC.art;
+  const tr = function (key, fallback) { return L.text(key, fallback); };
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+  }
+  function sfx(name) { try { AC.audio.play(name); } catch (e) { /* audio must never break the screen */ } }
+
+  /* ── typewriter ─────────────────────────────────────────────── */
+  const CHAR_MS = 22, PAUSE_MS = 150;
+
+  /* `host` holds a ghost (the whole text, invisible, so the box never changes size)
+     and the typed copy on top. Returns nothing; tap the host to finish early. */
+  function typeInto(host, text) {
+    const typed = host.querySelector('.pm-typed');
+    const ghost = host.querySelector('.pm-ghost');
+    ghost.textContent = text;
+    const token = {};
+    host._tw = token;
+    const finish = function () {
+      if (host._tw !== token) return;
+      host._tw = null;
+      typed.textContent = text;
+      host.classList.remove('typing');
+    };
+    host._finish = finish;
+    if (document.documentElement.classList.contains('reduce-motion')) { typed.textContent = text; return; }
+    host.classList.add('typing');
+    typed.textContent = '';
+    let i = 0;
+    (function step() {
+      if (host._tw !== token) return;
+      if (!host.isConnected) { host._tw = null; return; }
+      i++;
+      typed.textContent = text.slice(0, i);
+      const ch = text.charAt(i - 1);
+      if (ch.trim() && i % 2 === 0) sfx('type');
+      if (i >= text.length) { finish(); return; }
+      setTimeout(step, /[.,;:—?!]/.test(ch) ? PAUSE_MS : CHAR_MS);
+    })();
+  }
+  function typeHtml(id, text) {
+    return '<div class="pm-line" id="' + id + '"><span class="pm-ghost" aria-hidden="true"></span><span class="pm-typed" aria-label="' + esc(text) + '"></span></div>';
+  }
+
+  /* ── pictures ───────────────────────────────────────────────── */
+  const SLUG = {
+    '10': 'senapati', '9': 'maharathi', '7': 'ashvarohi', '6': 'dhanurdhar', '5': 'divyadrishti',
+    '3': 'yantrik', '2': 'rath', '1': 'chara', 'B': 'shataghni', 'F': 'durg'
+  };
+  function pieceSrc(key, army, state) {
+    return 'assets/art/pata/pieces/' + (army === 2 ? 'chandra' : 'surya') + '-' + SLUG[key] + (state ? '-' + state : '') + '.webp';
+  }
+  function fig(src, caption, cls) {
+    return '<figure class="pm-fig ' + (cls || '') + '"><img src="' + src + '" alt="" draggable="false"><figcaption>' + esc(caption) + '</figcaption></figure>';
+  }
+  function piece(key, army, caption, state) { return fig(pieceSrc(key, army, state), caption); }
+  function hiddenPiece(caption) { return fig('assets/art/pata/pieces/hidden.webp', caption); }
+  function arrow() { return '<span class="pm-arrow" aria-hidden="true">→</span>'; }
+
+  function dots(n, at) {
+    let h = '';
+    for (let i = 0; i < n; i++) h += '<i class="' + (i === at ? 'on' : i < at ? 'done' : '') + '"></i>';
+    return '<span class="pm-dots" aria-hidden="true">' + h + '</span>';
+  }
+
+  function nav(n, at, last) {
+    return '<div class="pm-nav">' +
+      '<button class="btn btn-ghost" data-pm="back"' + (at === 0 ? ' disabled' : '') + '>' + esc(tr('primer.back', 'Back')) + '</button>' +
+      dots(n, at) +
+      '<button class="btn btn-primary" data-pm="next">' + esc(last) + '</button></div>';
+  }
+
+  /* ══ 1. The battlefield ═══════════════════════════════════════ */
+  const FIELD_PAGES = ['board', 'armies', 'warriors'];
+
+  function openBattlefield(opts) {
+    opts = opts || {};
+    let page = 0;
+    let army = 1;                 // which army's paintings the warriors page shows
+    let pick = '10';
+    const seen = {};
+    let m = null;
+
+    function warriorsBody() {
+      const u = L.unit(pick);
+      const def = U.UNIT_DEFS[pick];
+      const strength = def.rank > 0 ? tr('primer.strength', 'Strength') + ' ' + def.rank : (pick === 'B' ? tr('primer.trap', 'Trap') : tr('primer.fort', 'Fort'));
+      const count = def.count > 1 ? '×' + def.count + ' ' + tr('primer.in_army', 'in each army') : '×1 ' + tr('primer.in_army', 'in each army');
+      const move = !def.movable ? tr('primer.never_moves', 'Never moves')
+        : def.moveRange >= 99 ? tr('primer.slides', 'Slides as far as the lane is open')
+        : def.moveRange === 2 ? tr('primer.two_cells', 'Moves up to two cells')
+        : tr('primer.one_cell', 'Moves one cell');
+      const count10 = Object.keys(seen).filter(function (k) { return seen[k]; }).length;
+      return '<div class="pm-split pm-warriors">' +
+        '<div class="pm-pick">' +
+          '<div class="pm-army-switch" role="group">' +
+            '<button class="' + (army === 1 ? 'on' : '') + '" data-army="1">' + esc(U.FACTIONS[1].name) + '</button>' +
+            '<button class="' + (army === 2 ? 'on' : '') + '" data-army="2">' + esc(U.FACTIONS[2].name) + '</button></div>' +
+          '<div class="pm-icons">' + U.RANK_ORDER.map(function (k) {
+            const d = U.UNIT_DEFS[k];
+            return '<button class="pm-icon' + (k === pick ? ' on' : '') + (seen[k] ? ' seen' : '') + '" data-pick="' + k + '" aria-label="' + esc(d.name) + '">' +
+              '<img src="' + pieceSrc(k, army) + '" alt="" draggable="false"><span>' + esc(d.short) + '</span></button>';
+          }).join('') + '</div>' +
+          '<p class="pm-progress">' + esc(tr('primer.tap_each', 'Tap each warrior.')) + ' <b>' + count10 + ' / ' + U.RANK_ORDER.length + '</b></p>' +
+        '</div>' +
+        '<aside class="pm-panel">' +
+          '<div class="pm-big"><img src="' + pieceSrc(pick, army) + '" alt="" draggable="false"></div>' +
+          '<div class="pm-info">' +
+            '<div class="pm-name">' + esc(u.name) + (u.deva ? ' <span class="deva">' + esc(u.deva) + '</span>' : '') + '</div>' +
+            '<div class="pm-tags"><span>' + esc(u.role) + '</span><span>' + esc(strength) + '</span><span>' + esc(count) + '</span><span>' + esc(move) + '</span></div>' +
+            typeHtml('pm-type', (u.one ? u.one + ' ' : '') + u.desc) +
+            '<p class="pm-tip">▸ ' + esc(u.tip) + '</p>' +
+          '</div>' +
+        '</aside></div>';
+    }
+
+    function pageBody() {
+      const k = FIELD_PAGES[page];
+      if (k === 'board') {
+        return '<div class="pm-split">' +
+          '<div class="pm-pic pm-pic-field"><img src="assets/art/pata/fields/chakra-day.webp" alt="" draggable="false"></div>' +
+          '<div class="pm-text">' +
+            '<h3>' + esc(tr('primer.board.h', 'The board')) + ' <span class="deva">चक्रव्यूह</span></h3>' +
+            typeHtml('pm-type', tr('primer.board.t', 'This painted wheel is the board, the Chakravyuha. Every piece stands on a cell. Spokes run in towards the centre and rings run around it, and pieces travel along these lanes. Two armies face each other, one on each half. You arrange yours first, in secret, then the battle begins.')) +
+            '<ul class="pm-points">' +
+              '<li>' + esc(tr('primer.board.p1', 'Cells hold one piece each.')) + '</li>' +
+              '<li>' + esc(tr('primer.board.p2', 'Move along the lanes, one piece per turn.')) + '</li>' +
+              '<li>' + esc(tr('primer.board.p3', 'Every fifth round the two inner rings turn.')) + '</li>' +
+            '</ul>' +
+          '</div></div>';
+      }
+      if (k === 'armies') {
+        const s = U.FACTIONS[1], c = U.FACTIONS[2];
+        return '<div class="pm-armies">' +
+          '<div class="pm-army sun">' + fig(pieceSrc('10', 1), s.name) +
+            '<div><h3>' + esc(s.name) + ' <span class="deva">' + esc(s.deva) + '</span></h3>' +
+            '<p>' + esc(tr('primer.sun.t', 'Warriors of the sun, painted in vermilion. Their hour is the day: in full battles every Suryavansh strike lands at +1 while the sun is up.')) + '</p></div></div>' +
+          '<div class="pm-army moon">' + fig(pieceSrc('10', 2), c.name) +
+            '<div><h3>' + esc(c.name) + ' <span class="deva">' + esc(c.deva) + '</span></h3>' +
+            '<p>' + esc(tr('primer.moon.t', 'Warriors of the moon, painted in indigo. Their hour is the night: in full battles every Chandravansh strike lands at +1 after dark.')) + '</p></div></div>' +
+          '<div class="pm-armies-note">' +
+            hiddenPiece(tr('primer.hidden', 'A rank you cannot see')) +
+            '<div>' + typeHtml('pm-type', tr('primer.armies.t', 'Each army has the same twelve warriors. You always see your own ranks. The enemy shows only a veiled figure with a ? until it fights, or you look at it. That is the whole game: guess well.')) + '</div>' +
+          '</div></div>';
+      }
+      return warriorsBody();
+    }
+
+    function render(first) {
+      const last = page === FIELD_PAGES.length - 1;
+      const title = [tr('primer.board.k', 'The board'), tr('primer.armies.k', 'The two armies'), tr('primer.warriors.k', 'Your warriors')][page];
+      m.setBody('<div class="pm" data-page="' + FIELD_PAGES[page] + '">' + pageBody() +
+        nav(FIELD_PAGES.length, page, last ? tr('primer.to_rules', 'Now the rules') : tr('primer.next', 'Next')) + '</div>');
+      m.el.querySelector('.modal-kicker').textContent = tr('primer.kicker', 'Pehla Yuddh · know the battlefield') + ' · ' + (page + 1) + ' / ' + FIELD_PAGES.length;
+      m.el.querySelector('.modal-title').textContent = title;
+      const line = m.el.querySelector('#pm-type');
+      if (line) typeInto(line, line.querySelector('.pm-typed').getAttribute('aria-label'));
+      if (!first) sfx('select');
+    }
+
+    m = AC.ui.modal({
+      kicker: '·', title: '·', wide: true, body: '',
+      actions: [],
+      onClose: function () { if (opts.onClose) opts.onClose(); }
+    });
+    m.el.classList.add('primer');
+    m.el.addEventListener('click', function (e) {
+      const line = e.target.closest('.pm-line');
+      if (line && line._finish) { line._finish(); }
+      const a = e.target.closest('[data-army]');
+      if (a) { army = +a.getAttribute('data-army'); sfx('select'); render(true); return; }
+      const p = e.target.closest('[data-pick]');
+      if (p) { pick = p.getAttribute('data-pick'); seen[pick] = true; sfx('select'); render(true); return; }
+      const b = e.target.closest('[data-pm]');
+      if (!b) return;
+      const what = b.getAttribute('data-pm');
+      if (what === 'back' && page > 0) { page--; render(); return; }
+      if (what === 'next') {
+        if (page < FIELD_PAGES.length - 1) { page++; if (FIELD_PAGES[page] === 'warriors') seen[pick] = true; render(); return; }
+        try { AC.ui.patchSettings({ primerSeen: true }); } catch (err) { /* ignore */ }
+        m.close();
+        openRules({ onDone: opts.onDone });
+      }
+    });
+    render(true);
+    return m;
+  }
+
+  /* ══ 2. The rules, one at a time ══════════════════════════════ */
+  const RULES = [
+    { key: 'goal', deva: 'दुर्ग', title: 'The goal: take the fort',
+      text: 'Every army guards a Durg, its fort. Strike the enemy fort and its gate breaks. Strike it again and the fort falls, and the battle is yours. If the enemy has no move left at all, they must give up.',
+      pic: function () { return '<div class="pm-row">' + piece('F', 2, tr('primer.gate_stands', 'Gate stands')) + arrow() + piece('F', 2, tr('primer.gate_broken', 'First blow: gate breaks'), 'broken') + arrow() + piece('F', 2, tr('primer.fort_taken', 'Second blow: fort taken'), 'fallen') + '</div>'; } },
+    { key: 'move', deva: 'चाल', title: 'Moving',
+      text: 'On your turn, move one piece along the lanes. Most pieces step one cell. The Rath slides as far as the lane is open, and the Ashvarohi goes up to two cells. The Shataghni and the Durg never move. A piece may not shuttle between the same two cells more than three times in a row.',
+      pic: function () { return '<div class="pm-row">' + piece('9', 1, tr('primer.one_cell', 'Moves one cell')) + piece('7', 1, tr('primer.two_cells', 'Moves up to two cells')) + piece('2', 1, tr('primer.slides_short', 'Slides')) + '</div>'; } },
+    { key: 'hidden', deva: 'गुप्त', title: 'Hidden ranks',
+      text: 'You see your own ranks. An enemy piece shows only a veiled figure with a ? until it is revealed. A piece is revealed when it fights, when your Divyadrishti looks at it, or when a Rath runs two cells or more. Use the Intel button to see what is still hidden.',
+      pic: function () { return '<div class="pm-row">' + piece('9', 1, tr('primer.yours', 'Yours: you see it')) + hiddenPiece(tr('primer.theirs', 'Theirs: a mystery')) + arrow() + piece('5', 2, tr('primer.revealed', 'Revealed')) + '</div>'; } },
+    { key: 'clash', deva: 'संघर्ष', title: 'The clash',
+      text: 'When you strike, the two ranks are compared. The higher rank wins and the other piece is removed. When the ranks are equal, the battle setting decides: either the attacker wins with a cracked shield, or both fall. The hour and formations can add up to +2.',
+      pic: function () { return '<div class="pm-row">' + piece('9', 1, tr('primer.rank9', 'Rank 9')) + '<span class="pm-vs">vs</span>' + piece('5', 2, tr('primer.rank5', 'Rank 5')) + arrow() + piece('9', 1, tr('primer.wins', 'Higher rank wins')) + '</div>'; } },
+    { key: 'trap', deva: 'शतघ्नी', title: 'Traps and the engineer',
+      text: 'The Shataghni is a trap. It never moves, and any piece that strikes it dies. Only the Yantrik, the engineer, can take it apart. So a piece that has never moved may be a trap or the fort. Send a cheap piece to find out, not a commander.',
+      pic: function () { return '<div class="pm-row">' + piece('B', 2, tr('primer.trap_dies', 'Kills what strikes it')) + '<span class="pm-vs">×</span>' + piece('3', 1, tr('primer.engineer', 'Yantrik clears it')) + '</div>'; } },
+    { key: 'spy', deva: 'चर', title: 'The spy',
+      text: 'The Chara is weak, but if it strikes first it kills the Senapati or the Maharathi, whatever the hour. Against anything else it loses. Guard your commanders from it.',
+      pic: function () { return '<div class="pm-row">' + piece('1', 1, tr('primer.rank1', 'Chara, rank 1')) + arrow() + piece('10', 2, tr('primer.falls', 'Senapati falls')) + '</div>'; } },
+    { key: 'sky', deva: 'दिनमान · रात्रि', title: 'Day and night',
+      text: 'In full battles the sky has two hours. By day, Suryavansh strikes land at +1. By night, Chandravansh strikes land at +1. The sky turns every fifth round. The top of the screen shows whose hour it is and how long it lasts.',
+      pic: function () { return '<div class="pm-row pm-sky"><figure class="pm-fig sun">' + A.icon('sun') + '<figcaption>' + esc(U.FACTIONS[1].name + ' +1') + '</figcaption></figure>' + arrow() +
+        '<figure class="pm-fig moon">' + A.icon('moon') + '<figcaption>' + esc(U.FACTIONS[2].name + ' +1') + '</figcaption></figure></div>'; } },
+    { key: 'form', deva: 'मकर · पद्म', title: 'Formations',
+      text: 'Fight together. Makara, the jaws: strike an enemy that another of your pieces already touches and you hit at +1. Padma, the lotus: a piece touched by two of its friends defends at +1. Hour and formation together never add more than +2.',
+      pic: function () { return '<div class="pm-row">' + piece('6', 1, 'Makara +1') + piece('9', 1, tr('primer.pincer', 'Two jaws')) + arrow() + piece('3', 2, tr('primer.caught', 'The enemy')) + '</div>'; } },
+    { key: 'wheel', deva: 'चक्र', title: 'The turning wheel',
+      text: 'On the Chakravyuha, every fifth round the two inner rings turn one cell clockwise. They carry whatever stands on them, and a piece carried round is revealed. Dashed rings show where each piece will land.',
+      pic: function () { return '<div class="pm-pic pm-pic-field small"><img src="assets/art/pata/fields/chakra-day.webp" alt="" draggable="false"></div>'; } },
+    { key: 'shakti', deva: 'शक्ति · अस्त्र', title: 'Shakti and astras',
+      text: 'Shakti is a row of lamps, five at most. You gain one for every piece you take, and both armies gain one when the sky turns. Spend it on an astra, once per battle, using your whole turn. No deity is ever a piece: the astras are only called.',
+      pic: function () {
+        return '<div class="pm-row pm-astras">' + ['vayavya', 'sammohana', 'agneya', 'brahma'].map(function (k) {
+          const a = L.astra(k);
+          return fig('assets/art/pata/astras/' + k + '.webp', a.name + ' · ' + a.cost, 'astra');
+        }).join('') + '</div>';
+      } },
+    { key: 'end', deva: 'विराम', title: 'Ceasefire',
+      text: 'If no piece falls for a long stretch, or the last round ends, the stronger army holds the field. Add up the ranks of the fighting pieces, with +5 for a fort whose gate still stands. The Intel button shows both sums.',
+      pic: function () { return '<div class="pm-row">' + piece('F', 1, tr('primer.gate_stands', 'Gate stands') + ' +5') + '</div>'; } }
+  ];
+
+  function openRules(opts) {
+    opts = opts || {};
+    let at = Math.max(0, Math.min(RULES.length - 1, opts.at || 0));
+    let m = null;
+
+    function render(first) {
+      const r = RULES[at];
+      const last = at === RULES.length - 1;
+      m.el.querySelector('.modal-kicker').textContent = tr('primer.rules.k', 'The rules, one at a time') + ' · ' + (at + 1) + ' / ' + RULES.length;
+      m.el.querySelector('.modal-title').textContent = tr('rule.' + r.key + '.h', r.title);
+      m.setBody('<div class="pm pm-rule" data-rule="' + r.key + '"><div class="pm-split">' +
+        '<div class="pm-pic">' + r.pic() + '</div>' +
+        '<div class="pm-text"><div class="pm-deva deva">' + esc(r.deva) + '</div>' + typeHtml('pm-type', tr('rule.' + r.key + '.t', r.text)) + '</div></div>' +
+        nav(RULES.length, at, last ? (opts.onDone ? tr('primer.to_lessons', 'Start the lessons') : tr('primer.done', 'Done')) : tr('primer.next', 'Next')) + '</div>');
+      const line = m.el.querySelector('#pm-type');
+      typeInto(line, line.querySelector('.pm-typed').getAttribute('aria-label'));
+      if (!first) sfx('select');
+    }
+
+    m = AC.ui.modal({ kicker: '·', title: '·', wide: true, body: '', actions: [] });
+    m.el.classList.add('primer');
+    m.el.addEventListener('click', function (e) {
+      const line = e.target.closest('.pm-line');
+      if (line && line._finish) line._finish();
+      const b = e.target.closest('[data-pm]');
+      if (!b) return;
+      if (b.getAttribute('data-pm') === 'back' && at > 0) { at--; render(); return; }
+      if (b.getAttribute('data-pm') === 'next') {
+        if (at < RULES.length - 1) { at++; render(); return; }
+        m.close();
+        if (opts.onDone) opts.onDone();
+      }
+    });
+    render(true);
+    return m;
+  }
+
+  AC.primer = { openBattlefield: openBattlefield, openRules: openRules, RULES: RULES, typeInto: typeInto };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
 /* js/modes.js */
 /* VYUHA — modes
  * Pehla Yuddh (the two-minute first battle), the Daily Chakravyuha (one
@@ -15275,6 +15681,11 @@ rankBadge('?', R)
   /* The first time: straight into the next lesson. Afterwards: a short list. */
   function openLessons() {
     const done = lessonsDone();
+    // the first time: the battlefield primer (board, armies, warriors, rules), then the first lesson
+    if (!done.length && !((AC.app && AC.app.settings) || {}).primerSeen && AC.primer) {
+      AC.primer.openBattlefield({ onDone: function () { startWheelLesson(0); } });
+      return;
+    }
     if (!done.length) { startWheelLesson(0); return; }
     const next = nextLessonIndex();
     const m = AC.ui.modal({
@@ -15287,6 +15698,9 @@ rankBadge('?', R)
           '<small>' + esc(wheelText(l, 'blurb', l.blurb)) + '</small></span>' +
           '<span class="lesson-tick">' + (isDone ? '✓' : i === next ? tr('wheel.start', 'Start') : '') + '</span></button>';
       }).join('') + '</div>' +
+        '<div class="lesson-know">' +
+          '<button class="btn btn-ghost" data-know="field">' + esc(tr('primer.open_field', 'Know the battlefield')) + '</button>' +
+          '<button class="btn btn-ghost" data-know="rules">' + esc(tr('primer.open_rules', 'Rules, one at a time')) + '</button></div>' +
         '<div class="lesson-drill">' + esc(tr('wheel.drill_lede', 'Also:')) + ' <button data-drill="1">' +
         esc(tr('wheel.drill', 'Field drill — look, volley, trap and fort (six steps)')) + '</button></div>',
       actions: [{ label: tr('wheel.close', 'Close'), cls: 'btn-ghost' }]
@@ -15294,7 +15708,13 @@ rankBadge('?', R)
     m.el.addEventListener('click', function (e) {
       const row = e.target.closest('[data-lesson]');
       if (row) { m.close(); startWheelLesson(+row.getAttribute('data-lesson')); return; }
-      if (e.target.closest('[data-drill]')) { m.close(); startTutorial(); }
+      if (e.target.closest('[data-drill]')) { m.close(); startTutorial(); return; }
+      const know = e.target.closest('[data-know]');
+      if (know && AC.primer) {
+        m.close();
+        if (know.getAttribute('data-know') === 'field') AC.primer.openBattlefield({});
+        else AC.primer.openRules({});
+      }
     });
   }
 

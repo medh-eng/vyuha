@@ -173,3 +173,7 @@ Before a change goes to a pull request:
 5. Screens that change: before/after screenshots at 914 × 411 and 830 × 318.
 6. Words or buttons that change: `node tools/readability.mjs` (no words under 12 px, no button under 40 px).
 7. Update `TASKS.md` (tick, add) and replace `docs/HANDOFF.md`.
+
+
+## Primer (24 Nov 2026)
+Board, armies, warriors and the rules are taught in `js/primer.js`: one idea per page, a painting beside the words, text typed out with a soft key (tap to finish; Reduced motion types nothing). Typing is a timer, never an infinite animation. Words >= 12 px, buttons >= 40 px.
