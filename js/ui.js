@@ -1557,7 +1557,7 @@
         try { root.history.replaceState(null, '', root.location.pathname + root.location.search); } catch (e) { /* file:// */ }
       }
       else if (/^#learn/.test(h)) AC.modes.startWheelLesson(0);
-      else if (/^#drill/.test(h)) AC.modes.startTutorial();
+      else if (/^#drill/.test(h)) AC.modes.startDrill();
     };
 
     // a challenge link opened while the game is already open in this tab

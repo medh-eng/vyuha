@@ -195,7 +195,7 @@
         if (page < FIELD_PAGES.length - 1) { page++; if (FIELD_PAGES[page] === 'warriors') seen[pick] = true; render(); return; }
         try { AC.ui.patchSettings({ primerSeen: true }); } catch (err) { /* ignore */ }
         m.close();
-        openRules({ onDone: opts.onDone });
+        openRules({ onDone: opts.onDone, doneLabel: opts.doneLabel });
       }
     });
     render(true);
@@ -258,7 +258,7 @@
       m.setBody('<div class="pm pm-rule" data-rule="' + r.key + '"><div class="pm-split">' +
         '<div class="pm-pic">' + r.pic() + '</div>' +
         '<div class="pm-text"><div class="pm-deva deva">' + esc(r.deva) + '</div>' + typeHtml('pm-type', tr('rule.' + r.key + '.t', r.text)) + '</div></div>' +
-        nav(RULES.length, at, last ? (opts.onDone ? tr('primer.to_lessons', 'Start the lessons') : tr('primer.done', 'Done')) : tr('primer.next', 'Next')) + '</div>');
+        nav(RULES.length, at, last ? (opts.onDone ? (opts.doneLabel || tr('primer.to_lessons', 'Start the lessons')) : tr('primer.done', 'Done')) : tr('primer.next', 'Next')) + '</div>');
       const line = m.el.querySelector('#pm-type');
       typeInto(line, line.querySelector('.pm-typed').getAttribute('aria-label'));
       if (!first) sfx('select');

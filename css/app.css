@@ -3520,3 +3520,9 @@ html[data-skin] .stage-dock .st-disc .emblem :is(img, svg) { max-width: 100%; ma
   .pm-army .pm-fig figcaption { display: none; }
   .pm-armies-note .pm-fig img { width: 36px; height: 44px; }
 }
+
+.pm-icon span { font-weight: 600; letter-spacing: -0.04em; }
+.pm-icon { padding-left: 1px; padding-right: 1px; }
+.pm-nav .btn { min-width: 84px; }
+.pm-dots { gap: 4px; }
+.pm-dots i { width: 8px; height: 8px; }

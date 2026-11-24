@@ -1,6 +1,6 @@
 # VYUHA — store copy draft
 
-29 October 2026 · Task 3 · Commander approval required before publishing. Describes Chapter III features only. Android packaging and device testing remain launch work. English and Hinglish full descriptions each meet the 600–900 word brief. Keywords below are editorial research terms, not a separate Google Play metadata field. Both full descriptions also fit the 4,000-character limit: [Google Play guidance](https://support.google.com/googleplay/android-developer/answer/9859152?hl=en).
+29 October 2026, updated 24 November 2026 for the Android app (T-43) · Commander approval required before publishing. Describes Chapter III features only. Android packaging and device testing remain launch work. English and Hinglish full descriptions each meet the 600–900 word brief. Keywords below are editorial research terms, not a separate Google Play metadata field. Both full descriptions also fit the 4,000-character limit: [Google Play guidance](https://support.google.com/googleplay/android-developer/answer/9859152?hl=en).
 
 ## Title
 
@@ -42,19 +42,19 @@ The Daily Chakravyuha gives everyone the same seeded starting puzzle for the dat
 
 START WITH PEHLA YUDDH
 
-The guided first battle introduces movement, sight, arrows, strikes, traps, and the fort. Sanjaya offers calm narration in Hinglish, Hindi, or English. When you are ready, face Sainik, Dronacharya, or Shakuni, or customise the field, rules, tie outcome, and turn clock.
+A short walk through the board, the two armies, every warrior and the rules comes first, then four one-minute lessons on the wheel, one idea each, and a six-step field drill. Movement, sight, arrows, strikes, traps and the fort are all taught by doing. Sanjaya offers calm narration in Hinglish, Hindi, or English. When you are ready, face Sainik, Dronacharya, or Shakuni, or customise the field, rules, tie outcome, and turn clock.
 
 FEATURES
 
 - Hidden ranks, readable clues, and an intel ledger.
-- Four battlefields, including the wheel and lotus.
+- Four battlefields to unlock as you play, including the wheel and lotus. Levels are free.
 - Fort gates, changing hours, formations, and four astras.
 - Daily challenges, practice runs, streaks, and share cards.
 - Three computer opponents and local pass-and-play.
-- Local profiles, saved games, and backup export.
+- Local profiles and saved games. Everything stays on your phone.
 - Colour-blind colours, high contrast, and reduced motion options.
 
-VYUHA presents warriors with dignity and astras as elements. No deity is a playing piece or a capture. There are no real-money mechanics. In the current browser edition, profiles and saves stay on your device; no account is required. After its files have loaded and been cached, the browser edition supports offline play. Keep a backup if you clear browser data or change devices.
+VYUHA presents warriors with dignity and astras as elements. No deity is a playing piece or a capture. There are no real-money mechanics. Profiles and saves stay on your phone; no account is required. The game works fully offline, with no ads and no data collected. Uninstalling the app removes your saves.
 
 Take the field. Read the silence. Find the opening.
 
@@ -98,19 +98,19 @@ Daily Chakravyuha mein India ki tareekh ke hisaab se sabko ek hi seeded shuruaat
 
 PEHLA YUDDH SE SHURU KARO
 
-Guided battle mein chalna, dekhna, teer chalaana, vaar karna, jaal hataana aur durg lena seekho. Sanjaya Hinglish, Hindi ya English mein shaant andaaz se saath deta hai. Sainik, Dronacharya ya Shakuni se lado. Custom battle mein maidaan, rules, barabari ka nateeja aur turn clock bhi chun sakte ho.
+Pehle board, dono senayein, har yoddha aur niyam samjho. Phir chaar chhote lesson aur chhe kadam ka field drill: chalna, dekhna, teer chalaana, vaar karna, jaal hataana aur durg lena seekho. Sanjaya Hinglish, Hindi ya English mein shaant andaaz se saath deta hai. Sainik, Dronacharya ya Shakuni se lado. Custom battle mein maidaan, rules, barabari ka nateeja aur turn clock bhi chun sakte ho.
 
 KYA MILEGA
 
 - Chhupe ranks, samajhne layak suraag aur intel panel.
-- Chakra aur Padma sahit chaar maidaan.
+- Chakra aur Padma sahit chaar maidaan, jo khelte-khelte khulte hain. Levels free hain.
 - Durg ka dwaar, badalte prahar, formations aur chaar astras.
 - Daily challenge, practice, streak aur share card.
 - Teen computer opponents aur ek device par do khilaadi.
-- Local profiles, saved games aur backup export.
+- Local profiles aur saved games. Sab kuch tumhare phone par rehta hai.
 - Colour-blind colours, high contrast aur kam animation ke options.
 
-Yahan mahaakaavya ke yoddha sammaan ke saath aate hain. Astras ko unke tatvon se dikhaya jaata hai. Koi devta khel ka mohra ya capture nahi hai. Real-money mechanics nahi hain. Maujooda browser edition mein profiles aur saves tumhare device par rehte hain. Files load aur cache ho jaane ke baad offline bhi khel sakte ho. Browser data mitaane ya device badalne se pehle backup rakhna.
+Yahan mahaakaavya ke yoddha sammaan ke saath aate hain. Astras ko unke tatvon se dikhaya jaata hai. Koi devta khel ka mohra ya capture nahi hai. Real-money mechanics nahi hain. Profiles aur saves tumhare phone par rehte hain, account zaroori nahi. Game poora offline chalta hai, koi ads nahi, koi data collect nahi. App hataane par saves bhi hat jaate hain.
 
 Maidaan taiyaar hai. Suraag padho. Apna raasta banao.
 

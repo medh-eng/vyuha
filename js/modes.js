@@ -194,6 +194,16 @@
     return st;
   }
 
+  /* The Field drill as a player meets it: the first time, the battlefield primer
+     (board, armies, warriors, rules) comes first. Tests and tools call startTutorial directly. */
+  function startDrill() {
+    if (!((AC.app && AC.app.settings) || {}).primerSeen && AC.primer) {
+      AC.primer.openBattlefield({ doneLabel: tr('primer.to_drill', 'Start the drill'), onDone: startTutorial });
+      return;
+    }
+    startTutorial();
+  }
+
   function startTutorial() {
     const st = buildTutorial();
     active = {
@@ -414,7 +424,7 @@
     m.el.addEventListener('click', function (e) {
       const row = e.target.closest('[data-lesson]');
       if (row) { m.close(); startWheelLesson(+row.getAttribute('data-lesson')); return; }
-      if (e.target.closest('[data-drill]')) { m.close(); startTutorial(); return; }
+      if (e.target.closest('[data-drill]')) { m.close(); startDrill(); return; }
       const know = e.target.closest('[data-know]');
       if (know && AC.primer) {
         m.close();
@@ -923,6 +933,7 @@
   AC.modes = Object.assign(hooks, {
     resume: resume,
     startTutorial: startTutorial,
+    startDrill: startDrill,
     startWheelLesson: startWheelLesson,
     openLessons: openLessons,
     buildWheelLesson: buildWheelLesson,
