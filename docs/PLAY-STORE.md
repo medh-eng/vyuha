@@ -1,6 +1,6 @@
 # VYUHA on Google Play — status and the steps left
 
-17 November 2026 · Director. Everything that can be done from the repository is done; the rest
+17 November 2026 · Director. Updated 24 November (below, "24 Nov update"). Everything that can be done from the repository is done; the rest
 needs the Commander's Google account, phone and twelve testers. Checked against Google's rules as
 they stand in November 2026.
 
@@ -83,3 +83,12 @@ Title (30 characters max): `VYUHA: Chakravyuha Strategy` (27) · Short descripti
 - **Tablet layout.** 781–1080 px screens had the field squeezed into a 210 px column; fixed. A
   tablet held sideways (e.g. 1024 × 600) still gets the upright layout with a wide, short field;
   the phone's sideways rails would suit it better (T-44).
+
+## 24 Nov update
+
+- **Builds:** the Android workflow was run by hand on PR #40's branch and succeeded (bundle 33 MB, test APK 34 MB). It does not run on game-file-only PRs (its path filter), so run it by hand before each upload.
+- **Store pictures:** now seven sideways and seven upright in `store/` — the new 6 (tap a warrior) and 7 (a rule card) show the primer. Remake with `node tools/store-assets.mjs`.
+- **Store words:** the three out-of-date points are fixed in `incoming/text/store-listing.md`, and "backup export" is gone (the buttons were removed). Needs your read (T-43).
+- **Settings:** no Export/Import/Reset any more — saves live on the phone and go with the app when it is removed. The listing and privacy page say so.
+- **Still only you:** upload key + four GitHub secrets, phone test of the test APK (T-42, T-48), Play Console, the 12-tester 14-day closed test. Nothing in the repository blocks these.
+- **Still Director/Sarvam:** Hindi/Marathi for the primer (T-47); Hindi/Marathi store listing; tablet sideways layout (T-44).
