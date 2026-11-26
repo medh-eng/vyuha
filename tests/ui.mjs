@@ -730,7 +730,27 @@ async function run() {
   AC.app.modals.slice().forEach((m) => m.close());
   AC.ui.openSettings();
   await sleep(10);
-  ok($('[data-data="export"]') && $('[data-data="import"]') && $('[data-data="reset"]'), 'backup and reset live in Settings');
+  ok(!$('[data-data]'), 'Settings has no export, import or reset buttons (removed 24 Nov)');
+  AC.app.modals.slice().forEach((m) => m.close());
+  // the primer: board, armies, warriors, then eleven rule cards; Reduced motion types instantly
+  AC.ui.patchSettings({ reducedMotion: true });
+  AC.primer.openBattlefield({ onDone() { AC.__primerDone = true; } });
+  ok($('.primer .pm[data-page="board"]') && /1 \/ 3/.test($('.primer .modal-kicker').textContent), 'the primer opens on the board');
+  $('[data-pm="next"]').click();
+  ok($('.pm[data-page="armies"] .pm-army.sun') && $('.pm[data-page="armies"] .pm-army.moon'), 'page two shows both armies');
+  $('[data-pm="next"]').click();
+  ok($$('.pm-icon').length === 10, 'page three has an icon for each of the ten warriors');
+  $('.pm-icon[data-pick="6"]').click();
+  ok($('.pm-icon.on').getAttribute('data-pick') === '6' && /Dhanurdhar/.test($('.pm-name').textContent) && $('.pm-big img'), 'tapping an icon shows its painting and side panel');
+  ok($('.pm-icon[data-pick="6"]').classList.contains('seen') && /2 \/ 10/.test($('.pm-progress').textContent), 'a tapped warrior is marked seen');
+  $('[data-pm="next"]').click();
+  ok($('.pm-rule') && /1 \/ 11/.test($('.primer .modal-kicker').textContent), 'Now the rules opens the first of eleven rule cards');
+  for (let i = 0; i < 10; i++) $('[data-pm="next"]').click();
+  ok(/11 \/ 11/.test($('.primer .modal-kicker').textContent) && $('.pm-line .pm-typed').textContent.length > 40, 'the last card shows its whole text at once');
+  $('[data-pm="next"]').click();
+  ok(AC.__primerDone === true && !$('.primer'), 'the last card hands over to the lesson');
+  ok(AC.app.settings.primerSeen === true, 'the primer is remembered as seen');
+  AC.ui.patchSettings({ reducedMotion: false });
   ok(document.documentElement.classList.contains('lite') === AC.app.liteOn(), 'battery saver follows the setting');
   AC.app.modals.slice().forEach((m) => m.close());
 

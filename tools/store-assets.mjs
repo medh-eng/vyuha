@@ -86,6 +86,17 @@ try {
     await page.evaluate(() => AC.ui.openCodex());
     await wait(500);
     await shot('5-rules');
+    // the primer: tap a warrior, and one rule card (the typing needs a few seconds to finish)
+    await page.evaluate(() => { AC.app.modals.slice().forEach(m => m.close()); AC.primer.openBattlefield({}); });
+    await wait(400);
+    await page.evaluate(() => { document.querySelector('[data-pm="next"]').click(); });
+    await page.evaluate(() => { document.querySelector('[data-pm="next"]').click(); });
+    await page.evaluate(() => { document.querySelector('.pm-icon[data-pick="6"]').click(); });
+    await wait(7000);
+    await shot('6-warriors');
+    await page.evaluate(() => { AC.app.modals.slice().forEach(m => m.close()); AC.primer.openRules({ at: 3 }); });
+    await wait(9000);
+    await shot('7-rule-clash');
     await page.close();
   }
 } finally { await browser.close(); }

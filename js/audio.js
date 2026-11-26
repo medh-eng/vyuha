@@ -257,6 +257,8 @@
     },
     keypad: function () { tone({ freq: 900, to: 1100, dur: 0.05, type: 'square', gain: 0.05 }); },
     tick: function () { tone({ freq: 1500, dur: 0.03, type: 'square', gain: 0.04 }); },
+    // the typewriter: a soft key, a little different each time (primer.js)
+    type: function () { tone({ freq: 1100 + Math.random() * 500, to: 600, dur: 0.028, type: 'triangle', gain: 0.05 }); },
     rotate: function () {
       // stone grinding on stone, with a rising shimmer as the wheel settles
       noise({ freq: 220, to: 90, dur: 1.1, gain: 0.14, filter: 'lowpass', q: 0.8 });

@@ -13,7 +13,7 @@ Last updated: 17 Nov 2026 (Director: Play Store readiness — Android app, store
 |---|---|---|---|
 | T-41 | C | **Play Store, your part** — follow `docs/PLAY-STORE.md` steps 1–7: merge the PR, make the upload key, add the four GitHub secrets, run *Actions → Android build*, install the test APK on your phone, then Play Console + closed test with 12 testers for 14 days | app live on Play |
 | T-42 | C | On the phone with the **test APK**: Back button (card → Menu → Home → leaves), full screen, sound stops when you switch app, WhatsApp share opens WhatsApp, a lesson and a Quick battle | a yes/no each |
-| T-43 | C | Read the store words: fix the three out-of-date points listed in `docs/PLAY-STORE.md` ("Words for the listing") in `incoming/text/store-listing.md`, or say "Director, do it" | listing approved |
+| T-43 | C | Read the store words in `incoming/text/store-listing.md` — the Director fixed the three out-of-date points on 24 Nov (lessons + drill, offline app, fields unlock) and dropped "backup export" (the buttons are gone) | listing approved |
 | T-05 | C | **The gate for Part 3:** five people who have never seen the game, on their own phones, watched in silence for ten minutes (Home → first battle). Write where each one stops in `docs/ROADMAP.md` | notes added |
 | T-25 | C | On the phone, sideways: is Yuddh karo on the first home screen? After a battle, are all the result buttons in view? Win a battle, tap **Challenge a friend**, send it to yourself on WhatsApp and open it — does the briefing appear? | a yes/no each |
 | T-30 | C/S | A native reader checks the new Hindi and Marathi Daily share line (`share.cta`). Sarvam's pass added `का` to the Marathi question; the Hindi reads clean | ok or a correction |
@@ -26,6 +26,8 @@ Last updated: 17 Nov 2026 (Director: Play Store readiness — Android app, store
 
 | ID | Owner | Task | Done when |
 |---|---|---|---|
+| T-47 | S | Hindi + Marathi for the 69 strings in `incoming/text/primer-strings.en.json` (battlefield primer, 11 rule cards); keys `primer.*` and `rule.*`; keep each rule card under ~230 characters so it types in a few seconds | catalogues at 324 keys, `tests/languages.mjs` passes |
+| T-48 | C | On the phone: the new primer (Pehla Yuddh → Know the battlefield → each warrior → Now the rules) — is every word readable, does the key sound feel right, is anything missing for a first-time player? | a yes/no and any trouble |
 | T-44 | D | Tablets held sideways (1024 × 600, 1280 × 800) use the upright layout with a wide, short field; give them the phone's sideways rails | field ≥ 60 % of screen height on both |
 | T-08 | C | New night painting for the wheel (`chakra-night`) in the same true-indigo style as the other three | file supplied |
 | T-10 | C | Add the three new night masters to your masters zip and Release (`docs/MASTERS.md`) | done |
@@ -56,6 +58,8 @@ Last updated: 17 Nov 2026 (Director: Play Store readiness — Android app, store
   challenge-a-friend link · name/trademark search · IP review of the rules.
 
 ## Done (newest first)
+
+- [x] T-46 Primer (24 Nov, PR #40): Pehla Yuddh's Field drill and the wheel lessons both open with the primer the first time (`AC.modes.startDrill`); Settings loses Export/Import/Reset; Intel's army chip is solid and readable; Pehla Yuddh opens with *Know the battlefield* (board, the two armies, tap-each-warrior panel) then *The rules, one at a time* (11 cards), typed out with a soft key sound (`js/primer.js`, `AC.audio` `type`). Also in the lessons list and the Rules tab. Not phone-tested.
 
 - [x] T-45 Play Store readiness (17 Nov): Capacitor Android app targeting API 36, build workflow, icons and splash, Back button, background silence, bundled fonts, privacy page, store pictures, `docs/PLAY-STORE.md`; readability floor (12 px words, 40 px buttons) with every battle icon labelled; lessons show only what they have taught; the 781–1080 px tablet field fix.
 - [x] T-34 Progression system: a free level (1–6) from matches played + wins×2 unlocks Sarvatobhadra at level 2, Padmavyuha at 3, Kurukshetra at 4, the Abhimanyu scenario at 5 — shown locked with a lock icon and "Unlocks at Level N" on the Setup screen, tapping does nothing but a toast. Home screen shows the current level. No payment path anywhere; a paid Play Store edition, if ever built, stays cosmetic-only per `docs/ROADMAP.md`. Follow-ups opened as T-35 through T-40 (16 Nov).

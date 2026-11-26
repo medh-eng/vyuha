@@ -40,6 +40,7 @@
     skin: 'pata',        // Rang look: pata (default since 5 Nov 2026) · bronze (Classic); pahari, bright via ?skin=
     tutorialDone: false,
     wheelLessons: [],    // keys of the four wheel lessons finished (7 Nov 2026)
+    primerSeen: false,   // the battlefield primer (board, armies, warriors) has been read once
     lessonOffered: false, // the first Quick battle offered the lessons once
     landscapeHintDismissed: false,
     fullscreen: true     // battles on a phone open full screen and sideways
